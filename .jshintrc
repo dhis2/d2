@@ -1,0 +1,35 @@
+{
+    "bitwise": true,
+    "camelcase": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "freeze": true,
+    "latedef": true,
+    "immed": true,
+    "indent": 4,
+    "newcap": true,
+    "noarg": true,
+    "noempty": true,
+    "nonbsp": true,
+    "nonew": true,
+    "plusplus": true,
+    "quotmark": "single",
+    "undef": true,
+    "unused": true,
+    "strict": false,
+    "maxdepth": 5,
+    "maxstatements": 30,
+    "maxcomplexity": 6,
+    "latedef": "nofunc",
+
+    "browser": true,
+
+    "predef": [
+        //App globals
+        "angular", "_",
+
+        //Test globals
+        "jasmine", "describe", "it", "beforeEach", "afterEach", "inject", "module", "expect", "spyOn"
+    ]
+}
