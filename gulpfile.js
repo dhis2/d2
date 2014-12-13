@@ -13,6 +13,9 @@ var files = [
     //Source files
     'src/**/*.js',
 
+    //Fixtures
+    'test/fixtures/**/*.js',
+
     //Jasmine spec files
     'test/specs/**/*_spec.js'
 
