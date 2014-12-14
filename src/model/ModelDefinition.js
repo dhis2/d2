@@ -51,4 +51,4 @@
             propertiesObject[schemaProperty.name] = propertyDetails;
         }
     }
-})(d2);
+})(window.d2 = window.d2 || {});

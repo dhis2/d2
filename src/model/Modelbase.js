@@ -15,4 +15,4 @@
     function save() {
 
     }
-})(d2);
+})(window.d2 = window.d2 || {});

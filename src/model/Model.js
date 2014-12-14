@@ -8,4 +8,4 @@
     }
 
     Model.prototype = new d2.ModelBase(); //jshint nonew:false
-})(d2);
+})(window.d2 = window.d2 || {});

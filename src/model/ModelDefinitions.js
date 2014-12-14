@@ -12,4 +12,4 @@
         this[name] = {};
     }
 
-})(d2);
+})(window.d2 = window.d2 || {});
