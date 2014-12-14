@@ -11,9 +11,12 @@ var files = [
     'bower_components/jquery/dist/jquery.js',
 
     //Source files
+    'src/d2.js',
+    'src/model/ModelBase.js',
     'src/**/*.js',
 
     //Fixtures
+    'test/fixtures/fixtures.js',
     'test/fixtures/**/*.js',
 
     //Jasmine spec files
