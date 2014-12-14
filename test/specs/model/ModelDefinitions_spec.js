@@ -1,10 +1,11 @@
 describe('D2 models', function () {
     'use strict';
     var models;
+    var ModelDefinitions = d2.ModelDefinitions;
 
     beforeEach(function () {
         //TODO: Figure out a way how to get a clean object without extending?
-        models = new ModelDefinitions();
+        models = new ModelDefinitions(); //jshint nonew:false
     });
 
     it('should be an object', function () {

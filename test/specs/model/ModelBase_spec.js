@@ -3,7 +3,7 @@ describe('ModelBase', function () {
     var modelBase;
 
     beforeEach(function () {
-        modelBase = new ModelBase();
+        modelBase = new ModelBase(); //jshint nonew:false
     });
 
     it('should have a create method', function () {

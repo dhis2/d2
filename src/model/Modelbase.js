@@ -1,4 +1,6 @@
 (function (d2) {
+    'use strict';
+
     d2.ModelBase = ModelBase;
 
     function ModelBase() {
