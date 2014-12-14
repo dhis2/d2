@@ -45,5 +45,5 @@ function curry(toCurry, parameter) {
     }
 }
 
-window.d2 = Object.create(null);
+window.d2 = {};
 /*jshint unused: false */
