@@ -45,5 +45,22 @@ function curry(toCurry, parameter) {
     }
 }
 
+function contains(item, list) {
+    list = list || this;
+
+    return list.indexOf(item) >= 0;
+}
+
+function addLockedProperty(name, value) {
+    /*jshint validthis: true */
+    var propertyDescriptor = {
+        enumerable: true,
+        configurable: false,
+        writable: false,
+        value: value
+    };
+    Object.defineProperty(this, name, propertyDescriptor);
+}
+
 window.d2 = {};
 /*jshint unused: false */

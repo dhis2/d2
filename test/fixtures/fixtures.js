@@ -8,7 +8,8 @@ window.fixtures = (function () {
 
     function getFixture(fixtureName) {
         if (fixtures && fixtures[fixtureName]) {
-            return fixtures[fixtureName];
+            //Deep copy the fixture, so we get a "clean" one
+            return jQuery.extend(true, {}, fixtures[fixtureName]);
         }
         throw new Error(['Fixture', fixtureName, 'does not exist'].join(' '));
     }

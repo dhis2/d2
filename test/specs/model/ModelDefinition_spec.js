@@ -13,6 +13,10 @@ describe('ModelDefinition', function () {
         expect(modelDefinition).toEqual(jasmine.any(ModelDefinition));
     });
 
+    it('should not add epiEndpoint when it does not exist', function () {
+        expect(modelDefinition.apiEndpint).not.toBeDefined();
+    });
+
     it('should throw an error when a name is not specified', function () {
         function shouldThrow() {
             new ModelDefinition();
@@ -28,10 +32,6 @@ describe('ModelDefinition', function () {
     });
 
     describe('instance', function () {
-        it('should have a addProperty method', function () {
-            expect(modelDefinition.addProperty).toEqual(jasmine.any(Function));
-        });
-
         it('should not be able to change the name', function () {
             var isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').writable;
             var isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').configurable;
@@ -103,6 +103,10 @@ describe('ModelDefinition', function () {
                 expect(dataElementModelDefinition.isMetaData).toBe(true);
             });
 
+            it('should set the epiEndpoint', function () {
+                expect(dataElementModelDefinition.apiEndpoint).toBe('/dataElements');
+            });
+
             it('should set metadata to false if it is not a metadata model', function () {
                 var nonMetaDataModel = fixtures.get('/api/schemas/dataElement');
                 nonMetaDataModel.metadata = false;
@@ -132,15 +136,106 @@ describe('ModelDefinition', function () {
         });
 
         describe('modelProperties', function () {
-            var modelPropertyName;
+            var modelProperties;
 
             beforeEach(function () {
-                modelPropertyName = dataElementModelDefinition.modelProperties.name;
+                modelProperties = dataElementModelDefinition.modelProperties;
             });
 
             it('should be an object', function () {
-                expect(modelPropertyName).toEqual(jasmine.any(Object));
+                expect(modelProperties.name).toEqual(jasmine.any(Object));
             });
+
+            it('should have have a type property', function () {
+                expect(modelProperties.name.type).toEqual('string');
+            });
+
+            it('should set the data object as a type for date fields', function () {
+                expect(modelProperties.created.type).toBe(Date);
+            });
+
+            it('should set the boolean datatype for externalAccess', function () {
+                expect(modelProperties.externalAccess.type).toBe('boolean');
+            });
+
+            it('should have a persisted property', function () {
+                expect(modelProperties.name.persisted).toBe(true);
+            });
+
+            it('should have a writable property', function () {
+                expect(modelProperties.name.writable).toBe(true);
+            });
+
+            //it('should have a propertyDescriptor object', function () {
+            //    var propertyDescriptor = modelProperties.name.propertyDescriptor;
+            //    expect(propertyDescriptor).toBeDefined();
+            //    expect(propertyDescriptor.enumerable).toBe(true);
+            //    expect(propertyDescriptor.get).toBeDefined();
+            //    expect(propertyDescriptor.set).toBeDefined();
+            //    expect(propertyDescriptor.configurable).toBe(false);
+            //});
+
+            it('should not have a set method for dimensionType', function () {
+
+            });
+
+            it('should have a required property', function () {
+                expect(modelProperties.name.required).toBe(true);
+            });
+
+            it('should have an owner property', function () {
+                expect(modelProperties.name.owner).toBe(true);
+            });
+
+            it('should throw an error when a type is not found', function () {
+                var modelPropertyUnknown;
+                var dataElementModelDefinition;
+                var schema = fixtures.get('/api/schemas/dataElement');
+                schema.properties.push({
+                    name: 'unknownProperty',
+                    type: 'uio.some.unknown.type'
+                });
+
+                dataElementModelDefinition = ModelDefinition.createFromSchema(schema);
+                modelPropertyUnknown = dataElementModelDefinition.modelProperties.unknownProperty;
+
+                expect(modelPropertyUnknown.type).toEqual(undefined);
+            });
+
+            it('should use the collection name for collections', function () {
+                expect(modelProperties.dataElementGroups).toBeDefined();
+                expect(modelProperties.dataElementGroup).not.toBeDefined();
+            });
+        });
+    });
+
+    describe('create', function () {
+        var tempD2;
+        var dataElementModelDefinition;
+
+        //TODO: These could be beforeAll/afterAll but it does not seem to have landed yet in karma-jasmine
+        beforeEach(function () {
+            tempD2 = window.d2;
+
+            spyOn(window.d2, 'Model');
+
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+        });
+
+        afterEach(function () {
+            window.d2 = tempD2;
+        });
+
+        it('should call the model constructor', function () {
+            dataElementModelDefinition.create();
+
+            expect(window.d2.Model).toHaveBeenCalled();
+        });
+
+        it('should call the model constructor with the the modelDefinition', function () {
+            dataElementModelDefinition.create();
+
+            expect(window.d2.Model).toHaveBeenCalledWith(dataElementModelDefinition);
         });
     });
 });
