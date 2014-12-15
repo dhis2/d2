@@ -8,7 +8,7 @@ var buildDirectory = 'build';
 
 var files = [
     //Vendor dependency files
-    'bower_components/jquery/dist/jquery.js',
+    'bower_components/jQuery/dist/jquery.js',
 
     //Source files
     'src/d2.js',
