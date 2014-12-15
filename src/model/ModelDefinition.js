@@ -41,11 +41,16 @@
     function createModelProperty(propertiesObject, schemaProperty) {
         var propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
         var propertyDetails = {
+            //Actual property descriptor properties
+            configurable: false,
+            enumerable: true,
+            writable: schemaProperty.writable,
+
+            //Additional d2 Model data
             persisted: schemaProperty.persisted || false,
             type: typeLookup(schemaProperty.klass),
             required: !schemaProperty.nullable || false,
-            owner: schemaProperty.owner,
-            writable: schemaProperty.writable
+            owner: schemaProperty.owner
         };
 
         if (propertyName) {
