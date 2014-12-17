@@ -13,4 +13,8 @@ describe('ModelBase', function () {
     it('should have a save method', function () {
         expect(modelBase.save).toEqual(jasmine.any(Function));
     });
+
+    it('should have a validate method', function () {
+        expect(modelBase.validate).toEqual(jasmine.any(Function));
+    });
 });

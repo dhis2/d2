@@ -44,7 +44,12 @@
             //Actual property descriptor properties
             configurable: false,
             enumerable: true,
-            writable: schemaProperty.writable,
+            get: function () {
+                return this.dataValues[propertyName];
+            },
+            set: function (value) {
+                this.dataValues[propertyName] = value;
+            },
 
             //Additional d2 Model data
             persisted: schemaProperty.persisted || false,

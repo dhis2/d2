@@ -162,23 +162,6 @@ describe('ModelDefinition', function () {
                 expect(modelProperties.name.persisted).toBe(true);
             });
 
-            it('should have a writable property', function () {
-                expect(modelProperties.name.writable).toBe(true);
-            });
-
-            //it('should have a propertyDescriptor object', function () {
-            //    var propertyDescriptor = modelProperties.name.propertyDescriptor;
-            //    expect(propertyDescriptor).toBeDefined();
-            //    expect(propertyDescriptor.enumerable).toBe(true);
-            //    expect(propertyDescriptor.get).toBeDefined();
-            //    expect(propertyDescriptor.set).toBeDefined();
-            //    expect(propertyDescriptor.configurable).toBe(false);
-            //});
-
-            it('should not have a set method for dimensionType', function () {
-
-            });
-
             it('should have a required property', function () {
                 expect(modelProperties.name.required).toBe(true);
             });
@@ -205,6 +188,18 @@ describe('ModelDefinition', function () {
             it('should use the collection name for collections', function () {
                 expect(modelProperties.dataElementGroups).toBeDefined();
                 expect(modelProperties.dataElementGroup).not.toBeDefined();
+            });
+
+            it('should add a get method to the propertyDescriptor', function () {
+                expect(modelProperties.name.get).toEqual(jasmine.any(Function));
+            });
+
+            it('should add a set method to the propertyDescriptor for name', function () {
+                expect(modelProperties.name.set).toEqual(jasmine.any(Function));
+            });
+
+            it('should not have a set method for dimensionType', function () {
+
             });
         });
     });
