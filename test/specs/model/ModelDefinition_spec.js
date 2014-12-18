@@ -146,30 +146,6 @@ describe('ModelDefinition', function () {
                 expect(modelProperties.name).toEqual(jasmine.any(Object));
             });
 
-            it('should have have a type property', function () {
-                expect(modelProperties.name.type).toEqual('string');
-            });
-
-            it('should set the data object as a type for date fields', function () {
-                expect(modelProperties.created.type).toBe(Date);
-            });
-
-            it('should set the boolean datatype for externalAccess', function () {
-                expect(modelProperties.externalAccess.type).toBe('boolean');
-            });
-
-            it('should have a persisted property', function () {
-                expect(modelProperties.name.persisted).toBe(true);
-            });
-
-            it('should have a required property', function () {
-                expect(modelProperties.name.required).toBe(true);
-            });
-
-            it('should have an owner property', function () {
-                expect(modelProperties.name.owner).toBe(true);
-            });
-
             it('should throw an error when a type is not found', function () {
                 var modelPropertyUnknown;
                 var dataElementModelDefinition;
@@ -200,6 +176,60 @@ describe('ModelDefinition', function () {
 
             it('should not have a set method for dimensionType', function () {
 
+            });
+        });
+
+        describe('modelValidations', function () {
+            var modelValidations;
+
+            beforeEach(function () {
+                modelValidations = dataElementModelDefinition.modelValidations;
+            });
+
+            describe('created', function () {
+                it('should set the data object as a type for date fields', function () {
+                    expect(modelValidations.created.type).toBe(Date);
+                });
+
+                it('should be owned by this schema', function () {
+                    expect(modelValidations.created.owner).toBe(true);
+                });
+            });
+
+            describe('externalAccess', function () {
+                it('should set the boolean datatype for externalAccess', function () {
+                    expect(modelValidations.externalAccess.type).toBe('boolean');
+                });
+
+                it('should not be owned by this schema', function () {
+                    expect(modelValidations.externalAccess.owner).toBe(false);
+                });
+
+                it('should not have a maxLength property', function () {
+                    expect(modelValidations.externalAccess.maxLength).toBe(undefined);
+                });
+            });
+
+            describe('name', function () {
+                it('should have have a type property', function () {
+                    expect(modelValidations.name.type).toEqual('text');
+                });
+
+                it('should have a maxLength', function () {
+                    expect(modelValidations.name.maxLength).toBe(230);
+                });
+
+                it('should have a persisted property', function () {
+                    expect(modelValidations.name.persisted).toBe(true);
+                });
+
+                it('should have a required property', function () {
+                    expect(modelValidations.name.required).toBe(true);
+                });
+
+                it('should have an owner property', function () {
+                    expect(modelValidations.name.owner).toBe(true);
+                });
             });
         });
     });

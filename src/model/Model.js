@@ -17,6 +17,14 @@
             value: {}
         });
 
+        //Validations object to store the validation rules
+        Object.defineProperty(model, 'validations', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: Object.freeze(modelDefinition.modelValidations || {})
+        });
+
         Object.defineProperties(model, modelDefinition.modelProperties);
 
         return model;

@@ -65,4 +65,55 @@ describe('Model', function () {
             expect(modelDefinition.modelProperties.name.get).toHaveBeenCalled();
         });
     });
+
+    describe('validations', function () {
+        var dataElementModel;
+        var modelDefinition;
+
+        beforeEach(function () {
+            modelDefinition = {
+                modelProperties: {
+                    name: {
+                        configurable: false,
+                        enumerable: true,
+                        get: function () {
+                            return this.dataValues.name;
+                        },
+                        set: function (value) {
+                            this.dataValues.name = value;
+                        }
+                    }
+                },
+                modelValidations: {
+                    name: {
+                        persisted: true,
+                        type: 'text',
+                        required: true,
+                        owner: true,
+                        min: 0,
+                        max: 50
+                    }
+                }
+            };
+
+            dataElementModel = Model.create(modelDefinition);
+        });
+
+        it('should be an object', function () {
+            expect(dataElementModel.validations).toEqual(jasmine.any(Object));
+        });
+
+        it('should have a validation object for name', function () {
+            var expectedNameValidationObject = {
+                persisted: true,
+                type: 'text',
+                required: true,
+                owner: true,
+                min: 0,
+                max: 50
+            };
+
+            expect(dataElementModel.validations.name).toEqual(expectedNameValidationObject);
+        });
+    });
 });
