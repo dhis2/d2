@@ -62,5 +62,22 @@ function addLockedProperty(name, value) {
     Object.defineProperty(this, name, propertyDescriptor);
 }
 
+/**
+ * Polyfill for the isInteger function that will be added in ES6
+ *
+ * http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
+ */
+if (!Number.isInteger) {
+    Number.isInteger = isInteger;
+}
+
+function isInteger(nVal) {
+    return typeof nVal === 'number' &&
+        isFinite(nVal) &&
+        nVal > -9007199254740992 &&
+        nVal < 9007199254740992 &&
+        Math.floor(nVal) === nVal;
+}
+
 window.d2 = {};
 /*jshint unused: false */

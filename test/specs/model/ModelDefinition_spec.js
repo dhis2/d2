@@ -177,6 +177,28 @@ describe('ModelDefinition', function () {
             it('should not have a set method for dimensionType', function () {
 
             });
+
+            it('should create getter function on the propertyDescriptor', function () {
+                var model = {
+                    dataValues: {
+                        name: 'Mark'
+                    }
+                };
+
+                expect(modelProperties.name.get.call(model)).toBe('Mark');
+            });
+
+            it('should create setter function on the propertyDescriptor', function () {
+                var model = {
+                    dataValues: {
+
+                    }
+                };
+
+                modelProperties.name.set.call(model, 'James');
+
+                expect(model.dataValues.name).toBe('James');
+            });
         });
 
         describe('modelValidations', function () {

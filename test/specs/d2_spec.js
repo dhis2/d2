@@ -1,4 +1,4 @@
-/* global isDefined, isType */
+/* global isDefined, isType, isInteger */
 describe('D2', function () {
     var d2;
     beforeEach(function () {
@@ -39,6 +39,20 @@ describe('D2', function () {
 
         it('should return false when the object is not an instance', function () {
             expect(isType('', Object)).toBe(false);
+        });
+    });
+
+    describe('isInteger', function () {
+        it('should return for 1', function () {
+            expect(isInteger(1)).toBe(true);
+        });
+
+        it('should return false for 0.1', function () {
+            expect(isInteger(0.1)).toBe(false);
+        });
+
+        it('should return false for NaN', function () {
+            expect(isInteger(NaN)).toBe(false);
         });
     });
 });
