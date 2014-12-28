@@ -1,4 +1,27 @@
 /*jshint unused: false */
+var schemaTypes = [
+    'TEXT',
+    'NUMBER',
+    'INTEGER',
+    'BOOLEAN',
+    'EMAIL',
+    'PASSWORD',
+    'URL',
+    'PHONENUMBER',
+    'GEOLOCATION', //TODO: Geo location could be an advanced type of 2 numbers / strings?
+    'COLOR',
+    'COMPLEX',
+    'COLLECTION',
+    'REFERENCE',
+    'DATE',
+    'COMPLEX',
+    'IDENTIFIER'
+];
+
+window.d2 = {
+    getSchemaTypes: getSchemaTypes
+};
+
 function checkType(value, type, name) {
     checkDefined(value, name);
     checkDefined(type, 'Type');
@@ -26,6 +49,18 @@ function isType(value, type) {
     return false;
 }
 
+function isString(value) {
+    return isType(value, 'string');
+}
+
+function isArray(value) {
+    return Array.isArray(value);
+}
+
+function isObject(value) {
+    return isType(value, Object);
+}
+
 function isDefined(value) {
     try {
         checkDefined(value);
@@ -33,6 +68,10 @@ function isDefined(value) {
     } catch (e) {}
 
     return false;
+}
+
+function throwError(message) {
+    throw new Error(message);
 }
 
 function curry(toCurry, parameter) {
@@ -52,7 +91,6 @@ function contains(item, list) {
 }
 
 function addLockedProperty(name, value) {
-    /*jshint validthis: true */
     var propertyDescriptor = {
         enumerable: true,
         configurable: false,
@@ -79,5 +117,13 @@ function isInteger(nVal) {
         Math.floor(nVal) === nVal;
 }
 
-window.d2 = {};
+function isNumeric(nVal) {
+    return typeof nVal === 'number' &&
+            isFinite(nVal) &&
+            (nVal - parseFloat(nVal) + 1) >= 0;
+}
+
+function getSchemaTypes() {
+    return schemaTypes;
+}
 /*jshint unused: false */

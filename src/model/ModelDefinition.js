@@ -1,5 +1,5 @@
-/* global checkType, curry, contains, addLockedProperty */
-(function () {
+/* global checkType, curry, addLockedProperty, throwError, isString */
+(function (d2) {
     'use strict';
 
     d2.ModelDefinition = ModelDefinition;
@@ -33,14 +33,14 @@
 
     function createPropertiesObject(schemaProperties) {
         var propertiesObject = {};
-        var createModelPropertyOn = curry(createModelProperty, propertiesObject);
+        var createModelPropertyDescriptorOn = curry(createModelPropertyDescriptor, propertiesObject);
 
-        (schemaProperties || []).forEach(createModelPropertyOn);
+        (schemaProperties || []).forEach(createModelPropertyDescriptorOn);
 
         return propertiesObject;
     }
 
-    function createModelProperty(propertiesObject, schemaProperty) {
+    function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
         var propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
         var propertyDetails = {
             //Actual property descriptor properties
@@ -72,10 +72,10 @@
         var propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
         var validationDetails = {
             persisted: schemaProperty.persisted,
-            type: typeLookup(schemaProperty.klass),
-            required: !schemaProperty.nullable,
-            minLength: schemaProperty.minLength,
-            maxLength: schemaProperty.maxLength,
+            type: typeLookup(schemaProperty.propertyType),
+            required: schemaProperty.required,
+            min: schemaProperty.min,
+            max: schemaProperty.max,
             owner: schemaProperty.owner,
             unique: schemaProperty.unique
         };
@@ -85,16 +85,12 @@
         }
     }
 
-    var typeTranslationMap = {
-        'java.lang.String': 'text',
-        'java.util.Date': Date,
-        boolean: 'boolean',
-        'org.hisp.dhis.acl.Access': Object
-    };
-    function typeLookup(javaType) {
-        if (contains.call(Object.keys(typeTranslationMap), javaType)) {
-            return typeTranslationMap[javaType];
+    var primaryTypes = d2.getSchemaTypes() || [];
+    function typeLookup(propertyType) {
+        if (primaryTypes.indexOf(propertyType) >= 0 && isString(propertyType)) {
+            return propertyType;
         }
-        return undefined;
+        throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
     }
+
 })(window.d2 = window.d2 || {});

@@ -1,5 +1,6 @@
 window.fixtures.add(
     '/api/schemas/dataElement',
+
     {
         "klass": "org.hisp.dhis.dataelement.DataElement",
         "identifiableObject": true,
@@ -23,7 +24,9 @@ window.fixtures.add(
         }],
         "properties": [{
             "klass": "java.util.List",
+            "propertyType": "COLLECTION",
             "itemKlass": "java.lang.Integer",
+            "itemPropertyType": "INTEGER",
             "name": "aggregationLevels",
             "fieldName": "aggregationLevels",
             "persisted": true,
@@ -38,10 +41,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
-            "klass": "boolean",
+            "klass": "java.lang.Boolean",
+            "propertyType": "BOOLEAN",
             "name": "zeroIsSignificant",
             "fieldName": "zeroIsSignificant",
             "persisted": true,
@@ -55,12 +61,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": false,
-            "maxLength": 255,
-            "minLength": 0,
+            "required": true,
+            "max": 255,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.common.DimensionType",
+            "propertyType": "TEXT",
             "name": "dimensionType",
             "fieldName": "dimensionType",
             "persisted": false,
@@ -74,9 +81,12 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "type",
             "fieldName": "type",
             "persisted": true,
@@ -90,12 +100,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": false,
-            "maxLength": 16,
-            "minLength": 0,
+            "required": true,
+            "max": 16,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.option.OptionSet",
+            "propertyType": "REFERENCE",
             "name": "optionSet",
             "fieldName": "optionSet",
             "persisted": true,
@@ -109,10 +120,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "IDENTIFIER",
             "name": "id",
             "fieldName": "uid",
             "persisted": true,
@@ -126,12 +140,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": true,
-            "nullable": true,
-            "maxLength": 11,
-            "minLength": 0,
+            "required": false,
+            "max": 11,
+            "min": 11,
             "cascade": "none"
         }, {
             "klass": "java.util.Date",
+            "propertyType": "DATE",
             "name": "created",
             "fieldName": "created",
             "persisted": true,
@@ -145,12 +160,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 255,
-            "minLength": 0,
+            "required": false,
+            "max": 255,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "description",
             "fieldName": "description",
             "persisted": true,
@@ -164,12 +180,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 255,
-            "minLength": 0,
+            "required": false,
+            "max": 255,
+            "min": 2,
             "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.option.OptionSet",
+            "propertyType": "REFERENCE",
             "name": "commentOptionSet",
             "fieldName": "commentOptionSet",
             "persisted": true,
@@ -183,10 +200,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "name",
             "fieldName": "name",
             "persisted": true,
@@ -200,12 +220,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": true,
-            "nullable": false,
-            "maxLength": 230,
-            "minLength": 0,
+            "required": true,
+            "max": 230,
+            "min": 2,
             "cascade": "none"
         }, {
-            "klass": "boolean",
+            "klass": "java.lang.Boolean",
+            "propertyType": "BOOLEAN",
             "name": "externalAccess",
             "fieldName": "externalAccess",
             "persisted": false,
@@ -219,9 +240,12 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "textType",
             "fieldName": "textType",
             "persisted": true,
@@ -235,12 +259,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 16,
-            "minLength": 0,
+            "required": false,
+            "max": 16,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "href",
             "fieldName": "href",
             "persisted": false,
@@ -253,10 +278,14 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }, {
             "klass": "java.util.Set",
+            "propertyType": "COLLECTION",
             "itemKlass": "org.hisp.dhis.dataelement.DataElementGroup",
+            "itemPropertyType": "REFERENCE",
             "name": "dataElementGroup",
             "fieldName": "groups",
             "persisted": true,
@@ -272,10 +301,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "publicAccess",
             "fieldName": "publicAccess",
             "persisted": true,
@@ -289,12 +321,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 8,
-            "minLength": 0,
+            "required": false,
+            "max": 8,
+            "min": 8,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "aggregationOperator",
             "fieldName": "aggregationOperator",
             "persisted": true,
@@ -308,12 +341,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": false,
-            "maxLength": 16,
-            "minLength": 0,
+            "required": true,
+            "max": 16,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "formName",
             "fieldName": "formName",
             "persisted": true,
@@ -327,12 +361,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 230,
-            "minLength": 0,
+            "required": false,
+            "max": 230,
+            "min": 2,
             "cascade": "none"
         }, {
             "klass": "java.util.Date",
+            "propertyType": "DATE",
             "name": "lastUpdated",
             "fieldName": "lastUpdated",
             "persisted": true,
@@ -346,13 +381,15 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 255,
-            "minLength": 0,
+            "required": false,
+            "max": 255,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.util.Set",
+            "propertyType": "COLLECTION",
             "itemKlass": "org.hisp.dhis.dataset.DataSet",
+            "itemPropertyType": "REFERENCE",
             "name": "dataSet",
             "fieldName": "dataSets",
             "persisted": true,
@@ -368,10 +405,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "IDENTIFIER",
             "name": "code",
             "fieldName": "code",
             "persisted": true,
@@ -385,12 +425,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": true,
-            "nullable": true,
-            "maxLength": 50,
-            "minLength": 0,
+            "required": false,
+            "max": 50,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.acl.Access",
+            "propertyType": "COMPLEX",
             "name": "access",
             "fieldName": "access",
             "persisted": false,
@@ -404,9 +445,12 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }, {
             "klass": "java.lang.String",
+            "propertyType": "URL",
             "name": "url",
             "fieldName": "url",
             "persisted": true,
@@ -420,12 +464,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 255,
-            "minLength": 0,
+            "required": false,
+            "max": 255,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "numberType",
             "fieldName": "numberType",
             "persisted": true,
@@ -439,12 +484,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
-            "maxLength": 16,
-            "minLength": 0,
+            "required": false,
+            "max": 16,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.dataelement.DataElementDomain",
+            "propertyType": "TEXT",
             "name": "domainType",
             "fieldName": "domainType",
             "persisted": true,
@@ -458,29 +504,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": false,
-            "maxLength": 255,
-            "minLength": 0,
-            "cascade": "none"
-        }, {
-            "klass": "org.hisp.dhis.mapping.MapLegendSet",
-            "name": "legendSet",
-            "fieldName": "legendSet",
-            "persisted": true,
-            "namespace": "http://dhis2.org/schema/dxf/2.0",
-            "attribute": false,
-            "simple": false,
-            "collection": false,
-            "owner": true,
-            "identifiableObject": true,
-            "nameableObject": false,
-            "readable": true,
-            "writable": true,
-            "unique": false,
-            "nullable": true,
+            "required": true,
+            "max": 255,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.dataelement.DataElementCategoryCombo",
+            "propertyType": "REFERENCE",
             "name": "categoryCombo",
             "fieldName": "categoryCombo",
             "persisted": true,
@@ -494,10 +524,33 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
+            "cascade": "none"
+        }, {
+            "klass": "org.hisp.dhis.mapping.MapLegendSet",
+            "propertyType": "REFERENCE",
+            "name": "legendSet",
+            "fieldName": "legendSet",
+            "persisted": true,
+            "namespace": "http://dhis2.org/schema/dxf/2.0",
+            "attribute": false,
+            "simple": false,
+            "collection": false,
+            "owner": true,
+            "identifiableObject": true,
+            "nameableObject": false,
+            "readable": true,
+            "writable": true,
+            "unique": false,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "dimension",
             "persisted": false,
             "namespace": "http://dhis2.org/schema/dxf/2.0",
@@ -510,10 +563,14 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }, {
             "klass": "java.util.Set",
+            "propertyType": "COLLECTION",
             "itemKlass": "org.hisp.dhis.attribute.AttributeValue",
+            "itemPropertyType": "COMPLEX",
             "name": "attributeValue",
             "fieldName": "attributeValues",
             "persisted": true,
@@ -529,11 +586,15 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.util.List",
+            "propertyType": "COLLECTION",
             "itemKlass": "org.hisp.dhis.common.NameableObject",
+            "itemPropertyType": "REFERENCE",
             "name": "item",
             "fieldName": "items",
             "persisted": false,
@@ -549,10 +610,14 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }, {
             "klass": "java.util.Set",
+            "propertyType": "COLLECTION",
             "itemKlass": "org.hisp.dhis.user.UserGroupAccess",
+            "itemPropertyType": "COMPLEX",
             "name": "userGroupAccess",
             "fieldName": "userGroupAccesses",
             "persisted": true,
@@ -568,28 +633,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
-            "name": "shortName",
-            "fieldName": "shortName",
-            "persisted": true,
-            "attribute": true,
-            "simple": true,
-            "collection": false,
-            "owner": true,
-            "identifiableObject": false,
-            "nameableObject": false,
-            "readable": true,
-            "writable": true,
-            "unique": true,
-            "nullable": false,
-            "maxLength": 50,
-            "minLength": 0,
-            "cascade": "none"
-        }, {
-            "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "displayName",
             "fieldName": "displayName",
             "persisted": false,
@@ -603,9 +653,31 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
+        }, {
+            "klass": "java.lang.String",
+            "propertyType": "TEXT",
+            "name": "shortName",
+            "fieldName": "shortName",
+            "persisted": true,
+            "attribute": true,
+            "simple": true,
+            "collection": false,
+            "owner": true,
+            "identifiableObject": false,
+            "nameableObject": false,
+            "readable": true,
+            "writable": true,
+            "unique": true,
+            "required": true,
+            "max": 50,
+            "min": 2,
+            "cascade": "none"
         }, {
             "klass": "org.hisp.dhis.user.User",
+            "propertyType": "REFERENCE",
             "name": "user",
             "fieldName": "user",
             "persisted": true,
@@ -619,10 +691,13 @@ window.fixtures.add(
             "readable": true,
             "writable": true,
             "unique": false,
-            "nullable": true,
+            "required": false,
+            "max": 2147483647,
+            "min": 0,
             "cascade": "none"
         }, {
             "klass": "java.lang.String",
+            "propertyType": "TEXT",
             "name": "filter",
             "fieldName": "filter",
             "persisted": false,
@@ -636,7 +711,9 @@ window.fixtures.add(
             "readable": true,
             "writable": false,
             "unique": false,
-            "nullable": false
+            "required": false,
+            "max": 2147483647,
+            "min": 0
         }]
     }
 );
