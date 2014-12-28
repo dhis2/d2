@@ -7,8 +7,11 @@ var del = require('del');
 var buildDirectory = 'build';
 
 var files = [
-    //Vendor dependency files
+    //Vendor dependencies
     'bower_components/jQuery/dist/jquery.js',
+
+    //Vendor test dependencies
+    'bower_components/sinon/index.js',
 
     //Source files
     'src/d2.js',

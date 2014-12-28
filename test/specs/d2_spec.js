@@ -1,4 +1,4 @@
-/* global isDefined, isType, isString, isInteger, isNumeric, throwError */
+/* global isDefined, isType, isString, isInteger, isArray, isNumeric, throwError */
 describe('D2', function () {
     var d2;
     beforeEach(function () {
@@ -145,6 +145,28 @@ describe('D2', function () {
             }
 
             expect(shouldThrow).toThrowError('MyMessage');
+        });
+    });
+
+    describe('contains', function () {
+        it('', function () {
+
+        });
+    });
+
+    describe('isArray', function () {
+        beforeEach(function () {
+            sinon.spy(Array, 'isArray');
+        });
+
+        afterEach(function () {
+            Array.isArray.restore();
+        });
+
+        it('should call Array.isArray', function () {
+            isArray([]);
+
+            expect(Array.isArray.calledOnce).toBe(true);
         });
     });
 });

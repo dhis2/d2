@@ -85,7 +85,7 @@ function curry(toCurry, parameter) {
 }
 
 function contains(item, list) {
-    list = list || this;
+    list = list || isArray(this) || [];
 
     return list.indexOf(item) >= 0;
 }

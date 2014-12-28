@@ -31,6 +31,10 @@ describe('ModelValidations', function () {
             expect(modelValidation.validate(2, validationSettings)).toBe(true);
         });
 
+        it('should not validate when there are no validationSettings', function () {
+            expect(modelValidation.validate(2)).toBe(false);
+        });
+
         describe('min/max', function () {
             it('should not validate when smaller than min value', function () {
                 expect(modelValidation.validate(-1, validationSettings)).toBe(false);
@@ -55,6 +59,11 @@ describe('ModelValidations', function () {
 
         describe('type check', function () {
             it('should not validate an object', function () {
+                expect(modelValidation.validate({}, validationSettings)).toBe(false);
+            });
+
+            it('should not validate when the type does not exist', function () {
+                validationSettings.type = 'Fake type';
                 expect(modelValidation.validate({}, validationSettings)).toBe(false);
             });
 

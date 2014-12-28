@@ -25,9 +25,9 @@
             default:
                 //TODO: Add logger for d2?
                 //TODO: Perhaps this should throw?
-                window.console.warning('No type validator found for', type);
+                window.console.log('No type validator found for', type);
         }
-        return true;
+        return false;
     }
 
     function minMaxValidation(value, validationSettings) {
