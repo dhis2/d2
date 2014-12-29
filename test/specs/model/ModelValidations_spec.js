@@ -3,6 +3,7 @@ describe('ModelValidations', function () {
 
     var ModelValidation = d2.ModelValidation;
     var modelValidation;
+    var validationSettings;
 
     beforeEach(function () {
         modelValidation = new ModelValidation();
@@ -13,8 +14,6 @@ describe('ModelValidations', function () {
     });
 
     describe('validate', function () {
-        var validationSettings;
-
         beforeEach(function () {
             validationSettings = {
                 persisted: true,
@@ -78,8 +77,6 @@ describe('ModelValidations', function () {
     });
 
     describe('integerValidation', function () {
-        var validationSettings;
-
         beforeEach(function () {
             validationSettings = {
                 persisted: true,
@@ -94,6 +91,39 @@ describe('ModelValidations', function () {
 
         it('should validate a valid integer', function () {
             expect(modelValidation.validate(4, validationSettings)).toBe(true);
+        });
+
+        it('should not validate a decimal number', function () {
+            expect(modelValidation.validate(2.1, validationSettings)).toBe(false);
+        });
+    });
+
+    describe('collectionValidation', function () {
+    });
+
+    describe('stringValidation', function () {
+        beforeEach(function () {
+            validationSettings = {
+                persisted: true,
+                type: 'COLLECTION',
+                required: true,
+                min: 1,
+                max: 3,
+                owner: true,
+                unique: false
+            };
+        });
+
+        it('should validate a the array', function () {
+            expect(modelValidation.validate([1, 2], validationSettings)).toBe(true);
+        });
+
+        it('should not validate the when the collection does not contain the mininum item count', function () {
+            expect(modelValidation.validate([], validationSettings)).toBe(false);
+        });
+
+        it('should not validate when the collection size is too large', function () {
+            expect(modelValidation.validate([1, 2, 3, 4], validationSettings)).toBe(false);
         });
     });
 });

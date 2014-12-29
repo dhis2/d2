@@ -22,6 +22,8 @@
                 return isInteger(value);
             case 'NUMBER':
                 return isNumeric(value);
+            case 'COLLECTION':
+                return isArray(value); // || isModelCollection();
             default:
                 //TODO: Add logger for d2?
                 //TODO: Perhaps this should throw?
@@ -51,11 +53,11 @@
     }
 
     function isLargerThanLength(value, minValue) {
-        return value && value.length && value.length >= minValue;
+        return Boolean(value && value.length && value.length >= minValue);
     }
 
     function isSmallerThanLength(value, maxValue) {
-        return value && value.length && value.length <= maxValue;
+        return Boolean(value && value.length && value.length <= maxValue);
     }
 
 })(window.d2 = window.d2 || {});
