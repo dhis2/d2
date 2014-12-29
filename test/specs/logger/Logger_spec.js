@@ -48,4 +48,14 @@ describe('Logger', function () {
         expect(logger.error('my message')).toBe(true);
         expect(windowMock.console.error).toHaveBeenCalledWith('my message');
     });
+
+    describe('getLogger', function () {
+        it('should return a logger', function () {
+            expect(Logger.getLogger()).toEqual(jasmine.any(Logger));
+        });
+
+        it('should create a singleton and return that', function () {
+            expect(Logger.getLogger()).toBe(Logger.getLogger());
+        });
+    });
 });

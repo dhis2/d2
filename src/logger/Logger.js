@@ -16,6 +16,13 @@
         console = window.console;
     }
 
+    Logger.getLogger = function () {
+        if (this.logger) {
+            return this.logger;
+        }
+        return (this.logger = new Logger(window));
+    };
+
     function debug() {
         if (canLog('debug')) {
             console.debug.apply(window, arguments);

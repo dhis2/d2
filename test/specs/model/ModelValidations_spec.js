@@ -2,11 +2,16 @@ describe('ModelValidations', function () {
     'use strict';
 
     var ModelValidation = d2.ModelValidation;
+    var Logger = d2.logger.Logger;
+
     var modelValidation;
     var validationSettings;
 
     beforeEach(function () {
-        modelValidation = new ModelValidation();
+        var logger;
+        logger = sinon.stub(new Logger(window));
+
+        modelValidation = new ModelValidation(logger);
     });
 
     it('should create a ModelValidation object', function () {
@@ -124,6 +129,16 @@ describe('ModelValidations', function () {
 
         it('should not validate when the collection size is too large', function () {
             expect(modelValidation.validate([1, 2, 3, 4], validationSettings)).toBe(false);
+        });
+    });
+
+    describe('getModelValidation', function () {
+        it('should return a ModelValidation object', function () {
+            expect(ModelValidation.getModelValidation()).toEqual(jasmine.any(ModelValidation));
+        });
+
+        it('should create a singleton and return that', function () {
+            expect(ModelValidation.getModelValidation()).toBe(ModelValidation.getModelValidation());
         });
     });
 });
