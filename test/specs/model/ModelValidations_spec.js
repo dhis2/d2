@@ -106,7 +106,7 @@ describe('ModelValidations', function () {
     describe('collectionValidation', function () {
     });
 
-    describe('stringValidation', function () {
+    describe('arrayValidation', function () {
         beforeEach(function () {
             validationSettings = {
                 persisted: true,
@@ -129,6 +129,90 @@ describe('ModelValidations', function () {
 
         it('should not validate when the collection size is too large', function () {
             expect(modelValidation.validate([1, 2, 3, 4], validationSettings)).toBe(false);
+        });
+    });
+
+    describe('stringValidation', function () {
+        beforeEach(function () {
+            validationSettings = {
+                persisted: true,
+                type: 'TEXT',
+                required: true,
+                min: 3,
+                max: 10,
+                owner: true,
+                unique: false
+            };
+        });
+
+        it('should validate the string "SomeString"', function () {
+            expect(modelValidation.validate('SomeString', validationSettings)).toBe(true);
+        });
+
+        it('should not validate a string that is too long', function () {
+            expect(modelValidation.validate('SomeString is too long', validationSettings)).toBe(false);
+        });
+
+        it('should not validate a string that is too short', function () {
+            expect(modelValidation.validate('ab', validationSettings)).toBe(false);
+        });
+
+        it('should validate a string that is exactly the min length', function () {
+            expect(modelValidation.validate('abc', validationSettings)).toBe(true);
+        });
+
+        it('should validate a string in between min max', function () {
+            expect(modelValidation.validate('abcdef', validationSettings)).toBe(true);
+        });
+
+        it('should not validate an empty value', function () {
+            expect(modelValidation.validate(undefined, validationSettings)).toBe(false);
+        });
+
+        it('should validate an empty value when required is set to false', function () {
+            validationSettings.required = false;
+
+            expect(modelValidation.validate(undefined, validationSettings)).toBe(true);
+        });
+    });
+
+    describe('objectValidation', function () {
+        beforeEach(function () {
+            validationSettings = {
+                persisted: true,
+                type: 'COMPLEX',
+                required: true,
+                min: 1,
+                max: 3,
+                owner: true,
+                unique: false
+            };
+        });
+    });
+
+    describe('ohone number validation', function () {
+        beforeEach(function () {
+            validationSettings = {
+                persisted: true,
+                type: 'PHONENUMBER',
+                required: true,
+                min: 0,
+                max: 50,
+                owner: true,
+                unique: false
+            };
+        });
+
+        it('should validate a dutch phone number', function () {
+            expect(modelValidation.validate('+31628456109', validationSettings)).toBe(true);
+        });
+
+        it('should validate a phone number with spaces', function () {
+            expect(modelValidation.validate('+31 6 284 56 109', validationSettings)).toBe(true);
+        });
+
+        it('should not validate a phone number with tabs', function () {
+            expect(modelValidation.validate('+31    6   284 \n\n\n56 109', validationSettings)).toBe(false);
         });
     });
 

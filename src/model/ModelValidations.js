@@ -2,6 +2,9 @@
 (function () {
     'use strict';
     var logger;
+    var typeSpecificValidations = {
+        'PHONENUMBER': [phoneNumber]
+    };
 
     d2.ModelValidation = ModelValidation;
 
@@ -21,8 +24,11 @@
 
     function validate(value, validationSettings) {
         if (isObject(validationSettings)) {
+            if (validationSettings.required === false && !value) { return true; }
+
             return typeValidation(value, validationSettings.type) &&
-                minMaxValidation(value, validationSettings);
+                minMaxValidation(value, validationSettings) &&
+                typeSpecificValidation(value, validationSettings.type);
         }
         return false;
     }
@@ -35,6 +41,14 @@
                 return isNumeric(value);
             case 'COLLECTION':
                 return isArray(value); // || isModelCollection();
+            case 'PHONENUMBER':
+            case 'EMAIL':
+            case 'URL':
+            case 'COLOR':
+            case 'PASSWORD':
+            case 'IDENTIFIER':
+            case 'TEXT':
+                return isString(value);
             default:
                 //TODO: Add logger for d2?
                 //TODO: Perhaps this should throw?
@@ -69,6 +83,22 @@
 
     function isSmallerThanLength(value, maxValue) {
         return Boolean(value && value.length && value.length <= maxValue);
+    }
+
+    function typeSpecificValidation(value, valueType) {
+        if (!valueType || !isArray(typeSpecificValidations[valueType])) {
+            return true;
+        }
+
+        return typeSpecificValidations[valueType]
+            .reduce(function (currentValidationStatus, validationFunction) {
+                return currentValidationStatus && validationFunction.apply(null, [value]);
+            }, true);
+    }
+
+    var phoneNumberRegEx = /^[0-9\+ ]*$/;
+    function phoneNumber(value) {
+        return phoneNumberRegEx.test(value);
     }
 
 })(window.d2 = window.d2 || {});
