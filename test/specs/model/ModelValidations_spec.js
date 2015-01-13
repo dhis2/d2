@@ -212,7 +212,11 @@ describe('ModelValidations', function () {
         });
 
         it('should not validate a phone number with tabs', function () {
-            expect(modelValidation.validate('+31    6   284 \n\n\n56 109', validationSettings)).toBe(false);
+            expect(modelValidation.validate('+31\t6284\t56 109', validationSettings)).toBe(false);
+        });
+
+        it('should not validate a phone number with new lines', function () {
+            expect(modelValidation.validate('+31\n6284\r\n56 109', validationSettings)).toBe(false);
         });
     });
 

@@ -96,7 +96,7 @@
             }, true);
     }
 
-    var phoneNumberRegEx = /^[0-9\+ ]*$/;
+    var phoneNumberRegEx = /^[0-9\+ ]+$/;
     function phoneNumber(value) {
         return phoneNumberRegEx.test(value);
     }
