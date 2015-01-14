@@ -3,7 +3,7 @@
     'use strict';
     var logger;
     var typeSpecificValidations = {
-        'PHONENUMBER': [phoneNumber]
+        PHONENUMBER: [phoneNumber]
     };
 
     d2.ModelValidation = ModelValidation;
@@ -33,7 +33,8 @@
         return false;
     }
 
-    function typeValidation(value, type) {
+    //TODO: See if we can reduce the complexity of this function
+    function typeValidation(value, type) { //jshint maxcomplexity: 11
         switch (type) {
             case 'INTEGER':
                 return isInteger(value);
