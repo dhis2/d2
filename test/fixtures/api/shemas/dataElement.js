@@ -1,4 +1,4 @@
-window.fixtures.add(
+require('../../fixtures').add(
     '/api/schemas/dataElement',
 
     {

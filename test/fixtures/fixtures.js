@@ -1,4 +1,6 @@
-window.fixtures = (function () {
+'use strict';
+
+module.exports = (function () {
     var fixtures = {};
 
     return {
@@ -8,8 +10,8 @@ window.fixtures = (function () {
 
     function getFixture(fixtureName) {
         if (fixtures && fixtures[fixtureName]) {
-            //Deep copy the fixture, so we get a "clean" one
-            return jQuery.extend(true, {}, fixtures[fixtureName]);
+            //Make sure we return a new object
+            return JSON.parse(JSON.stringify(fixtures[fixtureName]));
         }
         throw new Error(['Fixture', fixtureName, 'does not exist'].join(' '));
     }

@@ -1,19 +1,17 @@
 describe('Logger', function () {
     var Logger;
     var logger;
-    var windowMock;
+    var consoleMock;
 
     beforeEach(function () {
-        windowMock = {
-            console: {
-                log: jasmine.createSpy('log'),
-                debug: jasmine.createSpy('debug'),
-                error: jasmine.createSpy('error')
-            }
+        consoleMock = {
+            log: jasmine.createSpy('log').and.callThrough(),
+            debug: jasmine.createSpy('debug'),
+            error: jasmine.createSpy('error')
         };
 
-        Logger = d2.logger.Logger;
-        logger = new Logger(windowMock);
+        Logger = require('d2/logger/Logger');
+        logger = new Logger(consoleMock);
     });
 
     it('should get the correct Logger instance from the namespace', function () {
@@ -28,7 +26,7 @@ describe('Logger', function () {
     it('should log to the console', function () {
         logger.log('my message');
 
-        expect(windowMock.console.log).toHaveBeenCalledWith('my message');
+        expect(consoleMock.log).toHaveBeenCalledWith('my message');
     });
 
     it('should return true after successful logging', function () {
@@ -41,12 +39,12 @@ describe('Logger', function () {
 
     it('should log a debug request', function () {
         expect(logger.debug('my message')).toBe(true);
-        expect(windowMock.console.debug).toHaveBeenCalledWith('my message');
+        expect(consoleMock.debug).toHaveBeenCalledWith('my message');
     });
 
     it('should log an error request', function () {
         expect(logger.error('my message')).toBe(true);
-        expect(windowMock.console.error).toHaveBeenCalledWith('my message');
+        expect(consoleMock.error).toHaveBeenCalledWith('my message');
     });
 
     describe('getLogger', function () {

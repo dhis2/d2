@@ -1,11 +1,12 @@
 module.exports = function( config ) {
     config.set({
         basePath: '../src',
-        frameworks: ['jasmine'],
+        frameworks: ['jasmine', 'browserify'],
 
         preprocessors: {
             '../src/**/*.html': 'html2js',
-            '../src/**/*.js': 'coverage'
+            '../src/**/*.js': ['coverage', 'browserify'],
+            '../test/**/*.js': ['browserify']
         },
 
         reporters: ['progress', 'coverage'],
@@ -17,6 +18,10 @@ module.exports = function( config ) {
                 // normalization process to keep a consistent browser name accross different OS
                 return browser.toLowerCase().split(/[ /-]/)[0];
             }
+        },
+
+        browserify: {
+            debug: true
         },
 
         port: 9876,

@@ -1,23 +1,21 @@
-(function (d2) {
-    'use strict';
+'use strict';
 
-    d2.ModelBase = ModelBase;
+module.exports = ModelBase;
 
-    function ModelBase() {
-        this.create = create;
-        this.save = save;
-        this.validate = validate;
-    }
+function ModelBase() {
+    this.create = create;
+    this.save = save;
+    this.validate = validate;
+}
 
-    function create() {
+function create() {
 
-    }
+}
 
-    function save() {
+function save() {
 
-    }
+}
 
-    function validate() {
+function validate() {
 
-    }
-})(window.d2 = window.d2 || {});
+}

@@ -1,62 +1,60 @@
-/* global isType, checkType */
-(function (loggingNamespace, window) {
-    'use strict';
-    var console;
+/* global global */
+'use strict';
+var console;
 
-    loggingNamespace.Logger = Logger;
+var check = require('../lib/check');
 
-    function Logger(window) {
-        checkType(window, 'object', 'window');
+module.exports = Logger;
 
-        this.debug = debug;
-        this.error =  error;
-        this.log = log;
-        this.warn = warn;
+function Logger(logging) {
+    check.checkType(logging, 'object', 'console');
+    console = logging;
 
-        console = window.console;
+    this.debug = debug;
+    this.error = error;
+    this.log = log;
+    this.warn = warn;
+}
+
+Logger.getLogger = function () {
+    if (this.logger) {
+        return this.logger;
     }
+    return (this.logger = new Logger(console));
+};
 
-    Logger.getLogger = function () {
-        if (this.logger) {
-            return this.logger;
-        }
-        return (this.logger = new Logger(window));
-    };
-
-    function debug() {
-        if (canLog('debug')) {
-            console.debug.apply(window, arguments);
-            return true;
-        }
-        return false;
+function debug() {
+    if (canLog('debug')) {
+        console.debug.apply(null, arguments);
+        return true;
     }
+    return false;
+}
 
-    function error() {
-        if (canLog('error')) {
-            console.error.apply(window, arguments);
-            return true;
-        }
-        return false;
+function error() {
+    if (canLog('error')) {
+        console.error.apply(null, arguments);
+        return true;
     }
+    return false;
+}
 
-    function log() {
-        if (canLog('log')) {
-            console.log.apply(window, arguments);
-            return true;
-        }
-        return false;
+function log() {
+    if (canLog('log')) {
+        console.log.apply(null, arguments);
+        return true;
     }
+    return false;
+}
 
-    function warn() {
-        if (canLog('warn')) {
-            console.warn.apply(window, arguments);
-            return true;
-        }
-        return false;
+function warn() {
+    if (canLog('warn')) {
+        console.warn.apply(null, arguments);
+        return true;
     }
+    return false;
+}
 
-    function canLog(type) {
-        return !!(type && console && isType(console[type], 'function'));
-    }
-
-})(window.d2.logger = (window.d2 && window.d2.logger) || {}, window);
+function canLog(type) {
+    return !!(type && console && check.isType(console[type], 'function'));
+}

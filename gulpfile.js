@@ -7,33 +7,30 @@ var del = require('del');
 var buildDirectory = 'build';
 
 var files = [
-    //Vendor dependencies
-    'bower_components/jQuery/dist/jquery.js',
-    'bower_components/when/es6-shim/Promise.js',
-
-    //Vendor test dependencies
-    'bower_components/sinon/index.js',
-
-    //Source files
-    'src/d2.js',
-    'src/model/ModelBase.js',
-    'src/**/*.js',
-
     //Fixtures
     'test/fixtures/fixtures.js',
     'test/fixtures/**/*.js',
 
     //Jasmine spec files
     'test/specs/**/*_spec.js'
-
 ];
 
 gulp.task('test', function () {
-    return gulp.src(files).pipe(runKarma());
+    var jasmine = require('gulp-jasmine');
+
+    return gulp.src(files)
+        .pipe(jasmine());
 });
 
 gulp.task('watch', function () {
-    return gulp.src(files).pipe(runKarma(true));
+    var jasmine = require('gulp-jasmine');
+
+    return gulp.watch([
+        'src/**/*.js',
+        'test/**/*.js'
+    ], ['test']);
+
+    //return gulp.src(files).pipe(runKarma(true));
 });
 
 gulp.task('jshint', function () {
