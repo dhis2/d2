@@ -1,4 +1,4 @@
-/* global checkType, curry, addLockedProperty, throwError, isString */
+/* global checkType, checkDefined, curry, addLockedProperty, throwError, isString */
 (function (d2) {
     'use strict';
 
@@ -15,10 +15,24 @@
     }
     ModelDefinition.createFromSchema = createFromSchema;
 
-    ModelDefinition.prototype = {};
-    ModelDefinition.prototype.create = function () {
-        return new d2.Model(this);
+    ModelDefinition.prototype = {
+        create: create,
+        get: get
     };
+
+    function create() {
+        //jshint validthis: true
+        return new d2.Model(this);
+        //jshint validthis: false
+    }
+
+    function get(identifier) {
+        checkDefined(identifier, 'Identifier');
+
+        return new Promise(function (resolve) {
+            resolve(identifier);
+        });
+    }
 
     function createFromSchema(schema) {
         checkType(schema, Object, 'Schema');

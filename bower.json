@@ -15,7 +15,8 @@
     "tests"
   ],
   "dependencies": {
-    "jQuery": "~2.1.1"
+    "jQuery": "~2.1.1",
+    "when": "~3.6.4"
   },
   "devDependencies": {
     "sinon": "http://sinonjs.org/releases/sinon-1.12.2.js"

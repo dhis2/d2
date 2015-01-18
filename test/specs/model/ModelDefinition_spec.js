@@ -285,5 +285,29 @@ describe('ModelDefinition', function () {
             expect(window.d2.Model).toHaveBeenCalledWith(dataElementModelDefinition);
         });
     });
+
+    describe('get', function () {
+        var dataElementModelDefinition;
+
+        //TODO: These could be beforeAll/afterAll but it does not seem to have landed yet in karma-jasmine
+        beforeEach(function () {
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+        });
+
+        it('should throw an error when the given id is not a string', function () {
+            function shouldThrow() {
+                dataElementModelDefinition.get();
+            }
+
+            expect(shouldThrow).toThrowError('Identifier should be provided');
+        });
+
+        it('should return a promise', function () {
+            var modelPromise = dataElementModelDefinition
+                .get('d4343fsss');
+
+            expect(modelPromise.then).toEqual(jasmine.any(Function));
+        });
+    });
 });
 /* jshint nonew:true */

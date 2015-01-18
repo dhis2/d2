@@ -9,6 +9,7 @@ var buildDirectory = 'build';
 var files = [
     //Vendor dependencies
     'bower_components/jQuery/dist/jquery.js',
+    'bower_components/when/es6-shim/Promise.js',
 
     //Vendor test dependencies
     'bower_components/sinon/index.js',

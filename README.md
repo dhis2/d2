@@ -11,3 +11,16 @@ The d2 library is a javascript library that abstacts away the dhis2 api and lets
 
 The models are dynamically build using the /api/schemas resource that is available through the dhis2 web api.
 
+#Models
+
+##Basic concepts
+
+###Model
+Is an an instance of a model
+
+###ModelDefinition
+Is a descriptive object that describes the model and is used to create Models
+
+The Model definition contains information like
+    - What is the endpoint for the model
+    - What are the properties that the model has
