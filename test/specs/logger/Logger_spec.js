@@ -7,7 +7,8 @@ describe('Logger', function () {
         consoleMock = {
             log: jasmine.createSpy('log').and.callThrough(),
             debug: jasmine.createSpy('debug'),
-            error: jasmine.createSpy('error')
+            error: jasmine.createSpy('error'),
+            warn: jasmine.createSpy('warn')
         };
 
         Logger = require('d2/logger/Logger');
@@ -33,8 +34,21 @@ describe('Logger', function () {
         expect(logger.log('my message')).toBe(true);
     });
 
+    it('should not log when it does not exist', function () {
+        delete consoleMock.log;
+
+        expect(logger.log('my message')).toBe(false);
+    });
+
     it('should not log if the method does not exist', function () {
+        delete consoleMock.warn;
+
         expect(logger.warn('my message')).toBe(false);
+    });
+
+    it('should log a warning', function () {
+        expect(logger.warn('my message')).toBe(true);
+        expect(consoleMock.warn).toHaveBeenCalledWith('my message');
     });
 
     it('should log a debug request', function () {
@@ -42,9 +56,21 @@ describe('Logger', function () {
         expect(consoleMock.debug).toHaveBeenCalledWith('my message');
     });
 
+    it('should not log when it does not exist', function () {
+        delete consoleMock.debug;
+
+        expect(logger.debug('my message')).toBe(false);
+    });
+
     it('should log an error request', function () {
         expect(logger.error('my message')).toBe(true);
         expect(consoleMock.error).toHaveBeenCalledWith('my message');
+    });
+
+    it('should not log when error does not exist', function () {
+        delete consoleMock.error;
+
+        expect(logger.error('my message')).toBe(false);
     });
 
     describe('getLogger', function () {
