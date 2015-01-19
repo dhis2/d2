@@ -8,4 +8,5 @@ module.exports.api = require('d2/api/Api');
     if (global.document) {
         global.d2 = this;
     }
-})(typeof window !== "undefined" ? window : this);
+
+})(typeof window !== 'undefined' ? window : module.exports);

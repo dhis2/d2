@@ -7,9 +7,10 @@ module.exports = Api;
 function Api(jquery) {
     this.jquery = jquery;
 }
-Api.getApi = function getApi() {
+Api.getApi = getApi;
+function getApi() {
     return new Api(require('jquery'));
-};
+}
 
 Api.prototype =  {
     get: get,
@@ -43,6 +44,7 @@ function update() {
 }
 
 function request(type, url) {
+    //jshint validthis:true
     check.checkType(type, 'string', 'Request type');
     check.checkType(url, 'string', 'Url');
 
@@ -55,10 +57,10 @@ function request(type, url) {
                 url: url
             }))
             .then(
-            function transformSuccess(data/*, textStatus, jqXHR*/) {
+            function (data/*, textStatus, jqXHR*/) {
                 resolve(data);
             },
-            function transformError(jqXHR/*, textStatus, errorThrown*/) {
+            function (jqXHR/*, textStatus, errorThrown*/) {
                 delete jqXHR.then;
                 reject(jqXHR);
             }
@@ -83,4 +85,3 @@ function request(type, url) {
         return options;
     }
 }
-

@@ -3,7 +3,6 @@ describe('D2', function () {
     var check = require('d2/lib/check');
     var utils = require('d2/lib/utils');
     var fixtures = require('fixtures/fixtures');
-    var proxyquire = require('proxyquire').noCallThru();
     var sinon = require('sinon');
 
     beforeEach(function () {

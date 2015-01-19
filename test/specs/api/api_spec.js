@@ -1,5 +1,4 @@
 describe('Api', function () {
-    var sinon = require('sinon');
     var proxyquire = require('proxyquire').noCallThru();
     var jqueryMock;
 
@@ -12,7 +11,7 @@ describe('Api', function () {
         };
 
         proxyquire('d2/api/Api', {
-             'jquery': jqueryMock
+             jquery: jqueryMock
         });
 
         Api = require('d2/api/Api');
