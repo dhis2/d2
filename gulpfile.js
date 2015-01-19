@@ -15,22 +15,26 @@ var files = [
     'test/specs/**/*_spec.js'
 ];
 
-gulp.task('test', function () {
+gulp.task('test', function (cb) {
     var jasmine = require('gulp-jasmine');
+    var istanbul = require('gulp-istanbul');
 
-    return gulp.src(files)
-        .pipe(jasmine());
+    gulp.src('src/**/*.js')
+        .pipe(istanbul())
+        .pipe(istanbul.hookRequire())
+        .on('finish', function () {
+            gulp.src(files)
+                .pipe(jasmine())
+                .pipe(istanbul.writeReports())
+                .on('end', cb);
+        });
 });
 
 gulp.task('watch', function () {
-    var jasmine = require('gulp-jasmine');
-
     return gulp.watch([
         'src/**/*.js',
         'test/**/*.js'
     ], ['test']);
-
-    //return gulp.src(files).pipe(runKarma(true));
 });
 
 gulp.task('jshint', function () {
