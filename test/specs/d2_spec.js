@@ -4,7 +4,7 @@ describe('D2', function () {
     var utils = require('d2/lib/utils');
     var fixtures = require('fixtures/fixtures');
     var sinon = require('sinon');
-    
+
     beforeEach(function () {
         d2 = require('d2/d2');
     });

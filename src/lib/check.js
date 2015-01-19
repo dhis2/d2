@@ -1,18 +1,17 @@
 'use strict';
 
-var check = module.exports;
-
-check.isType = isType;
-check.isObject = isObject;
-check.isArray = isArray;
-check.isString = isString;
-check.isDefined = isDefined;
-check.isInteger = isInteger;
-check.isNumeric = isNumeric;
-check.checkType = checkType;
-check.checkDefined = checkDefined;
-check.contains = contains;
-
+module.exports = {
+    isType: isType,
+    isObject: isObject,
+    isArray: isArray,
+    isString: isString,
+    isDefined: isDefined,
+    isInteger: isInteger,
+    isNumeric: isNumeric,
+    checkType: checkType,
+    checkDefined: checkDefined,
+    contains: contains
+};
 
 function checkType(value, type, name) {
     checkDefined(value, name);
@@ -86,7 +85,7 @@ function isNumeric(nVal) {
 }
 
 function contains(item, list) {
-    list = list || isArray(this) || [];
+    list = (isArray(list) && list) || [];
 
     return list.indexOf(item) >= 0;
 }

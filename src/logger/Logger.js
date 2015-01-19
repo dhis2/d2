@@ -1,4 +1,3 @@
-/* global global */
 'use strict';
 var console;
 

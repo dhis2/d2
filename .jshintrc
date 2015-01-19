@@ -18,6 +18,7 @@
     "undef": true,
     "unused": true,
     "strict": false,
+    "globalstrict": true,
     "maxdepth": 5,
     "maxstatements": 30,
     "maxcomplexity": 6,

@@ -7,9 +7,9 @@ function ModelDefinitions() {
 }
 
 function add(name) {
+    //jshint validthis:true
     if (this[name]) {
         throw new Error(['Model', name, 'already exists'].join(' '));
     }
     this[name] = {};
 }
-

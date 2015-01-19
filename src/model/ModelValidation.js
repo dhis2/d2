@@ -1,3 +1,4 @@
+/* global console */
 'use strict';
 
 var check = require('../lib/check');
