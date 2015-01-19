@@ -189,6 +189,10 @@ describe('ModelValidations', function () {
                 unique: false
             };
         });
+
+        it('should validate the object', function () {
+            expect(modelValidation.validate({}, validationSettings)).toBe(true);
+        });
     });
 
     describe('ohone number validation', function () {

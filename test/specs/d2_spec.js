@@ -154,8 +154,32 @@ describe('D2', function () {
     });
 
     describe('contains', function () {
-        it('', function () {
-            expect(true).toBe(true);
+        it('should be a function', function () {
+            expect(check.contains).toEqual(jasmine.any(Function));
+        });
+
+        it('should return true when an item is contained in the array', function () {
+            var list = [3, 4, 2, 6, 7];
+
+            expect(check.contains(2, list)).toBe(true);
+        });
+
+        it('should return false when an item is not in the list', function () {
+            var list = [3, 4, 2, 6, 7];
+
+            expect(check.contains(9, list)).toBe(false);
+        });
+
+        it('should return false if the list is not an array', function () {
+            expect(check.contains(1, 'two')).toBe(false);
+        });
+
+        it('should return false when the item is undefined', function () {
+            expect(check.contains(undefined, [])).toBe(false);
+        });
+
+        it('should return true when undefined is in the list', function () {
+            expect(check.contains(undefined, [undefined])).toBe(true);
         });
     });
 

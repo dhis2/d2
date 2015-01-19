@@ -15,7 +15,7 @@ var files = [
     'test/specs/**/*_spec.js'
 ];
 
-gulp.task('test', function (cb) {
+gulp.task('testcoverage', function (cb) {
     var jasmine = require('gulp-jasmine');
     var istanbul = require('gulp-istanbul');
 
@@ -28,6 +28,13 @@ gulp.task('test', function (cb) {
                 .pipe(istanbul.writeReports())
                 .on('end', cb);
         });
+});
+
+gulp.task('test', function () {
+    var jasmine = require('gulp-jasmine');
+
+    return gulp.src(files)
+        .pipe(jasmine());
 });
 
 gulp.task('watch', function () {
@@ -61,7 +68,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('travis', function () {
-    return runSequence('test', 'jshint', 'jscs');
+    return runSequence('testcoverage', 'jshint', 'jscs');
 });
 
 /**************************************************************************************************

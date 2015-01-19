@@ -39,7 +39,7 @@ function validate(value, validationSettings) {
 }
 
 //TODO: See if we can reduce the complexity of this function
-function typeValidation(value, type) { //jshint maxcomplexity: 11
+function typeValidation(value, type) { //jshint maxcomplexity: 12
     switch (type) {
         case 'INTEGER':
             return check.isInteger(value);
@@ -55,6 +55,8 @@ function typeValidation(value, type) { //jshint maxcomplexity: 11
         case 'IDENTIFIER':
         case 'TEXT':
             return check.isString(value);
+        case 'COMPLEX':
+            return check.isObject(value);
         default:
             //TODO: Add logger for d2?
             //TODO: Perhaps this should throw?
@@ -72,7 +74,9 @@ function minMaxValidation(value, validationSettings) {
         return isLargerThanLength(value, validationSettings.min) &&
             isSmallerThanLength(value, validationSettings.max);
     }
-    return false;
+
+    //TODO: By default we validate min/max as correct for anything other than array/string and number
+    return true;
 }
 
 function isLargerThanMin(value, minValue) {
