@@ -37,7 +37,7 @@ gulp.task('test', function () {
         .pipe(jasmine());
 });
 
-gulp.task('e2e', function () {
+gulp.task('e2e', ['build'], function () {
     var files = [
         'bower_components/jQuery/dist/jquery.js',
         'build/d2.js',

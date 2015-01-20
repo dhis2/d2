@@ -9,5 +9,7 @@ node_modules/*
 !node_modules/d2
 !node_modules/fixtures
 
+build/*
+
 bower_components
 coverage
