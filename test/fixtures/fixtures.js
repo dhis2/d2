@@ -24,3 +24,6 @@ module.exports = (function () {
 
 })();
 
+require('./api/shemas/dataElement');
+require('./modeldefinitions/dataElement');
+

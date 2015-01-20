@@ -37,6 +37,16 @@ gulp.task('test', function () {
         .pipe(jasmine());
 });
 
+gulp.task('e2e', function () {
+    var files = [
+        'bower_components/jQuery/dist/jquery.js',
+        'build/d2.js',
+        'test/e2e/**/*_spec.js'
+    ];
+
+    return gulp.src(files).pipe(runKarma());
+});
+
 gulp.task('watch', function () {
     return gulp.watch([
         'src/**/*.js',
@@ -69,6 +79,31 @@ gulp.task('clean', function () {
 
 gulp.task('travis', function () {
     return runSequence('testcoverage', 'jshint', 'jscs');
+});
+
+gulp.task('build', function () {
+    var browserify = require('browserify');
+    var source = require('vinyl-source-stream');
+    var buffer = require('vinyl-buffer');
+    var sourcemaps = require('gulp-sourcemaps');
+
+    // configure what we want to expose
+    var exposeConfig = { expose: { jquery: 'jquery' } };
+
+    // Single entry point to browserify
+    browserify({
+        entries: './src/d2.js',
+        insertGlobals : true,
+        debug : true
+    })
+        .transform('exposify', exposeConfig)
+        .bundle()
+        .pipe(source('d2.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        //Do uglify etc here
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./build/'));
 });
 
 /**************************************************************************************************

@@ -2,6 +2,9 @@
 
 var check = require('d2/lib/check');
 var utils = require('d2/lib/utils');
+if (typeof window !== 'undefined') {
+    var jquery = jQuery;
+}
 
 module.exports = Api;
 
@@ -10,7 +13,7 @@ function Api(jquery) {
 }
 Api.getApi = getApi;
 function getApi() {
-    return new Api(require('jquery'));
+    return new Api(jquery);
 }
 
 Api.prototype =  {
