@@ -33,6 +33,14 @@ describe('Api', function () {
     });
 
     describe('get', function () {
+        var requestFailedHandler;
+        var requestSuccessHandler;
+
+        beforeEach(function () {
+            requestSuccessHandler = jasmine.createSpy('Request success');
+            requestFailedHandler = jasmine.createSpy('Request failed');
+        });
+
         it('should be a method', function () {
             expect(api.get).toEqual(jasmine.any(Function));
         });
@@ -46,6 +54,43 @@ describe('Api', function () {
                 dataType: 'json',
                 data: {}
             });
+        });
+
+        it('should add the data to the call', function () {
+            api.get('/api/dataElements', {fields: 'id,name'});
+
+            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+                type: 'GET',
+                url: '/api/dataElements',
+                dataType: 'json',
+                data: {
+                    fields: 'id,name'
+                }
+            });
+        });
+
+        it('should call the failed reject handler', function (done) {
+            jqueryMock.ajax.and.returnValue(Promise.reject(new Error('Request failed')));
+
+            api.get('/api/dataElements', {fields: 'id,name'})
+                .catch(requestFailedHandler)
+                .then(function () {
+                    expect(requestFailedHandler).toHaveBeenCalled();
+                    expect(requestFailedHandler).toHaveBeenCalledWith(new Error('Request failed'));
+                })
+                .then(done);
+        });
+
+        it('should call the success resolve handler', function (done) {
+            jqueryMock.ajax.and.returnValue(Promise.resolve('Success data'));
+
+            api.get('/api/dataElements', {fields: 'id,name'})
+                .then(requestSuccessHandler)
+                .then(function () {
+                    expect(requestSuccessHandler).toHaveBeenCalled();
+                    expect(requestSuccessHandler).toHaveBeenCalledWith('Success data');
+                })
+                .then(done);
         });
     });
 

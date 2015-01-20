@@ -1,6 +1,7 @@
 'use strict';
 
 var check = require('d2/lib/check');
+var utils = require('d2/lib/utils');
 
 module.exports = Api;
 
@@ -26,9 +27,9 @@ Api.prototype =  {
     }
 };
 
-function get(url) {
+function get(url, data) {
     //jshint validthis:true
-    return this.request('GET', url);
+    return this.request('GET', url, data);
 }
 
 function post() {
@@ -43,7 +44,7 @@ function update() {
 
 }
 
-function request(type, url) {
+function request(type, url, data) {
     //jshint validthis:true
     check.checkType(type, 'string', 'Request type');
     check.checkType(url, 'string', 'Url');
@@ -54,34 +55,34 @@ function request(type, url) {
         api.jquery
             .ajax(getOptions({
                 type: type,
-                url: url
+                url: url,
+                data: data || {}
             }))
             .then(
-            function (data/*, textStatus, jqXHR*/) {
-                resolve(data);
-            },
-            function (jqXHR/*, textStatus, errorThrown*/) {
-                delete jqXHR.then;
-                reject(jqXHR);
-            }
-        );
+                processSuccess(resolve),
+                processFailure(reject)
+            );
     });
 
     function getOptions(mergeOptions) {
         var options = {};
-        var key;
-        for (key in api.defaultRequestSettings) {
-            if (api.defaultRequestSettings.hasOwnProperty(key)) {
-                options[key] = api.defaultRequestSettings[key];
-            }
-        }
 
-        for (key in mergeOptions) {
-            if (mergeOptions.hasOwnProperty(key)) {
-                options[key] = mergeOptions[key];
-            }
-        }
+        utils.copyOwnProperties(options, api.defaultRequestSettings);
+        utils.copyOwnProperties(options, mergeOptions);
 
         return options;
     }
+}
+
+function processSuccess(resolve) {
+    return function (data/*, textStatus, jqXHR*/) {
+        resolve(data);
+    };
+}
+
+function processFailure(reject) {
+    return function (jqXHR/*, textStatus, errorThrown*/) {
+        delete jqXHR.then;
+        reject(jqXHR);
+    };
 }

@@ -2,11 +2,12 @@
  * Created by mark on 18/01/15.
  */
 
-var utils = module.exports;
-
-utils.throwError = throwError;
-utils.addLockedProperty = addLockedProperty;
-utils.curry = curry;
+module.exports = {
+    throwError: throwError,
+    addLockedProperty: addLockedProperty,
+    curry: curry,
+    copyOwnProperties: copyOwnProperties
+};
 
 function throwError(message) {
     throw new Error(message);
@@ -30,4 +31,16 @@ function addLockedProperty(name, value) {
         value: value
     };
     Object.defineProperty(this, name, propertyDescriptor);
+}
+
+function copyOwnProperties(to, from) {
+    var key;
+
+    for (key in from) {
+        if (from.hasOwnProperty(key)) {
+            to[key] = from[key];
+        }
+    }
+
+    return to;
 }
