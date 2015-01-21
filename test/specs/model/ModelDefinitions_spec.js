@@ -3,9 +3,11 @@ describe('D2 models', function () {
     var models;
     var ModelDefinitions = require('d2/model/ModelDefinitions');
 
+    // jscs:disable
     var ModelDefinition = function ModelDefinition(schema) {
         this.name = schema.name;
     };
+    // jscs:enable
 
     beforeEach(function () {
         models = new ModelDefinitions(); //jshint nonew:false

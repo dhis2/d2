@@ -12,9 +12,11 @@ describe('D2', function () {
     };
 
     //TODO: Make this mock a bit more dynamic so we can test for different ModelDefinition
+    // jscs:disable
     var ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
     };
+    // jscs:enable
     var ModelDefinitionMock = {
         createFromSchema: jasmine.createSpy('ModelDefinition.createFromSchema')
             .and.returnValue(new ModelDefinition())
@@ -47,9 +49,11 @@ describe('D2', function () {
         var mockLoggerClass = function () {};
         mockLoggerClass.prototype = loggerMock;
 
+        // jscs:disable
         var ModelDefinitionsMock = function ModelDefinitions() {
             this.modelsMockList = true;
         };
+        // jscs:enable
         ModelDefinitionsMock.prototype = {
             add: function (schema) {
                 this[schema.name] = schema;
