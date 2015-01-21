@@ -42,6 +42,15 @@ describe('D2 models', function () {
 
             expect(shouldThrow).toThrowError('Model dataElement already exists');
         });
+
+        it('should reject a ModelDefinition that does not have a name property', function () {
+            function shouldThrow() {
+                models.add({apiEndPoint: '/dataElement'});
+            }
+            models.add(dataElementModelDefinition);
+
+            expect(shouldThrow).toThrowError('Name should be set on the passed ModelDefinition to add one');
+        });
     });
 
     describe('map method', function () {
