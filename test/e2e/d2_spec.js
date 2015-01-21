@@ -17,4 +17,13 @@ describe('My first test', function () {
     it('should return jquery on the api object', function () {
         expect(new window.d2.api.getApi().jquery).toBe(window.$);
     });
+
+    it('should do an xhr request', function () {
+        var api = new window.d2.api.getApi();
+
+        api.get('mark', {
+            awesome: 'yeah',
+            paging: false
+        });
+    });
 });
