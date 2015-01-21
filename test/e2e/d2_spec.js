@@ -1,29 +1,17 @@
-describe('My first test', function () {
-    it('should have d2', function () {
+describe('D2', function () {
+    it('should be available on the window', function () {
         expect(window.d2).toBeDefined();
     });
 
-    it('should have jquery', function () {
-        expect(window.$).toBeDefined();
-    });
+    //it('should have api on the d2 object', function (done) {
+    //    window.d2({baseUrl: '/dhis/api'})
+    //        .then(function (d2) {
+    //            expect(d2.api).toBeDefined();
+    //            done();
+    //        });
+    //});
 
-    it('should have api on the d2 object', function () {
-        for (var stuff in window.d2) {
-            console.log(stuff);
-        }
-        expect(window.d2.api).toBeDefined();
-    });
-
-    it('should return jquery on the api object', function () {
-        expect(new window.d2.api.getApi().jquery).toBe(window.$);
-    });
-
-    it('should do an xhr request', function () {
-        var api = new window.d2.api.getApi();
-
-        api.get('mark', {
-            awesome: 'yeah',
-            paging: false
-        });
-    });
+    //it('should return jquery on the api object', function () {
+    //    expect(new window.d2.api.getApi().jquery).toBe(window.$);
+    //});
 });

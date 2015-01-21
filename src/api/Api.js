@@ -14,9 +14,11 @@ function getApi() {
 }
 
 Api.prototype =  {
+    baseUrl: '/api',
     get: get,
     post: post,
     remove: remove,
+    setBaseUrl: setBaseUrl,
     update: update,
     request: request,
     defaultRequestSettings: {
@@ -27,9 +29,18 @@ Api.prototype =  {
     }
 };
 
+function setBaseUrl(baseUrl) {
+    check.checkType(baseUrl, 'string', 'Base url');
+
+    //jshint validthis:true
+    this.baseUrl = baseUrl;
+
+    return this;
+}
+
 function get(url, data) {
     //jshint validthis:true
-    return this.request('GET', url, data);
+    return this.request('GET', getUrl(this.baseUrl, url), data);
 }
 
 function post() {
@@ -45,10 +56,10 @@ function update() {
 }
 
 function request(type, url, data) {
-    //jshint validthis:true
     check.checkType(type, 'string', 'Request type');
     check.checkType(url, 'string', 'Url');
 
+    //jshint validthis:true
     var api = this;
 
     return new Promise(function (resolve, reject) {
@@ -85,4 +96,17 @@ function processFailure(reject) {
         delete jqXHR.then;
         reject(jqXHR);
     };
+}
+
+function getUrl(baseUrl, url) {
+    var urlParts = [];
+
+    if (baseUrl) {
+        urlParts.push(baseUrl);
+    }
+    urlParts.push(url);
+
+    return urlParts.join('/')
+        .replace(/\/(\/)+/g, '/')
+        .replace(/\/$/, '');
 }

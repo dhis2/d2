@@ -1,15 +1,39 @@
 'use strict';
 
+var check = require('d2/lib/check');
+
 module.exports = ModelDefinitions;
 
-function ModelDefinitions() {
-    this.add = add;
+function ModelDefinitions() {}
+ModelDefinitions.prototype = {
+    add: add,
+    map: map
+};
+
+function add(modelDefinition) {
+    try {
+        check.checkType(modelDefinition.name, 'string');
+    } catch (e) {
+        throw new Error('Name should be set on the passed ModelDefinition to add one');
+    }
+
+    //jshint validthis:true
+    if (this[modelDefinition.name]) {
+        throw new Error(['Model', modelDefinition.name, 'already exists'].join(' '));
+    }
+    this[modelDefinition.name] = modelDefinition;
 }
 
-function add(name) {
+function map(transformer) {
     //jshint validthis:true
-    if (this[name]) {
-        throw new Error(['Model', name, 'already exists'].join(' '));
+    var modelDefinition;
+    var result = [];
+
+    for (modelDefinition in this) {
+        if (this.hasOwnProperty(modelDefinition)) {
+            result.push(transformer(this[modelDefinition]));
+        }
     }
-    this[name] = {};
+
+    return result;
 }

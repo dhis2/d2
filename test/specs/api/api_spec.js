@@ -1,5 +1,6 @@
 describe('Api', function () {
     var proxyquire = require('proxyquire').noCallThru();
+    var fixtures = require('fixtures/fixtures');
     var jqueryMock;
 
     var Api;
@@ -7,7 +8,8 @@ describe('Api', function () {
 
     beforeEach(function () {
         jqueryMock = {
-            ajax: jasmine.createSpy('ajax').and.returnValue(Promise.resolve('coool'))
+            ajax: jasmine.createSpy('ajax')
+                .and.returnValue(Promise.resolve([fixtures.get('/api/schemas/dataElement')]))
         };
 
         proxyquire('d2/api/Api', {
@@ -26,9 +28,39 @@ describe('Api', function () {
         expect(new Api()).toEqual(jasmine.any(Api));
     });
 
+    it('should have a baseUrl property that is set to /api', function () {
+        expect(new Api().baseUrl).toBe('/api');
+    });
+
     describe('getApi', function () {
         it('should have a method to get an instance of Api', function () {
             expect(Api.getApi()).toEqual(jasmine.any(Api));
+        });
+    });
+
+    describe('setBaseUrl', function () {
+        var api;
+
+        beforeEach(function () {
+            api = new Api({});
+        });
+
+        it('should be a method', function () {
+            expect(api.setBaseUrl).toEqual(jasmine.any(Function));
+        });
+
+        it('should throw when the base url provided is not a string', function () {
+            function shouldThrow() {
+                api.setBaseUrl();
+            }
+
+            expect(shouldThrow).toThrowError('Base url should be provided');
+        });
+
+        it('should set the baseUrl property on the object', function () {
+            api.setBaseUrl('/dhis/api');
+
+            expect(api.baseUrl).toBe('/dhis/api');
         });
     });
 
@@ -45,8 +77,41 @@ describe('Api', function () {
             expect(api.get).toEqual(jasmine.any(Function));
         });
 
+        it('should use the baseUrl when requesting', function () {
+            api.get('dataElements');
+
+            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+                type: 'GET',
+                url: '/api/dataElements',
+                dataType: 'json',
+                data: {}
+            });
+        });
+
+        it('should not add a double slash to the url', function () {
+            api.get('//dataElements');
+
+            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+                type: 'GET',
+                url: '/api/dataElements',
+                dataType: 'json',
+                data: {}
+            });
+        });
+
+        it('should strip the trailing slash', function () {
+            api.get('/dataElements.json/');
+
+            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+                type: 'GET',
+                url: '/api/dataElements.json',
+                dataType: 'json',
+                data: {}
+            });
+        });
+
         it('should call the get method on the http object', function () {
-            api.get('/api/dataElements');
+            api.get('dataElements');
 
             expect(jqueryMock.ajax).toHaveBeenCalledWith({
                 type: 'GET',
@@ -57,7 +122,7 @@ describe('Api', function () {
         });
 
         it('should add the data to the call', function () {
-            api.get('/api/dataElements', {fields: 'id,name'});
+            api.get('dataElements', {fields: 'id,name'});
 
             expect(jqueryMock.ajax).toHaveBeenCalledWith({
                 type: 'GET',

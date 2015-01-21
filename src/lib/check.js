@@ -13,6 +13,7 @@ module.exports = {
     contains: contains
 };
 
+//TODO: Decide if checkType([], 'object') is a 'false' positive
 function checkType(value, type, name) {
     checkDefined(value, name);
     checkDefined(type, 'Type');
