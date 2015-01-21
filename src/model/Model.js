@@ -1,34 +1,34 @@
-(function (d2) {
-    'use strict';
+'use strict';
 
-    d2.Model = Model;
+var ModelBase = require('./ModelBase');
 
-    function Model() {
+module.exports = Model;
 
-    }
-    Model.create = function (modelDefinition) {
-        var model = new Model();
+function Model() {
 
-        //Values object used to store the actual model values
-        Object.defineProperty(model, 'dataValues', {
-            enumerable: false,
-            configurable: true,
-            writable: true,
-            value: {}
-        });
+}
+Model.create = function (modelDefinition) {
+    var model = new Model();
 
-        //Validations object to store the validation rules
-        Object.defineProperty(model, 'validations', {
-            enumerable: false,
-            configurable: false,
-            writable: false,
-            value: Object.freeze(modelDefinition.modelValidations || {})
-        });
+    //Values object used to store the actual model values
+    Object.defineProperty(model, 'dataValues', {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: {}
+    });
 
-        Object.defineProperties(model, modelDefinition.modelProperties);
+    //Validations object to store the validation rules
+    Object.defineProperty(model, 'validations', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: Object.freeze(modelDefinition.modelValidations || {})
+    });
 
-        return model;
-    };
+    Object.defineProperties(model, modelDefinition.modelProperties);
 
-    Model.prototype = new d2.ModelBase(); //jshint nonew:false
-})(window.d2 = window.d2 || {});
+    return model;
+};
+
+Model.prototype = new ModelBase(); //jshint nonew:false

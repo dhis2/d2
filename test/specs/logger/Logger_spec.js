@@ -1,19 +1,18 @@
 describe('Logger', function () {
     var Logger;
     var logger;
-    var windowMock;
+    var consoleMock;
 
     beforeEach(function () {
-        windowMock = {
-            console: {
-                log: jasmine.createSpy('log'),
-                debug: jasmine.createSpy('debug'),
-                error: jasmine.createSpy('error')
-            }
+        consoleMock = {
+            log: jasmine.createSpy('log').and.callThrough(),
+            debug: jasmine.createSpy('debug'),
+            error: jasmine.createSpy('error'),
+            warn: jasmine.createSpy('warn')
         };
 
-        Logger = d2.logger.Logger;
-        logger = new Logger(windowMock);
+        Logger = require('d2/logger/Logger');
+        logger = new Logger(consoleMock);
     });
 
     it('should get the correct Logger instance from the namespace', function () {
@@ -28,25 +27,50 @@ describe('Logger', function () {
     it('should log to the console', function () {
         logger.log('my message');
 
-        expect(windowMock.console.log).toHaveBeenCalledWith('my message');
+        expect(consoleMock.log).toHaveBeenCalledWith('my message');
     });
 
     it('should return true after successful logging', function () {
         expect(logger.log('my message')).toBe(true);
     });
 
+    it('should not log when it does not exist', function () {
+        delete consoleMock.log;
+
+        expect(logger.log('my message')).toBe(false);
+    });
+
     it('should not log if the method does not exist', function () {
+        delete consoleMock.warn;
+
         expect(logger.warn('my message')).toBe(false);
+    });
+
+    it('should log a warning', function () {
+        expect(logger.warn('my message')).toBe(true);
+        expect(consoleMock.warn).toHaveBeenCalledWith('my message');
     });
 
     it('should log a debug request', function () {
         expect(logger.debug('my message')).toBe(true);
-        expect(windowMock.console.debug).toHaveBeenCalledWith('my message');
+        expect(consoleMock.debug).toHaveBeenCalledWith('my message');
+    });
+
+    it('should not log when it does not exist', function () {
+        delete consoleMock.debug;
+
+        expect(logger.debug('my message')).toBe(false);
     });
 
     it('should log an error request', function () {
         expect(logger.error('my message')).toBe(true);
-        expect(windowMock.console.error).toHaveBeenCalledWith('my message');
+        expect(consoleMock.error).toHaveBeenCalledWith('my message');
+    });
+
+    it('should not log when error does not exist', function () {
+        delete consoleMock.error;
+
+        expect(logger.error('my message')).toBe(false);
     });
 
     describe('getLogger', function () {

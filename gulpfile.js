@@ -7,33 +7,51 @@ var del = require('del');
 var buildDirectory = 'build';
 
 var files = [
-    //Vendor dependencies
-    'bower_components/jQuery/dist/jquery.js',
-    'bower_components/when/es6-shim/Promise.js',
-
-    //Vendor test dependencies
-    'bower_components/sinon/index.js',
-
-    //Source files
-    'src/d2.js',
-    'src/model/ModelBase.js',
-    'src/**/*.js',
-
     //Fixtures
     'test/fixtures/fixtures.js',
     'test/fixtures/**/*.js',
 
     //Jasmine spec files
     'test/specs/**/*_spec.js'
-
 ];
 
+gulp.task('testcoverage', function (cb) {
+    var jasmine = require('gulp-jasmine');
+    var istanbul = require('gulp-istanbul');
+
+    gulp.src('src/**/*.js')
+        .pipe(istanbul())
+        .pipe(istanbul.hookRequire())
+        .on('finish', function () {
+            gulp.src(files)
+                .pipe(jasmine())
+                .pipe(istanbul.writeReports())
+                .on('end', cb);
+        });
+});
+
 gulp.task('test', function () {
+    var jasmine = require('gulp-jasmine');
+
+    return gulp.src(files)
+        .pipe(jasmine());
+});
+
+gulp.task('e2e', ['build'], function () {
+    var files = [
+        'node_modules/jquery/dist/jquery.js',
+        'build/d2.js',
+        'test/e2e/**/*_spec.js'
+    ];
+
     return gulp.src(files).pipe(runKarma());
 });
 
 gulp.task('watch', function () {
-    return gulp.src(files).pipe(runKarma(true));
+    return gulp.watch([
+        'src/**/*.js',
+        'test/**/*.js'
+    ], ['test']);
 });
 
 gulp.task('jshint', function () {
@@ -60,7 +78,30 @@ gulp.task('clean', function () {
 });
 
 gulp.task('travis', function () {
-    return runSequence('test', 'jshint', 'jscs');
+    return runSequence('testcoverage', 'e2e', 'jshint', 'jscs');
+});
+
+
+gulp.task('build', ['clean'], function () {
+    var browserify = require('browserify');
+    var source = require('vinyl-source-stream');
+    var buffer = require('vinyl-buffer');
+    var sourcemaps = require('gulp-sourcemaps');
+
+    // Single entry point to browserify
+    return browserify({
+            debug : true
+        })
+        .transform({global: true}, 'browserify-shim')
+        .add('./src/d2.js')
+        .bundle()
+        .pipe(source('d2.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({loadMaps: true}))
+
+        //Do uglify etc here
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./build'));
 });
 
 /**************************************************************************************************

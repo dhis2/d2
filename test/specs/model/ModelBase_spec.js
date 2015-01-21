@@ -1,5 +1,5 @@
 describe('ModelBase', function () {
-    var ModelBase = d2.ModelBase;
+    var ModelBase = require('d2/model/ModelBase');
     var modelBase;
 
     beforeEach(function () {

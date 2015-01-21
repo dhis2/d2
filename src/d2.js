@@ -1,129 +1,50 @@
-/*jshint unused: false */
-var schemaTypes = [
-    'TEXT',
-    'NUMBER',
-    'INTEGER',
-    'BOOLEAN',
-    'EMAIL',
-    'PASSWORD',
-    'URL',
-    'PHONENUMBER',
-    'GEOLOCATION', //TODO: Geo location could be an advanced type of 2 numbers / strings?
-    'COLOR',
-    'COMPLEX',
-    'COLLECTION',
-    'REFERENCE',
-    'DATE',
-    'COMPLEX',
-    'IDENTIFIER'
-];
+/* global global */
+'use strict';
+require('when/es6-shim/Promise.browserify-es6');
 
-window.d2 = {
-    getSchemaTypes: getSchemaTypes
+var check = require('d2/lib/check');
+var logger = new (require('d2/logger/Logger'))(global.console);
+var model = require('d2/model');
+var Api = require('d2/api/Api');
+
+var d2 = {
+    models: new model.ModelDefinitions(),
+    model: model,
+    Api: Api
 };
 
-function checkType(value, type, name) {
-    checkDefined(value, name);
-    checkDefined(type, 'Type');
+module.exports = function (config) {
+    var api = Api.getApi();
 
-    if ((typeof type === 'function' && value instanceof type) ||
-        (typeof type === 'string' && typeof value === type)) {
-        return true;
+    if (config && check.checkType(config, 'object', 'Config parameter')) {
+        processConfig(api, config);
     }
-    throw new Error(['Expected', name || value,  'to have type', type].join(' '));
-}
 
-function checkDefined(value, name) {
-    if (value !== undefined) {
-        return true;
-    }
-    throw new Error([name || 'Value', 'should be provided'].join(' '));
-}
+    return api.get('schemas')
+        .then(function (schemas) {
+            schemas.forEach(function (schema) {
+                d2.models.add(model.ModelDefinition.createFromSchema(schema));
+            });
 
-function isType(value, type) {
-    try {
-        checkType(value, type);
-        return true;
-    } catch (e) {}
+            return d2;
+        })
+        .catch(function (error) {
+            logger.error('Unable to get schemas from the api', error);
 
-    return false;
-}
+            return Promise.reject(error);
+        });
+};
 
-function isString(value) {
-    return isType(value, 'string');
-}
-
-function isArray(value) {
-    return Array.isArray(value);
-}
-
-function isObject(value) {
-    return isType(value, Object);
-}
-
-function isDefined(value) {
-    try {
-        checkDefined(value);
-        return true;
-    } catch (e) {}
-
-    return false;
-}
-
-function throwError(message) {
-    throw new Error(message);
-}
-
-function curry(toCurry, parameter) {
-    if (typeof toCurry === 'function') {
-        return function () {
-            var args = Array.prototype.slice.call(arguments, 0);
-
-            return toCurry.apply(this, [parameter].concat(args));
-        };
+function processConfig(api, config) {
+    if (check.isString(config.baseUrl)) {
+        api.setBaseUrl(config.baseUrl);
     }
 }
 
-function contains(item, list) {
-    list = list || isArray(this) || [];
+/* istanbul ignore next */
+(function (global) {
+    if (global.document) {
+        global.d2 = module.exports;
+    }
 
-    return list.indexOf(item) >= 0;
-}
-
-function addLockedProperty(name, value) {
-    var propertyDescriptor = {
-        enumerable: true,
-        configurable: false,
-        writable: false,
-        value: value
-    };
-    Object.defineProperty(this, name, propertyDescriptor);
-}
-
-/**
- * Polyfill for the isInteger function that will be added in ES6
- *
- * http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
- */
-if (!Number.isInteger) {
-    Number.isInteger = isInteger;
-}
-
-function isInteger(nVal) {
-    return typeof nVal === 'number' &&
-        isFinite(nVal) &&
-        nVal > -9007199254740992 &&
-        nVal < 9007199254740992 &&
-        Math.floor(nVal) === nVal;
-}
-
-function isNumeric(nVal) {
-    return typeof nVal === 'number' &&
-            isFinite(nVal) &&
-            (nVal - parseFloat(nVal) + 1) >= 0;
-}
-
-function getSchemaTypes() {
-    return schemaTypes;
-}
-/*jshint unused: false */
+})(typeof window !== 'undefined' ? window : module.exports);

@@ -2,7 +2,9 @@
 describe('ModelDefinition', function () {
     'use strict';
 
-    var ModelDefinition = d2.ModelDefinition;
+    var fixtures = require('fixtures/fixtures');
+
+    var ModelDefinition = require('d2/model/ModelDefinition');
     var modelDefinition;
 
     beforeEach(function () {
@@ -257,32 +259,35 @@ describe('ModelDefinition', function () {
     });
 
     describe('create', function () {
-        var tempD2;
+        var Model;
         var dataElementModelDefinition;
 
-        //TODO: These could be beforeAll/afterAll but it does not seem to have landed yet in karma-jasmine
+        //TODO: Figure out a way to mock a require
         beforeEach(function () {
-            tempD2 = window.d2;
-
-            spyOn(window.d2, 'Model');
+            Model = require('d2/model/Model');
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
         afterEach(function () {
-            window.d2 = tempD2;
         });
 
-        it('should call the model constructor', function () {
-            dataElementModelDefinition.create();
+        //TODO: Look at these tests
+        //it('should call the model constructor', function () {
+        //    dataElementModelDefinition.create();
+        //
+        //    expect(tempD2.Model).toHaveBeenCalled();
+        //});
+        //
+        //it('should call the model constructor with the the modelDefinition', function () {
+        //    dataElementModelDefinition.create();
+        //
+        //    expect(tempD2.Model).toHaveBeenCalledWith(dataElementModelDefinition);
+        //});
 
-            expect(window.d2.Model).toHaveBeenCalled();
-        });
-
-        it('should call the model constructor with the the modelDefinition', function () {
-            dataElementModelDefinition.create();
-
-            expect(window.d2.Model).toHaveBeenCalledWith(dataElementModelDefinition);
+        //TODO: This is currently not a pure unit test as we haven't mocked out Model
+        it('should return an instance of Model', function () {
+            expect(dataElementModelDefinition.create()).toEqual(jasmine.any(Model));
         });
     });
 

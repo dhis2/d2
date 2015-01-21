@@ -1,15 +1,16 @@
 describe('ModelValidations', function () {
     'use strict';
 
-    var ModelValidation = d2.ModelValidation;
-    var Logger = d2.logger.Logger;
+    var ModelValidation = require('d2/model/ModelValidation');
+    var Logger = require('d2/logger/Logger');
+    var sinon = require('sinon');
 
     var modelValidation;
     var validationSettings;
 
     beforeEach(function () {
         var logger;
-        logger = sinon.stub(new Logger(window));
+        logger = sinon.stub(new Logger({}));
 
         modelValidation = new ModelValidation(logger);
     });
@@ -187,6 +188,10 @@ describe('ModelValidations', function () {
                 owner: true,
                 unique: false
             };
+        });
+
+        it('should validate the object', function () {
+            expect(modelValidation.validate({}, validationSettings)).toBe(true);
         });
     });
 

@@ -1,172 +1,175 @@
-/* global isDefined, isType, isString, isInteger, isArray, isNumeric, throwError */
 describe('D2', function () {
+    /* Require the promise shim here too as we use the Promise object before
+     * we require d2/d2. We have to do it this way as the jqueryMock needs to return a promise.
+     */
+    require('when/es6-shim/Promise.browserify-es6');
+
+    var proxyquire = require('proxyquire').noCallThru();
+    var fixtures = require('fixtures/fixtures');
+    var apiMock;
+    var loggerMock = {
+        error: jasmine.createSpy('error')
+    };
+
+    //TODO: Make this mock a bit more dynamic so we can test for different ModelDefinition
+    // jscs:disable
+    var ModelDefinition = function ModelDefinition() {
+        this.name = 'dataElement';
+    };
+    // jscs:enable
+    var ModelDefinitionMock = {
+        createFromSchema: jasmine.createSpy('ModelDefinition.createFromSchema')
+            .and.returnValue(new ModelDefinition())
+    };
+
     var d2;
+
     beforeEach(function () {
-        d2 = window.d2;
+        var apiMockClass;
+        apiMock = {
+            get: jasmine.createSpy('ajax')
+                .and.returnValue(Promise.resolve([
+                    //TODO: Should change these to be different ones
+                    fixtures.get('/api/schemas/dataElement'),
+                    fixtures.get('/api/schemas/dataElement'),
+                    fixtures.get('/api/schemas/dataElement')
+                ])),
+            setBaseUrl: jasmine.createSpy('setBaseUrl')
+        };
+
+        apiMockClass = {
+            getApi: function () {
+                return apiMock;
+            }
+        };
+
+        loggerMock.error.calls.reset();
+        ModelDefinitionMock.createFromSchema.calls.reset();
+
+        var mockLoggerClass = function () {};
+        mockLoggerClass.prototype = loggerMock;
+
+        // jscs:disable
+        var ModelDefinitionsMock = function ModelDefinitions() {
+            this.modelsMockList = true;
+        };
+        // jscs:enable
+        ModelDefinitionsMock.prototype = {
+            add: function (schema) {
+                this[schema.name] = schema;
+            }
+        };
+        proxyquire('d2/d2', {
+            'd2/model': {
+                ModelDefinitions: ModelDefinitionsMock,
+                ModelDefinition: ModelDefinitionMock
+            },
+            'd2/api/Api': apiMockClass,
+            'd2/logger/Logger': mockLoggerClass
+        });
+
+        d2 = require('d2/d2');
     });
 
     it('should be an object', function () {
         expect(d2).toBeDefined();
     });
 
-    it('should get the classname', function () {
-        var dataElementSchema = fixtures.get('/api/schemas/dataElement');
-        expect(dataElementSchema.klass).toEqual('org.hisp.dhis.dataelement.DataElement');
+    it('should be a function', function () {
+        expect(d2).toEqual(jasmine.any(Function));
     });
 
-    describe('isDefined', function () {
-        it('should return when the parameter is defined', function () {
-            expect(isDefined({})).toBe(true);
-        });
+    it('should set the base url onto the api', function () {
+        d2({baseUrl: '/dhis/api'});
 
-        it('should return false when the parameter is not defined', function () {
-            expect(isDefined(undefined)).toBe(false);
-        });
+        expect(apiMock.setBaseUrl).toHaveBeenCalledWith('/dhis/api');
     });
 
-    describe('isType', function () {
-        it('should return true if the value is of the correct type', function () {
-            expect(isType('Mark', 'string')).toBe(true);
-        });
+    it('should set the baseUrl to the default /api', function () {
+        d2({});
 
-        it('should return false when the value is not of the right type', function () {
-            expect(isType({}, 'string')).toBe(false);
-        });
-
-        it('should return true when the value is an instance of', function () {
-            expect(isType([], Object)).toBe(true);
-        });
-
-        it('should return false when the object is not an instance', function () {
-            expect(isType('', Object)).toBe(false);
-        });
+        expect(apiMock.setBaseUrl).not.toHaveBeenCalled();
     });
 
-    describe('isString', function () {
-        it('should call isType with predefined type', function () {
-            spyOn(window, 'isType');
+    it('should throw an error when the passed config is not an object', function () {
+        function shouldThrowOnString() {
+            d2(' ');
+        }
 
-            isString('Mark');
+        function shouldThrowOnFunction() {
+            d2(function () {});
+        }
 
-            expect(isType).toHaveBeenCalledWith('Mark', 'string');
-        });
+        expect(shouldThrowOnString).toThrowError('Expected Config parameter to have type object');
+        expect(shouldThrowOnFunction).toThrowError('Expected Config parameter to have type object');
     });
 
-    describe('isInteger', function () {
-        it('should return for 1', function () {
-            expect(isInteger(1)).toBe(true);
-        });
+    it('should not throw an error when no config is passed', function () {
+        function shouldNotThrow() {
+            d2();
+        }
 
-        it('should return false for 0.1', function () {
-            expect(isInteger(0.1)).toBe(false);
-        });
+        expect(shouldNotThrow).not.toThrow();
+    });
 
-        it('should return false for NaN', function () {
-            expect(isInteger(NaN)).toBe(false);
-        });
-
-        it('should return false for an array', function () {
-            expect(isInteger([])).toBe(false);
-        });
-
-        it('should return false for an object', function () {
-            expect(isInteger({})).toBe(false);
-        });
-
-        it('should return false for Infinity', function () {
-            expect(isInteger(Infinity)).toBe(false);
-        });
-
-        it('should return false for empty string', function () {
-            expect(isInteger('')).toBe(false);
-        });
-
-        it('should return false for white space strings', function () {
-            expect(isInteger(' ')).toBe(false);
-            expect(isInteger('\t')).toBe(false);
-            expect(isInteger('\n')).toBe(false);
-            expect(isInteger('\n\r')).toBe(false);
+    it('should call the api', function (done) {
+        d2({baseUrl: '/dhis/api'}).then(function () {
+            expect(apiMock.get).toHaveBeenCalledWith('schemas');
+            done();
         });
     });
 
-    describe('isNumeric', function () {
-        it('should return true for 1', function () {
-            expect(isNumeric(1)).toBe(true);
-        });
+    it('should log the error when schemas can not be requested', function (done) {
+        apiMock.get.and.returnValue(Promise.reject(new Error('Failed')));
 
-        it('should return true for 1.1', function () {
-            expect(isNumeric(1.1)).toBe(true);
-        });
-
-        it('should return true for negative 1', function () {
-            expect(isNumeric(-1)).toBe(true);
-        });
-
-        it('should return true for negative 1.1', function () {
-            expect(isNumeric(-1.1)).toBe(true);
-        });
-
-        it('should return true for 0', function () {
-            expect(isNumeric(0)).toBe(true);
-        });
-
-        it('should return false for NaN', function () {
-            expect(isNumeric(NaN)).toBe(false);
-        });
-
-        it('should return false for an array', function () {
-            expect(isNumeric([])).toBe(false);
-        });
-
-        it('should return false for an object', function () {
-            expect(isNumeric({})).toBe(false);
-        });
-
-        it('should return false for Infinity', function () {
-            expect(isNumeric(Infinity)).toBe(false);
-        });
-
-        it('should return false for empty string', function () {
-            expect(isNumeric('')).toBe(false);
-        });
-
-        it('should return false for white space strings', function () {
-            expect(isNumeric(' ')).toBe(false);
-            expect(isNumeric('\t')).toBe(false);
-            expect(isNumeric('\n')).toBe(false);
-            expect(isNumeric('\n\r')).toBe(false);
-        });
+        d2({baseUrl: '/dhis/api'})
+            .catch(function () {
+                expect(loggerMock.error).toHaveBeenCalledWith('Unable to get schemas from the api', new Error('Failed'));
+                done();
+            });
     });
 
-    describe('throwError', function () {
-        it('should throw an error', function () {
-            function shouldThrow() {
-                throwError('MyMessage');
-            }
-
-            expect(shouldThrow).toThrowError('MyMessage');
-        });
+    it('should return an object with the api object', function () {
+        d2({baseUrl: '/dhis/api'})
+            .then(function (d2) {
+                expect(d2.Api.getApi()).toEqual(apiMock);
+            });
     });
 
-    describe('contains', function () {
-        it('', function () {
-
-        });
-    });
-
-    describe('isArray', function () {
-        beforeEach(function () {
-            sinon.spy(Array, 'isArray');
-        });
-
-        afterEach(function () {
-            Array.isArray.restore();
+    describe('creation of ModelDefinitions', function () {
+        it('should add the model definitions object to the d2 object', function (done) {
+            d2()
+                .then(function (d2) {
+                    expect(d2.models).toBeDefined();
+                    expect(d2.models.modelsMockList).toBe(true);
+                    done();
+                });
         });
 
-        it('should call Array.isArray', function () {
-            isArray([]);
+        it('should create a ModelDefinition for each of the schemas', function (done) {
+            d2()
+                .then(function () {
+                    expect(ModelDefinitionMock.createFromSchema).toHaveBeenCalled();
+                    expect(ModelDefinitionMock.createFromSchema.calls.count()).toBe(3);
+                    done();
+                });
 
-            expect(Array.isArray.calledOnce).toBe(true);
+        });
+
+        it('should call the ModelDefinition.createFromSchema with the schema', function (done) {
+            d2()
+                .then(function () {
+                    expect(ModelDefinitionMock.createFromSchema).toHaveBeenCalledWith(fixtures.get('/api/schemas/dataElement'));
+                    done();
+                });
+        });
+
+        it('should add the ModelDefinitions to the models list', function (done) {
+            d2()
+                .then(function (d2) {
+                    expect(d2.models.dataElement).toBeDefined();
+                    done();
+                });
         });
     });
 });

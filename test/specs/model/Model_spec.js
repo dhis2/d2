@@ -1,5 +1,7 @@
 describe('Model', function () {
-    var Model = d2.Model;
+    var fixtures = require('fixtures/fixtures');
+
+    var Model = require('d2/model/Model');
     var model;
 
     beforeEach(function () {
