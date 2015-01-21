@@ -39,7 +39,7 @@ gulp.task('test', function () {
 
 gulp.task('e2e', ['build'], function () {
     var files = [
-        'bower_components/jQuery/dist/jquery.js',
+        'node_modules/jquery/dist/jquery.js',
         'build/d2.js',
         'test/e2e/**/*_spec.js'
     ];
