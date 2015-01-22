@@ -5,7 +5,31 @@ describe('Model', function () {
     var model;
 
     beforeEach(function () {
-        model = new Model(); //jshint nonew:false
+        model = new Model({
+            modelValidations: {},
+            modelProperties: []
+        }); //jshint nonew:false
+    });
+
+    it('should throw when modelDefinition is not defined', function () {
+        function shouldThrow() {
+            return new Model();
+        }
+        expect(shouldThrow).toThrowError('modelDefinition should be provided');
+    });
+
+    it('should throw when modelDefinition.modelValidations is not provided', function () {
+        function shouldThrow() {
+            return new Model({});
+        }
+        expect(shouldThrow).toThrowError('modelValidations should be provided');
+    });
+
+    it('should throw when modelDefinition.modelProperties is not provided', function () {
+        function shouldThrow() {
+            return new Model({modelValidations: {}});
+        }
+        expect(shouldThrow).toThrowError('modelProperties should be provided');
     });
 
     it('should have a create method', function () {
@@ -31,6 +55,7 @@ describe('Model', function () {
 
         beforeEach(function () {
             modelDefinition = {
+                modelValidations: {},
                 modelProperties: {
                     name: {
                         configurable: false,

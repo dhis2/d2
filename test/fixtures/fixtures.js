@@ -24,6 +24,14 @@ module.exports = (function () {
 
 })();
 
+/* istanbul ignore next */
+(function (global) {
+    if (global.document) {
+        global.fixtures = module.exports;
+    }
+
+})(typeof window !== 'undefined' ? window : module.exports);
+
 require('./api/shemas/dataElement');
 require('./modeldefinitions/dataElement');
-
+require('./api/shemas');

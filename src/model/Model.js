@@ -1,17 +1,17 @@
 'use strict';
 
+var check = require('d2/lib/check');
 var ModelBase = require('./ModelBase');
 
 module.exports = Model;
 
-function Model() {
-
-}
-Model.create = function (modelDefinition) {
-    var model = new Model();
+function Model(modelDefinition) {
+    check.checkType(modelDefinition, 'object', 'modelDefinition');
+    check.checkType(modelDefinition.modelValidations, 'object', 'modelValidations');
+    check.checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
 
     //Values object used to store the actual model values
-    Object.defineProperty(model, 'dataValues', {
+    Object.defineProperty(this, 'dataValues', {
         enumerable: false,
         configurable: true,
         writable: true,
@@ -19,16 +19,17 @@ Model.create = function (modelDefinition) {
     });
 
     //Validations object to store the validation rules
-    Object.defineProperty(model, 'validations', {
+    Object.defineProperty(this, 'validations', {
         enumerable: false,
         configurable: false,
         writable: false,
         value: Object.freeze(modelDefinition.modelValidations || {})
     });
 
-    Object.defineProperties(model, modelDefinition.modelProperties);
-
-    return model;
+    Object.defineProperties(this, modelDefinition.modelProperties);
+}
+Model.create = function (modelDefinition) {
+    return new Model(modelDefinition);
 };
 
 Model.prototype = new ModelBase(); //jshint nonew:false

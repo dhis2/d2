@@ -39,12 +39,24 @@ gulp.task('test', function () {
 
 gulp.task('e2e', ['build'], function () {
     var files = [
+        'test/fixtures/**/*.js',
         'node_modules/jquery/dist/jquery.js',
         'build/d2.js',
         'test/e2e/**/*_spec.js'
     ];
 
     return gulp.src(files).pipe(runKarma());
+});
+
+gulp.task('e2e-watch', ['build'], function () {
+    var e2eFiles = [
+        'test/fixtures/**/*.js',
+        'node_modules/jquery/dist/jquery.js',
+        'src/**/*.js',
+        'test/e2e/**/*_spec.js'
+    ];
+
+    return gulp.src(e2eFiles).pipe(runKarma(true));
 });
 
 gulp.task('watch', function () {

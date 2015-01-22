@@ -49,8 +49,7 @@ ModelDefinition.prototype = {
 
 function create() {
     //jshint validthis: true
-    return new Model(this);
-    //jshint validthis: false
+    return Object.seal(Model.create(this));
 }
 
 function get(identifier) {

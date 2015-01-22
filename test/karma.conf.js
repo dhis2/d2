@@ -1,12 +1,12 @@
 module.exports = function( config ) {
     config.set({
         basePath: '../src',
-        frameworks: ['jasmine', 'browserify'],
+        frameworks: ['jasmine', 'browserify', 'sinon'],
 
         preprocessors: {
             '../src/**/*.html': 'html2js',
-            '../src/**/*.js': ['coverage', 'browserify'],
-            '../test/**/*.js': ['browserify']
+            '../test/fixtures/**/*.js': ['browserify'],
+            '../src/**/*.js': ['coverage', 'browserify']
         },
 
         reporters: ['progress', 'coverage'],
