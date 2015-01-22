@@ -1,3 +1,4 @@
+/* global global */
 'use strict';
 var console;
 
@@ -19,12 +20,12 @@ Logger.getLogger = function () {
     if (this.logger) {
         return this.logger;
     }
-    return (this.logger = new Logger(console));
+    return (this.logger = new Logger(global.console));
 };
 
 function debug() {
     if (canLog('debug')) {
-        console.debug.apply(null, arguments);
+        console.debug.apply(console, arguments);
         return true;
     }
     return false;
@@ -32,7 +33,8 @@ function debug() {
 
 function error() {
     if (canLog('error')) {
-        console.error.apply(null, arguments);
+        console.log(arguments);
+        console.error.apply(console, arguments);
         return true;
     }
     return false;
@@ -40,7 +42,7 @@ function error() {
 
 function log() {
     if (canLog('log')) {
-        console.log.apply(null, arguments);
+        console.log.apply(console, arguments);
         return true;
     }
     return false;
@@ -48,7 +50,7 @@ function log() {
 
 function warn() {
     if (canLog('warn')) {
-        console.warn.apply(null, arguments);
+        console.warn.apply(console, arguments);
         return true;
     }
     return false;

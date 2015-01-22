@@ -53,7 +53,7 @@ describe('D2 models', function () {
         });
     });
 
-    describe('map method', function () {
+    describe('mapThroughDefinitions method', function () {
         beforeEach(function () {
             models.add({name: 'dataElement'});
             models.add({name: 'dataValue'});
@@ -62,7 +62,7 @@ describe('D2 models', function () {
         });
 
         it('should should be a function', function () {
-            expect(models.map).toEqual(jasmine.any(Function));
+            expect(models.mapThroughDefinitions).toEqual(jasmine.any(Function));
         });
 
         it('should return an array of ModelDefinitions', function () {
@@ -71,12 +71,12 @@ describe('D2 models', function () {
                 return item;
             }
 
-            expect(models.map(returnValue)).toEqual(expectedArray);
+            expect(models.mapThroughDefinitions(returnValue)).toEqual(expectedArray);
         });
 
         it('should throw if the transformer passed is not a function', function () {
-            function shouldThrowOnString() { models.map(''); }
-            function shouldThrowOnObject() { models.map({}); }
+            function shouldThrowOnString() { models.mapThroughDefinitions(''); }
+            function shouldThrowOnObject() { models.mapThroughDefinitions({}); }
 
             expect(shouldThrowOnString).toThrowError('string is not a function');
             expect(shouldThrowOnObject).toThrowError('object is not a function');

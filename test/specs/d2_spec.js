@@ -10,6 +10,11 @@ describe('D2', function () {
     var loggerMock = {
         error: jasmine.createSpy('error')
     };
+    var loggerMockObject = {
+        getLogger: function () {
+            return loggerMock;
+        }
+    };
 
     //TODO: Make this mock a bit more dynamic so we can test for different ModelDefinition
     // jscs:disable
@@ -28,12 +33,13 @@ describe('D2', function () {
         var apiMockClass;
         apiMock = {
             get: jasmine.createSpy('ajax')
-                .and.returnValue(Promise.resolve([
+                .and.returnValue(Promise.resolve({
                     //TODO: Should change these to be different ones
-                    fixtures.get('/api/schemas/dataElement'),
-                    fixtures.get('/api/schemas/dataElement'),
-                    fixtures.get('/api/schemas/dataElement')
-                ])),
+                    schemas: [
+                        fixtures.get('/api/schemas/dataElement'),
+                        fixtures.get('/api/schemas/dataElement'),
+                        fixtures.get('/api/schemas/dataElement')
+                    ]})),
             setBaseUrl: jasmine.createSpy('setBaseUrl')
         };
 
@@ -45,9 +51,6 @@ describe('D2', function () {
 
         loggerMock.error.calls.reset();
         ModelDefinitionMock.createFromSchema.calls.reset();
-
-        var mockLoggerClass = function () {};
-        mockLoggerClass.prototype = loggerMock;
 
         // jscs:disable
         var ModelDefinitionsMock = function ModelDefinitions() {
@@ -65,7 +68,7 @@ describe('D2', function () {
                 ModelDefinition: ModelDefinitionMock
             },
             'd2/api/Api': apiMockClass,
-            'd2/logger/Logger': mockLoggerClass
+            'd2/logger/Logger': loggerMockObject
         });
 
         d2 = require('d2/d2');

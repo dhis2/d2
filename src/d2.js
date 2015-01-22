@@ -1,9 +1,9 @@
-/* global global */
 'use strict';
 require('when/es6-shim/Promise.browserify-es6');
 
+var pick = require('d2/lib/utils').pick;
 var check = require('d2/lib/check');
-var logger = new (require('d2/logger/Logger'))(global.console);
+var logger = require('d2/logger/Logger').getLogger();
 var model = require('d2/model');
 var Api = require('d2/api/Api');
 
@@ -21,6 +21,7 @@ module.exports = function (config) {
     }
 
     return api.get('schemas')
+        .then(pick('schemas'))
         .then(function (schemas) {
             schemas.forEach(function (schema) {
                 d2.models.add(model.ModelDefinition.createFromSchema(schema));

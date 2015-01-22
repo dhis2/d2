@@ -6,7 +6,8 @@ module.exports = {
     throwError: throwError,
     addLockedProperty: addLockedProperty,
     curry: curry,
-    copyOwnProperties: copyOwnProperties
+    copyOwnProperties: copyOwnProperties,
+    pick: pick
 };
 
 function throwError(message) {
@@ -43,4 +44,13 @@ function copyOwnProperties(to, from) {
     }
 
     return to;
+}
+
+function pick(property) {
+    return function (item) {
+        if (item) {
+            return item[property];
+        }
+        return undefined;
+    };
 }

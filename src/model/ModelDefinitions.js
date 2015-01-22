@@ -7,7 +7,7 @@ module.exports = ModelDefinitions;
 function ModelDefinitions() {}
 ModelDefinitions.prototype = {
     add: add,
-    map: map
+    mapThroughDefinitions: map
 };
 
 function add(modelDefinition) {
