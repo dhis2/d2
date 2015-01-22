@@ -21,6 +21,7 @@ describe('D2', function () {
     var ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
     };
+    ModelDefinition.prototype = {};
     // jscs:enable
     var ModelDefinitionMock = {
         createFromSchema: jasmine.createSpy('ModelDefinition.createFromSchema')

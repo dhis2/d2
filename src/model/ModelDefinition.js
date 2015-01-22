@@ -43,6 +43,7 @@ function ModelDefinition(modelName, modelOptions, properties, validations) {
 ModelDefinition.createFromSchema = createFromSchema;
 
 ModelDefinition.prototype = {
+    api: undefined,
     create: create,
     get: get
 };

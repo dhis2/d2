@@ -294,8 +294,7 @@ describe('ModelDefinition', function () {
     describe('get', function () {
         var dataElementModelDefinition;
 
-        //TODO: These could be beforeAll/afterAll but it does not seem to have landed yet in karma-jasmine
-        beforeEach(function () {
+        beforeAll(function () {
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 

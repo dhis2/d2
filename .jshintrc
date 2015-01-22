@@ -31,6 +31,6 @@
         "angular", "_",
 
         //Test globals
-        "jasmine", "describe", "it", "beforeEach", "afterEach", "inject", "module", "expect", "spyOn", "fixtures", "jQuery", "sinon", "require"
+        "jasmine", "describe", "it", "beforeEach", "beforeAll", "afterEach", "inject", "module", "expect", "spyOn", "fixtures", "jQuery", "sinon", "require"
     ]
 }

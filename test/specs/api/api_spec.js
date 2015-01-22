@@ -36,6 +36,10 @@ describe('Api', function () {
         it('should have a method to get an instance of Api', function () {
             expect(Api.getApi()).toEqual(jasmine.any(Api));
         });
+
+        it('should return a singleton', function () {
+            expect(Api.getApi()).toBe(Api.getApi());
+        });
     });
 
     describe('setBaseUrl', function () {

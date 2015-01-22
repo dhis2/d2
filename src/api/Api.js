@@ -10,7 +10,11 @@ function Api(jquery) {
 }
 Api.getApi = getApi;
 function getApi() {
-    return new Api(require('jquery'));
+    //jshint validthis:true
+    if (this.getApi.api) {
+        return this.getApi.api;
+    }
+    return (this.getApi.api = new Api(require('jquery')));
 }
 
 Api.prototype =  {
