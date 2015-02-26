@@ -69,6 +69,7 @@ gulp.task('watch', function () {
 gulp.task('jshint', function () {
     var jshint = require('gulp-jshint');
     return gulp.src([
+            'test/e2e/**/*.js',
             'test/specs/**/*.js',
             'src/**/*.js'
         ])
@@ -80,6 +81,7 @@ gulp.task('jshint', function () {
 gulp.task('jscs', function () {
     var jscs = require('gulp-jscs');
     return gulp.src([
+        'test/e2e/**/*.js',
         'test/specs/**/*.js',
         'src/**/*.js'
     ]).pipe(jscs('./.jscsrc'));
