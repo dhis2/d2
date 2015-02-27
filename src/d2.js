@@ -8,7 +8,7 @@ var model = require('d2/model');
 var Api = require('d2/api/Api');
 
 var d2 = {
-    models: new model.ModelDefinitions(),
+    models: undefined,
     model: model,
     Api: Api
 };
@@ -20,6 +20,9 @@ module.exports = function (config) {
         processConfig(api, config);
     }
 
+    model.ModelDefinition.prototype.api = api;
+
+    d2.models = new model.ModelDefinitions();
     return api.get('schemas')
         .then(pick('schemas'))
         .then(function (schemas) {

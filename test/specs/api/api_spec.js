@@ -114,6 +114,32 @@ describe('Api', function () {
             });
         });
 
+        it('should keep a full url if it is given as a base', function () {
+            api.baseUrl = 'http://localhost:8090/dhis/api';
+
+            api.get('/dataElements.json');
+
+            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+                type: 'GET',
+                url: 'http://localhost:8090/dhis/api/dataElements.json',
+                dataType: 'json',
+                data: {}
+            });
+        });
+
+        it('should keep the the slashes if they are the first two characters', function () {
+            api.baseUrl = '//localhost:8090/dhis/api';
+
+            api.get('/dataElements.json');
+
+            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+                type: 'GET',
+                url: '//localhost:8090/dhis/api/dataElements.json',
+                dataType: 'json',
+                data: {}
+            });
+        });
+
         it('should call the get method on the http object', function () {
             api.get('dataElements');
 

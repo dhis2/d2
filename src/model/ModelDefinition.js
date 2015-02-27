@@ -54,11 +54,25 @@ function create() {
 }
 
 function get(identifier) {
+    //jshint validthis: true
+    var modelDefinition = this;
+
     check.checkDefined(identifier, 'Identifier');
 
-    return new Promise(function (resolve) {
-        resolve(identifier);
-    });
+    return this.api.get([this.apiEndpoint, identifier].join('/'), {fields: ':all'})
+        .then(function (data) {
+            var model = modelDefinition.create();
+
+            //Set the datavalues onto the model directly
+            Object.keys(model).forEach(function(key) {
+                model.dataValues[key] = data[key];
+            });
+
+            return model;
+        })
+        .catch(function (response) {
+            return Promise.reject(response.data);
+        });
 }
 
 function createFromSchema(schema) {

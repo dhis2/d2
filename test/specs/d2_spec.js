@@ -25,7 +25,8 @@ describe('D2', function () {
     // jscs:enable
     var ModelDefinitionMock = {
         createFromSchema: jasmine.createSpy('ModelDefinition.createFromSchema')
-            .and.returnValue(new ModelDefinition())
+            .and.returnValue(new ModelDefinition()),
+        prototype: {}
     };
 
     var d2;

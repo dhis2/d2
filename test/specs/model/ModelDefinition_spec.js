@@ -294,7 +294,14 @@ describe('ModelDefinition', function () {
     describe('get', function () {
         var dataElementModelDefinition;
 
-        beforeAll(function () {
+        beforeEach (function () {
+            ModelDefinition.prototype.api = {
+                get: jasmine.createSpy('Api.get')
+                    .and.returnValue(new Promise(function (resolve) {
+                        resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+                    }))
+            };
+
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
@@ -311,6 +318,33 @@ describe('ModelDefinition', function () {
                 .get('d4343fsss');
 
             expect(modelPromise.then).toEqual(jasmine.any(Function));
+        });
+
+        it('should call the api for the requested id', function () {
+            dataElementModelDefinition.get('d4343fsss');
+
+            expect(ModelDefinition.prototype.api.get).toHaveBeenCalledWith('/dataElements/d4343fsss', {fields: ':all'});
+        });
+
+        it('should set the data onto the model when it is available', function (done) {
+            dataElementModelDefinition.get('d4343fsss')
+                .then(function (dataElementModel) {
+                    expect(dataElementModel.name).toBe('BS_COLL (N, DSD) TARGET: Blood Units Donated');
+                    done();
+                });
+        });
+
+        it('should reject the promise with the message when the request fails', function (done) {
+            ModelDefinition.prototype.api.get = jasmine.createSpy('Api.get')
+                .and.returnValue(new Promise(function (resolve, reject) {
+                    reject({data: 'id not found'});
+                }));
+
+            dataElementModelDefinition.get('d4343fsss')
+                .catch(function (dataElementError) {
+                    expect(dataElementError).toEqual('id not found');
+                    done();
+                });
         });
     });
 });

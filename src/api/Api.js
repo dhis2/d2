@@ -110,6 +110,6 @@ function getUrl(baseUrl, url) {
     urlParts.push(url);
 
     return urlParts.join('/')
-        .replace(/\/(\/)+/g, '/')
+        .replace(/(.(?:[^:]))\/\/+/g, '$1/')
         .replace(/\/$/, '');
 }
