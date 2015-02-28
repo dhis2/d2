@@ -1,7 +1,7 @@
 /* global global */
 'use strict';
 
-import {checkType, isType} from '../lib/check.js';
+import {checkType, isType} from 'd2/lib/check';
 
 var console;
 

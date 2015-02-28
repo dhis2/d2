@@ -1,8 +1,8 @@
 'use strict';
 
-import {checkType, isString, checkDefined} from '../lib/check.js';
-import {addLockedProperty, curry, throwError} from '../lib/utils.js';
-import Model from '../model/Model.js';
+import {checkType, isString, checkDefined} from 'd2/lib/check';
+import {addLockedProperty, curry, throwError} from 'd2/lib/utils';
+import Model from 'd2/model/Model';
 
 //Schemas
 var schemaTypes = [

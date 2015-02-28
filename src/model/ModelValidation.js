@@ -1,8 +1,8 @@
 /* global console */
 'use strict';
 
-import {checkType, isInteger, isObject, isArray, isString, isNumeric} from '../lib/check';
-import Logger from '../logger/Logger';
+import {checkType, isInteger, isObject, isArray, isString, isNumeric} from 'd2/lib/check';
+import Logger from 'd2/logger/Logger';
 
 var logger;
 var typeSpecificValidations = {

@@ -61,7 +61,7 @@ describe('D2', () => {
             }
         };
         proxyquire('d2/d2', {
-            'd2/model': {
+            'd2/model/models': {
                 ModelDefinitions: ModelDefinitionsMock,
                 ModelDefinition: ModelDefinitionMock
             },

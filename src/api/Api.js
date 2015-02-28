@@ -1,7 +1,7 @@
 'use strict';
 
-import {checkType} from '../lib/check.js';
-import {copyOwnProperties} from '../lib/utils.js';
+import {checkType} from 'd2/lib/check';
+import {copyOwnProperties} from 'd2/lib/utils';
 
 class Api {
     constructor(jquery) {

@@ -1,6 +1,6 @@
 'use strict';
 
-import {checkType} from '../lib/check';
+import {checkType} from 'd2/lib/check';
 
 class ModelDefinitions {
     add(modelDefinition) {

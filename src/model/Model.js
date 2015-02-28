@@ -1,6 +1,6 @@
 'use strict';
-import {checkType} from '../lib/check';
-import ModelBase from './ModelBase.js';
+import {checkType} from 'd2/lib/check';
+import ModelBase from 'd2/model/ModelBase';
 
 class Model {
     constructor(modelDefinition) {

@@ -15,15 +15,7 @@ var files = [
     'test/fixtures/**/*.js',
 
     //Unit tests
-    'test/unit/**/d2_spec.js',
-    'test/unit/**/Model_spec.js',
-    'test/unit/**/ModelBase_spec.js',
-    'test/unit/**/ModelDefinitions_spec.js',
-    'test/unit/**/ModelDefinition_spec.js',
-    'test/unit/**/ModelValidation_spec.js',
-    'test/unit/logger/*_spec.js',
-    'test/unit/lib/**/*',
-    'test/unit/api/**/*'
+    'test/unit/**/*_spec.js',
 ];
 
 gulp.task('testcoverage', function (cb) {
@@ -118,18 +110,16 @@ gulp.task('build', ['clean'], function () {
     var buffer = require('vinyl-buffer');
     var sourcemaps = require('gulp-sourcemaps');
 
-    // Single entry point to browserify
-    return browserify({
-            debug : true
-        })
+    return browserify({ debug: true })
+        .transform('babelify')
         .transform({global: true}, 'browserify-shim')
+        .require('./src/d2.js', { entry: true })
         .add('./src/d2.js')
         .bundle()
+        .on('error', function (err) { console.log('Error : ' + err.message); })
         .pipe(source('d2.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
-
-        //Do uglify etc here
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./build'));
 });

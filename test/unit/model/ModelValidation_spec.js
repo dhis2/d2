@@ -194,7 +194,7 @@ describe('ModelValidations', () => {
         });
     });
 
-    describe('ohone number validation', () => {
+    describe('phone number validation', () => {
         beforeEach(() => {
             validationSettings = {
                 persisted: true,
