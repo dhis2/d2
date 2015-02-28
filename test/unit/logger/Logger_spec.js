@@ -1,4 +1,3 @@
-/* jshint expr:true */
 describe('Logger', () => {
     var Logger;
     var logger;

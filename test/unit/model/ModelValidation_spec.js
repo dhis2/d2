@@ -1,4 +1,3 @@
-/* jshint expr:true */
 describe('ModelValidations', () => {
     'use strict';
 

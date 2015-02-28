@@ -1,16 +1,18 @@
 /* global global */
 'use strict';
+
+import {checkType, isType} from '../lib/check.js';
+
 var console;
-var check = require('../lib/check');
 
 class Logger {
     constructor(logging) {
-        check.checkType(logging, 'object', 'console');
+        checkType(logging, 'object', 'console');
         console = logging;
     }
 
     canLog(type) {
-        return !!(type && console && check.isType(console[type], 'function'));
+        return !!(type && console && isType(console[type], 'function'));
     }
 
     debug(...rest) {

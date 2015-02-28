@@ -1,20 +1,7 @@
 'use strict';
 
-module.exports = {
-    isType: isType,
-    isObject: isObject,
-    isArray: isArray,
-    isString: isString,
-    isDefined: isDefined,
-    isInteger: isInteger,
-    isNumeric: isNumeric,
-    checkType: checkType,
-    checkDefined: checkDefined,
-    contains: contains
-};
-
 //TODO: Decide if checkType([], 'object') is a 'false' positive
-function checkType(value, type, name) {
+export function checkType(value, type, name) {
     checkDefined(value, name);
     checkDefined(type, 'Type');
 
@@ -25,14 +12,14 @@ function checkType(value, type, name) {
     throw new Error(['Expected', name || value,  'to have type', type].join(' '));
 }
 
-function checkDefined(value, name) {
+export function checkDefined(value, name) {
     if (value !== undefined) {
         return true;
     }
     throw new Error([name || 'Value', 'should be provided'].join(' '));
 }
 
-function isType(value, type) {
+export function isType(value, type) {
     try {
         checkType(value, type);
         return true;
@@ -41,19 +28,19 @@ function isType(value, type) {
     return false;
 }
 
-function isString(value) {
+export function isString(value) {
     return isType(value, 'string');
 }
 
-function isArray(value) {
+export function isArray(value) {
     return Array.isArray(value);
 }
 
-function isObject(value) {
+export function isObject(value) {
     return isType(value, Object);
 }
 
-function isDefined(value) {
+export function isDefined(value) {
     try {
         checkDefined(value);
         return true;
@@ -71,7 +58,7 @@ if (!Number.isInteger) {
     Number.isInteger = isInteger;
 }
 
-function isInteger(nVal) {
+export function isInteger(nVal) {
     return typeof nVal === 'number' &&
         isFinite(nVal) &&
         nVal > -9007199254740992 &&
@@ -79,13 +66,13 @@ function isInteger(nVal) {
         Math.floor(nVal) === nVal;
 }
 
-function isNumeric(nVal) {
+export function isNumeric(nVal) {
     return typeof nVal === 'number' &&
         isFinite(nVal) &&
         (nVal - parseFloat(nVal) + 1) >= 0;
 }
 
-function contains(item, list) {
+export function contains(item, list) {
     list = (isArray(list) && list) || [];
 
     return list.indexOf(item) >= 0;

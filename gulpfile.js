@@ -20,7 +20,8 @@ var files = [
     'test/unit/**/ModelBase_spec.js',
     'test/unit/**/ModelDefinitions_spec.js',
     'test/unit/**/ModelValidation_spec.js',
-    'test/unit/logger/*_spec.js'
+    'test/unit/logger/*_spec.js',
+    'test/unit/lib/**/*'
 ];
 
 gulp.task('testcoverage', function (cb) {

@@ -34,11 +34,11 @@ function getSchemaTypes() {
 function ModelDefinition(modelName, modelOptions, properties, validations) {
     check.checkType(modelName, 'string');
 
-    utils.addLockedProperty.call(this, 'name', modelName);
-    utils.addLockedProperty.call(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
-    utils.addLockedProperty.call(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
-    utils.addLockedProperty.call(this, 'modelProperties', properties);
-    utils.addLockedProperty.call(this, 'modelValidations', validations);
+    utils.addLockedProperty(this, 'name', modelName);
+    utils.addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
+    utils.addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
+    utils.addLockedProperty(this, 'modelProperties', properties);
+    utils.addLockedProperty(this, 'modelValidations', validations);
 }
 ModelDefinition.createFromSchema = createFromSchema;
 

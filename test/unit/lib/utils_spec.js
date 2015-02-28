@@ -1,21 +1,21 @@
-describe('Utils', function () {
+describe('Utils', () => {
     var utils;
 
-    beforeEach(function () {
+    beforeEach(() => {
         utils = require('d2/lib/utils');
     });
 
-    describe('throwError', function () {
-        it('should throw an error', function () {
+    describe('throwError', () => {
+        it('should throw an error', () => {
             function shouldThrow() {
                 utils.throwError('MyMessage');
             }
 
-            expect(shouldThrow).toThrowError('MyMessage');
+            expect(shouldThrow).to.throw('MyMessage');
         });
     });
 
-    describe('pick', function () {
+    describe('pick', () => {
         var object = {
             name: 'Mark',
             users: [
@@ -23,17 +23,17 @@ describe('Utils', function () {
             ]
         };
 
-        it('should return the value of the property', function () {
-            expect(utils.pick('name')(object)).toBe('Mark');
-            expect(utils.pick('users')(object)).toBe(object.users);
+        it('should return the value of the property', () => {
+            expect(utils.pick('name')(object)).to.equal('Mark');
+            expect(utils.pick('users')(object)).to.equal(object.users);
         });
 
-        it('should return undefined if the property does not exist', function () {
-            expect(utils.pick('groups')(object)).toBe(undefined);
+        it('should return undefined if the property does not exist', () => {
+            expect(utils.pick('groups')(object)).to.be.undefined;
         });
 
-        it('should return undefined if the object is undefined', function () {
-            expect(utils.pick('name')(undefined)).toBe(undefined);
+        it('should return undefined if the object is undefined', () => {
+            expect(utils.pick('name')(undefined)).to.be.undefined;
         });
     });
 });

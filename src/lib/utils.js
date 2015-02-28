@@ -1,20 +1,10 @@
-/**
- * Created by mark on 18/01/15.
- */
+'use strict';
 
-module.exports = {
-    throwError: throwError,
-    addLockedProperty: addLockedProperty,
-    curry: curry,
-    copyOwnProperties: copyOwnProperties,
-    pick: pick
-};
-
-function throwError(message) {
+export function throwError(message) {
     throw new Error(message);
 }
 
-function curry(toCurry, parameter) {
+export function curry(toCurry, parameter) {
     if (typeof toCurry === 'function') {
         return function () {
             var args = Array.prototype.slice.call(arguments, 0);
@@ -24,17 +14,17 @@ function curry(toCurry, parameter) {
     }
 }
 
-function addLockedProperty(name, value) {
+export function addLockedProperty(object, name, value) {
     var propertyDescriptor = {
         enumerable: true,
         configurable: false,
         writable: false,
         value: value
     };
-    Object.defineProperty(this, name, propertyDescriptor);
+    Object.defineProperty(object, name, propertyDescriptor);
 }
 
-function copyOwnProperties(to, from) {
+export function copyOwnProperties(to, from) {
     var key;
 
     for (key in from) {
@@ -46,7 +36,7 @@ function copyOwnProperties(to, from) {
     return to;
 }
 
-function pick(property) {
+export function pick(property) {
     return function (item) {
         if (item) {
             return item[property];

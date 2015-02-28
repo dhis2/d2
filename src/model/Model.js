@@ -1,13 +1,12 @@
 'use strict';
+import {checkType} from '../lib/check';
 import ModelBase from './ModelBase.js';
-
-var check = require('d2/lib/check');
 
 class Model {
     constructor(modelDefinition) {
-        check.checkType(modelDefinition, 'object', 'modelDefinition');
-        check.checkType(modelDefinition.modelValidations, 'object', 'modelValidations');
-        check.checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
+        checkType(modelDefinition, 'object', 'modelDefinition');
+        checkType(modelDefinition.modelValidations, 'object', 'modelValidations');
+        checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
 
         //Values object used to store the actual model values
         Object.defineProperty(this, 'dataValues', {
@@ -33,6 +32,6 @@ Model.create = function (modelDefinition) {
     return new Model(modelDefinition);
 };
 
-Model.prototype = ModelBase; //jshint nonew:false
+Model.prototype = ModelBase;
 
 export default Model;

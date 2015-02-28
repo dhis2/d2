@@ -1,4 +1,3 @@
-/* jshint expr:true */
 describe('Model', () => {
     var fixtures = require('fixtures/fixtures');
 
