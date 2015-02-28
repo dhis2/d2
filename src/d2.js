@@ -1,7 +1,9 @@
 'use strict';
 
-var pick = require('d2/lib/utils').pick;
-var check = require('d2/lib/check');
+import {pick} from './lib/utils';
+import {checkType, isString} from './lib/check';
+
+//TODO: Figure out a way how to mock import statements so we can mock dependencies
 var logger = require('d2/logger/Logger').getLogger();
 var model = require('d2/model');
 var Api = require('d2/api/Api');
@@ -15,7 +17,7 @@ var d2 = {
 function d2Init(config) {
     var api = Api.getApi();
 
-    if (config && check.checkType(config, 'object', 'Config parameter')) {
+    if (config && checkType(config, 'object', 'Config parameter')) {
         processConfig(api, config);
     }
 
@@ -40,7 +42,7 @@ function d2Init(config) {
 }
 
 function processConfig(api, config) {
-    if (check.isString(config.baseUrl)) {
+    if (isString(config.baseUrl)) {
         api.setBaseUrl(config.baseUrl);
     } else {
         api.setBaseUrl('/api');

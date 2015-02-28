@@ -1,7 +1,13 @@
-var models = module.exports;
+import ModelBase from './ModelBase.js';
+import Model from './Model.js';
+import ModelDefinition from './ModelDefinition.js';
+import ModelDefinitions from './ModelDefinitions.js';
+import ModelValidation from './ModelValidation.js';
 
-models.ModelBase = require('./ModelBase');
-models.Model = require('./Model');
-models.ModelDefinition = require('./ModelDefinition');
-models.ModelDefinitions = require('./ModelDefinitions');
-models.ModelValidations = require('./ModelValidation');
+export default {
+    ModelBase: ModelBase,
+    Model: Model,
+    ModelDefinition: ModelDefinition,
+    ModelDefinitions: ModelDefinitions,
+    ModelValidations: ModelValidation
+}

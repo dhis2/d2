@@ -1,21 +1,32 @@
 /* global console */
 'use strict';
 
-var check = require('../lib/check');
-var Logger = require('../logger/Logger');
-
-module.exports = ModelValidation;
+import {checkType, isInteger, isObject, isArray, isString, isNumeric} from '../lib/check';
+import Logger from '../logger/Logger';
 
 var logger;
 var typeSpecificValidations = {
     PHONENUMBER: [phoneNumber]
 };
 
-function ModelValidation(providedLogger) {
-    check.checkType(providedLogger, 'object', 'logger (Logger)');
-    logger = providedLogger;
+class ModelValidation {
+    constructor(providedLogger) {
+        checkType(providedLogger, 'object', 'logger (Logger)');
+        logger = providedLogger;
+    }
 
-    this.validate = validate;
+    validate(value, validationSettings) {
+        if (isObject(validationSettings)) {
+            if (validationSettings.required === false && !value) {
+                return true;
+            }
+
+            return typeValidation(value, validationSettings.type) &&
+                minMaxValidation(value, validationSettings) &&
+                typeSpecificValidation(value, validationSettings.type);
+        }
+        return false;
+    }
 }
 
 ModelValidation.getModelValidation = function () {
@@ -25,28 +36,15 @@ ModelValidation.getModelValidation = function () {
     return (this.modelValidation = new ModelValidation(Logger.getLogger(console)));
 };
 
-function validate(value, validationSettings) {
-    if (check.isObject(validationSettings)) {
-        if (validationSettings.required === false && !value) {
-            return true;
-        }
-
-        return typeValidation(value, validationSettings.type) &&
-            minMaxValidation(value, validationSettings) &&
-            typeSpecificValidation(value, validationSettings.type);
-    }
-    return false;
-}
-
 //TODO: See if we can reduce the complexity of this function
 function typeValidation(value, type) { //jshint maxcomplexity: 12
     switch (type) {
         case 'INTEGER':
-            return check.isInteger(value);
+            return isInteger(value);
         case 'NUMBER':
-            return check.isNumeric(value);
+            return isNumeric(value);
         case 'COLLECTION':
-            return check.isArray(value); // || isModelCollection();
+            return isArray(value); // || isModelCollection();
         case 'PHONENUMBER':
         case 'EMAIL':
         case 'URL':
@@ -54,9 +52,9 @@ function typeValidation(value, type) { //jshint maxcomplexity: 12
         case 'PASSWORD':
         case 'IDENTIFIER':
         case 'TEXT':
-            return check.isString(value);
+            return isString(value);
         case 'COMPLEX':
-            return check.isObject(value);
+            return isObject(value);
         default:
             //TODO: Add logger for d2?
             //TODO: Perhaps this should throw?
@@ -66,11 +64,11 @@ function typeValidation(value, type) { //jshint maxcomplexity: 12
 }
 
 function minMaxValidation(value, validationSettings) {
-    if (check.isNumeric(value)) {
+    if (isNumeric(value)) {
         return isLargerThanMin(value, validationSettings.min) &&
             isSmallerThanMax(value, validationSettings.max);
     }
-    if (check.isArray(value) || check.isString(value)) {
+    if (isArray(value) || isString(value)) {
         return isLargerThanLength(value, validationSettings.min) &&
             isSmallerThanLength(value, validationSettings.max);
     }
@@ -80,11 +78,11 @@ function minMaxValidation(value, validationSettings) {
 }
 
 function isLargerThanMin(value, minValue) {
-    return check.isNumeric(minValue) ? value >= minValue : true;
+    return isNumeric(minValue) ? value >= minValue : true;
 }
 
 function isSmallerThanMax(value, maxValue) {
-    return check.isNumeric(maxValue) ? value <= maxValue : true;
+    return isNumeric(maxValue) ? value <= maxValue : true;
 }
 
 function isLargerThanLength(value, minValue) {
@@ -96,7 +94,7 @@ function isSmallerThanLength(value, maxValue) {
 }
 
 function typeSpecificValidation(value, valueType) {
-    if (!valueType || !check.isArray(typeSpecificValidations[valueType])) {
+    if (!valueType || !isArray(typeSpecificValidations[valueType])) {
         return true;
     }
 
@@ -110,3 +108,5 @@ var phoneNumberRegEx = /^[0-9\+ ]+$/;
 function phoneNumber(value) {
     return phoneNumberRegEx.test(value);
 }
+
+export default ModelValidation;

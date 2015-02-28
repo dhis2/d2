@@ -1,11 +1,11 @@
 'use strict';
 
-var check = require('d2/lib/check');
+import {checkType} from '../lib/check';
 
 class ModelDefinitions {
     add(modelDefinition) {
         try {
-            check.checkType(modelDefinition.name, 'string');
+            checkType(modelDefinition.name, 'string');
         } catch (e) {
             throw new Error('Name should be set on the passed ModelDefinition to add one');
         }
