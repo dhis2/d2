@@ -77,3 +77,15 @@ export function contains(item, list) {
 
     return list.indexOf(item) >= 0;
 }
+
+export default {
+    checkType: checkType,
+    checkDefined: checkDefined,
+    isArray: isArray,
+    isDefined: isDefined,
+    isInteger: isInteger,
+    isNumeric: isNumeric,
+    isString: isString,
+    isType: isType,
+    contains: contains
+};

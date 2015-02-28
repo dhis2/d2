@@ -1,4 +1,6 @@
 describe('ModelBase', function () {
+    'use strict';
+
     var modelBase = require('d2/model/ModelBase');
 
     it('should have a create method', function () {

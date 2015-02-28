@@ -1,5 +1,6 @@
 describe('D2 models', () => {
     'use strict';
+
     var models;
     var ModelDefinitions = require('d2/model/ModelDefinitions');
 

@@ -1,4 +1,6 @@
 describe('Logger', () => {
+    'use strict';
+
     var Logger;
     var logger;
     var consoleMock;

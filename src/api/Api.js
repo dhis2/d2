@@ -1,13 +1,75 @@
 'use strict';
 
-var check = require('d2/lib/check');
-var utils = require('d2/lib/utils');
+import {checkType} from '../lib/check.js';
+import {copyOwnProperties} from '../lib/utils.js';
 
-module.exports = Api;
+class Api {
+    constructor(jquery) {
+        this.jquery = jquery;
+        this.baseUrl = '/api';
+        this.defaultRequestSettings = {
+            data: {},
+            dataType: 'json',
+                type: undefined,
+                url: undefined
+        };
+    }
 
-function Api(jquery) {
-    this.jquery = jquery;
+    get(url, data) {
+        //jshint validthis:true
+        return this.request('GET', getUrl(this.baseUrl, url), data);
+    }
+
+    post() {
+
+    }
+
+    remove() {
+
+    }
+
+    update() {
+
+    }
+
+    request(type, url, data) {
+        checkType(type, 'string', 'Request type');
+        checkType(url, 'string', 'Url');
+
+        var api = this;
+
+        return new Promise((resolve, reject) => {
+            api.jquery
+                .ajax(getOptions({
+                    type: type,
+                    url: url,
+                    data: data || {}
+                }))
+                .then(
+                processSuccess(resolve),
+                processFailure(reject)
+            );
+        });
+
+        function getOptions(mergeOptions) {
+            var options = {};
+
+            copyOwnProperties(options, api.defaultRequestSettings);
+            copyOwnProperties(options, mergeOptions);
+
+            return options;
+        }
+    }
+
+    setBaseUrl(baseUrl) {
+        checkType(baseUrl, 'string', 'Base url');
+
+        this.baseUrl = baseUrl;
+
+        return this;
+    }
 }
+
 Api.getApi = getApi;
 function getApi() {
     if (getApi.api) {
@@ -16,86 +78,14 @@ function getApi() {
     return (getApi.api = new Api(require('jquery')));
 }
 
-Api.prototype =  {
-    baseUrl: '/api',
-    get: get,
-    post: post,
-    remove: remove,
-    setBaseUrl: setBaseUrl,
-    update: update,
-    request: request,
-    defaultRequestSettings: {
-        data: {},
-        dataType: 'json',
-        type: undefined,
-        url: undefined
-    }
-};
-
-function setBaseUrl(baseUrl) {
-    check.checkType(baseUrl, 'string', 'Base url');
-
-    //jshint validthis:true
-    this.baseUrl = baseUrl;
-
-    return this;
-}
-
-function get(url, data) {
-    //jshint validthis:true
-    return this.request('GET', getUrl(this.baseUrl, url), data);
-}
-
-function post() {
-
-}
-
-function remove() {
-
-}
-
-function update() {
-
-}
-
-function request(type, url, data) {
-    check.checkType(type, 'string', 'Request type');
-    check.checkType(url, 'string', 'Url');
-
-    //jshint validthis:true
-    var api = this;
-
-    return new Promise(function (resolve, reject) {
-        api.jquery
-            .ajax(getOptions({
-                type: type,
-                url: url,
-                data: data || {}
-            }))
-            .then(
-                processSuccess(resolve),
-                processFailure(reject)
-            );
-    });
-
-    function getOptions(mergeOptions) {
-        var options = {};
-
-        utils.copyOwnProperties(options, api.defaultRequestSettings);
-        utils.copyOwnProperties(options, mergeOptions);
-
-        return options;
-    }
-}
-
 function processSuccess(resolve) {
-    return function (data/*, textStatus, jqXHR*/) {
+    return (data/*, textStatus, jqXHR*/) => {
         resolve(data);
     };
 }
 
 function processFailure(reject) {
-    return function (jqXHR/*, textStatus, errorThrown*/) {
+    return (jqXHR/*, textStatus, errorThrown*/) => {
         delete jqXHR.then;
         reject(jqXHR);
     };
@@ -111,5 +101,7 @@ function getUrl(baseUrl, url) {
 
     return urlParts.join('/')
         .replace(new RegExp('(.(?:[^:]))\/\/+', 'g'), '$1/')
-        .replace(new RegExp('/\/$/'), '');
+        .replace(new RegExp('\/$'), '');
 }
+
+export default Api;

@@ -1,90 +1,87 @@
-describe('Api', function () {
-    var proxyquire = require('proxyquire').noCallThru();
-    var fixtures = require('fixtures/fixtures');
-    var jqueryMock;
+import fixtures from '../../fixtures/fixtures.js';
+import Api from '../../../src/api/Api.js';
 
-    var Api;
+describe('Api', () => {
+    var jqueryMock;
     var api;
 
-    beforeEach(function () {
+    beforeEach(() => {
         jqueryMock = {
-            ajax: jasmine.createSpy('ajax')
-                .and.returnValue(Promise.resolve([fixtures.get('/api/schemas/dataElement')]))
+            ajax: stub().returns(Promise.resolve([fixtures.get('/api/schemas/dataElement')]))
         };
 
-        proxyquire('d2/api/Api', {
-             jquery: jqueryMock
-        });
-
-        Api = require('d2/api/Api');
         api = new Api(jqueryMock);
     });
 
-    it('should be an function', function () {
-        expect(Api).toEqual(jasmine.any(Function));
+    it('should be an function', () => {
+        expect(Api).to.be.instanceof(Function);
     });
 
-    it('should create a new instance of Api', function () {
-        expect(new Api()).toEqual(jasmine.any(Api));
+    it('should create a new instance of Api', () => {
+        expect(new Api()).to.be.instanceof(Api);
     });
 
-    it('should have a baseUrl property that is set to /api', function () {
-        expect(new Api().baseUrl).toBe('/api');
+    it('should have a baseUrl property that is set to /api', () => {
+        expect(new Api().baseUrl).to.equal('/api');
     });
 
-    describe('getApi', function () {
-        it('should have a method to get an instance of Api', function () {
-            expect(Api.getApi()).toEqual(jasmine.any(Api));
+    describe('getApi', () => {
+        it('should have a method to get an instance of Api', () => {
+            expect(Api.getApi).to.be.instanceof(Function);
         });
 
-        it('should return a singleton', function () {
-            expect(Api.getApi()).toBe(Api.getApi());
+        it('should return a singleton', () => {
+            expect(Api.getApi()).to.equal(Api.getApi());
         });
     });
 
-    describe('setBaseUrl', function () {
+    describe('setBaseUrl', () => {
         var api;
 
-        beforeEach(function () {
+        beforeEach(() => {
             api = new Api({});
         });
 
-        it('should be a method', function () {
-            expect(api.setBaseUrl).toEqual(jasmine.any(Function));
+        it('should be a method', () => {
+            expect(api.setBaseUrl).to.be.instanceof(Function);
         });
 
-        it('should throw when the base url provided is not a string', function () {
+        it('should throw when the base url provided is not a string', () => {
             function shouldThrow() {
                 api.setBaseUrl();
             }
 
-            expect(shouldThrow).toThrowError('Base url should be provided');
+            expect(shouldThrow).to.throw('Base url should be provided');
         });
 
-        it('should set the baseUrl property on the object', function () {
+        it('should set the baseUrl property on the object', () => {
             api.setBaseUrl('/dhis/api');
 
-            expect(api.baseUrl).toBe('/dhis/api');
+            expect(api.baseUrl).to.equal('/dhis/api');
         });
     });
 
-    describe('get', function () {
+    describe('get', () => {
         var requestFailedHandler;
         var requestSuccessHandler;
 
-        beforeEach(function () {
-            requestSuccessHandler = jasmine.createSpy('Request success');
-            requestFailedHandler = jasmine.createSpy('Request failed');
+        beforeEach(() => {
+            requestSuccessHandler = spy();
+            requestFailedHandler = spy();
         });
 
-        it('should be a method', function () {
-            expect(api.get).toEqual(jasmine.any(Function));
+        it('should be a method', () => {
+            expect(api.get).to.be.instanceof(Function);
         });
 
-        it('should use the baseUrl when requesting', function () {
+        it('should return a promise', function () {
+            expect(api.get('dataElements')).to.be.instanceof(Promise);
+        });
+
+        it('should use the baseUrl when requesting', () => {
             api.get('dataElements');
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
@@ -92,10 +89,10 @@ describe('Api', function () {
             });
         });
 
-        it('should not add a double slash to the url', function () {
+        it('should not add a double slash to the url', () => {
             api.get('//dataElements');
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
@@ -103,10 +100,10 @@ describe('Api', function () {
             });
         });
 
-        it('should strip the trailing slash', function () {
+        it('should strip the trailing slash', () => {
             api.get('/dataElements.json/');
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '/api/dataElements.json',
                 dataType: 'json',
@@ -114,12 +111,12 @@ describe('Api', function () {
             });
         });
 
-        it('should keep a full url if it is given as a base', function () {
+        it('should keep a full url if it is given as a base', () => {
             api.baseUrl = 'http://localhost:8090/dhis/api';
 
             api.get('/dataElements.json');
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: 'http://localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
@@ -127,12 +124,12 @@ describe('Api', function () {
             });
         });
 
-        it('should keep the the slashes if they are the first two characters', function () {
+        it('should keep the the slashes if they are the first two characters', () => {
             api.baseUrl = '//localhost:8090/dhis/api';
 
             api.get('/dataElements.json');
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '//localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
@@ -140,10 +137,10 @@ describe('Api', function () {
             });
         });
 
-        it('should call the get method on the http object', function () {
+        it('should call the get method on the http object', () => {
             api.get('dataElements');
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
@@ -151,10 +148,10 @@ describe('Api', function () {
             });
         });
 
-        it('should add the data to the call', function () {
+        it('should add the data to the call', () => {
             api.get('dataElements', {fields: 'id,name'});
 
-            expect(jqueryMock.ajax).toHaveBeenCalledWith({
+            expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
@@ -165,45 +162,49 @@ describe('Api', function () {
         });
 
         it('should call the failed reject handler', function (done) {
-            jqueryMock.ajax.and.returnValue(Promise.reject(new Error('Request failed')));
+            jqueryMock.ajax.returns((function () {
+                return new Promise(function (resolve, reject) {
+                    reject(new Error('Request failed'));
+                });
+            })());
 
             api.get('/api/dataElements', {fields: 'id,name'})
                 .catch(requestFailedHandler)
-                .then(function () {
-                    expect(requestFailedHandler).toHaveBeenCalled();
-                    expect(requestFailedHandler).toHaveBeenCalledWith(new Error('Request failed'));
-                })
-                .then(done);
+                .then(() => {
+                    expect(requestFailedHandler).to.be.called;
+                    expect(requestFailedHandler).to.be.calledWith(new Error('Request failed'));
+                    done();
+                });
         });
 
         it('should call the success resolve handler', function (done) {
-            jqueryMock.ajax.and.returnValue(Promise.resolve('Success data'));
+            jqueryMock.ajax.returns(Promise.resolve('Success data'));
 
             api.get('/api/dataElements', {fields: 'id,name'})
                 .then(requestSuccessHandler)
                 .then(function () {
-                    expect(requestSuccessHandler).toHaveBeenCalled();
-                    expect(requestSuccessHandler).toHaveBeenCalledWith('Success data');
-                })
-                .then(done);
+                    expect(requestSuccessHandler).to.be.called;
+                    expect(requestSuccessHandler).to.be.calledWith('Success data');
+                    done();
+                });
         });
     });
 
-    describe('post', function () {
-        it('should be a method', function () {
-            expect(api.post).toEqual(jasmine.any(Function));
+    describe('post', () => {
+        it('should be a method', () => {
+            expect(api.post).to.be.instanceof(Function);
         });
     });
 
-    describe('remove', function () {
-        it('should be a method', function () {
-            expect(api.remove).toEqual(jasmine.any(Function));
+    describe('remove', () => {
+        it('should be a method', () => {
+            expect(api.remove).to.be.instanceof(Function);
         });
     });
 
-    describe('update', function () {
-        it('should be a method', function () {
-            expect(api.update).toEqual(jasmine.any(Function));
+    describe('update', () => {
+        it('should be a method', () => {
+            expect(api.update).to.be.instanceof(Function);
         });
     });
 });

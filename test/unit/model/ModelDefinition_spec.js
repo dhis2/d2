@@ -1,8 +1,8 @@
 /* jshint nonew:false */
+import fixtures from '../../fixtures/fixtures.js';
+
 describe('ModelDefinition', function () {
     'use strict';
-
-    var fixtures = require('fixtures/fixtures');
 
     var ModelDefinition = require('d2/model/ModelDefinition');
     var modelDefinition;

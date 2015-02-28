@@ -10,4 +10,4 @@ export default {
     ModelDefinition: ModelDefinition,
     ModelDefinitions: ModelDefinitions,
     ModelValidations: ModelValidation
-}
+};

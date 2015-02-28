@@ -1,4 +1,6 @@
 describe('Utils', () => {
+    'use strict';
+
     var utils;
 
     beforeEach(() => {

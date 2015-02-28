@@ -3,7 +3,7 @@
 import {pick} from './lib/utils';
 import {checkType, isString} from './lib/check';
 
-//TODO: Figure out a way how to mock import statements so we can mock dependencies
+//TODO: Currently it seems there is no way to mock import statements in dependencies
 var logger = require('d2/logger/Logger').getLogger();
 var model = require('d2/model');
 var Api = require('d2/api/Api');

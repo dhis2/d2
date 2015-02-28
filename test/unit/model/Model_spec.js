@@ -1,5 +1,7 @@
+import fixtures from '../../fixtures/fixtures.js';
+
 describe('Model', () => {
-    var fixtures = require('fixtures/fixtures');
+    'use strict';
 
     let Model = require('d2/model/Model');
     let model;

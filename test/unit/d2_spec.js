@@ -1,7 +1,7 @@
-/* jshint expr:true */
+import fixtures from '../fixtures/fixtures.js';
+
 describe('D2', () => {
     var proxyquire = require('proxyquire').noCallThru();
-    var fixtures = require('fixtures/fixtures');
     var apiMock;
     var loggerMock = {
         error: sinon.spy()

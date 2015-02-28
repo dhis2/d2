@@ -1,9 +1,7 @@
-describe('Check', () => {
-    var check;
+import check from '../../../src/lib/check.js';
 
-    beforeEach(() => {
-        check = require('d2/lib/check');
-    });
+describe('Check', () => {
+    'use strict';
 
     describe('isDefined', () => {
         it('should return when the parameter is defined', () => {
