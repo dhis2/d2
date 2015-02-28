@@ -28,50 +28,61 @@ function getSchemaTypes() {
     return schemaTypes;
 }
 
-function ModelDefinition(modelName, modelOptions, properties, validations) {
-    checkType(modelName, 'string');
+/**
+ * ModelDefinition
+ *
+ * Note: ModelDefinition has a property `api` that is used for the communication with the dhis2 api. The value of this
+ * property is an instance of `Api`.
+ */
+class ModelDefinition {
+    constructor(modelName, modelOptions, properties, validations) {
+        checkType(modelName, 'string');
 
-    addLockedProperty(this, 'name', modelName);
-    addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
-    addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
-    addLockedProperty(this, 'modelProperties', properties);
-    addLockedProperty(this, 'modelValidations', validations);
-}
-ModelDefinition.createFromSchema = createFromSchema;
+        addLockedProperty(this, 'name', modelName);
+        addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
+        addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
+        addLockedProperty(this, 'modelProperties', properties);
+        addLockedProperty(this, 'modelValidations', validations);
+    }
 
-ModelDefinition.prototype = {
-    api: undefined,
-    create: create,
-    get: get
-};
+    /**
+     * Create a fresh Model instance based on this `ModelDefinition`
+     *
+     * @returns {Model}
+     */
+    create() {
+        return Object.seal(Model.create(this));
+    }
 
-function create() {
-    //jshint validthis: true
-    return Object.seal(Model.create(this));
-}
+    /**
+     * Get a `Model` instance from the api loaded with data that relates to `identifier`.
+     * This will do an API call and return a Promise that resolves with a `Model` or rejects with the api error message.
+     *
+     * @param {String} identifier
+     * @returns {Promise} Resolves with a `Model` instance or an error message.
+     */
+    get(identifier) {
+        checkDefined(identifier, 'Identifier');
 
-function get(identifier) {
-    //jshint validthis: true
-    var modelDefinition = this;
+        //TODO: should throw error if API has not been defined
+        return this.api.get([this.apiEndpoint, identifier].join('/'), {fields: ':all'})
+            .then((data) => {
+                var model = this.create();
 
-    checkDefined(identifier, 'Identifier');
+                //Set the datavalues onto the model directly
+                Object.keys(model).forEach((key) => {
+                    model.dataValues[key] = data[key];
+                });
 
-    return this.api.get([this.apiEndpoint, identifier].join('/'), {fields: ':all'})
-        .then(function (data) {
-            var model = modelDefinition.create();
-
-            //Set the datavalues onto the model directly
-            Object.keys(model).forEach((key) => {
-                model.dataValues[key] = data[key];
+                return model;
+            })
+            .catch((response) => {
+                return Promise.reject(response.data);
             });
-
-            return model;
-        })
-        .catch(function (response) {
-            return Promise.reject(response.data);
-        });
+    }
 }
 
+ModelDefinition.createFromSchema = createFromSchema;
 function createFromSchema(schema) {
     checkType(schema, Object, 'Schema');
 
