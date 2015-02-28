@@ -1,11 +1,8 @@
 'use strict';
 
-var check = require('../lib/check');
-var utils = require('../lib/utils');
-
-var Model = require('./Model');
-
-module.exports = ModelDefinition;
+import {checkType, isString, checkDefined} from '../lib/check.js';
+import {addLockedProperty, curry, throwError} from '../lib/utils.js';
+import Model from '../model/Model.js';
 
 //Schemas
 var schemaTypes = [
@@ -32,13 +29,13 @@ function getSchemaTypes() {
 }
 
 function ModelDefinition(modelName, modelOptions, properties, validations) {
-    check.checkType(modelName, 'string');
+    checkType(modelName, 'string');
 
-    utils.addLockedProperty(this, 'name', modelName);
-    utils.addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
-    utils.addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
-    utils.addLockedProperty(this, 'modelProperties', properties);
-    utils.addLockedProperty(this, 'modelValidations', validations);
+    addLockedProperty(this, 'name', modelName);
+    addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
+    addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
+    addLockedProperty(this, 'modelProperties', properties);
+    addLockedProperty(this, 'modelValidations', validations);
 }
 ModelDefinition.createFromSchema = createFromSchema;
 
@@ -57,7 +54,7 @@ function get(identifier) {
     //jshint validthis: true
     var modelDefinition = this;
 
-    check.checkDefined(identifier, 'Identifier');
+    checkDefined(identifier, 'Identifier');
 
     return this.api.get([this.apiEndpoint, identifier].join('/'), {fields: ':all'})
         .then(function (data) {
@@ -76,7 +73,7 @@ function get(identifier) {
 }
 
 function createFromSchema(schema) {
-    check.checkType(schema, Object, 'Schema');
+    checkType(schema, Object, 'Schema');
 
     return Object.freeze(new ModelDefinition(
         schema.name,
@@ -88,7 +85,7 @@ function createFromSchema(schema) {
 
 function createPropertiesObject(schemaProperties) {
     var propertiesObject = {};
-    var createModelPropertyDescriptorOn = utils.curry(createModelPropertyDescriptor, propertiesObject);
+    var createModelPropertyDescriptorOn = curry(createModelPropertyDescriptor, propertiesObject);
 
     (schemaProperties || []).forEach(createModelPropertyDescriptorOn);
 
@@ -116,7 +113,7 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
 
 function createValidations(schemaProperties) {
     var validationsObject = {};
-    var createModelPropertyOn = utils.curry(createValidationSetting, validationsObject);
+    var createModelPropertyOn = curry(createValidationSetting, validationsObject);
 
     (schemaProperties || []).forEach(createModelPropertyOn);
 
@@ -143,9 +140,11 @@ function createValidationSetting(validationObject, schemaProperty) {
 var primaryTypes = getSchemaTypes();
 function typeLookup(propertyType) {
     if (primaryTypes.indexOf(propertyType) >= 0 &&
-        check.isString(propertyType)) {
+        isString(propertyType)) {
 
         return propertyType;
     }
-    utils.throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
+    throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
 }
+
+export default ModelDefinition;

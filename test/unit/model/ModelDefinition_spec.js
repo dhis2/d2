@@ -1,48 +1,48 @@
 /* jshint nonew:false */
 import fixtures from '../../fixtures/fixtures.js';
+import ModelDefinition from '../../../src/model/ModelDefinition.js';
 
-describe('ModelDefinition', function () {
+describe('ModelDefinition', () => {
     'use strict';
 
-    var ModelDefinition = require('d2/model/ModelDefinition');
     var modelDefinition;
 
-    beforeEach(function () {
+    beforeEach(() => {
         modelDefinition = new ModelDefinition('dataElement');
     });
 
-    it('should create a ModelDefinition object', function () {
-        expect(modelDefinition).toEqual(jasmine.any(ModelDefinition));
+    it('should create a ModelDefinition object', () => {
+        expect(modelDefinition).to.be.instanceof(ModelDefinition);
     });
 
-    it('should not add epiEndpoint when it does not exist', function () {
-        expect(modelDefinition.apiEndpint).not.toBeDefined();
+    it('should not add epiEndpoint when it does not exist', () => {
+        expect(modelDefinition.apiEndpoint).not.to.be.defined;
     });
 
-    it('should throw an error when a name is not specified', function () {
+    it('should throw an error when a name is not specified', () => {
         function shouldThrow() {
             new ModelDefinition();
         }
-        expect(shouldThrow).toThrowError('Value should be provided');
+        expect(shouldThrow).to.throw('Value should be provided');
     });
 
-    it('should throw if the name is not a string', function () {
+    it('should throw if the name is not a string', () => {
         function shouldThrow() {
             new ModelDefinition({});
         }
-        expect(shouldThrow).toThrowError('Expected [object Object] to have type string');
+        expect(shouldThrow).to.throw('Expected [object Object] to have type string');
     });
 
-    describe('instance', function () {
-        it('should not be able to change the name', function () {
+    describe('instance', () => {
+        it('should not be able to change the name', () => {
             var isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').writable;
             var isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').configurable;
 
-            expect(isWritable).toBe(false);
-            expect(isConfigurable).toBe(false);
+            expect(isWritable).to.be.false;
+            expect(isConfigurable).to.be.false;
         });
 
-        it('should not change the name', function () {
+        it('should not change the name', () => {
             function shouldThrow() {
                 modelDefinition.name = 'anotherName';
 
@@ -51,19 +51,19 @@ describe('ModelDefinition', function () {
                 }
             }
 
-            expect(modelDefinition.name).toEqual('dataElement');
-            expect(shouldThrow).toThrow();
+            expect(modelDefinition.name).to.equal('dataElement');
+            expect(shouldThrow).to.throw();
         });
 
-        it('should not be able to change the isMetaData', function () {
+        it('should not be able to change the isMetaData', () => {
             var isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').writable;
             var isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').configurable;
 
-            expect(isWritable).toBe(false);
-            expect(isConfigurable).toBe(false);
+            expect(isWritable).to.be.false;
+            expect(isConfigurable).to.be.false;
         });
 
-        it('should not change the isMetaData', function () {
+        it('should not change the isMetaData', () => {
             function shouldThrow() {
                 modelDefinition.isMetaData = true;
 
@@ -72,57 +72,57 @@ describe('ModelDefinition', function () {
                 }
             }
 
-            expect(modelDefinition.isMetaData).toEqual(false);
-            expect(shouldThrow).toThrow();
+            expect(modelDefinition.isMetaData).to.equal(false);
+            expect(shouldThrow).to.throw();
         });
     });
 
-    describe('createFromSchema', function () {
+    describe('createFromSchema', () => {
         var dataElementModelDefinition;
 
-        beforeEach(function () {
+        beforeEach(() => {
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
-        it('should be a method on ModelDefinition', function () {
-            expect(ModelDefinition.createFromSchema).toBeDefined();
+        it('should be a method on ModelDefinition', () => {
+            expect(ModelDefinition.createFromSchema).to.be.defined;
         });
 
-        it('should throw if the schema is not provided', function () {
-            expect(ModelDefinition.createFromSchema).toThrowError('Schema should be provided');
+        it('should throw if the schema is not provided', () => {
+            expect(ModelDefinition.createFromSchema).to.throw('Schema should be provided');
         });
 
-        describe('dataElementSchema', function () {
-            it('should return a ModelDefinition object', function () {
-                expect(dataElementModelDefinition).toEqual(jasmine.any(ModelDefinition));
+        describe('dataElementSchema', () => {
+            it('should return a ModelDefinition object', () => {
+                expect(dataElementModelDefinition).to.be.instanceof(ModelDefinition);
             });
 
-            it('should set the name on the definition', function () {
-                expect(dataElementModelDefinition.name).toEqual('dataElement');
+            it('should set the name on the definition', () => {
+                expect(dataElementModelDefinition.name).to.equal('dataElement');
             });
 
-            it('should set if it is a metadata model', function () {
-                expect(dataElementModelDefinition.isMetaData).toBe(true);
+            it('should set if it is a metadata model', () => {
+                expect(dataElementModelDefinition.isMetaData).to.be.true;
             });
 
-            it('should set the epiEndpoint', function () {
-                expect(dataElementModelDefinition.apiEndpoint).toBe('/dataElements');
+            it('should set the epiEndpoint', () => {
+                expect(dataElementModelDefinition.apiEndpoint).to.equal('/dataElements');
             });
 
-            it('should set metadata to false if it is not a metadata model', function () {
+            it('should set metadata to false if it is not a metadata model', () => {
                 var nonMetaDataModel = fixtures.get('/api/schemas/dataElement');
                 nonMetaDataModel.metadata = false;
 
                 dataElementModelDefinition = ModelDefinition.createFromSchema(nonMetaDataModel);
 
-                expect(dataElementModelDefinition.isMetaData).toBe(false);
+                expect(dataElementModelDefinition.isMetaData).to.be.false;
             });
 
-            it('should a properties property for each of the schema properties', function () {
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).toEqual(34);
+            it('should a properties property for each of the schema properties', () => {
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(34);
             });
 
-            it('should not be able to modify the modelProperties array', function () {
+            it('should not be able to modify the modelProperties array', () => {
                 function shouldThrow() {
                     dataElementModelDefinition.modelProperties.anotherKey = {};
 
@@ -132,23 +132,23 @@ describe('ModelDefinition', function () {
                     }
                 }
 
-                expect(shouldThrow).toThrow();
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).toEqual(34);
+                expect(shouldThrow).to.throw();
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(34);
             });
         });
 
-        describe('modelProperties', function () {
+        describe('modelProperties', () => {
             var modelProperties;
 
-            beforeEach(function () {
+            beforeEach(() => {
                 modelProperties = dataElementModelDefinition.modelProperties;
             });
 
-            it('should be an object', function () {
-                expect(modelProperties.name).toEqual(jasmine.any(Object));
+            it('should be an object', () => {
+                expect(modelProperties.name).to.be.instanceof(Object);
             });
 
-            it('should throw an error when a type is not found', function () {
+            it('should throw an error when a type is not found', () => {
                 var dataElementModelDefinition;
                 var schema = fixtures.get('/api/schemas/dataElement');
                 schema.properties.push({
@@ -159,37 +159,39 @@ describe('ModelDefinition', function () {
                     dataElementModelDefinition = ModelDefinition.createFromSchema(schema);
                 }
 
-                expect(shouldThrow).toThrowError('Type from schema "uio.some.unknown.type" not found available type list.');
+                expect(shouldThrow).to.throw('Type from schema "uio.some.unknown.type" not found available type list.');
             });
 
-            it('should use the collection name for collections', function () {
-                expect(modelProperties.dataElementGroups).toBeDefined();
-                expect(modelProperties.dataElementGroup).not.toBeDefined();
+            it('should use the collection name for collections', () => {
+                expect(modelProperties.dataElementGroups).to.be.defined;
+                expect(modelProperties.dataElementGroup).not.to.be.defined;
             });
 
-            it('should add a get method to the propertyDescriptor', function () {
-                expect(modelProperties.name.get).toEqual(jasmine.any(Function));
+            it('should add a get method to the propertyDescriptor', () => {
+                expect(modelProperties.name.get).to.be.instanceof(Function);
             });
 
-            it('should add a set method to the propertyDescriptor for name', function () {
-                expect(modelProperties.name.set).toEqual(jasmine.any(Function));
+            it('should add a set method to the propertyDescriptor for name', () => {
+                expect(modelProperties.name.set).to.be.instanceof(Function);
             });
 
-            it('should not have a set method for dimensionType', function () {
-
+            it('should not have a set method for dimensionType', () => {
+                //TODO: Implement not being able to set certain properties
+                //expect(modelProperties.dimensionType.set).not.to.be.instanceof(Function);
+                return;
             });
 
-            it('should create getter function on the propertyDescriptor', function () {
+            it('should create getter function on the propertyDescriptor', () => {
                 var model = {
                     dataValues: {
                         name: 'Mark'
                     }
                 };
 
-                expect(modelProperties.name.get.call(model)).toBe('Mark');
+                expect(modelProperties.name.get.call(model)).to.equal('Mark');
             });
 
-            it('should create setter function on the propertyDescriptor', function () {
+            it('should create setter function on the propertyDescriptor', () => {
                 var model = {
                     dataValues: {
 
@@ -198,151 +200,146 @@ describe('ModelDefinition', function () {
 
                 modelProperties.name.set.call(model, 'James');
 
-                expect(model.dataValues.name).toBe('James');
+                expect(model.dataValues.name).to.equal('James');
             });
         });
 
-        describe('modelValidations', function () {
+        describe('modelValidations', () => {
             var modelValidations;
 
-            beforeEach(function () {
+            beforeEach(() => {
                 modelValidations = dataElementModelDefinition.modelValidations;
             });
 
-            describe('created', function () {
-                it('should set the data object as a type for date fields', function () {
-                    expect(modelValidations.created.type).toBe('DATE');
+            describe('created', () => {
+                it('should set the data object as a type for date fields', () => {
+                    expect(modelValidations.created.type).to.equal('DATE');
                 });
 
-                it('should be owned by this schema', function () {
-                    expect(modelValidations.created.owner).toBe(true);
+                it('should be owned by this schema', () => {
+                    expect(modelValidations.created.owner).to.be.true;
                 });
             });
 
-            describe('externalAccess', function () {
-                it('should set the boolean datatype for externalAccess', function () {
-                    expect(modelValidations.externalAccess.type).toBe('BOOLEAN');
+            describe('externalAccess', () => {
+                it('should set the boolean datatype for externalAccess', () => {
+                    expect(modelValidations.externalAccess.type).to.equal('BOOLEAN');
                 });
 
-                it('should not be owned by this schema', function () {
-                    expect(modelValidations.externalAccess.owner).toBe(false);
+                it('should not be owned by this schema', () => {
+                    expect(modelValidations.externalAccess.owner).to.be.false;
                 });
 
                 //TODO: This currently has some sort of max value
-                //it('should not have a maxLength property', function () {
+                //it('should not have a maxLength property', () => {
                 //    expect(modelValidations.externalAccess.maxLength).toBe(undefined);
                 //});
             });
 
-            describe('name', function () {
-                it('should have have a type property', function () {
-                    expect(modelValidations.name.type).toEqual('TEXT');
+            describe('name', () => {
+                it('should have have a type property', () => {
+                    expect(modelValidations.name.type).to.equal('TEXT');
                 });
 
-                it('should have a maxLength', function () {
-                    expect(modelValidations.name.max).toBe(230);
+                it('should have a maxLength', () => {
+                    expect(modelValidations.name.max).to.equal(230);
                 });
 
-                it('should have a persisted property', function () {
-                    expect(modelValidations.name.persisted).toBe(true);
+                it('should have a persisted property', () => {
+                    expect(modelValidations.name.persisted).to.be.true;
                 });
 
-                it('should have a required property', function () {
-                    expect(modelValidations.name.required).toBe(true);
+                it('should have a required property', () => {
+                    expect(modelValidations.name.required).to.be.true;
                 });
 
-                it('should have an owner property', function () {
-                    expect(modelValidations.name.owner).toBe(true);
+                it('should have an owner property', () => {
+                    expect(modelValidations.name.owner).to.be.true;
                 });
             });
         });
     });
 
-    describe('create', function () {
+    describe('create', () => {
         var Model;
         var dataElementModelDefinition;
 
         //TODO: Figure out a way to mock a require
-        beforeEach(function () {
+        beforeEach(() => {
             Model = require('d2/model/Model');
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
-        afterEach(function () {
-        });
-
         //TODO: Look at these tests
-        //it('should call the model constructor', function () {
+        //it('should call the model constructor', () => {
         //    dataElementModelDefinition.create();
         //
         //    expect(tempD2.Model).toHaveBeenCalled();
         //});
         //
-        //it('should call the model constructor with the the modelDefinition', function () {
+        //it('should call the model constructor with the the modelDefinition', () => {
         //    dataElementModelDefinition.create();
         //
-        //    expect(tempD2.Model).toHaveBeenCalledWith(dataElementModelDefinition);
+        //    expect(tempD2.Model).to.be.calledWith(dataElementModelDefinition);
         //});
 
         //TODO: This is currently not a pure unit test as we haven't mocked out Model
-        it('should return an instance of Model', function () {
-            expect(dataElementModelDefinition.create()).toEqual(jasmine.any(Model));
+        it('should return an instance of Model', () => {
+            expect(dataElementModelDefinition.create()).to.be.instanceof(Model);
         });
     });
 
-    describe('get', function () {
+    describe('get', () => {
         var dataElementModelDefinition;
 
-        beforeEach (function () {
+        beforeEach (() => {
             ModelDefinition.prototype.api = {
-                get: jasmine.createSpy('Api.get')
-                    .and.returnValue(new Promise(function (resolve) {
-                        resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
-                    }))
+                get: stub().returns(new Promise((resolve) => {
+                    resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+                }))
             };
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
-        it('should throw an error when the given id is not a string', function () {
+        it('should throw an error when the given id is not a string', () => {
             function shouldThrow() {
                 dataElementModelDefinition.get();
             }
 
-            expect(shouldThrow).toThrowError('Identifier should be provided');
+            expect(shouldThrow).to.throw('Identifier should be provided');
         });
 
-        it('should return a promise', function () {
+        it('should return a promise', () => {
             var modelPromise = dataElementModelDefinition
                 .get('d4343fsss');
 
-            expect(modelPromise.then).toEqual(jasmine.any(Function));
+            expect(modelPromise.then).to.be.instanceof(Function);
         });
 
-        it('should call the api for the requested id', function () {
+        it('should call the api for the requested id', () => {
             dataElementModelDefinition.get('d4343fsss');
 
-            expect(ModelDefinition.prototype.api.get).toHaveBeenCalledWith('/dataElements/d4343fsss', {fields: ':all'});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements/d4343fsss', {fields: ':all'});
         });
 
-        it('should set the data onto the model when it is available', function (done) {
+        it('should set the data onto the model when it is available', (done) => {
             dataElementModelDefinition.get('d4343fsss')
-                .then(function (dataElementModel) {
-                    expect(dataElementModel.name).toBe('BS_COLL (N, DSD) TARGET: Blood Units Donated');
+                .then((dataElementModel) => {
+                    expect(dataElementModel.name).to.equal('BS_COLL (N, DSD) TARGET: Blood Units Donated');
                     done();
                 });
         });
 
-        it('should reject the promise with the message when the request fails', function (done) {
-            ModelDefinition.prototype.api.get = jasmine.createSpy('Api.get')
-                .and.returnValue(new Promise(function (resolve, reject) {
-                    reject({data: 'id not found'});
-                }));
+        it('should reject the promise with the message when the request fails', (done) => {
+            ModelDefinition.prototype.api.get = stub().returns(new Promise((resolve, reject) => {
+                reject({data: 'id not found'});
+            }));
 
             dataElementModelDefinition.get('d4343fsss')
-                .catch(function (dataElementError) {
-                    expect(dataElementError).toEqual('id not found');
+                .catch((dataElementError) => {
+                    expect(dataElementError).to.equal('id not found');
                     done();
                 });
         });

@@ -19,6 +19,7 @@ var files = [
     'test/unit/**/Model_spec.js',
     'test/unit/**/ModelBase_spec.js',
     'test/unit/**/ModelDefinitions_spec.js',
+    'test/unit/**/ModelDefinition_spec.js',
     'test/unit/**/ModelValidation_spec.js',
     'test/unit/logger/*_spec.js',
     'test/unit/lib/**/*',

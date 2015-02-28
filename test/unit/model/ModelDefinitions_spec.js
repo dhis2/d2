@@ -1,8 +1,9 @@
+import ModelDefinitions from '../../../src/model/ModelDefinitions.js';
+
 describe('D2 models', () => {
     'use strict';
 
     var models;
-    var ModelDefinitions = require('d2/model/ModelDefinitions');
 
     class ModelDefinition {
         constructor(schema) {
