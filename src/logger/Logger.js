@@ -1,19 +1,50 @@
 /* global global */
 'use strict';
 var console;
-
 var check = require('../lib/check');
 
-module.exports = Logger;
+class Logger {
+    constructor(logging) {
+        check.checkType(logging, 'object', 'console');
+        console = logging;
+    }
 
-function Logger(logging) {
-    check.checkType(logging, 'object', 'console');
-    console = logging;
+    canLog(type) {
+        return !!(type && console && check.isType(console[type], 'function'));
+    }
 
-    this.debug = debug;
-    this.error = error;
-    this.log = log;
-    this.warn = warn;
+    debug(...rest) {
+        if (this.canLog('debug')) {
+            console.debug.apply(console, rest);
+            return true;
+        }
+        return false;
+    }
+
+    error(...rest) {
+        if (this.canLog('error')) {
+            console.log(arguments);
+            console.error.apply(console, rest);
+            return true;
+        }
+        return false;
+    }
+
+    log(...rest) {
+        if (this.canLog('log')) {
+            console.log.apply(console, rest);
+            return true;
+        }
+        return false;
+    }
+
+    warn(...rest) {
+        if (this.canLog('warn')) {
+            console.warn.apply(console, rest);
+            return true;
+        }
+        return false;
+    }
 }
 
 Logger.getLogger = function () {
@@ -23,39 +54,4 @@ Logger.getLogger = function () {
     return (this.logger = new Logger(global.console));
 };
 
-function debug() {
-    if (canLog('debug')) {
-        console.debug.apply(console, arguments);
-        return true;
-    }
-    return false;
-}
-
-function error() {
-    if (canLog('error')) {
-        console.log(arguments);
-        console.error.apply(console, arguments);
-        return true;
-    }
-    return false;
-}
-
-function log() {
-    if (canLog('log')) {
-        console.log.apply(console, arguments);
-        return true;
-    }
-    return false;
-}
-
-function warn() {
-    if (canLog('warn')) {
-        console.warn.apply(console, arguments);
-        return true;
-    }
-    return false;
-}
-
-function canLog(type) {
-    return !!(type && console && check.isType(console[type], 'function'));
-}
+export default Logger;

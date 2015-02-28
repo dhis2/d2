@@ -1,4 +1,5 @@
 {
+    "esnext": true,
     "maximumLineLength": 200,
     "requireSpacesInFunctionExpression": {
         "beforeOpeningRoundBrace": true,

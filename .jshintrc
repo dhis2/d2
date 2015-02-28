@@ -23,14 +23,18 @@
     "maxstatements": 30,
     "maxcomplexity": 6,
     "latedef": "nofunc",
+    "esnext": true,
 
     "browser": true,
 
     "predef": [
-        //App globals
-        "angular", "_",
+        //TODO: to be removed
+        "jasmine", "module", "require",
 
         //Test globals
-        "jasmine", "describe", "it", "beforeEach", "beforeAll", "afterEach", "inject", "module", "expect", "spyOn", "fixtures", "jQuery", "sinon", "require"
+        "describe", "it", "beforeEach", "beforeAll", "afterEach", "expect", "fixtures", "jQuery",
+
+        //Sinon global
+        "sinon", "stub", "spy"
     ]
 }

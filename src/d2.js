@@ -1,5 +1,4 @@
 'use strict';
-require('when/es6-shim/Promise.browserify-es6');
 
 var pick = require('d2/lib/utils').pick;
 var check = require('d2/lib/check');
@@ -13,7 +12,7 @@ var d2 = {
     Api: Api
 };
 
-module.exports = function (config) {
+function d2Init(config) {
     var api = Api.getApi();
 
     if (config && check.checkType(config, 'object', 'Config parameter')) {
@@ -23,6 +22,7 @@ module.exports = function (config) {
     model.ModelDefinition.prototype.api = api;
 
     d2.models = new model.ModelDefinitions();
+
     return api.get('schemas')
         .then(pick('schemas'))
         .then(function (schemas) {
@@ -37,11 +37,13 @@ module.exports = function (config) {
 
             return Promise.reject(error);
         });
-};
+}
 
 function processConfig(api, config) {
     if (check.isString(config.baseUrl)) {
         api.setBaseUrl(config.baseUrl);
+    } else {
+        api.setBaseUrl('/api');
     }
 }
 
@@ -52,3 +54,5 @@ function processConfig(api, config) {
     }
 
 })(typeof window !== 'undefined' ? window : module.exports);
+
+export default d2Init;

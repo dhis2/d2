@@ -1,21 +1,17 @@
 'use strict';
 
-module.exports = ModelBase;
+class ModelBase {
+    create() {
 
-function ModelBase() {
-    this.create = create;
-    this.save = save;
-    this.validate = validate;
+    }
+
+    save() {
+
+    }
+
+    validate() {
+
+    }
 }
 
-function create() {
-
-}
-
-function save() {
-
-}
-
-function validate() {
-
-}
+export default new ModelBase();

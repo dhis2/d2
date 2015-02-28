@@ -64,7 +64,7 @@ function get(identifier) {
             var model = modelDefinition.create();
 
             //Set the datavalues onto the model directly
-            Object.keys(model).forEach(function(key) {
+            Object.keys(model).forEach((key) => {
                 model.dataValues[key] = data[key];
             });
 

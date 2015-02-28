@@ -1,7 +1,7 @@
 module.exports = function( config ) {
     config.set({
         basePath: '../src',
-        frameworks: ['jasmine', 'browserify', 'sinon'],
+        frameworks: ['mocha', 'browserify', 'sinon'],
 
         preprocessors: {
             '../src/**/*.html': 'html2js',
@@ -15,7 +15,7 @@ module.exports = function( config ) {
             type: 'lcov',
             dir: '../coverage',
             subdir: function(browser) {
-                // normalization process to keep a consistent browser name accross different OS
+                // normalization process to keep a consistent browser name across different OS
                 return browser.toLowerCase().split(/[ /-]/)[0];
             }
         },

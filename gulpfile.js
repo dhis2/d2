@@ -1,41 +1,54 @@
-'use strict';
-
 var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var del = require('del');
+var $ = require('gulp-load-plugins')();
 
-var buildDirectory = 'build';
+const buildDirectory = 'build';
+const manifest = require('./package.json');
+const config = manifest.babelBoilerplateOptions;
 
 var files = [
+    'test/setup/node.js',
+
     //Fixtures
     'test/fixtures/fixtures.js',
     'test/fixtures/**/*.js',
 
-    //Jasmine spec files
-    'test/specs/**/*_spec.js'
+    //Unit tests
+    'test/unit/**/d2_spec.js',
+    'test/unit/**/Model_spec.js',
+    'test/unit/**/ModelBase_spec.js',
+    'test/unit/**/ModelDefinitions_spec.js',
+    'test/unit/**/ModelValidation_spec.js',
+    'test/unit/logger/*_spec.js'
 ];
 
 gulp.task('testcoverage', function (cb) {
-    var jasmine = require('gulp-jasmine');
-    var istanbul = require('gulp-istanbul');
+    require('babel/register')({});
 
     gulp.src('src/**/*.js')
-        .pipe(istanbul())
-        .pipe(istanbul.hookRequire())
+        .pipe($.istanbul())
+        .pipe($.istanbul.hookRequire())
         .on('finish', function () {
-            gulp.src(files)
-                .pipe(jasmine())
-                .pipe(istanbul.writeReports())
-                .on('end', cb);
+            test().on('end', cb);
         });
 });
 
 gulp.task('test', function () {
-    var jasmine = require('gulp-jasmine');
-
-    return gulp.src(files)
-        .pipe(jasmine());
+    require('babel/register')({});
+    //return gulp.src(files).pipe(runKarma());
+    return test();
 });
+
+gulp.task('watch', function() {
+    gulp.watch(files, ['test']);
+});
+
+function test() {
+    return gulp.src(files, {read: false})
+        .pipe($.plumber())
+        .pipe($.mocha({reporter: 'spec', globals: config.mochaGlobals}));
+}
 
 gulp.task('e2e', ['build'], function () {
     var files = [
@@ -70,7 +83,7 @@ gulp.task('jshint', function () {
     var jshint = require('gulp-jshint');
     return gulp.src([
             'test/e2e/**/*.js',
-            'test/specs/**/*.js',
+            'test/unit/**/*.js',
             'src/**/*.js'
         ])
         .pipe(jshint())
@@ -82,7 +95,7 @@ gulp.task('jscs', function () {
     var jscs = require('gulp-jscs');
     return gulp.src([
         'test/e2e/**/*.js',
-        'test/specs/**/*.js',
+        'test/unit/**/*.js',
         'src/**/*.js'
     ]).pipe(jscs('./.jscsrc'));
 });
