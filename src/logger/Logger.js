@@ -50,10 +50,21 @@ class Logger {
 }
 
 Logger.getLogger = function () {
+    var console;
+
+    //TODO: This is not very clean try to figure out a better way to do this.
+    try {
+        //Node version
+        console = global.console;
+    } catch (e) {
+        //Browser version fallback
+        console = window.console;
+    }
+
     if (this.logger) {
         return this.logger;
     }
-    return (this.logger = new Logger(global.console));
+    return (this.logger = new Logger(console));
 };
 
 export default Logger;

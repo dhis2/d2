@@ -2,6 +2,7 @@
 
 import {checkType} from 'd2/lib/check';
 import {copyOwnProperties} from 'd2/lib/utils';
+import jQuery from 'jquery';
 
 class Api {
     constructor(jquery) {
@@ -75,7 +76,7 @@ function getApi() {
     if (getApi.api) {
         return getApi.api;
     }
-    return (getApi.api = new Api(require('jquery')));
+    return (getApi.api = new Api(jQuery));
 }
 
 function processSuccess(resolve) {

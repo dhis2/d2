@@ -8,6 +8,22 @@ class Model {
         checkType(modelDefinition.modelValidations, 'object', 'modelValidations');
         checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
 
+        //Property to store reference to the modelDefinition
+        Object.defineProperty(this, 'modelDefinition', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: modelDefinition
+        });
+
+        //Property to store dirty checking state
+        Object.defineProperty(this, 'dirty', {
+            enumerable: false,
+            configurable: false,
+            writable: true,
+            value: false
+        });
+
         //Values object used to store the actual model values
         Object.defineProperty(this, 'dataValues', {
             enumerable: false,

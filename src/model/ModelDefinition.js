@@ -1,6 +1,6 @@
 'use strict';
 
-import {checkType, isString, checkDefined} from 'd2/lib/check';
+import {checkType, isString, isObject, objectsAreAlike, checkDefined} from 'd2/lib/check';
 import {addLockedProperty, curry, throwError} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 
@@ -111,11 +111,20 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
         enumerable: true,
         get: function () {
             return this.dataValues[propertyName];
-        },
-        set: function (value) {
-            this.dataValues[propertyName] = value;
         }
     };
+
+    //Only add a setter for writable properties
+    if (schemaProperty.writable) {
+        propertyDetails.set = function (value) {
+
+            //TODO: Objects and Arrays are concidered unequal when their data is the same and therefore trigger a dirty
+            if ((!isObject(value) && (value !== this.dataValues[propertyName])) || isObject(value)) {
+                this.dirty = true;
+                this.dataValues[propertyName] = value;
+            }
+        };
+    }
 
     if (propertyName) {
         propertiesObject[propertyName] = propertyDetails;

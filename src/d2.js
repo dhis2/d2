@@ -6,15 +6,15 @@ import Logger from 'd2/logger/Logger';
 import model from 'd2/model/models';
 import Api from 'd2/api/Api';
 
-var logger = Logger.getLogger();
-
-var d2 = {
-    models: undefined,
-    model: model,
-    Api: Api
-};
-
 function d2Init(config) {
+    var logger = Logger.getLogger();
+
+    var d2 = {
+        models: undefined,
+        model: model,
+        Api: Api
+    };
+
     var api = Api.getApi();
 
     if (config && checkType(config, 'object', 'Config parameter')) {

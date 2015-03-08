@@ -176,9 +176,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should not have a set method for dimensionType', () => {
-                //TODO: Implement not being able to set certain properties
-                //expect(modelProperties.dimensionType.set).not.to.be.instanceof(Function);
-                return;
+                expect(modelProperties.dimensionType.set).not.to.be.instanceof(Function);
             });
 
             it('should create getter function on the propertyDescriptor', () => {
@@ -192,7 +190,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should create setter function on the propertyDescriptor', () => {
-                var model = {
+                let model = {
                     dataValues: {
 
                     }
@@ -202,10 +200,51 @@ describe('ModelDefinition', () => {
 
                 expect(model.dataValues.name).to.equal('James');
             });
+
+            describe('setter', () => {
+                let model;
+
+                beforeEach(() => {
+                    model = {
+                        dirty: false,
+                        dataValues: {
+
+                        }
+                    };
+                });
+
+                it('should set the dirty property to true when a value is set', () => {
+                    modelProperties.name.set.call(model, 'James');
+
+                    expect(model.dirty).to.be.true;
+                });
+
+                it('should not set the dirty property to true when the value is the same', function () {
+                    model.dataValues.name = 'James';
+                    modelProperties.name.set.call(model, 'James');
+
+                    expect(model.dirty).to.be.false;
+                });
+
+                //TODO: Look at a deep equals for this dirty check
+                //it('should not set the dirty property when an identical object is added', function () {
+                //    model.dataValues.name = {name: 'James'};
+                //    modelProperties.name.set.call(model, {name: 'James'});
+                //
+                //    expect(model.dirty).to.be.false;
+                //});
+
+                it('should set the dirty property when a different object is added', function () {
+                    model.dataValues.name = {name: 'James'};
+                    modelProperties.name.set.call(model, {name: 'James', last: 'Doe'});
+
+                    expect(model.dirty).to.be.true;
+                });
+            });
         });
 
         describe('modelValidations', () => {
-            var modelValidations;
+            let modelValidations;
 
             beforeEach(() => {
                 modelValidations = dataElementModelDefinition.modelValidations;

@@ -46,10 +46,45 @@ describe('Model', () => {
         expect(model.validate).to.be.instanceof(Function);
     });
 
+    it('should have a dirty property that is set to false', () => {
+        expect(model.dirty).to.be.false;
+    });
+
+    it('should not show the dirty property in the enumerable properties', () => {
+        let keys = Object.keys(model);
+
+        expect(keys).not.to.include('dirty');
+    });
+
     it('should add properties based on the modelDefinition', () => {
+        //TODO: This fixture is outdated and we should update to a fixture with getters and setters.
         let dataElementModel = Model.create(fixtures.get('modelDefinitions/dataElement'));
 
         expect(Object.keys(dataElementModel).length).to.equal(34);
+    });
+
+    it('should keep a reference to its definition', () => {
+        let modelDefinition = {modelValidations: {}, modelProperties: []};
+        let dataElementModel = Model.create(modelDefinition);
+
+        expect(dataElementModel.modelDefinition).to.equal(modelDefinition);
+    });
+
+    it('should not show the modelDefinition property in the enumerable properties', () => {
+        let keys = Object.keys(model);
+
+        expect(keys).not.to.include('modelDefinition');
+    });
+
+    it('should not allow the modelDefinition to be changed', () => {
+        let modelDefinition = {modelValidations: {}, modelProperties: []};
+        let dataElementModel = Model.create(modelDefinition);
+
+        function shouldThrow() {
+            dataElementModel.modelDefinition = {};
+        }
+
+        expect(shouldThrow).to.throw;
     });
 
     describe('properties based off model definition', () => {

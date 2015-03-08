@@ -14,4 +14,10 @@ describe('ModelBase', function () {
     it('should have a validate method', function () {
         expect(modelBase.validate).to.be.instanceof(Function);
     });
+
+    describe('save', () => {
+        it('should call the save on the model', () => {
+            
+        });
+    });
 });
