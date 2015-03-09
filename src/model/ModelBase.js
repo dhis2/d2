@@ -6,7 +6,7 @@ class ModelBase {
     }
 
     save() {
-
+        this.modelDefinition.save(this);
     }
 
     validate() {

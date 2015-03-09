@@ -16,8 +16,28 @@ describe('ModelBase', function () {
     });
 
     describe('save', () => {
-        it('should call the save on the model', () => {
-            
+        let modelDefinition;
+        let model;
+
+        beforeEach(() => {
+            modelDefinition = {
+                save: spy()
+            };
+
+            class Model{
+                constructor(modelDefinition) {
+                    this.modelDefinition = modelDefinition;
+                }
+            }
+
+            Model.prototype = modelBase;
+            model = new Model(modelDefinition);
+        });
+
+        it('should call the save on the model modelDefinition with itself as a property', () => {
+            model.save();
+
+            expect(modelDefinition.save).to.have.been.called;
         });
     });
 });
