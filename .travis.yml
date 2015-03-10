@@ -11,4 +11,3 @@ script:
   - gulp travis
   - cd src
   - cat ../coverage/lcov.info | ../node_modules/coveralls/bin/coveralls.js
-  - gulp clean
