@@ -17,6 +17,8 @@ class ModelValidation {
 
     validate(value, validationSettings) {
         if (isObject(validationSettings)) {
+
+            //No value when not required is a valid value.
             if (validationSettings.required === false && !value) {
                 return true;
             }
@@ -37,7 +39,7 @@ ModelValidation.getModelValidation = function () {
 };
 
 //TODO: See if we can reduce the complexity of this function
-function typeValidation(value, type) { //jshint maxcomplexity: 12
+function typeValidation(value, type) { //jshint maxcomplexity: 15
     switch (type) {
         case 'INTEGER':
             return isInteger(value);
@@ -55,6 +57,10 @@ function typeValidation(value, type) { //jshint maxcomplexity: 12
             return isString(value);
         case 'COMPLEX':
             return isObject(value);
+        case 'DATE':
+        case 'REFERENCE':
+        case 'BOOLEAN':
+            return true;
         default:
             //TODO: Add logger for d2?
             //TODO: Perhaps this should throw?
@@ -86,11 +92,11 @@ function isSmallerThanMax(value, maxValue) {
 }
 
 function isLargerThanLength(value, minValue) {
-    return Boolean(value && value.length && value.length >= minValue);
+    return Boolean(value && isInteger(value.length) && value.length >= minValue);
 }
 
 function isSmallerThanLength(value, maxValue) {
-    return Boolean(value && value.length && value.length <= maxValue);
+    return Boolean(value && isInteger(value.length) && value.length <= maxValue);
 }
 
 function typeSpecificValidation(value, valueType) {

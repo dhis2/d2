@@ -41,7 +41,7 @@ gulp.task('test', function () {
  * Watch the files defined in `files` and run the unit tests when a change was detected
  */
 gulp.task('watch', function() {
-    return gulp.watch(files, ['test']);
+    return gulp.watch(files.concat(['src/**/*.js']), ['test']);
 });
 
 /**
@@ -130,7 +130,7 @@ function runUnitTests() {
     return gulp.src(files, {read: false})
         .pipe($.plumber())
         .pipe($.mocha({
-            reporter: 'spec',
+            reporter: 'dot',
             globals: config.mochaGlobals,
         }));
 }
@@ -144,7 +144,7 @@ function runUnitTestsWithCoverage() {
     return gulp.src(files, {read: false})
         .pipe($.plumber())
         .pipe($.spawnMocha({
-            reporter: 'spec',
+            reporter: 'dot',
             globals: config.mochaGlobals,
             compilers: 'js:babel/register',
             istanbul: true

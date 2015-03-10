@@ -64,4 +64,44 @@ describe('D2.models', function () {
         expect(dataElementModel.name).to.be.defined;
         expect(dataElementModel.name).to.equal('myDataElement');
     });
+
+    describe('validate', function () {
+        it('should return false for an empty model', function () {
+            var dataElementModel = d2.models.dataElement.create();
+
+            expect(dataElementModel.validate().status).to.be.false;
+        });
+
+        describe('model with data', function () {
+            var loadedModel;
+
+            beforeEach(function (done) {
+                server.respondWith(
+                    'GET',
+                    '/dhis/api/users/myUserId?fields=%3Aall',
+                    [
+                        200,
+                        {'Content-Type': 'application/json'},
+                        JSON.stringify(window.fixtures.singleUser)
+                    ]
+                );
+
+                d2.models.user.get('myUserId')
+                    .then(function (model) {
+                        loadedModel = model;
+                        done();
+                    });
+            });
+
+            it('should return true for an object from the api', function () {
+                expect(loadedModel.validate().status).to.be.true;
+            });
+
+            it('should return false when a value is changed to an invalid value', function () {
+                loadedModel.firstName = 'a';
+
+                expect(loadedModel.validate().status).to.be.false;
+            });
+        });
+    });
 });

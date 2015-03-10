@@ -130,6 +130,12 @@ describe('ModelValidations', () => {
         it('should not validate when the collection size is too large', () => {
             expect(modelValidation.validate([1, 2, 3, 4], validationSettings)).to.be.false;
         });
+
+        it('should validate a collection when the collection can be empty', () => {
+            validationSettings.min = 0;
+
+            expect(modelValidation.validate([], validationSettings)).to.be.true;
+        });
     });
 
     describe('stringValidation', () => {
