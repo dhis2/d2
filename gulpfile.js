@@ -96,7 +96,7 @@ gulp.task('clean', function () {
  * the lint and code style checks
  */
 gulp.task('travis', function () {
-    return runSequence('coverage', 'e2e', 'jshint', 'jscs');
+    return runSequence('coverage', 'jshint', 'jscs');
 });
 
 
