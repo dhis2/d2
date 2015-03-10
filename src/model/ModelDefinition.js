@@ -80,6 +80,10 @@ class ModelDefinition {
                 return Promise.reject(response.data);
             });
     }
+
+    save() {
+        return this.api.post();
+    }
 }
 
 ModelDefinition.createFromSchema = createFromSchema;

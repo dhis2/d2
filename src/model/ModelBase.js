@@ -5,9 +5,15 @@ let modelValidator = ModelValidation.getModelValidation();
 
 class ModelBase {
     save() {
-        if (this.validate().status) {
-            this.modelDefinition.save(this);
+        if (!this.dirty) {
+            return Promise.reject('No changes to be saved');
         }
+
+        if (this.validate().status) {
+            return this.modelDefinition.save(this);
+        }
+
+        return Promise.reject('Model status is not valid');
     }
 
     validate() {

@@ -110,4 +110,33 @@ describe('D2.models', function () {
             });
         });
     });
+
+    describe('save', function () {
+        describe('existing model', function () {
+            var loadedModel;
+
+            beforeEach(function (done) {
+                server.respondWith(
+                    'GET',
+                    '/dhis/api/users/myUserId?fields=%3Aall',
+                    [
+                        200,
+                        {'Content-Type': 'application/json'},
+                        JSON.stringify(window.fixtures.singleUser)
+                    ]
+                );
+
+                d2.models.user.get('myUserId')
+                    .then(function (model) {
+                        loadedModel = model;
+                        done();
+                    });
+            });
+
+            it('should save the model to the server', function () {
+                //TODO: Implement
+                loadedModel.save();
+            });
+        });
+    });
 });

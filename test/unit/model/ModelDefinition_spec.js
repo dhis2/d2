@@ -219,7 +219,7 @@ describe('ModelDefinition', () => {
                     expect(model.dirty).to.be.true;
                 });
 
-                it('should not set the dirty property to true when the value is the same', function () {
+                it('should not set the dirty property to true when the value is the same', () => {
                     model.dataValues.name = 'James';
                     modelProperties.name.set.call(model, 'James');
 
@@ -227,14 +227,14 @@ describe('ModelDefinition', () => {
                 });
 
                 //TODO: Look at a deep equals for this dirty check
-                //it('should not set the dirty property when an identical object is added', function () {
+                //it('should not set the dirty property when an identical object is added', () => {
                 //    model.dataValues.name = {name: 'James'};
                 //    modelProperties.name.set.call(model, {name: 'James'});
                 //
                 //    expect(model.dirty).to.be.false;
                 //});
 
-                it('should set the dirty property when a different object is added', function () {
+                it('should set the dirty property when a different object is added', () => {
                     model.dataValues.name = {name: 'James'};
                     modelProperties.name.set.call(model, {name: 'James', last: 'Doe'});
 
@@ -381,6 +381,42 @@ describe('ModelDefinition', () => {
                     expect(dataElementError).to.equal('id not found');
                     done();
                 });
+        });
+    });
+
+    describe('save', () => {
+        let apiPostStub;
+        let model;
+        let userModelDefinition;
+
+        beforeEach(() => {
+            let singleUserAllFields = fixtures.get('singleUserAllFields');
+
+            apiPostStub = stub().returns(new Promise((resolve) => {
+                resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+            }));
+
+            ModelDefinition.prototype.api = {
+                post: apiPostStub
+            };
+
+            userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+
+            model = {dataValues: {}};
+
+            Object.keys(singleUserAllFields).forEach((key) => {
+                model.dataValues[key] = singleUserAllFields[key];
+            });
+        });
+
+        it('should be a method that returns a promise', () => {
+            expect(userModelDefinition.save()).to.be.instanceof(Promise);
+        });
+
+        it('should call the post method on the api', () => {
+            userModelDefinition.save();
+
+            expect(apiPostStub).to.have.been.called;
         });
     });
 });
