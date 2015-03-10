@@ -108,7 +108,6 @@ describe('ModelBase', function () {
                 }
             }
 
-
             Model.prototype = modelBase;
             model = new Model(modelValidations);
 
