@@ -1,3 +1,4 @@
+/* global System */
 describe('D2.models', function () {
     var server;
     var d2;

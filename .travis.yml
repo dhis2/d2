@@ -3,6 +3,10 @@ language: node_js
 node_js:
   - "0.10"
 
+before_install:
+  - npm install -g jspm
+  - jspm install
+
 script:
   - gulp travis
   - cd src
