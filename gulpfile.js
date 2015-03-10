@@ -4,124 +4,104 @@ var del = require('del');
 var $ = require('gulp-load-plugins')();
 
 const buildDirectory = 'build';
+const coverageDirectory = 'coverage';
 const manifest = require('./package.json');
 const config = manifest.babelBoilerplateOptions;
 
+/**
+ * Files that are used for running the unit test and code coverage tasks
+ * These files are passed into mocha
+ */
 var files = [
+    //Do some setup tasks
     'test/setup/node.js',
 
-    //Fixtures
+    //Fixtures that contain data/objects to use for unit tests
     'test/fixtures/fixtures.js',
-    'test/fixtures/**/*.js',
 
-    //Unit tests
-    'test/unit/**/*_spec.js',
+    //Unit test specs
+    'test/unit/**/*_spec.js'
 ];
 
-gulp.task('testcoverage', function (cb) {
-    require('babel/register')({});
-
-    gulp.src('src/**/*.js')
-        .pipe($.istanbul())
-        .pipe($.istanbul.hookRequire())
-        .on('finish', function () {
-            test().on('end', cb);
-        });
+/**
+ * Run code coverage for the unit tests
+ */
+gulp.task('coverage', function () {
+    return runUnitTestsWithCoverage();
 });
 
+/**
+ * Run the unit tests
+ */
 gulp.task('test', function () {
-    require('babel/register')({});
-    //return gulp.src(files).pipe(runKarma());
-    return test();
+    return runUnitTests();
 });
 
+/**
+ * Watch the files defined in `files` and run the unit tests when a change was detected
+ */
 gulp.task('watch', function() {
-    gulp.watch(files, ['test']);
+    return gulp.watch(files, ['test']);
 });
 
-function test() {
-    return gulp.src(files, {read: false})
-        .pipe($.plumber())
-        .pipe($.mocha({reporter: 'spec', globals: config.mochaGlobals}));
-}
-
-gulp.task('e2e', ['build'], function () {
-    var files = [
-        'test/fixtures/**/*.js',
-        'node_modules/jquery/dist/jquery.js',
-        'build/d2.js',
-        'test/e2e/**/*_spec.js'
-    ];
-
-    return gulp.src(files).pipe(runKarma());
+/**
+ * Run e2e tests using karma test runner
+ */
+gulp.task('e2e', function () {
+    return gulp.src([]).pipe(runKarma());
 });
 
-gulp.task('e2e-watch', ['build'], function () {
-    var e2eFiles = [
-        'test/fixtures/**/*.js',
-        'node_modules/jquery/dist/jquery.js',
-        'src/**/*.js',
-        'test/e2e/**/*_spec.js'
-    ];
-
-    return gulp.src(e2eFiles).pipe(runKarma(true));
+/**
+ * Watch for the changes to files and run the e2e tests
+ */
+gulp.task('e2e-watch', function () {
+    return gulp.src([]).pipe(runKarma(true));
 });
 
-gulp.task('watch', function () {
-    return gulp.watch([
-        'src/**/*.js',
-        'test/**/*.js'
-    ], ['test']);
-});
-
+/**
+ * Lint the code for errors
+ */
 gulp.task('jshint', function () {
-    var jshint = require('gulp-jshint');
     return gulp.src([
             'test/e2e/**/*.js',
             'test/unit/**/*.js',
             'src/**/*.js'
         ])
-        .pipe(jshint())
-        .pipe(jshint.reporter('jshint-stylish'))
-        .pipe(jshint.reporter('fail'));
+        .pipe($.jshint())
+        .pipe($.jshint.reporter('jshint-stylish'))
+        .pipe($.jshint.reporter('fail'));
 });
 
+/**
+ * Check code style using jscs
+ */
 gulp.task('jscs', function () {
-    var jscs = require('gulp-jscs');
     return gulp.src([
         'test/e2e/**/*.js',
         'test/unit/**/*.js',
         'src/**/*.js'
-    ]).pipe(jscs('./.jscsrc'));
+    ]).pipe($.jscs('./.jscsrc'));
 });
 
+/**
+ * Clean up the build directory and coverage directory
+ */
 gulp.task('clean', function () {
     del(buildDirectory);
+    del(coverageDirectory);
 });
 
+/**
+ * Task to be run by travis. This runs coverage which runs the unit tests. Then additionally it runs the e2e tests and
+ * the lint and code style checks
+ */
 gulp.task('travis', function () {
-    return runSequence('testcoverage', 'e2e', 'jshint', 'jscs');
+    return runSequence('coverage', 'e2e', 'jshint', 'jscs');
 });
 
 
 gulp.task('build', ['clean'], function () {
-    var browserify = require('browserify');
-    var source = require('vinyl-source-stream');
-    var buffer = require('vinyl-buffer');
-    var sourcemaps = require('gulp-sourcemaps');
-
-    return browserify({ debug: true })
-        .transform('babelify')
-        .transform({global: true}, 'browserify-shim')
-        .require('./src/d2.js', { entry: true })
-        .add('./src/d2.js')
-        .bundle()
-        .on('error', function (err) { console.log('Error : ' + err.message); })
-        .pipe(source('d2.js'))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./build'));
+    //TODO: Create a build that includes all the system.js functions
 });
 
 /**************************************************************************************************
@@ -129,7 +109,6 @@ gulp.task('build', ['clean'], function () {
  */
 
 function runKarma(watch) {
-    var karma = require('gulp-karma');
     var config = {
         configFile: 'test/karma.conf.js'
     };
@@ -142,5 +121,32 @@ function runKarma(watch) {
         config.action = 'watch';
     }
 
-    return karma(config);
+    return $.karma(config);
+}
+
+function runUnitTests() {
+    require('babel/register')();
+
+    return gulp.src(files, {read: false})
+        .pipe($.plumber())
+        .pipe($.mocha({
+            reporter: 'spec',
+            globals: config.mochaGlobals,
+        }));
+}
+
+/**
+ * Uses gulp-spawn-mocha so we can pass a compilers flag and do coverage commands.
+ *
+ * The
+ */
+function runUnitTestsWithCoverage() {
+    return gulp.src(files, {read: false})
+        .pipe($.plumber())
+        .pipe($.spawnMocha({
+            reporter: 'spec',
+            globals: config.mochaGlobals,
+            compilers: 'js:babel/register',
+            istanbul: true
+        }));
 }

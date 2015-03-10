@@ -56,27 +56,25 @@
     "vinyl-source-stream": "^1.0.0",
     "when": "^3.6.4"
   },
-  "browserify": {
-    "transform": [
-      "babelify",
-      "browserify-shim"
-    ]
-  },
-  "browserify-shim": {
-    "jquery": "global:jQuery"
-  },
   "devDependencies": {
     "chai": "^2.1.0",
+    "gulp-istanbul": "^0.5.0",
     "gulp-load-plugins": "^0.8.1",
     "gulp-mocha": "^2.0.0",
     "gulp-plumber": "^0.6.6",
+    "gulp-spawn-mocha": "^2.0.1",
+    "isparta": "^2.2.0",
+    "karma-babel-preprocessor": "^4.0.0",
+    "karma-chai": "^0.1.0",
+    "karma-coverage": "git://github.com/douglasduteil/karma-coverage#next",
+    "karma-sinon-chai": "^0.3.0",
     "mocha": "^2.1.0",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.7.0"
   },
   "babelBoilerplateOptions": {
     "entryFileName": "src/d2",
-    "exportVarName": "awesome",
+    "exportVarName": "d2",
     "mochaGlobals": [
       "stub",
       "spy",

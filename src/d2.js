@@ -49,12 +49,4 @@ function processConfig(api, config) {
     }
 }
 
-/* istanbul ignore next */
-(function (global) {
-    if (global.document) {
-        global.d2 = d2Init;
-    }
-
-})(typeof window !== 'undefined' ? window : module.exports);
-
 export default d2Init;
