@@ -34,8 +34,8 @@ describe('Model', () => {
         expect(shouldThrow).to.throw('modelProperties should be provided');
     });
 
-    it('should have a create method', () => {
-        expect(model.create).to.be.instanceof(Function);
+    it('should have a create method on the class', () => {
+        expect(Model.create).to.be.instanceof(Function);
     });
 
     it('should have a save method', () => {

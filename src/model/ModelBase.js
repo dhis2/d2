@@ -4,10 +4,6 @@ import ModelValidation from 'd2/model/ModelValidation';
 let modelValidator = ModelValidation.getModelValidation();
 
 class ModelBase {
-    create() {
-
-    }
-
     save() {
         if (this.validate().status) {
             this.modelDefinition.save(this);
