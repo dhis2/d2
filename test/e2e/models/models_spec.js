@@ -102,6 +102,12 @@ describe('D2.models', function () {
 
                 expect(loadedModel.validate().status).to.be.false;
             });
+
+            it('should have the correct incorrect fields after calling validate', function () {
+                loadedModel.firstName = 'a';
+
+                expect(loadedModel.validate().fields).to.deep.equal(['firstName']);
+            });
         });
     });
 });
