@@ -8,7 +8,7 @@ describe('ModelDefinition', () => {
     var modelDefinition;
 
     beforeEach(() => {
-        modelDefinition = new ModelDefinition('dataElement');
+        modelDefinition = new ModelDefinition('dataElement', 'dataElements');
     });
 
     it('should create a ModelDefinition object', () => {
@@ -31,6 +31,13 @@ describe('ModelDefinition', () => {
             new ModelDefinition({});
         }
         expect(shouldThrow).to.throw('Expected [object Object] to have type string');
+    });
+
+    it('should throw an error when plural is not specified', () => {
+        function shouldThrow() {
+            new ModelDefinition('dataElement');
+        }
+        expect(shouldThrow).to.throw('Plural should be provided');
     });
 
     describe('instance', () => {
@@ -399,6 +406,48 @@ describe('ModelDefinition', () => {
         });
     });
 
+    describe('list', () => {
+        var dataElementModelDefinition;
+
+        beforeEach (() => {
+            ModelDefinition.prototype.api = {
+                get: stub().returns(new Promise((resolve) => {
+                    resolve(fixtures.get('/api/dataElements'));
+                }))
+            };
+
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+        });
+
+        it('should be a function', () => {
+            expect(dataElementModelDefinition.list).to.be.instanceof(Function);
+        });
+
+        it('should call the get method on the api', function () {
+            dataElementModelDefinition.list();
+
+            expect(ModelDefinition.prototype.api.get).to.be.called;
+        });
+
+        it('should return a promise', function () {
+            expect(dataElementModelDefinition.list()).to.be.instanceof(Promise);
+        });
+
+        it('should call the get method on the api with the endpoint of the model', function () {
+            dataElementModelDefinition.list();
+
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
+        });
+
+        it('should have the correct number of items in the list', (done) => {
+            dataElementModelDefinition.list()
+                .then((list) => {
+                    expect(list.length).to.equal(5);
+                    done();
+                });
+        });
+    });
+
     describe('save', () => {
         let apiPostStub;
         let model;
@@ -475,7 +524,7 @@ describe('ModelDefinition subsclasses', () => {
         beforeEach(() => {
             UserModelDefinition = ModelDefinition.specialClasses.user;
 
-            userModelDefinition = new UserModelDefinition('User', {}, {}, {});
+            userModelDefinition = new UserModelDefinition('user', 'users', {}, {}, {});
         });
 
         it('should be instance of Model', () => {

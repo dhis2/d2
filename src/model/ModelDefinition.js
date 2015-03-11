@@ -12,10 +12,12 @@ import schemaTypes from 'd2/lib/SchemaTypes';
  * property is an instance of `Api`.
  */
 class ModelDefinition {
-    constructor(modelName, modelOptions, properties, validations) {
+    constructor(modelName, modelNamePlural, modelOptions, properties, validations) {
         checkType(modelName, 'string');
+        checkType(modelNamePlural, 'string', 'Plural');
 
         addLockedProperty(this, 'name', modelName);
+        addLockedProperty(this, 'plural', modelNamePlural);
         addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
         addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
         addLockedProperty(this, 'modelProperties', properties);
@@ -27,8 +29,17 @@ class ModelDefinition {
      *
      * @returns {Model}
      */
-    create() {
-        return Object.seal(Model.create(this));
+    create(data) {
+        let model = Object.seal(Model.create(this));
+
+        if (data) {
+            //Set the datavalues onto the model directly
+            Object.keys(model).forEach((key) => {
+                model.dataValues[key] = data[key];
+            });
+        }
+
+        return model;
     }
 
     /**
@@ -43,18 +54,16 @@ class ModelDefinition {
 
         //TODO: should throw error if API has not been defined
         return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
-            .then((data) => {
-                var model = this.create();
-
-                //Set the datavalues onto the model directly
-                Object.keys(model).forEach((key) => {
-                    model.dataValues[key] = data[key];
-                });
-
-                return model;
-            })
+            .then((data) => this.create(data))
             .catch((response) => {
                 return Promise.reject(response.data);
+            });
+    }
+
+    list(queryParams = {fields: ':all'}) {
+        return this.api.get(this.apiEndpoint, queryParams)
+            .then((data) => {
+                return data[this.plural].map((data) => this.create(data));
             });
     }
 
@@ -73,19 +82,18 @@ class ModelDefinition {
     }
 
     static createFromSchema(schema) {
+        let ModelDefinitionClass;
         checkType(schema, Object, 'Schema');
 
         if (typeof ModelDefinition.specialClasses[schema.name] === 'function') {
-            return Object.freeze(new ModelDefinition.specialClasses[schema.name](
-                schema.name,
-                schema,
-                Object.freeze(createPropertiesObject(schema.properties)),
-                Object.freeze(createValidations(schema.properties))
-            ));
+            ModelDefinitionClass = ModelDefinition.specialClasses[schema.name];
+        } else {
+            ModelDefinitionClass = ModelDefinition;
         }
 
-        return Object.freeze(new ModelDefinition(
+        return Object.freeze(new ModelDefinitionClass(
             schema.name,
+            schema.plural,
             schema,
             Object.freeze(createPropertiesObject(schema.properties)),
             Object.freeze(createValidations(schema.properties))
@@ -158,7 +166,8 @@ function createValidationSetting(validationObject, schemaProperty) {
         min: schemaProperty.min,
         max: schemaProperty.max,
         owner: schemaProperty.owner,
-        unique: schemaProperty.unique
+        unique: schemaProperty.unique,
+        writable: schemaProperty.writable
     };
 
     if (propertyName) {

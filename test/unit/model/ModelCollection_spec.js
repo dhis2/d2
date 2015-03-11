@@ -9,16 +9,21 @@ function getFakeModelClass() {
         }
     }
 
+    class ModelDefinition {
+
+    }
+
     proxyquire('d2/model/ModelCollection', {
-        'd2/model/Model': Model
+        'd2/model/Model': Model,
+        'd2/model/ModelDefinition': ModelDefinition
     });
 
-    return Model;
+    return [Model, ModelDefinition];
 }
 
 describe('ModelCollection', () => {
     let ModelCollection;
-    let Model = getFakeModelClass();
+    let [Model, ModelDefinition] = getFakeModelClass();
 
     beforeEach(() => {
         ModelCollection = require('d2/model/ModelCollection');
@@ -35,20 +40,54 @@ describe('ModelCollection', () => {
             });
 
             it('should return an instance of the class', () => {
-                expect(ModelCollection.create()).to.be.instanceof(ModelCollection);
+                expect(ModelCollection.create(new ModelDefinition())).to.be.instanceof(ModelCollection);
             });
         });
     });
 
     describe('instance', () => {
+        let modelDefinition;
         let modelCollection;
 
         beforeEach(() => {
-            modelCollection = new ModelCollection();
+            modelDefinition = new ModelDefinition();
+            modelCollection = new ModelCollection(modelDefinition);
         });
 
         it('should be an instance of Map', () => {
             expect(modelCollection).to.be.instanceof(Map);
+        });
+
+        it('should throw if being constructed with non Model values', () => {
+            expect(() => new ModelCollection(modelDefinition, [1, 2, 3])).to.throw('Values of a ModelCollection must be instances of Model');
+        });
+
+        it('should accept an array of Model objects', () => {
+            modelCollection = new ModelCollection(modelDefinition, [new Model('q2egwkkrfc1'), new Model('q2egwkkrfc2'), new Model('q2egwkkrfc3')]);
+
+            expect(modelCollection.size).to.equal(3);
+        });
+
+        it('should not add the same model twice', () => {
+            modelCollection = new ModelCollection(modelDefinition, [new Model('q2egwkkrfc1'), new Model('q2egwkkrfc1')]);
+
+            expect(modelCollection.size).to.equal(1);
+        });
+
+        it('should return the first Model', () => {
+            let firstModel = new Model('q2egwkkrfc1');
+            let firstValue;
+
+            modelCollection = new ModelCollection(modelDefinition, [firstModel, new Model('q2egwkkrfc1')]);
+
+            firstValue = modelCollection[Symbol.iterator]().next().value[1];
+
+            expect(firstValue).to.deep.equal(firstModel);
+            expect(firstValue).to.be.instanceof(Model);
+        });
+
+        it('should set the modelDefinition onto the modelCollection', () => {
+            expect(modelCollection.modelDefinition).to.equal(modelDefinition);
         });
 
         describe('add', () => {
@@ -74,7 +113,7 @@ describe('ModelCollection', () => {
                 expect(() => modelCollection.add(new Model('q2egwkkrfco'))).to.throw('Values of a ModelCollection must be instances of Model');
             });
 
-            it('should accept an object that was create with Model as subclass', function () {
+            it('should accept an object that was create with Model as subclass', () => {
                 class MyModel extends Model{}
                 let myModel = new MyModel('q2egwkkrfco');
 
@@ -82,8 +121,20 @@ describe('ModelCollection', () => {
                 expect(modelCollection.size).to.equal(1);
             });
 
-            it('should throw if the id is not available', function () {
+            it('should throw if the id is not available', () => {
                 expect(() => modelCollection.add(new Model())).to.throw('Can not add a Model without id to a ModelCollection');
+            });
+        });
+
+        describe('nextPage', () => {
+            it('should be a method on the collection', () => {
+                expect(modelCollection.nextPage).to.be.instanceof(Function);
+            });
+        });
+
+        describe('previousPage', () => {
+            it('should be a method on the collection', () => {
+                expect(modelCollection.previousPage).to.be.instanceof(Function);
             });
         });
     });
