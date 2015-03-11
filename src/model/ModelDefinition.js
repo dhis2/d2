@@ -3,30 +3,7 @@
 import {checkType, isString, isObject, checkDefined} from 'd2/lib/check';
 import {addLockedProperty, curry, throwError} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
-
-//Schemas
-var schemaTypes = [
-    'TEXT',
-    'NUMBER',
-    'INTEGER',
-    'BOOLEAN',
-    'EMAIL',
-    'PASSWORD',
-    'URL',
-    'PHONENUMBER',
-    'GEOLOCATION', //TODO: Geo location could be an advanced type of 2 numbers / strings?
-    'COLOR',
-    'COMPLEX',
-    'COLLECTION',
-    'REFERENCE',
-    'DATE',
-    'COMPLEX',
-    'IDENTIFIER'
-];
-
-function getSchemaTypes() {
-    return schemaTypes;
-}
+import schemaTypes from 'd2/lib/SchemaTypes';
 
 /**
  * ModelDefinition
@@ -176,7 +153,7 @@ function createValidationSetting(validationObject, schemaProperty) {
     var propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
     var validationDetails = {
         persisted: schemaProperty.persisted,
-        type: typeLookup(schemaProperty.propertyType),
+        type: schemaTypes.typeLookup(schemaProperty.propertyType),
         required: schemaProperty.required,
         min: schemaProperty.min,
         max: schemaProperty.max,
@@ -187,16 +164,6 @@ function createValidationSetting(validationObject, schemaProperty) {
     if (propertyName) {
         validationObject[propertyName] = validationDetails;
     }
-}
-
-var primaryTypes = getSchemaTypes();
-function typeLookup(propertyType) {
-    if (primaryTypes.indexOf(propertyType) >= 0 &&
-        isString(propertyType)) {
-
-        return propertyType;
-    }
-    throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
 }
 
 export default ModelDefinition;
