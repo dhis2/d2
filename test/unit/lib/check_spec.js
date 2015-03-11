@@ -125,6 +125,10 @@ describe('Check', () => {
             expect(check.isNumeric('\n')).to.be.false;
             expect(check.isNumeric('\n\r')).to.be.false;
         });
+
+        it('should concider Infinity not to be numeric', () => {
+            expect(check.isNumeric(Infinity)).to.be.false;
+        });
     });
 
     describe('isArray', () => {

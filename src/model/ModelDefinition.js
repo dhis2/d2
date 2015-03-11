@@ -1,6 +1,6 @@
 'use strict';
 
-import {checkType, isString, isObject, checkDefined} from 'd2/lib/check';
+import {checkType, isString, isObject, checkDefined, contains} from 'd2/lib/check';
 import {addLockedProperty, curry, throwError} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 
@@ -81,8 +81,18 @@ class ModelDefinition {
             });
     }
 
-    save() {
-        return this.api.post();
+    save(model) {
+        let objectToSave = {};
+
+        Object.keys(this.modelValidations).forEach((propertyName) => {
+            if (this.modelValidations[propertyName].owner) {
+                if (model.dataValues[propertyName]) {
+                    objectToSave[propertyName] = model.dataValues[propertyName];
+                }
+            }
+        });
+
+        return this.api.update(model.dataValues.href, objectToSave);
     }
 }
 

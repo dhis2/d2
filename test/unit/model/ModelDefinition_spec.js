@@ -397,12 +397,17 @@ describe('ModelDefinition', () => {
             }));
 
             ModelDefinition.prototype.api = {
-                post: apiPostStub
+                update: apiPostStub
             };
 
             userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
 
-            model = {dataValues: {}};
+            class Model {
+                constructor() {
+                    this.dataValues = {};
+                }
+            }
+            model = new Model();
 
             Object.keys(singleUserAllFields).forEach((key) => {
                 model.dataValues[key] = singleUserAllFields[key];
@@ -410,13 +415,31 @@ describe('ModelDefinition', () => {
         });
 
         it('should be a method that returns a promise', () => {
-            expect(userModelDefinition.save()).to.be.instanceof(Promise);
+            expect(userModelDefinition.save(model)).to.be.instanceof(Promise);
         });
 
         it('should call the post method on the api', () => {
-            userModelDefinition.save();
+            userModelDefinition.save(model);
 
-            expect(apiPostStub).to.have.been.called;
+            expect(apiPostStub).to.be.called;
+        });
+
+        it('should pass only the properties that are owned to the api', function () {
+            var expectedPayload = fixtures.get('singleUserOwnerFields');
+
+            userModelDefinition.save(model);
+
+            console.log();
+
+            expect(apiPostStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
+        });
+
+        it('should save to the url set on the model', function () {
+            userModelDefinition.save(model);
+
+            console.log();
+
+            expect(apiPostStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
         });
     });
 });

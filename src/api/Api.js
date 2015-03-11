@@ -10,6 +10,7 @@ class Api {
         this.baseUrl = '/api';
         this.defaultRequestSettings = {
             data: {},
+            contentType: 'application/json',
             dataType: 'json',
                 type: undefined,
                 url: undefined
@@ -17,20 +18,20 @@ class Api {
     }
 
     get(url, data) {
-        //jshint validthis:true
         return this.request('GET', getUrl(this.baseUrl, url), data);
     }
 
-    post() {
-
+    post(url, data) {
+        return this.request('POST', url, JSON.stringify(data));
     }
 
     remove() {
 
     }
 
-    update() {
-
+    //TODO: write tests for update
+    update(url, data) {
+        return this.request('PUT', url, JSON.stringify(data));
     }
 
     request(type, url, data) {
@@ -46,10 +47,7 @@ class Api {
                     url: url,
                     data: data || {}
                 }))
-                .then(
-                processSuccess(resolve),
-                processFailure(reject)
-            );
+                .then(processSuccess(resolve), processFailure(reject));
         });
 
         function getOptions(mergeOptions) {

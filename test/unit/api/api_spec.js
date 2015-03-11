@@ -85,6 +85,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {}
             });
         });
@@ -96,6 +97,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {}
             });
         });
@@ -107,6 +109,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements.json',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {}
             });
         });
@@ -120,6 +123,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: 'http://localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {}
             });
         });
@@ -133,6 +137,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '//localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {}
             });
         });
@@ -144,6 +149,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {}
             });
         });
@@ -155,6 +161,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
+                contentType: 'application/json',
                 data: {
                     fields: 'id,name'
                 }
@@ -193,6 +200,18 @@ describe('Api', () => {
     describe('post', () => {
         it('should be a method', () => {
             expect(api.post).to.be.instanceof(Function);
+        });
+
+        it('should call the api the with the correct data', function () {
+            api.post(fixtures.get('singleUserAllFields').href, fixtures.get('singleUserOwnerFields'));
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'POST',
+                url: fixtures.get('singleUserAllFields').href,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(fixtures.get('singleUserOwnerFields'))
+            });
         });
     });
 
