@@ -84,7 +84,7 @@ describe('Model', () => {
             dataElementModel.modelDefinition = {};
         }
 
-        expect(shouldThrow).to.throw;
+        expect(shouldThrow).to.throw();
     });
 
     describe('properties based off model definition', () => {

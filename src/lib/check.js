@@ -78,6 +78,10 @@ export function contains(item, list) {
     return list.indexOf(item) >= 0;
 }
 
+export function isValidUid(value) {
+    return value && value.length === 11;
+}
+
 export default {
     checkType: checkType,
     checkDefined: checkDefined,
@@ -87,5 +91,6 @@ export default {
     isNumeric: isNumeric,
     isString: isString,
     isType: isType,
-    contains: contains
+    contains: contains,
+    isValidUid: isValidUid
 };

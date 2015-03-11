@@ -1,7 +1,7 @@
 'use strict';
 
-import {checkType, isString, isObject, checkDefined} from 'd2/lib/check';
-import {addLockedProperty, curry, throwError} from 'd2/lib/utils';
+import {checkType, isObject, checkDefined} from 'd2/lib/check';
+import {addLockedProperty, curry} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 import schemaTypes from 'd2/lib/SchemaTypes';
 

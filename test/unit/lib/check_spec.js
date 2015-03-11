@@ -178,4 +178,10 @@ describe('Check', () => {
             expect(check.contains(undefined, [undefined])).to.be.true;
         });
     });
+
+    describe('isValidUid', () => {
+        it('should return true when the value is a valid uid', () => {
+            expect(check.isValidUid('q2egwkkrfco')).to.be.true;
+        });
+    });
 });
