@@ -61,11 +61,11 @@ class ModelDefinition {
      * @param {String} identifier
      * @returns {Promise} Resolves with a `Model` instance or an error message.
      */
-    get(identifier) {
+    get(identifier, queryParams = {fields: ':all'}) {
         checkDefined(identifier, 'Identifier');
 
         //TODO: should throw error if API has not been defined
-        return this.api.get([this.apiEndpoint, identifier].join('/'), {fields: ':all'})
+        return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
             .then((data) => {
                 var model = this.create();
 
@@ -94,19 +94,37 @@ class ModelDefinition {
 
         return this.api.update(model.dataValues.href, objectToSave);
     }
+
+    static createFromSchema(schema) {
+        checkType(schema, Object, 'Schema');
+
+        if (typeof ModelDefinition.specialClasses[schema.name] === 'function') {
+            return Object.freeze(new ModelDefinition.specialClasses[schema.name](
+                schema.name,
+                schema,
+                Object.freeze(createPropertiesObject(schema.properties)),
+                Object.freeze(createValidations(schema.properties))
+            ));
+        }
+
+        return Object.freeze(new ModelDefinition(
+            schema.name,
+            schema,
+            Object.freeze(createPropertiesObject(schema.properties)),
+            Object.freeze(createValidations(schema.properties))
+        ));
+    }
 }
 
-ModelDefinition.createFromSchema = createFromSchema;
-function createFromSchema(schema) {
-    checkType(schema, Object, 'Schema');
-
-    return Object.freeze(new ModelDefinition(
-        schema.name,
-        schema,
-        Object.freeze(createPropertiesObject(schema.properties)),
-        Object.freeze(createValidations(schema.properties))
-    ));
+class UserModelDefinition extends ModelDefinition {
+    get(identifier, queryParams = {fields: ':all,userCredentials[:owner]'}) {
+        return super.get(identifier, queryParams);
+    }
 }
+
+ModelDefinition.specialClasses = {
+    user: UserModelDefinition
+};
 
 function createPropertiesObject(schemaProperties) {
     var propertiesObject = {};

@@ -1,6 +1,6 @@
 /* jshint nonew:false */
-import fixtures from '../../fixtures/fixtures.js';
-import ModelDefinition from '../../../src/model/ModelDefinition.js';
+import fixtures from 'fixtures/fixtures';
+import ModelDefinition from 'd2/model/ModelDefinition';
 
 describe('ModelDefinition', () => {
     'use strict';
@@ -297,6 +297,21 @@ describe('ModelDefinition', () => {
                 });
             });
         });
+
+        describe('specialized definitions', () => {
+            let UserModelDefinition;
+            let userModelDefinition;
+
+            beforeEach(() => {
+                UserModelDefinition = require('d2/model/ModelDefinition').specialClasses.user;
+
+                userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+            });
+
+            it('should return a UserModelDefinition for the user schema', () => {
+                expect(userModelDefinition).to.be.instanceof(UserModelDefinition);
+            });
+        });
     });
 
     describe('create', () => {
@@ -436,6 +451,41 @@ describe('ModelDefinition', () => {
             userModelDefinition.save(model);
 
             expect(apiPostStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+        });
+    });
+});
+
+describe('ModelDefinition subsclasses', () => {
+    let ModelDefinition;
+    let getOnApiStub;
+
+    beforeEach(() => {
+        getOnApiStub = stub().returns(new Promise(function () {}));
+        ModelDefinition = require('d2/model/ModelDefinition');
+
+        ModelDefinition.prototype.api = {
+            get: getOnApiStub
+        };
+    });
+
+    describe('UserModelDefinition', () => {
+        let UserModelDefinition;
+        let userModelDefinition;
+
+        beforeEach(() => {
+            UserModelDefinition = ModelDefinition.specialClasses.user;
+
+            userModelDefinition = new UserModelDefinition('User', {}, {}, {});
+        });
+
+        it('should be instance of Model', () => {
+            expect(userModelDefinition).to.be.instanceof(ModelDefinition);
+        });
+
+        it('should call the get function with the extra parameters', function () {
+            userModelDefinition.get('myUserId');
+
+            expect(getOnApiStub).to.be.calledWith('/myUserId', {fields: ':all,userCredentials[:owner]'});
         });
     });
 });
