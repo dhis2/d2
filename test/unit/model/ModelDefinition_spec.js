@@ -429,15 +429,11 @@ describe('ModelDefinition', () => {
 
             userModelDefinition.save(model);
 
-            console.log();
-
             expect(apiPostStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
         });
 
         it('should save to the url set on the model', function () {
             userModelDefinition.save(model);
-
-            console.log();
 
             expect(apiPostStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
         });
