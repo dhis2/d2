@@ -40,7 +40,7 @@ describe('ModelCollection', () => {
         Pager.reset();
         Pager.returns(pagerObject);
 
-        ModelDefinition.prototype.list = stub().returns(new Promise(() => {}));
+        ModelDefinition.prototype.list = stub().returns(new Promise((resolve) => resolve()));
         ModelCollection = require('d2/model/ModelCollection');
     });
 
@@ -243,7 +243,7 @@ describe('ModelCollection', () => {
 
                 modelCollection.previousPage();
 
-                expect(modelDefinition.list).to.be.calledWith({page: 2})
+                expect(modelDefinition.list).to.be.calledWith({page: 2});
             });
         });
 
