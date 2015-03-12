@@ -1,5 +1,5 @@
 class Pager {
-    constructor(pager) {
+    constructor(pager = {page: 1, pageCount: 1}) {
         this.page = pager.page;
         this.pageCount = pager.pageCount;
         this.total = pager.total;

@@ -1,4 +1,10 @@
 /* jshint nonew:false */
+let proxyquire = require('proxyquire').noCallThru();
+let ModelCollection = sinon.spy();
+proxyquire('d2/model/ModelDefinition', {
+    'd2/model/ModelCollection': ModelCollection
+});
+
 import fixtures from 'fixtures/fixtures';
 import ModelDefinition from 'd2/model/ModelDefinition';
 
@@ -8,6 +14,8 @@ describe('ModelDefinition', () => {
     var modelDefinition;
 
     beforeEach(() => {
+        ModelCollection.reset();
+
         modelDefinition = new ModelDefinition('dataElement', 'dataElements');
     });
 
@@ -407,12 +415,13 @@ describe('ModelDefinition', () => {
     });
 
     describe('list', () => {
-        var dataElementModelDefinition;
+        let dataElementsResult = fixtures.get('/api/dataElements');
+        let dataElementModelDefinition;
 
         beforeEach (() => {
             ModelDefinition.prototype.api = {
                 get: stub().returns(new Promise((resolve) => {
-                    resolve(fixtures.get('/api/dataElements'));
+                    resolve(dataElementsResult);
                 }))
             };
 
@@ -433,16 +442,37 @@ describe('ModelDefinition', () => {
             expect(dataElementModelDefinition.list()).to.be.instanceof(Promise);
         });
 
-        it('should call the get method on the api with the endpoint of the model', function () {
+        it('should call the get method on the api with the endpoint of the model', () => {
             dataElementModelDefinition.list();
 
             expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
         });
 
-        it('should have the correct number of items in the list', (done) => {
+        it('should return a model collection object', (done) => {
             dataElementModelDefinition.list()
-                .then((list) => {
-                    expect(list.length).to.equal(5);
+                .then((dataElementCollection) => {
+                    expect(dataElementCollection).to.be.instanceof(ModelCollection);
+                    done();
+                });
+        });
+
+        it('should call the model collection constructor with new', () => {
+            dataElementModelDefinition.list()
+                .then(() => {
+                    expect(ModelCollection).to.be.calledWithNew;
+                    done();
+                });
+        });
+
+        it('should call the model collection constructor with the correct data', (done) => {
+            dataElementModelDefinition.list()
+                .then(() => {
+                    let firstCallArguments = ModelCollection.getCall(0).args;
+
+                    expect(firstCallArguments[0]).to.equal(dataElementModelDefinition);
+                    expect(firstCallArguments[1].length).to.equal(5);
+                    expect(firstCallArguments[2]).to.equal(dataElementsResult.pager);
+
                     done();
                 });
         });

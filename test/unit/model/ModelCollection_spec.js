@@ -130,11 +130,19 @@ describe('ModelCollection', () => {
             it('should be a method on the collection', () => {
                 expect(modelCollection.nextPage).to.be.instanceof(Function);
             });
+
+            it('should return a promise', () => {
+                expect(modelCollection.nextPage()).to.be.instanceof(Promise);
+            });
         });
 
         describe('previousPage', () => {
             it('should be a method on the collection', () => {
                 expect(modelCollection.previousPage).to.be.instanceof(Function);
+            });
+
+            it('should return a promise', () => {
+                expect(modelCollection.previousPage()).to.be.instanceof(Promise);
             });
         });
     });

@@ -3,6 +3,7 @@
 import {checkType, isObject, checkDefined} from 'd2/lib/check';
 import {addLockedProperty, curry} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
+import ModelCollection from 'd2/model/ModelCollection';
 import schemaTypes from 'd2/lib/SchemaTypes';
 
 /**
@@ -63,7 +64,11 @@ class ModelDefinition {
     list(queryParams = {fields: ':all'}) {
         return this.api.get(this.apiEndpoint, queryParams)
             .then((data) => {
-                return data[this.plural].map((data) => this.create(data));
+                return new ModelCollection(
+                    this,
+                    data[this.plural].map((data) => this.create(data)),
+                    data.pager
+                );
             });
     }
 

@@ -28,11 +28,11 @@ class ModelCollection extends Map {
     }
 
     nextPage() {
-
+        return new Promise(() => {});
     }
 
     previousPage() {
-
+        return new Promise(() => {});
     }
 
     static create(modelDefinition) {

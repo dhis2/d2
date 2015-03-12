@@ -1,29 +1,56 @@
+import Pager from 'd2/pager/Pager';
+
 describe('Pager', () => {
-    let Pager;
-    let pager;
     let pagerFixtureOne;
     let pageFixtureTwo;
 
-    beforeEach(() => {
-        pagerFixtureOne = {
-            page: 1,
-            pageCount: 37,
-            total: 1844,
-            nextPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
-        };
-        pageFixtureTwo = {
-            page: 3,
-            pageCount: 37,
-            total: 1844,
-            nextPage: 'http://localhost:8080/dhis/api/dataElements?page=4',
-            prevPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
-        };
+    describe('instance without data', () => {
+        let pager;
 
-        Pager = require('d2/pager/Pager');
-        pager = new Pager(pagerFixtureOne);
+        beforeEach(() => pager = new Pager());
+
+        it('should set the page to first', () => {
+            expect(pager.page).to.equal(1);
+        });
+
+        it('should set the total page count to 1', () => {
+            expect(pager.pageCount).to.equal(1);
+        });
+
+        it('should set the total item count to undefined', () => {
+            expect(pager.total).to.not.be.defined;
+        });
+
+        it('should not set the nextPage', () => {
+            expect(pager.nextPage).to.not.be.defined;
+        });
+
+        it('should not set the prevPage', () => {
+            expect(pager.prevPage).to.not.be.defined;
+        });
     });
 
-    describe('instance', () => {
+    describe('instance with data', () => {
+        let pager;
+
+        beforeEach(() => {
+            pagerFixtureOne = {
+                page: 1,
+                pageCount: 37,
+                total: 1844,
+                nextPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
+            };
+            pageFixtureTwo = {
+                page: 3,
+                pageCount: 37,
+                total: 1844,
+                nextPage: 'http://localhost:8080/dhis/api/dataElements?page=4',
+                prevPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
+            };
+
+            pager = new Pager(pagerFixtureOne)
+        });
+
         it('should be an instance of Pager', () => {
             expect(pager).to.be.instanceof(Pager);
         });
