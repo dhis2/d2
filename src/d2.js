@@ -49,4 +49,8 @@ function processConfig(api, config) {
     }
 }
 
+if (typeof window !== 'undefined') {
+    window.d2 = d2Init;
+}
+
 export default d2Init;

@@ -1,5 +1,10 @@
-import fixtures from '../../fixtures/fixtures.js';
-import Api from '../../../src/api/Api.js';
+let proxyquire = require('proxyquire').noCallThru();
+proxyquire('d2/api/Api', {
+    'd2/external/jquery': {}
+});
+
+import fixtures from 'fixtures/fixtures';
+import Api from 'd2/api/Api';
 
 describe('Api', () => {
     var jqueryMock;

@@ -44,6 +44,12 @@ describe('ModelCollection', () => {
         ModelCollection = require('d2/model/ModelCollection');
     });
 
+    describe('extension of Map', () => {
+        it('should have a clear method that calls the map', () => {
+
+        });
+    });
+
     it('should be an object', () => {
         expect(ModelCollection).to.be.instanceof(Function);
     });
@@ -79,10 +85,6 @@ describe('ModelCollection', () => {
             modelCollection = new ModelCollection(modelDefinition);
         });
 
-        it('should be an instance of Map', () => {
-            expect(modelCollection).to.be.instanceof(Map);
-        });
-
         it('should throw if being constructed with non Model values', () => {
             expect(() => new ModelCollection(modelDefinition, [1, 2, 3])).to.throw('Values of a ModelCollection must be instances of Model');
         });
@@ -105,7 +107,8 @@ describe('ModelCollection', () => {
 
             modelCollection = new ModelCollection(modelDefinition, [firstModel, new Model('q2egwkkrfc1')]);
 
-            firstValue = modelCollection[Symbol.iterator]().next().value[1];
+            //firstValue = modelCollection[Symbol.iterator]().next().value[1];
+            firstValue = modelCollection.get('q2egwkkrfc1');
 
             expect(firstValue).to.deep.equal(firstModel);
             expect(firstValue).to.be.instanceof(Model);

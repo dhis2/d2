@@ -4,16 +4,23 @@ import Model from 'd2/model/Model';
 import ModelDefinition from 'd2/model/ModelDefinition';
 import Pager from 'd2/pager/Pager';
 
-class ModelCollection extends Map {
+class ModelCollection {
     constructor(modelDefinition, values, pagerData) {
         checkType(modelDefinition, ModelDefinition);
         this.modelDefinition = modelDefinition;
         this.pager = new Pager(pagerData);
 
+        //We can not extend the Map object right away in v8 contexts.
+        this.__values__ = new Map();
+        this[Symbol.iterator] = this.__values__[Symbol.iterator].bind(this.__values__);
+
+        Object.defineProperty(this, 'size', {
+            get: () => {return this.__values__.size},
+            set: (value) => {this.__values__.size = value}
+        });
+
         throwIfContainsOtherThanModelObjects(values);
         throwIfContainsModelWithoutUid(values);
-
-        super();
 
         //Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
@@ -25,7 +32,7 @@ class ModelCollection extends Map {
         throwIfContainsOtherThanModelObjects([value]);
         throwIfContainsModelWithoutUid([value]);
 
-        super.set(value.id, value);
+        this.set(value.id, value);
         return this;
     }
 
@@ -53,6 +60,45 @@ class ModelCollection extends Map {
 
     static create(modelDefinition, values, pagerData) {
         return new ModelCollection(modelDefinition, values, pagerData);
+    }
+
+    /*******************************************************************
+     * Implement the map interface because extending is not yet supported in v8
+     */
+    clear(...args) {
+        return this.__values__.clear.apply(this.__values__, args);
+    }
+
+    delete(...args) {
+        return this.__values__.delete.apply(this.__values__, args);
+    }
+
+    entries(...args) {
+        return this.__values__.entries.apply(this.__values__, args);
+    }
+
+    forEach(...args) {
+        return this.__values__.forEach.apply(this.__values__, args);
+    }
+
+    get(...args) {
+        return this.__values__.get.apply(this.__values__, args);
+    }
+
+    has(...args) {
+        return this.__values__.has.apply(this.__values__, args);
+    }
+
+    keys(...args) {
+        return this.__values__.keys.apply(this.__values__, args);
+    }
+
+    set(...args) {
+        return this.__values__.set.apply(this.__values__, args);
+    }
+
+    values(...args) {
+        return this.__values__.values.apply(this.__values__, args);
     }
 }
 

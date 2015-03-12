@@ -78,7 +78,7 @@ describe('D2.models', function () {
             beforeEach(function (done) {
                 server.respondWith(
                     'GET',
-                    '/dhis/api/users/myUserId?fields=%3Aall',
+                    '/dhis/api/dataElement/umC9U5YGDq4?fields=%3Aall',
                     [
                         200,
                         {'Content-Type': 'application/json'},
@@ -86,11 +86,13 @@ describe('D2.models', function () {
                     ]
                 );
 
-                d2.models.user.get('myUserId')
+                d2.models.dataElement.get('umC9U5YGDq4')
                     .then(function (model) {
                         loadedModel = model;
                         done();
-                    });
+                    }).catch(function (e) {
+                        console.log(e);
+                    })
             });
 
             it('should return true for an object from the api', function () {
@@ -118,7 +120,7 @@ describe('D2.models', function () {
             beforeEach(function (done) {
                 server.respondWith(
                     'GET',
-                    '/dhis/api/users/myUserId?fields=%3Aall',
+                    '/dhis/api/users/umC9U5YGDq4?fields=%3Aall%2CuserCredentials%5B%3Aowner%5D',
                     [
                         200,
                         {'Content-Type': 'application/json'},
@@ -126,7 +128,7 @@ describe('D2.models', function () {
                     ]
                 );
 
-                d2.models.user.get('myUserId')
+                d2.models.user.get('umC9U5YGDq4')
                     .then(function (model) {
                         loadedModel = model;
                         done();

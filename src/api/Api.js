@@ -2,7 +2,7 @@
 
 import {checkType} from 'd2/lib/check';
 import {copyOwnProperties} from 'd2/lib/utils';
-import jQuery from 'jquery';
+import jQuery from 'd2/external/jquery';
 
 class Api {
     constructor(jquery) {

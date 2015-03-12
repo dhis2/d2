@@ -1,5 +1,6 @@
 System.config({
   "baseURL": "/base/src",
+  "transpiler": "babel",
   "paths": {
     "*": "*.js",
     "d2/*": "*.js",

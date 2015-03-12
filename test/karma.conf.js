@@ -13,14 +13,13 @@ module.exports = function( config ) {
 
         files: [
             './test/fixtures/e2efixtures.js',
+            './node_modules/jquery/dist/jquery.js',
             './jspm_packages/es6-module-loader.js',
             './jspm_packages/system.js',
-            './node_modules/jquery/dist/jquery.js',
 
             './test/e2e/**/*_spec.js',
             './config.js',
-            { pattern: './src/**/*.js', included: false, served: true },
-            { pattern: './jspm_packages/github/components/**/*.js', included: false, served: true }
+            { pattern: './src/**/*.js', included: false, served: true }
         ],
 
         'babelPreprocessor': {

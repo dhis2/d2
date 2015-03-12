@@ -101,7 +101,21 @@ gulp.task('travis', function () {
 
 
 gulp.task('build', ['clean'], function () {
-    //TODO: Create a build that includes all the system.js functions
+    var Builder = require('systemjs-builder');
+
+    var builder = new Builder({
+
+    });
+
+    builder.loadConfig('./config.js')
+        .then(function () {
+            builder.config({baseURL: './src'});
+
+            builder.buildSFX('d2', 'build/d2-sfx.js')
+                .then(function() {
+                    console.log('Build complete');
+                });
+        });
 });
 
 /**************************************************************************************************
