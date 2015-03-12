@@ -1,12 +1,14 @@
-import {isValidUid, isArray, checkType} from 'd2/lib/check';
+import {isValidUid, isArray, checkType, isDefined} from 'd2/lib/check';
 import {throwError} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 import ModelDefinition from 'd2/model/ModelDefinition';
+import Pager from 'd2/pager/Pager';
 
 class ModelCollection extends Map {
-    constructor(modelDefinition, values) {
+    constructor(modelDefinition, values, pagerData) {
         checkType(modelDefinition, ModelDefinition);
         this.modelDefinition = modelDefinition;
+        this.pager = new Pager(pagerData);
 
         throwIfContainsOtherThanModelObjects(values);
         throwIfContainsModelWithoutUid(values);
@@ -28,15 +30,29 @@ class ModelCollection extends Map {
     }
 
     nextPage() {
-        return new Promise((resolve) => {resolve();});
+        if (this.pager.nextPage) {
+            return this.modelDefinition.list({page: this.pager.page + 1});
+        }
+        return Promise.reject('There is no next page for this collection');
+    }
+
+    hasNextPage() {
+        return isDefined(this.pager.nextPage);
     }
 
     previousPage() {
-        return new Promise((resolve) => {resolve();});
+        if (this.pager.prevPage) {
+            return this.modelDefinition.list({page: this.pager.page - 1});
+        }
+        return Promise.reject('There is no previous page for this collection');
     }
 
-    static create(modelDefinition) {
-        return new ModelCollection(modelDefinition);
+    hasPreviousPage() {
+        return isDefined(this.pager.nextPage);
+    }
+
+    static create(modelDefinition, values, pagerData) {
+        return new ModelCollection(modelDefinition, values, pagerData);
     }
 }
 

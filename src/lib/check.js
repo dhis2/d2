@@ -41,12 +41,7 @@ export function isObject(value) {
 }
 
 export function isDefined(value) {
-    try {
-        checkDefined(value);
-        return true;
-    } catch (e) {}
-
-    return false;
+    return value !== undefined;
 }
 
 /**
