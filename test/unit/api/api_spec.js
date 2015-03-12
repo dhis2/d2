@@ -30,6 +30,10 @@ describe('Api', () => {
         expect(new Api().baseUrl).to.equal('/api');
     });
 
+    it('should not be allowed to be called without new', () => {
+        expect(() => Api()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+    });
+
     describe('getApi', () => {
         it('should have a method to get an instance of Api', () => {
             expect(Api.getApi).to.be.instanceof(Function);

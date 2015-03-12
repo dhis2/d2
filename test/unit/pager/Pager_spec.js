@@ -4,6 +4,10 @@ describe('Pager', () => {
     let pagerFixtureOne;
     let pageFixtureTwo;
 
+    it('should not be allowed to be called without new', () => {
+        expect(() => Pager()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+    });
+
     describe('instance without data', () => {
         let pager;
 

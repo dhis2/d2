@@ -19,6 +19,10 @@ describe('ModelDefinition', () => {
         modelDefinition = new ModelDefinition('dataElement', 'dataElements');
     });
 
+    it('should not be allowed to be called without new', () => {
+        expect(() => ModelDefinition()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+    });
+
     it('should create a ModelDefinition object', () => {
         expect(modelDefinition).to.be.instanceof(ModelDefinition);
     });

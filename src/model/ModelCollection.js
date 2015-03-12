@@ -11,12 +11,11 @@ class ModelCollection {
         this.pager = new Pager(pagerData);
 
         //We can not extend the Map object right away in v8 contexts.
-        this.__values__ = new Map();
-        this[Symbol.iterator] = this.__values__[Symbol.iterator].bind(this.__values__);
+        this.valuesContainerMap = new Map();
+        this[Symbol.iterator] = this.valuesContainerMap[Symbol.iterator].bind(this.valuesContainerMap);
 
         Object.defineProperty(this, 'size', {
-            get: () => {return this.__values__.size},
-            set: (value) => {this.__values__.size = value}
+            get: () => {return this.valuesContainerMap.size;}
         });
 
         throwIfContainsOtherThanModelObjects(values);
@@ -65,40 +64,41 @@ class ModelCollection {
     /*******************************************************************
      * Implement the map interface because extending is not yet supported in v8
      */
-    clear(...args) {
-        return this.__values__.clear.apply(this.__values__, args);
+    clear() {
+        return this.valuesContainerMap.clear.apply(this.valuesContainerMap);
     }
 
     delete(...args) {
-        return this.__values__.delete.apply(this.__values__, args);
+        return this.valuesContainerMap.delete.apply(this.valuesContainerMap, args);
     }
 
-    entries(...args) {
-        return this.__values__.entries.apply(this.__values__, args);
+    entries() {
+        return this.valuesContainerMap.entries.apply(this.valuesContainerMap);
     }
 
+    //FIXME: This calls the forEach function with the values Map and not with the ModelCollection as the third argument
     forEach(...args) {
-        return this.__values__.forEach.apply(this.__values__, args);
+        return this.valuesContainerMap.forEach.apply(this.valuesContainerMap, args);
     }
 
     get(...args) {
-        return this.__values__.get.apply(this.__values__, args);
+        return this.valuesContainerMap.get.apply(this.valuesContainerMap, args);
     }
 
     has(...args) {
-        return this.__values__.has.apply(this.__values__, args);
+        return this.valuesContainerMap.has.apply(this.valuesContainerMap, args);
     }
 
-    keys(...args) {
-        return this.__values__.keys.apply(this.__values__, args);
+    keys() {
+        return this.valuesContainerMap.keys.apply(this.valuesContainerMap);
     }
 
     set(...args) {
-        return this.__values__.set.apply(this.__values__, args);
+        return this.valuesContainerMap.set.apply(this.valuesContainerMap, args);
     }
 
-    values(...args) {
-        return this.__values__.values.apply(this.__values__, args);
+    values() {
+        return this.valuesContainerMap.values.apply(this.valuesContainerMap);
     }
 }
 

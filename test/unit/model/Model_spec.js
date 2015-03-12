@@ -10,7 +10,11 @@ describe('Model', () => {
         model = new Model({
             modelValidations: {},
             modelProperties: []
-        }); //jshint nonew:false
+        });
+    });
+
+    it('should not be allowed to be called without new', () => {
+        expect(() => Model()).to.throw('Cannot call a class as a function'); //jshint ignore:line
     });
 
     it('should throw when modelDefinition is not defined', () => {

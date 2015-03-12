@@ -80,7 +80,12 @@ gulp.task('jscs', function () {
         'test/e2e/**/*.js',
         'test/unit/**/*.js',
         'src/**/*.js'
-    ]).pipe($.jscs('./.jscsrc'));
+    ])
+    .pipe($.jscs('./.jscsrc'));
+
+    //TODO: Not yet implemented in jscs but should be there soon(tm)
+    // .pipe($.jscs.reporter('jscs-stylish'))
+    // .pipe($.jscs.reporter('fail'));
 });
 
 /**

@@ -18,6 +18,10 @@ describe('ModelValidations', () => {
         expect(modelValidation).to.be.instanceof(ModelValidation);
     });
 
+    it('should not be allowed to be called without new', () => {
+        expect(() => ModelValidation()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+    });
+
     describe('validate', () => {
         beforeEach(() => {
             validationSettings = {

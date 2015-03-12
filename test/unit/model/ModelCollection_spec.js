@@ -45,8 +45,58 @@ describe('ModelCollection', () => {
     });
 
     describe('extension of Map', () => {
-        it('should have a clear method that calls the map', () => {
+        let firstValue;
+        let modelCollection;
 
+        beforeEach(() => {
+            firstValue = new Model('q2egwkkrfco');
+
+            modelCollection = ModelCollection.create(new ModelDefinition());
+            modelCollection.add(firstValue);
+        });
+
+        it('should have a clear method that clears the list', () => {
+            modelCollection.clear();
+
+            expect(modelCollection.size).to.equal(0);
+        });
+
+        it('should get the values', () => {
+            expect([...modelCollection.values()][0]).to.equal(firstValue);
+        });
+
+        it('should get the keys', () => {
+            expect([...modelCollection.keys()][0]).to.equal('q2egwkkrfco');
+        });
+
+        it('should run the forEach with the correct values', () => {
+            let forEachFunc = spy();
+
+            modelCollection.forEach(forEachFunc);
+
+            expect(forEachFunc).to.be.calledWith(firstValue, 'q2egwkkrfco', modelCollection.valuesContainerMap);
+        });
+
+        it('should remove the correct value', () => {
+            modelCollection.delete('q2egwkkrfco');
+
+            expect(modelCollection.size).to.equal(0);
+        });
+
+        it('should get the entries', () => {
+            expect([...modelCollection.entries()][0]).to.deep.equal(['q2egwkkrfco', firstValue]);
+        });
+
+        it('should return true when the entry is in the collection', () => {
+            expect(modelCollection.has('q2egwkkrfco')).to.be.true;
+        });
+
+        it('should return the correct value on get', () => {
+            expect(modelCollection.get('q2egwkkrfco')).to.equal(firstValue);
+        });
+
+        it('should throw error when trying to set the size', () => {
+            expect(() => modelCollection.size = 0).to.throw();
         });
     });
 
@@ -72,6 +122,10 @@ describe('ModelCollection', () => {
                 ModelCollection.create(new ModelDefinition());
 
                 expect(Pager).to.be.calledWithNew;
+            });
+
+            it('should not be allowed to be called without new', () => {
+                expect(() => ModelCollection()).to.throw('Cannot call a class as a function'); //jshint ignore:line
             });
         });
     });

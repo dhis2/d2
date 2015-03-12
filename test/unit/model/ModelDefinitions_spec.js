@@ -19,6 +19,10 @@ describe('D2 models', () => {
         expect(models).to.be.instanceof(Object);
     });
 
+    it('should not be allowed to be called without new', () => {
+        expect(() => ModelDefinitions()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+    });
+
     describe('add method', () => {
         var dataElementModelDefinition;
 

@@ -91,8 +91,8 @@ describe('D2.models', function () {
                         loadedModel = model;
                         done();
                     }).catch(function (e) {
-                        console.log(e);
-                    })
+                        window.console.log(e);
+                    });
             });
 
             it('should return true for an object from the api', function () {

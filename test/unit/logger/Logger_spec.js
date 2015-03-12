@@ -17,6 +17,10 @@ describe('Logger', () => {
         logger = new Logger(consoleMock);
     });
 
+    it('should not be allowed to be called without new', () => {
+        expect(() => Logger()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+    });
+
     it('should get the correct Logger instance from the namespace', () => {
         expect(logger).to.be.instanceof(Logger);
     });
