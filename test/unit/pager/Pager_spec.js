@@ -48,7 +48,7 @@ describe('Pager', () => {
                 prevPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
             };
 
-            pager = new Pager(pagerFixtureOne)
+            pager = new Pager(pagerFixtureOne);
         });
 
         it('should be an instance of Pager', () => {

@@ -456,7 +456,7 @@ describe('ModelDefinition', () => {
                 });
         });
 
-        it('should call the model collection constructor with new', () => {
+        it('should call the model collection constructor with new', (done) => {
             dataElementModelDefinition.list()
                 .then(() => {
                     expect(ModelCollection).to.be.calledWithNew;
