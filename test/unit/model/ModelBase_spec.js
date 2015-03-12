@@ -45,7 +45,7 @@ describe('ModelBase', () => {
 
         beforeEach(() => {
             modelDefinition = {
-                save: stub().returns(new Promise(function () {}))
+                save: stub().returns(new Promise(function (resolve) {resolve();}))
             };
 
             class Model{
@@ -84,6 +84,14 @@ describe('ModelBase', () => {
             model.save();
 
             expect(modelDefinition.save).to.not.be.called;
+        });
+
+        it('should reset dirty to false after save', (done) => {
+            model.save()
+                .then(() => {
+                    expect(model.dirty).to.be.false;
+                    done();
+                });
         });
 
         it('should return rejected promise when the model is not dirty', function (done) {

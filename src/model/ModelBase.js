@@ -10,7 +10,11 @@ class ModelBase {
         }
 
         if (this.validate().status) {
-            return this.modelDefinition.save(this);
+            return this.modelDefinition.save(this)
+                .then(() => {
+                    //TODO: check the return status of the save to see if it was actually successful and not ignored
+                    this.dirty = false;
+                });
         }
 
         return Promise.reject('Model status is not valid');
