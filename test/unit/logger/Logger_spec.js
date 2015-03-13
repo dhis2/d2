@@ -26,7 +26,7 @@ describe('Logger', () => {
     });
 
     it('should have a log function', () => {
-        expect(logger.log).to.be.defined;
+        expect(logger.log).to.not.be.undefined;
         expect(logger.log).to.be.instanceof(Function);
     });
 

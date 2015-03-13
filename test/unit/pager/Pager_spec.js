@@ -22,15 +22,15 @@ describe('Pager', () => {
         });
 
         it('should set the total item count to undefined', () => {
-            expect(pager.total).to.not.be.defined;
+            expect(pager.total).to.be.undefined;
         });
 
         it('should not set the nextPage', () => {
-            expect(pager.nextPage).to.not.be.defined;
+            expect(pager.nextPage).to.be.undefined;
         });
 
         it('should not set the prevPage', () => {
-            expect(pager.prevPage).to.not.be.defined;
+            expect(pager.prevPage).to.be.undefined;
         });
     });
 

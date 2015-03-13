@@ -28,7 +28,7 @@ describe('D2.models', function () {
     });
 
     it('should be available on the d2 object', function () {
-        expect(d2.models).to.be.defined;
+        expect(d2.models).to.not.be.undefined;
     });
 
     it('should have all the models', function () {
@@ -61,7 +61,7 @@ describe('D2.models', function () {
 
         dataElementModel.name = 'myDataElement';
 
-        expect(dataElementModel.name).to.be.defined;
+        expect(dataElementModel.name).to.not.be.undefined;
         expect(dataElementModel.name).to.equal('myDataElement');
     });
 

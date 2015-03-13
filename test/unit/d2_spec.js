@@ -137,7 +137,7 @@ describe('D2', () => {
         it('should add the model definitions object to the d2 object', (done) => {
             d2()
                 .then(function (d2) {
-                    expect(d2.models).to.be.defined;
+                    expect(d2.models).to.not.be.undefined;
                     expect(d2.models.modelsMockList).to.equal(true);
                     done();
                 });
@@ -164,7 +164,7 @@ describe('D2', () => {
         it('should add the ModelDefinitions to the models list', (done) => {
             d2()
                 .then(function (d2) {
-                    expect(d2.models.dataElement).to.be.defined;
+                    expect(d2.models.dataElement).to.not.be.undefined;
                     done();
                 });
         });

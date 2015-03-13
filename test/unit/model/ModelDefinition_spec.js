@@ -28,7 +28,7 @@ describe('ModelDefinition', () => {
     });
 
     it('should not add epiEndpoint when it does not exist', () => {
-        expect(modelDefinition.apiEndpoint).not.to.be.defined;
+        expect(modelDefinition.apiEndpoint).to.be.undefined;
     });
 
     it('should throw an error when a name is not specified', () => {
@@ -104,7 +104,7 @@ describe('ModelDefinition', () => {
         });
 
         it('should be a method on ModelDefinition', () => {
-            expect(ModelDefinition.createFromSchema).to.be.defined;
+            expect(ModelDefinition.createFromSchema).to.not.be.undefined;
         });
 
         it('should throw if the schema is not provided', () => {
@@ -182,8 +182,8 @@ describe('ModelDefinition', () => {
             });
 
             it('should use the collection name for collections', () => {
-                expect(modelProperties.dataElementGroups).to.be.defined;
-                expect(modelProperties.dataElementGroup).not.to.be.defined;
+                expect(modelProperties.dataElementGroups).to.not.be.undefined;
+                expect(modelProperties.dataElementGroup).to.be.undefined;
             });
 
             it('should add a get method to the propertyDescriptor', () => {

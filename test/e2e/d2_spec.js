@@ -32,7 +32,7 @@ describe('D2', function () {
     });
 
     it('should be available on the window', function () {
-        expect(d2).to.be.defined;
+        expect(d2).to.not.be.undefined;
     });
 
     it('should return jquery on the api object', function () {
