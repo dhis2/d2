@@ -36,6 +36,7 @@ describe('Pager', () => {
 
     describe('instance with data', () => {
         let pager;
+        let modelDefinition;
 
         beforeEach(() => {
             pagerFixtureOne = {
@@ -52,7 +53,11 @@ describe('Pager', () => {
                 prevPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
             };
 
-            pager = new Pager(pagerFixtureOne);
+            class ModelDefinition {}
+            ModelDefinition.prototype.list = stub().returns(new Promise((resolve) => resolve()));
+            modelDefinition = new ModelDefinition();
+
+            pager = new Pager(pagerFixtureOne, modelDefinition);
         });
 
         it('should be an instance of Pager', () => {
@@ -79,6 +84,129 @@ describe('Pager', () => {
             pager = new Pager(pageFixtureTwo);
 
             expect(pager.prevPage).to.equal('http://localhost:8080/dhis/api/dataElements?page=2');
+        });
+
+        describe('hasNextPage', () => {
+            it('should be a function', () => {
+                expect(pager.hasNextPage).to.be.instanceof(Function);
+            });
+
+            it('should return true if there is a next page', () => {
+                expect(pager.hasNextPage()).to.be.true;
+            });
+
+            it('should return false if there is no next page', () => {
+                delete pager.nextPage;
+
+                expect(pager.hasNextPage()).to.be.false;
+            });
+        });
+
+        describe('hasPreviousPage', () => {
+            it('should be a function', () => {
+                expect(pager.hasPreviousPage).to.be.instanceof(Function);
+            });
+
+            it('should return true if there is a previous page', () => {
+                pager.prevPage = 'some link to a page';
+
+                expect(pager.hasPreviousPage()).to.be.true;
+            });
+
+            it('should return false if there is no previous page', () => {
+                expect(pager.hasPreviousPage()).to.be.false;
+            });
+        });
+
+        describe('nextPage', () => {
+            it('should be a method on the collection', () => {
+                expect(pager.getNextPage).to.be.instanceof(Function);
+            });
+
+            it('should return a promise', () => {
+                expect(pager.getNextPage()).to.be.instanceof(Promise);
+            });
+
+            it('should call the model definition for a new list', () => {
+                pager.getNextPage();
+
+                expect(modelDefinition.list).to.be.called;
+            });
+
+            it('should only ask for a new list if the pager has a nextPage property', () => {
+                delete pager.nextPage;
+                pager.getNextPage();
+
+                expect(modelDefinition.list).to.not.be.called;
+            });
+
+            it('should return a rejected promise if there are no more new pages', (done) => {
+                delete pager.nextPage;
+
+                pager.getNextPage()
+                    .catch((message) => {
+                        expect(message).to.equal('There is no next page for this collection');
+                        done();
+                    });
+            });
+
+            it('should call next page with the current page number + 1', () => {
+                pager.getNextPage();
+
+                expect(modelDefinition.list).to.be.calledWith({page: 2});
+            });
+        });
+
+        describe('previousPage', () => {
+            it('should be a method on the collection', () => {
+                expect(pager.getPreviousPage).to.be.instanceof(Function);
+            });
+
+            it('should return a promise', () => {
+                expect(pager.getPreviousPage()).to.be.instanceof(Promise);
+            });
+
+            it('should ask for the previous page if the prevPage property is set', () => {
+                pager.prevPage = 'http://url.to.the.next.page';
+
+                pager.getPreviousPage();
+
+                expect(modelDefinition.list).to.be.called;
+            });
+
+            it('should not ask for a new list if there is no previous page', () => {
+                pager.getPreviousPage();
+
+                expect(modelDefinition.list).to.not.be.called;
+            });
+
+            it('should return a rejected promise if there are no more previous pages', (done) => {
+                pager.getPreviousPage()
+                    .catch((message) => {
+                        expect(message).to.equal('There is no previous page for this collection');
+                        done();
+                    });
+            });
+
+            it('should call the list method with the current page number - 1', () => {
+                pager.page = 3;
+                pager.prevPage = 'http://url.to.the.next.page';
+
+                pager.getPreviousPage();
+
+                expect(modelDefinition.list).to.be.calledWith({page: 2});
+            });
+        });
+
+        describe('should throw error when there is no page handler', () => {
+            it('should throw an error when no handler is specified', (done) => {
+                let pager = new Pager(pagerFixtureOne);
+
+                pager.getNextPage()
+                    .catch(function () {
+                        done();
+                    });
+            });
         });
     });
 });

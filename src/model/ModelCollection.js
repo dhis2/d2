@@ -1,4 +1,4 @@
-import {isValidUid, isArray, checkType, isDefined} from 'd2/lib/check';
+import {isValidUid, isArray, checkType} from 'd2/lib/check';
 import {throwError} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 import ModelDefinition from 'd2/model/ModelDefinition';
@@ -8,7 +8,7 @@ class ModelCollection {
     constructor(modelDefinition, values, pagerData) {
         checkType(modelDefinition, ModelDefinition);
         this.modelDefinition = modelDefinition;
-        this.pager = new Pager(pagerData);
+        this.pager = new Pager(pagerData, modelDefinition);
 
         //We can not extend the Map object right away in v8 contexts.
         this.valuesContainerMap = new Map();
@@ -35,33 +35,11 @@ class ModelCollection {
         return this;
     }
 
-    nextPage() {
-        if (this.pager.nextPage) {
-            return this.modelDefinition.list({page: this.pager.page + 1});
-        }
-        return Promise.reject('There is no next page for this collection');
-    }
-
-    hasNextPage() {
-        return isDefined(this.pager.nextPage);
-    }
-
-    previousPage() {
-        if (this.pager.prevPage) {
-            return this.modelDefinition.list({page: this.pager.page - 1});
-        }
-        return Promise.reject('There is no previous page for this collection');
-    }
-
-    hasPreviousPage() {
-        return isDefined(this.pager.nextPage);
-    }
-
     toArray() {
         var resultArray = [];
 
         this.forEach((model) => {
-           resultArray.push(model);
+            resultArray.push(model);
         });
 
         return resultArray;
