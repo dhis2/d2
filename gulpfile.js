@@ -120,6 +120,11 @@ gulp.task('build', ['clean'], function () {
                 .then(function() {
                     console.log('Build complete');
                 });
+
+            builder.build('d2', 'build/d2.js')
+                .then(function () {
+                    console.log('Building systemjs library complete');
+                });
         });
 });
 

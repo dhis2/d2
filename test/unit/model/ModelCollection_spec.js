@@ -319,5 +319,15 @@ describe('ModelCollection', () => {
                 expect(modelCollection.hasPreviousPage()).to.be.false;
             });
         });
+
+        describe('toArray', () => {
+            it('should return an array of the items', () => {
+                let modelArray = [new Model('someohterid'), new Model('q2egwkkrfc1')];
+
+                modelCollection = new ModelCollection(modelDefinition, modelArray);
+
+                expect(modelCollection.toArray()).to.deep.equal(modelArray);
+            });
+        });
     });
 });

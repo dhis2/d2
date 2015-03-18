@@ -31,7 +31,7 @@ class ModelDefinition {
      * @returns {Model}
      */
     create(data) {
-        let model = Object.seal(Model.create(this));
+        let model = Model.create(this);
 
         if (data) {
             //Set the datavalues onto the model directly

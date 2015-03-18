@@ -14,10 +14,6 @@ class ModelCollection {
         this.valuesContainerMap = new Map();
         this[Symbol.iterator] = this.valuesContainerMap[Symbol.iterator].bind(this.valuesContainerMap);
 
-        Object.defineProperty(this, 'size', {
-            get: () => {return this.valuesContainerMap.size;}
-        });
-
         throwIfContainsOtherThanModelObjects(values);
         throwIfContainsModelWithoutUid(values);
 
@@ -25,6 +21,10 @@ class ModelCollection {
         if (isArray(values)) {
             values.forEach((value) => this.add(value));
         }
+    }
+
+    get size() {
+        return this.valuesContainerMap.size;
     }
 
     add(value) {
@@ -55,6 +55,16 @@ class ModelCollection {
 
     hasPreviousPage() {
         return isDefined(this.pager.nextPage);
+    }
+
+    toArray() {
+        var resultArray = [];
+
+        this.forEach((model) => {
+           resultArray.push(model);
+        });
+
+        return resultArray;
     }
 
     static create(modelDefinition, values, pagerData) {
