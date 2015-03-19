@@ -22,16 +22,27 @@ class Pager {
 
     getNextPage() {
         if (this.hasNextPage()) {
-            return this.pagingHandler.list({page: this.page + 1});
+            return this.goToPage(this.page + 1);
         }
         return Promise.reject('There is no next page for this collection');
     }
 
     getPreviousPage() {
         if (this.hasPreviousPage()) {
-            return this.pagingHandler.list({page: this.page - 1});
+            return this.goToPage(this.page - 1);
         }
         return Promise.reject('There is no previous page for this collection');
+    }
+
+    goToPage(pageNr) {
+        if (pageNr < 1) {
+            throw new Error('PageNr can not be less than 1');
+        }
+        if (pageNr > this.pageCount) {
+            throw new Error('PageNr can not be larger than the total page count of ' + this.pageCount);
+        }
+
+        return this.pagingHandler.list({page: pageNr});
     }
 }
 

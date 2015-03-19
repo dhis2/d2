@@ -167,6 +167,7 @@ describe('Pager', () => {
             });
 
             it('should ask for the previous page if the prevPage property is set', () => {
+                pager.page = 2;
                 pager.prevPage = 'http://url.to.the.next.page';
 
                 pager.getPreviousPage();
@@ -195,6 +196,24 @@ describe('Pager', () => {
                 pager.getPreviousPage();
 
                 expect(modelDefinition.list).to.be.calledWith({page: 2});
+            });
+        });
+
+        describe('goToPage', () => {
+            it('should call the list method with the passed page number', () => {
+                pager.goToPage(2);
+
+                expect(modelDefinition.list).to.be.calledWith({page: 2});
+            });
+
+            it('should throw an error when the page is less than 1', function () {
+                expect(() => pager.goToPage(0)).to.throw('PageNr can not be less than 1');
+                expect(() => pager.goToPage(-1)).to.throw('PageNr can not be less than 1');
+            });
+
+            it('should throw an error when the page is larger than the pagecount', () => {
+                expect(() => pager.goToPage(38)).to.throw('PageNr can not be larger than the total page count of 37');
+                expect(() => pager.goToPage(100)).to.throw('PageNr can not be larger than the total page count of 37');
             });
         });
 
