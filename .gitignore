@@ -12,6 +12,7 @@ node_modules/*
 !node_modules/fixtures
 
 build/*
+docs/dist/*
 
 bower_components
 coverage

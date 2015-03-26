@@ -5,9 +5,27 @@ import ModelDefinition from 'd2/model/ModelDefinition';
 import Pager from 'd2/pager/Pager';
 
 class ModelCollection {
+
+    /**
+     * @constructor
+     *
+     * @param {ModelDefinition} modelDefinition The `ModelDefinition` that this collection is for. This defines the type of models that
+     * are allowed to be added to the collection.
+     * @param {Model[]} values Initial values that should be added to the collection.
+     * @param {Object} pagerData Object with pager data. This object contains data that will be put into the `Pager` instance.
+     */
     constructor(modelDefinition, values, pagerData) {
         checkType(modelDefinition, ModelDefinition);
+        /**
+         * @property {ModelDefinition} modelDefinition The `ModelDefinition` that this collection is for. This defines the type of models that
+         * are allowed to be added to the collection.
+         */
         this.modelDefinition = modelDefinition;
+
+        /**
+         * @property {Pager} pager Pager object that is created from the pagerData that was passed when the collection was constructed. If no pager data was present
+         * the pager will have default values.
+         */
         this.pager = new Pager(pagerData, modelDefinition);
 
         //We can not extend the Map object right away in v8 contexts.
@@ -23,10 +41,31 @@ class ModelCollection {
         }
     }
 
+    /**
+     * @property {Number} size The number of Model objects that are in the collection.
+     *
+     * @description
+     * Contains the number of Model objects that are in this collection. If the collection is a collection with a pager. This
+     * does not take into account all the items in the database. Therefore when a pager is present on the collection
+     * the size will return the items on that page. To get the total number of items consult the pager.
+     */
     get size() {
         return this.valuesContainerMap.size;
     }
 
+    /**
+     * @method add
+     *
+     * @param {Model} value Model instance to add to the collection.
+     * @returns {ModelCollection} Returns itself for chaining purposes.
+     *
+     * @throws {Error} When the passed value is not an instance of `Model`
+     * @throws {Error} Throws error when the passed value does not have a valid id.
+     *
+     * @description
+     * Adds a Model instance to the collection. The model is checked if it is a correct instance of `Model` and if it has
+     * a valid id. A valid id is a uid string of 11 alphanumeric characters.
+     */
     add(value) {
         throwIfContainsOtherThanModelObjects([value]);
         throwIfContainsModelWithoutUid([value]);
@@ -35,6 +74,15 @@ class ModelCollection {
         return this;
     }
 
+    /**
+     * @method toArray
+     *
+     * @returns {Array} Returns the values of the collection as an array.
+     *
+     * @description
+     * If working with the Map type object is inconvenient this method can be used to return the values
+     * of the collection as an Array object.
+     */
     toArray() {
         var resultArray = [];
 
@@ -49,9 +97,15 @@ class ModelCollection {
         return new ModelCollection(modelDefinition, values, pagerData);
     }
 
-    /*******************************************************************
-     * Implement the map interface because extending is not yet supported in v8
+    /**
+     * @method clear
+     *
+     * @returns {this} Returns itself for chaining purposes;
+     *
+     * @description
+     * Clear the collection and remove all it's values.
      */
+    //TODO: Reset the pager?
     clear() {
         return this.valuesContainerMap.clear.apply(this.valuesContainerMap);
     }

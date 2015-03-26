@@ -129,6 +129,28 @@ gulp.task('build', ['clean'], function () {
 });
 
 /**************************************************************************************************
+ * Documentation
+ */
+var Dgeni = require('dgeni');
+var configPackage = require('./docs/config');
+
+gulp.task('clean-docs', function (cb) {
+    del(['./docs/dist/*/**', './docs/dist/*.html'], cb);
+});
+
+gulp.task('docs', ['clean-docs'], function (cb) {
+    var packages = [configPackage];
+    var dgeni = new Dgeni(packages);
+
+    dgeni.generate().then(function(docs) {
+        gulp.src(['./docs/app/**']).pipe(gulp.dest('./docs/dist')).pipe(cb);
+        console.log(docs.length, 'docs generated');
+    });
+});
+
+
+
+/**************************************************************************************************
  * Utility functions
  */
 
