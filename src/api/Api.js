@@ -12,8 +12,8 @@ class Api {
             data: {},
             contentType: 'application/json',
             dataType: 'json',
-                type: undefined,
-                url: undefined
+            type: undefined,
+            url: undefined
         };
     }
 

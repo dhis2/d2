@@ -8,6 +8,7 @@ module.exports = function groupTags(log) {
             docs = _.map(docs, function (doc) {
                 doc.methods = [];
                 doc.properties = [];
+                doc.functions = [];
 
                 doc.subDocs.forEach(function (part) {
                     if (part.constructor === '') {
@@ -25,6 +26,11 @@ module.exports = function groupTags(log) {
 
                             return property;
                         }));
+                    }
+
+                    if (part.function) {
+                        part.name = part.function;
+                        doc.functions.push(part);
                     }
                 });
                 //

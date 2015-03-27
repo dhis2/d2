@@ -1,6 +1,8 @@
+var getTypeHint = require('./var-type').getTypeHint;
+
 /**
- * @dgRenderFilter json
- * @description Convert the object to a JSON string
+ * @dgRenderFilter fnParams
+ * @description Convert a params array to a string of params with types
  */
 module.exports = {
     name: 'fnParams',
@@ -10,7 +12,7 @@ module.exports = {
         }
 
         return obj.map(function (param) {
-            return [param.name, param.typeExpression || '*'].join(':');
+            return ['<span class="doc-function-parameter-wrap">', param.name, ' ', getTypeHint(param.typeExpression), '</span>'].join('');
         }).join(', ');
     }
 };

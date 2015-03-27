@@ -13,6 +13,12 @@ class ModelCollection {
      * are allowed to be added to the collection.
      * @param {Model[]} values Initial values that should be added to the collection.
      * @param {Object} pagerData Object with pager data. This object contains data that will be put into the `Pager` instance.
+     *
+     * @description
+     *
+     * Creates a new `ModelCollection` object based on the passed `modelDefinition`. Additionally values can be added by passing
+     * `Model` objects in the `values` parameter. The collection also exposes a pager object which can be used to navigate through
+     * the pages in the collection. For more information see the `Pager` class.
      */
     constructor(modelDefinition, values, pagerData) {
         checkType(modelDefinition, ModelDefinition);

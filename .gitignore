@@ -13,6 +13,8 @@ node_modules/*
 
 build/*
 docs/dist/*
+docs/app/highlight/styles/*
+!docs/app/highlight/styles/default.css
 
 bower_components
 coverage

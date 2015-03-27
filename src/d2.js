@@ -7,12 +7,11 @@ import model from 'd2/model/models';
 import Api from 'd2/api/Api';
 
 /**
- * @function
+ * @function d2Init
  *
- * @name d2Init
  * @param {Object} config Configuration object that will be used to configure to define D2 Setting.
  * See the description for more information on the available settings.
- * @returns {Object} D2 object that exposes `model`, `models` and `Api`
+ * @returns {Promise} A promise that resolves with the intialized d2 object. Which is an object that exposes `model`, `models` and `Api`
  *
  * @description
  * Init function that used to initialise D2. This will load the schemas from the DHIS2 api and configure your D2 instance.
@@ -21,6 +20,15 @@ import Api from 'd2/api/Api';
  *
  * baseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain
  * for example http://localhost/dhis/ you should set the base url to `/dhis/api`
+ *
+ * ```js
+ * import d2Init from 'd2';
+ *
+ * d2Init({baseUrl: '/dhis/api'})
+ *   .then((d2) => {
+ *     console.log(d2.model.dataElement.list());
+ *   });
+ * ```
  */
 function d2Init(config) {
     var logger = Logger.getLogger();

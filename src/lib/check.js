@@ -44,11 +44,8 @@ export function isDefined(value) {
     return value !== undefined;
 }
 
-/**
- * Polyfill for the isInteger function that will be added in ES6
- *
- * http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
- */
+// Polyfill for the isInteger function that will be added in ES6
+// http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
 if (!Number.isInteger) {
     Number.isInteger = isInteger;
 }

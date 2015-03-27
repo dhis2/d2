@@ -6,6 +6,7 @@ angular.module('d2Docs').controller('sectionController', sectionController);
 angular.module('d2Docs').controller('pageController', pageController);
 
 angular.module('d2Docs').directive('menuSection', menuSectionDirective);
+angular.module('d2Docs').directive('code', codeDirective);
 
 function appController($mdSidenav, $mdMedia, $location) {
     //jshint validthis:true
@@ -17,8 +18,6 @@ function appController($mdSidenav, $mdMedia, $location) {
     };
 
     this.isActiveRoute = function (routeToCheck) {
-        console.log($location.$$url === routeToCheck);
-        console.log($location.$$url, routeToCheck);
         return $location.$$url === routeToCheck;
     };
 }
@@ -48,6 +47,25 @@ function menuSectionDirective() {
             this.toggle = function () {
                 vm.closed = !vm.closed;
             };
+        }
+    };
+}
+
+function codeDirective() {
+    return {
+        restrict: 'E',
+        link: function ($scope, element) {
+            var classes = [];
+            for (var i = 0; i < element[0].classList.length; i += 1) {
+                classes.push(element[0].classList[i]);
+            }
+            var isCodeBlock = classes.reduce(function (isCodeBlock, className) {
+                return isCodeBlock || /^lang-.+$/.test(className);
+            }, false);
+
+            if (isCodeBlock) {
+                hljs.highlightBlock(element[0]);
+            }
         }
     };
 }
