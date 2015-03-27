@@ -11,6 +11,15 @@ module.exports = function groupTags(log) {
                 doc.functions = [];
 
                 doc.subDocs.forEach(function (part) {
+                    if (part.class) {
+                        doc.className = part.class;
+                        doc.docType = 'class';
+
+                        if (part.extends) {
+                            doc.superClass = part.extends;
+                        }
+                    }
+
                     if (part.constructor === '') {
                         doc.constructorFunction = part;
                     }
@@ -50,6 +59,27 @@ module.exports = function groupTags(log) {
 
                 return doc;
             });
+
+            //TODO: Move this out to it's own processor
+            _.chain(docs)
+            .filter('superClass')
+            .forEach(function (doc) {
+                    var superClass = _.chain(docs)
+                        .filter('className')
+                        .find({className: doc.superClass})
+                        .value();
+
+                    if (superClass) {
+                        var inheritedMethods = _.chain(superClass.methods)
+                        .map(function (method) {
+                                return _.extend({inherited:true}, method);
+                        })
+                        .value();
+
+                        doc.methods = doc.methods.concat(inheritedMethods);
+                    }
+                })
+            .value();
 
             return docs;
         }

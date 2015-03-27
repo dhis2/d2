@@ -11,6 +11,7 @@ module.exports = new Package('config', [
 ])
 
     .factory(require('./readers/srcFile'))
+    .factory(require('./services/transforms/to-boolean'))
 
     .processor(require('./processors/docsBuilder'))
     .processor(require('./processors/mergeDocs'))

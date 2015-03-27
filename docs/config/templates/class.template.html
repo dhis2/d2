@@ -1,0 +1,117 @@
+{% extends "layout/base.template.html" %}
+
+{% block title %}
+<h1>{$ doc.className $}</h1>
+{% if doc.superClass %}
+    <span class="doc-extends-class">{$ doc.superClass $}</span>
+{% endif %}
+<span class="doc-module-name">{$ doc.moduleName $}</span>
+{% endblock%}
+
+{% block body %}
+<div>
+    {% if doc.constructorFunction %}
+    <div class="content-block md-whiteframe-z1">
+    <md-toolbar class="md-theme-light">
+        <h2 class="md-toolbar-tools">
+            <span>Constructor</span>
+        </h2>
+    </md-toolbar>
+    <md-list>
+        <md-item>
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3 class="docs-function-name">{$ doc.name $}({$ doc.constructorFunction.params | fnParams $})</h3>
+                    <p>{$ doc.constructorFunction.description | marked $}</p>
+                    <ol class="docs-function-parameters">
+                        {% for param in doc.constructorFunction.params %}
+                        <li>
+                            <span class="docs-parameter-name">{$ param.name $}</span> {$ param.typeExpression | type $}
+                            <p>{$ param.description | marked $}</p>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+    </div>
+    {% endif %}
+
+    {% if doc.methods.length > 0 %}
+    <div class="content-block md-whiteframe-z1">
+    <md-toolbar class="md-theme-light">
+        <h2 class="md-toolbar-tools">
+            <span>Methods</span>
+        </h2>
+    </md-toolbar>
+    <md-list>
+        {% for method in doc.methods %}
+        <md-item>
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3 class="docs-function-name">
+                        {$ method.name $}({$ method.params | fnParams $})
+                        {% if method.static %} <span class="docs-function-static">static</span>{% endif %}
+                        {% if method.inherited %} <span class="docs-function-inherited">inherited</span>{% endif %}
+                    </h3>
+
+                    <p>{$ method.description | marked $}</p>
+
+                    {% if method.returns %}
+                    <div class="docs-function-returns">
+                        <h4>
+                            Returns {$ method.returns.typeExpression | type $}
+                        </h4>
+                        <p>{$ method.returns.description | marked $}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if method.throws.length > 0 %}
+                    <div class="docs-function-exceptions">
+                        <h4>
+                            Exceptions
+                        </h4>
+                        <ul>
+                        {% for exception in method.throws %}
+                            <li>{$ exception.typeExpression | type $}: {$ exception.description $}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+        {% endfor %}
+    </md-list>
+    </div>
+    {% endif %}
+
+    {% if doc.properties.length > 0 %}
+    <div class="content-block md-whiteframe-z1">
+    <md-toolbar class="md-theme-light">
+        <h2 class="md-toolbar-tools">
+            <span>Properties</span>
+        </h2>
+    </md-toolbar>
+    <md-list>
+        {% for property in doc.properties %}
+        <md-item>
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3 class="docs-property-name">{$ property.name $} {$ property.typeExpression | type $}</h3>
+
+                    <p>{$ property.description | marked $}</p>
+                    <p>{$ property.extraInfo | marked $}</p>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+        {% endfor %}
+    </md-list>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

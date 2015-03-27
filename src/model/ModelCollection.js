@@ -4,6 +4,13 @@ import Model from 'd2/model/Model';
 import ModelDefinition from 'd2/model/ModelDefinition';
 import Pager from 'd2/pager/Pager';
 
+/**
+ * @class ModelCollection
+ *
+ * @description
+ * Collection of `Model` objects that can be interacted upon. Can contain a pager object to easily navigate
+ * pages within the system.
+ */
 class ModelCollection {
 
     /**

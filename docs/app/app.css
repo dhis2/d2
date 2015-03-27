@@ -13,6 +13,49 @@ h3.docs-property-name {
 
 }
 
+.doc-extends-class {
+
+}
+
+.doc-extends-class,
+.doc-module-name {
+    padding-bottom: .8rem;
+    font-weight: bold;
+
+}
+
+.doc-extends-class:before,
+.doc-module-name:before {
+    content: 'from';
+    padding-right: .8rem;
+    padding-bottom: .8rem;
+    color: rgba(255,255,255, .8);
+}
+
+.doc-extends-class:before {
+    content: 'extends';
+}
+
+.docs-function-inherited,
+.docs-function-static {
+    padding: 3px 9px;
+    color: white;
+    font-weight: bold;
+    border-radius: .3rem;
+    font-size: 0.8rem;
+    line-height: 1rem;
+    vertical-align: middle;
+    margin-left: .5rem;
+}
+
+.docs-function-static {
+    background: rgba(0, 0, 255, 0.5);
+}
+
+.docs-function-inherited {
+    background: rgba(0, 255, 0, 0.5);
+}
+
 .docs-function-returns h4 {
     font-size: 1rem;
     margin-top: 2rem
@@ -32,23 +75,17 @@ h3.docs-property-name {
 .md-sidenav-left {
     min-height: 100px;
 }
+
+.md-sidenav-left h3 {
+    padding-left: .5em;
+}
+
 .menu-icon {
     font-size: 1.5rem;
 }
 
 body {
     overflow: hidden;
-}
-.module-name {
-    padding-bottom: .8rem;
-    font-weight: bold;
-
-}
-.module-name:before {
-    content: 'from';
-    padding-right: .8rem;
-    padding-bottom: .8rem;
-    color: rgba(255,255,255, .8);
 }
 
 .docs-menu .md-button {
@@ -125,7 +162,7 @@ body {
     padding-bottom: 2rem;
 }
 
-.main-content {
+.content-block {
     margin: 0 auto;
     max-width: 900px;
     margin-top: 30px;

@@ -1,3 +1,5 @@
 module.exports = [
-  require('./throws')
+  require('./throws'),
+  require('./static'),
+  require('./extends')
 ];
