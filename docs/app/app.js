@@ -8,6 +8,12 @@ angular.module('d2Docs').controller('pageController', pageController);
 angular.module('d2Docs').directive('menuSection', menuSectionDirective);
 angular.module('d2Docs').directive('code', codeDirective);
 
+angular.module('d2Docs').config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('blue')
+        .accentPalette('deep-orange');
+});
+
 function appController($mdSidenav, $mdMedia, $location) {
     //jshint validthis:true
     this.showMenuButton = function () {

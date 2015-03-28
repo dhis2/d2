@@ -64,7 +64,7 @@ class ModelDefinition {
     list(queryParams = {fields: ':all'}) {
         return this.api.get(this.apiEndpoint, queryParams)
             .then((data) => {
-                return new ModelCollection(
+                return ModelCollection.create(
                     this,
                     data[this.plural].map((data) => this.create(data)),
                     data.pager

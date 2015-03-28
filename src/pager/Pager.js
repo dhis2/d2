@@ -57,18 +57,24 @@ class Pager {
     }
 
     /**
-     * @method hasNextPage Check whether there is a next page.
+     * @method hasNextPage
      *
      * @returns {Boolean} Result is true when there is a next page, false when there is not.
+     *
+     * @description
+     * Check whether there is a next page.
      */
     hasNextPage() {
         return isDefined(this.nextPage);
     }
 
     /**
-     * @method hasPreviousPage Check whether there is a previous page.
+     * @method hasPreviousPage
      *
      * @returns {Boolean} Result is true when there is a previous page, false when there is not.
+     *
+     * @description
+     * Check whether there is a previous page.
      */
     hasPreviousPage() {
         return isDefined(this.prevPage);

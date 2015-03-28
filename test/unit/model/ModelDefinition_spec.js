@@ -1,6 +1,7 @@
 /* jshint nonew:false */
 let proxyquire = require('proxyquire').noCallThru();
-let ModelCollection = sinon.spy();
+let ModelCollection = function () {};
+ModelCollection.create = sinon.stub().returns(new ModelCollection());
 proxyquire('d2/model/ModelDefinition', {
     'd2/model/ModelCollection': ModelCollection
 });
@@ -14,7 +15,7 @@ describe('ModelDefinition', () => {
     var modelDefinition;
 
     beforeEach(() => {
-        ModelCollection.reset();
+        ModelCollection.create.reset();
 
         modelDefinition = new ModelDefinition('dataElement', 'dataElements');
     });
@@ -460,10 +461,10 @@ describe('ModelDefinition', () => {
                 });
         });
 
-        it('should call the model collection constructor with new', (done) => {
+        it('should not call the model collection create function with', (done) => {
             dataElementModelDefinition.list()
                 .then(() => {
-                    expect(ModelCollection).to.be.calledWithNew;
+                    expect(ModelCollection.create).to.not.be.calledWithNew;
                     done();
                 });
         });
@@ -471,7 +472,7 @@ describe('ModelDefinition', () => {
         it('should call the model collection constructor with the correct data', (done) => {
             dataElementModelDefinition.list()
                 .then(() => {
-                    let firstCallArguments = ModelCollection.getCall(0).args;
+                    let firstCallArguments = ModelCollection.create.getCall(0).args;
 
                     expect(firstCallArguments[0]).to.equal(dataElementModelDefinition);
                     expect(firstCallArguments[1].length).to.equal(5);
