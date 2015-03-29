@@ -210,6 +210,9 @@ body {
 code {
     font-size: 1rem;
 }
+code.hljs {
+    border-left: .3rem solid rgb(33,150,243);
+}
 
 .md-tile-content p {
     font-size: .9rem;

@@ -14,7 +14,7 @@ class ModelBase {
      *
      * @description
      * Checks if the model is dirty. When the model is dirty it will check if the values of the model are valid by calling
-     * `validate`. If this is correct it will attempt to save the Model to the api.
+     * `validate`. If this is correct it will attempt to save the [Model](#/model/Model) to the api.
      *
      * ```js
      * myModel.save()
