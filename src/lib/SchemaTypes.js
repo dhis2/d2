@@ -19,7 +19,8 @@ class SchemaTypes {
             'REFERENCE',
             'DATE',
             'COMPLEX',
-            'IDENTIFIER'
+            'IDENTIFIER',
+            'CONSTANT'
         ];
     }
 

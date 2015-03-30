@@ -39,7 +39,7 @@ ModelValidation.getModelValidation = function () {
 };
 
 //TODO: See if we can reduce the complexity of this function
-function typeValidation(value, type) { //jshint maxcomplexity: 15
+function typeValidation(value, type) { //jshint maxcomplexity: 16
     switch (type) {
         case 'INTEGER':
             return isInteger(value);
@@ -60,6 +60,7 @@ function typeValidation(value, type) { //jshint maxcomplexity: 15
         case 'DATE':
         case 'REFERENCE':
         case 'BOOLEAN':
+        case 'CONSTANT':
             return true;
         default:
             //TODO: Add logger for d2?
