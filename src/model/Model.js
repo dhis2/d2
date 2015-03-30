@@ -90,24 +90,24 @@ class Model {
 
         Object.defineProperties(this, modelDefinition.modelProperties);
     }
-}
 
-/**
- * @method create
- * @static
- *
- * @param {ModelDefinition} modelDefinition ModelDefinition from which the model should be created
- * @returns {Model} Returns an instance of the model.
- *
- * @description The static method is a factory method to create Model objects. It calls `new Model()` with the passed `ModelDefinition`.
- *
- * ```js
- * let myModel = Model.create(modelDefinition);
- * ```
- */
-Model.create = function (modelDefinition) {
-    return new Model(modelDefinition);
-};
+    /**
+     * @method create
+     * @static
+     *
+     * @param {ModelDefinition} modelDefinition ModelDefinition from which the model should be created
+     * @returns {Model} Returns an instance of the model.
+     *
+     * @description The static method is a factory method to create Model objects. It calls `new Model()` with the passed `ModelDefinition`.
+     *
+     * ```js
+     * let myModel = Model.create(modelDefinition);
+     * ```
+     */
+    static create(modelDefinition) {
+        return new Model(modelDefinition);
+    }
+}
 
 Model.prototype = ModelBase;
 
