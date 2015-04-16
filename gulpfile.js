@@ -104,7 +104,6 @@ gulp.task('travis', function () {
     return runSequence('coverage', 'jshint', 'jscs');
 });
 
-
 gulp.task('build', ['clean'], function () {
     var Builder = require('systemjs-builder');
 

@@ -26,9 +26,19 @@ class ModelDefinition {
     }
 
     /**
-     * Create a fresh Model instance based on this `ModelDefinition`
+     * @method create
      *
-     * @returns {Model}
+     * @param {Object} [data] Datavalues that should be loaded into the model.
+     *
+     * @returns {Model} Returns the newly created model instance.
+     *
+     * @description
+     * Creates a fresh Model instance based on the `ModelDefinition`. If data is passed into the method that
+     * data will be loaded into the matching properties of the model.
+     *
+     * ```js
+     * dataElement.create({name: 'ANC', id: 'd2sf33s3ssf'});
+     * ```
      */
     create(data) {
         let model = Model.create(this);
@@ -44,11 +54,22 @@ class ModelDefinition {
     }
 
     /**
+     * @method get
+     *
+     * @param {String} identifier
+     * @param {Object} [queryParams={fields: ':all'}] Query parameters that should be passed to the GET query.
+     * @returns {Promise} Resolves with a `Model` instance or an error message.
+     *
+     * @description
      * Get a `Model` instance from the api loaded with data that relates to `identifier`.
      * This will do an API call and return a Promise that resolves with a `Model` or rejects with the api error message.
      *
-     * @param {String} identifier
-     * @returns {Promise} Resolves with a `Model` instance or an error message.
+     * ```js
+     * //Do a get request for the dataElement with given id (d2sf33s3ssf) and print it's name
+     * //when that request is complete and the model is loaded.
+     * dataElement.get('d2sf33s3ssf')
+     *   .then(model => console.log(model.name));
+     * ```
      */
     get(identifier, queryParams = {fields: ':all'}) {
         checkDefined(identifier, 'Identifier');
@@ -61,6 +82,23 @@ class ModelDefinition {
             });
     }
 
+    /**
+     * @method list
+     *
+     * @param {Object} [queryParams={fields: ':all'}] Query parameters that should be passed to the GET query.
+     * @returns {ModelCollection} Collection of model objects of the `ModelDefinition` type.
+     *
+     * @description
+     * Loads a list of models.
+     *
+     * ```js
+     * // Loads a list of models and prints their name.
+     * dataElement.list()
+     *   .then(modelCollection => {
+     *     modelCollection.forEach(model => console.log(model.name));
+     *   });
+     * ```
+     */
     list(queryParams = {fields: ':all'}) {
         return this.api.get(this.apiEndpoint, queryParams)
             .then((data) => {
