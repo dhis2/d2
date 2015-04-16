@@ -7,7 +7,11 @@ import ModelCollection from 'd2/model/ModelCollection';
 import schemaTypes from 'd2/lib/SchemaTypes';
 
 /**
- * ModelDefinition
+ * @class ModelDefinition
+ *
+ * @description
+ * Definition of a Model. Basically this object contains the meta data related to the Model. Like `name`, `apiEndPoint`, `modelValidation`, etc.
+ * It also has methods to create and load Models that are based on this definition. The Data element `ModelDefinition` would be used to create Data Element `Model`s
  *
  * Note: ModelDefinition has a property `api` that is used for the communication with the dhis2 api. The value of this
  * property is an instance of `Api`.
