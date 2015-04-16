@@ -523,18 +523,39 @@ describe('ModelDefinition', () => {
             expect(apiPostStub).to.be.called;
         });
 
-        it('should pass only the properties that are owned to the api', function () {
-            var expectedPayload = fixtures.get('singleUserOwnerFields');
+        it('should pass only the properties that are owned to the api', () => {
+            let expectedPayload = fixtures.get('singleUserOwnerFields');
 
             userModelDefinition.save(model);
 
             expect(apiPostStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
         });
 
-        it('should save to the url set on the model', function () {
+        it('should save to the url set on the model', () => {
             userModelDefinition.save(model);
 
             expect(apiPostStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+        });
+    });
+
+    describe('getOwnedPropertyNames', () => {
+        let dataElementModelDefinition;
+
+        beforeEach(() => {
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'))
+        });
+
+        it('should return only the owned properties', () => {
+            let expectedDataElementProperties = [
+                "lastUpdated", "code", "id", "created", "name", "formName", "legendSet",
+                "shortName", "zeroIsSignificant", "publicAccess", "commentOptionSet",
+                "aggregationOperator", "type", "url", "numberType", "optionSet",
+                "domainType", "description", "categoryCombo", "user", "textType",
+                "aggregationLevels", "attributeValues", "userGroupAccesses"
+            ].sort();
+            let ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
+
+            expect(ownProperties.sort()).to.deep.equal(expectedDataElementProperties);
         });
     });
 });

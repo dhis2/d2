@@ -116,9 +116,10 @@ class ModelDefinition {
 
     save(model) {
         let objectToSave = {};
+        let ownedProperties = this.getOwnedPropertyNames();
 
         Object.keys(this.modelValidations).forEach((propertyName) => {
-            if (this.modelValidations[propertyName].owner) {
+            if (ownedProperties.includes(propertyName)) {
                 if (model.dataValues[propertyName]) {
                     objectToSave[propertyName] = model.dataValues[propertyName];
                 }
@@ -126,6 +127,11 @@ class ModelDefinition {
         });
 
         return this.api.update(model.dataValues.href, objectToSave);
+    }
+
+    getOwnedPropertyNames() {
+        return Object.keys(this.modelValidations)
+            .filter(propertyName => this.modelValidations[propertyName].owner);
     }
 
     static createFromSchema(schema) {
