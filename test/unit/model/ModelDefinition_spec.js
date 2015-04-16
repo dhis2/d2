@@ -542,16 +542,16 @@ describe('ModelDefinition', () => {
         let dataElementModelDefinition;
 
         beforeEach(() => {
-            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'))
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
         it('should return only the owned properties', () => {
             let expectedDataElementProperties = [
-                "lastUpdated", "code", "id", "created", "name", "formName", "legendSet",
-                "shortName", "zeroIsSignificant", "publicAccess", "commentOptionSet",
-                "aggregationOperator", "type", "url", "numberType", "optionSet",
-                "domainType", "description", "categoryCombo", "user", "textType",
-                "aggregationLevels", "attributeValues", "userGroupAccesses"
+                'lastUpdated', 'code', 'id', 'created', 'name', 'formName', 'legendSet',
+                'shortName', 'zeroIsSignificant', 'publicAccess', 'commentOptionSet',
+                'aggregationOperator', 'type', 'url', 'numberType', 'optionSet',
+                'domainType', 'description', 'categoryCombo', 'user', 'textType',
+                'aggregationLevels', 'attributeValues', 'userGroupAccesses'
             ].sort();
             let ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
 
