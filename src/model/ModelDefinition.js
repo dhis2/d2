@@ -114,6 +114,19 @@ class ModelDefinition {
             });
     }
 
+    /**
+     * @method save
+     *
+     * @param {Model} model The model that should be saved to the server.
+     * @returns {Promise} A promise which resolves when the save was successful
+     * or rejects when it failed. The promise will resolve with the data that is
+     * returned from the server.
+     *
+     * @description
+     * This method is used by the `Model` instances to save the model when calling `model.save()`.
+     *
+     * @note warning This should generally not be accessed directly.
+     */
     save(model) {
         let objectToSave = {};
         let ownedProperties = this.getOwnedPropertyNames();
@@ -129,6 +142,16 @@ class ModelDefinition {
         return this.api.update(model.dataValues.href, objectToSave);
     }
 
+    /**
+     * @method getOwnedPropertyNames
+     *
+     * @returns {String[]} Returns an array of property names.
+     *
+     * @description
+     * This method returns a list of property names that that are defined
+     * as "owner" properties on this schema. This means these properties are used
+     * when saving the model to the server.
+     */
     getOwnedPropertyNames() {
         return Object.keys(this.modelValidations)
             .filter(propertyName => this.modelValidations[propertyName].owner);
