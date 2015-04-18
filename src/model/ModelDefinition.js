@@ -151,12 +151,35 @@ class ModelDefinition {
      * This method returns a list of property names that that are defined
      * as "owner" properties on this schema. This means these properties are used
      * when saving the model to the server.
+     *
+     * ```js
+     * dataElement.getOwnedPropertyNames()
+     * ```
      */
     getOwnedPropertyNames() {
         return Object.keys(this.modelValidations)
             .filter(propertyName => this.modelValidations[propertyName].owner);
     }
 
+    /**
+     * @method createFromSchema
+     * @static
+     *
+     * @returns {ModelDefinition} Frozen model definition object.
+     *
+     * @description
+     * This method creates a new `ModelDefinition` based on a JSON structure called
+     * a schema. A schema represents the structure of a domain model as it is
+     * required by DHIS. Since these schemas can not be altered on the server from
+     * the modelDefinition is frozen to prevent accidental changes to the definition.
+     *
+     * ```js
+     * ModelDefinition.createFromSchema(schemaDefinition);
+     * ```
+     *
+     * @note info An example of a schema definition can be found on
+     * https://apps.dhis2.org/demo/api/schemas/dataElement
+     */
     static createFromSchema(schema) {
         let ModelDefinitionClass;
         checkType(schema, Object, 'Schema');
