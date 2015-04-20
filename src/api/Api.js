@@ -22,7 +22,7 @@ class Api {
     }
 
     post(url, data) {
-        return this.request('POST', url, JSON.stringify(data));
+        return this.request('POST', getUrl(this.baseUrl, url), JSON.stringify(data));
     }
 
     remove() {
@@ -91,6 +91,11 @@ function processFailure(reject) {
 }
 
 function getUrl(baseUrl, url) {
+    //If we are dealing with an absolute url use that instead
+    if (new RegExp('^(:?https?:)?//').test(url)) {
+        return url;
+    }
+
     var urlParts = [];
 
     if (baseUrl) {

@@ -526,7 +526,7 @@ export default (function () {
                 "cascade": "none"
             }, {
                 "klass": "org.hisp.dhis.dataelement.DataElementDomain",
-                "propertyType": "TEXT",
+                "propertyType": "CONSTANT",
                 "name": "domainType",
                 "fieldName": "domainType",
                 "persisted": true,
@@ -540,10 +540,15 @@ export default (function () {
                 "readable": true,
                 "writable": true,
                 "unique": false,
-                "required": true,
-                "max": 255,
-                "min": 0,
-                "cascade": "none"
+                "required": false,
+                "length": 2147483647,
+                "max": 2147483647,
+                "min": -2147483648,
+                "cascade": "none",
+                "manyToMany": false,
+                "oneToOne": false,
+                "manyToOne": false,
+                "constants": ["AGGREGATE", "TRACKER"]
             }, {
                 "klass": "org.hisp.dhis.dataelement.DataElementCategoryCombo",
                 "propertyType": "REFERENCE",

@@ -100,11 +100,11 @@ describe('Api', () => {
         });
 
         it('should not add a double slash to the url', () => {
-            api.get('//dataElements');
+            api.get('path/of/sorts//dataElements');
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
-                url: '/api/dataElements',
+                url: '/api/path/of/sorts/dataElements',
                 dataType: 'json',
                 contentType: 'application/json',
                 data: {}

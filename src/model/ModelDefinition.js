@@ -139,7 +139,19 @@ class ModelDefinition {
             }
         });
 
-        return this.api.update(model.dataValues.href, objectToSave);
+        if (isAnUpdate(model)) {
+            return this.api.update(model.dataValues.href, objectToSave);
+        } else {
+            //Its a new object
+            return this.api.post(this.apiEndpoint, objectToSave);
+        }
+
+        function isAnUpdate(model) {
+            if (model.id) {
+                return true;
+            }
+            return false;
+        }
     }
 
     /**
@@ -266,7 +278,8 @@ function createValidationSetting(validationObject, schemaProperty) {
         max: schemaProperty.max,
         owner: schemaProperty.owner,
         unique: schemaProperty.unique,
-        writable: schemaProperty.writable
+        writable: schemaProperty.writable,
+        constants: schemaProperty.constants
     };
 
     if (propertyName) {

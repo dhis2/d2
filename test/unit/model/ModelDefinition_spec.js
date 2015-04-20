@@ -316,6 +316,12 @@ describe('ModelDefinition', () => {
                     expect(modelValidations.name.owner).to.be.true;
                 });
             });
+
+            describe('domainType', () => {
+                it('should have loaded the constants', () => {
+                    expect(modelValidations.domainType.constants).to.deep.equal(['AGGREGATE', 'TRACKER']);
+                });
+            });
         });
 
         describe('specialized definitions', () => {
@@ -484,6 +490,7 @@ describe('ModelDefinition', () => {
     });
 
     describe('save', () => {
+        let apiUpdateStub;
         let apiPostStub;
         let model;
         let userModelDefinition;
@@ -491,12 +498,16 @@ describe('ModelDefinition', () => {
         beforeEach(() => {
             let singleUserAllFields = fixtures.get('singleUserAllFields');
 
+            apiUpdateStub = stub().returns(new Promise((resolve) => {
+                resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+            }));
             apiPostStub = stub().returns(new Promise((resolve) => {
                 resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
             }));
 
             ModelDefinition.prototype.api = {
-                update: apiPostStub
+                update: apiUpdateStub,
+                post: apiPostStub
             };
 
             userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
@@ -510,6 +521,7 @@ describe('ModelDefinition', () => {
 
             Object.keys(singleUserAllFields).forEach((key) => {
                 model.dataValues[key] = singleUserAllFields[key];
+                model[key] = singleUserAllFields[key];
             });
         });
 
@@ -517,10 +529,10 @@ describe('ModelDefinition', () => {
             expect(userModelDefinition.save(model)).to.be.instanceof(Promise);
         });
 
-        it('should call the post method on the api', () => {
+        it('should call the update method on the api', () => {
             userModelDefinition.save(model);
 
-            expect(apiPostStub).to.be.called;
+            expect(apiUpdateStub).to.be.called;
         });
 
         it('should pass only the properties that are owned to the api', () => {
@@ -528,13 +540,22 @@ describe('ModelDefinition', () => {
 
             userModelDefinition.save(model);
 
-            expect(apiPostStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
+            expect(apiUpdateStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
         });
 
         it('should save to the url set on the model', () => {
             userModelDefinition.save(model);
 
-            expect(apiPostStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+            expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+        });
+
+        it('should save a new object using a post', () => {
+            //Objects without id are concidered "new"
+            delete model.id;
+
+            userModelDefinition.save(model);
+
+            expect(apiPostStub).to.be.called;
         });
     });
 

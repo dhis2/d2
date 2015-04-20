@@ -104,13 +104,14 @@ gulp.task('travis', function () {
     return runSequence('coverage', 'jshint', 'jscs');
 });
 
-gulp.task('build', ['clean'], function () {
+gulp.task('build', ['clean'], function (cb) {
     var Builder = require('systemjs-builder');
 
-    var builder = new Builder({
+    var sfxBuildDone = false;
+    var buildDone = false;
+    var callDone = function () {if (sfxBuildDone && buildDone) cb()};
 
-    });
-
+    var builder = new Builder({});
     builder.loadConfig('./config.js')
         .then(function () {
             builder.config({baseURL: './src'});
@@ -118,11 +119,15 @@ gulp.task('build', ['clean'], function () {
             builder.buildSFX('d2', 'build/d2-sfx.js')
                 .then(function() {
                     console.log('Build complete');
+                    sfxBuildDone = true;
+                    callDone();
                 });
 
             builder.build('d2', 'build/d2.js')
                 .then(function () {
                     console.log('Building systemjs library complete');
+                    buildDone = true;
+                    callDone();
                 });
         });
 });
