@@ -57,8 +57,8 @@ class ModelBase {
     validate() {
         let invalidFields = [];
 
-        Object.keys(this.validations).forEach((propertyName) => {
-            if (!modelValidator.validate(this.dataValues[propertyName], this.validations[propertyName])) {
+        Object.keys(this.modelDefinition.modelValidations).forEach((propertyName) => {
+            if (!modelValidator.validate(this.dataValues[propertyName], this.modelDefinition.modelValidations[propertyName])) {
                 invalidFields.push(propertyName);
             }
         });

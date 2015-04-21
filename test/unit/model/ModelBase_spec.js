@@ -139,7 +139,8 @@ describe('ModelBase', () => {
 
             class Model{
                 constructor(modelValidations) {
-                    this.validations = modelValidations;
+                    this.modelDefinition = {};
+                    this.modelDefinition.modelValidations = modelValidations;
                     this.dataValues = {
                         age: 4
                     };

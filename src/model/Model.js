@@ -35,7 +35,6 @@ class Model {
      */
     constructor(modelDefinition) {
         checkType(modelDefinition, 'object', 'modelDefinition');
-        checkType(modelDefinition.modelValidations, 'object', 'modelValidations');
         checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
 
         /**
@@ -50,7 +49,6 @@ class Model {
             value: modelDefinition
         });
 
-        //Property to store dirty checking state
         /**
          * @property {Boolean} dirty Represents the state of the model. When the model is concidered `dirty`
          * there are pending changes.
@@ -75,17 +73,6 @@ class Model {
             configurable: true,
             writable: true,
             value: {}
-        });
-
-        /**
-         * @property {Object} validations Validations object to store the validation rules for each of the properties.
-         * These validations will be checked when the validate function is called.
-         */
-        Object.defineProperty(this, 'validations', {
-            enumerable: false,
-            configurable: false,
-            writable: false,
-            value: Object.freeze(modelDefinition.modelValidations || {})
         });
 
         Object.defineProperties(this, modelDefinition.modelProperties);
