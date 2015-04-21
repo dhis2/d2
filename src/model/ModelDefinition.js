@@ -139,18 +139,12 @@ class ModelDefinition {
             }
         });
 
+        let isAnUpdate = model => !!model.id;
         if (isAnUpdate(model)) {
             return this.api.update(model.dataValues.href, objectToSave);
         } else {
             //Its a new object
             return this.api.post(this.apiEndpoint, objectToSave);
-        }
-
-        function isAnUpdate(model) {
-            if (model.id) {
-                return true;
-            }
-            return false;
         }
     }
 
