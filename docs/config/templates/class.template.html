@@ -59,6 +59,12 @@
 
                     <p>{$ method.description | marked $}</p>
 
+                    {% for note in method.notes %}
+                    <div class="level-{$ note.type $}">
+                        {$ note.message $}
+                    </div>
+                    {% endfor %}
+
                     {% if method.returns %}
                     <div class="docs-function-returns">
                         <h4>

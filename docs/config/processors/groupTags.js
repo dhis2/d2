@@ -41,6 +41,15 @@ module.exports = function groupTags(log) {
                         part.name = part.function;
                         doc.functions.push(part);
                     }
+
+                    if (part.notes) {
+                        part.notes = part.notes.map(function (note) {
+                            return {
+                                type: note.type && note.type.name ? note.type.name : 'info',
+                                message: note.description
+                            };
+                        });
+                    }
                 });
                 //
                 //console.log();

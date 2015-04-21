@@ -125,7 +125,7 @@ class ModelDefinition {
      * @description
      * This method is used by the `Model` instances to save the model when calling `model.save()`.
      *
-     * @note warning This should generally not be accessed directly.
+     * @note {warning} This should generally not be accessed directly.
      */
     save(model) {
         let objectToSave = {};
@@ -183,7 +183,7 @@ class ModelDefinition {
      * ModelDefinition.createFromSchema(schemaDefinition);
      * ```
      *
-     * @note info An example of a schema definition can be found on
+     * @note {info} An example of a schema definition can be found on
      * https://apps.dhis2.org/demo/api/schemas/dataElement
      */
     static createFromSchema(schema) {

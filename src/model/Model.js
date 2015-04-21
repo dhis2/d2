@@ -1,7 +1,6 @@
 'use strict';
 /**
  * @module Model
- * @exports Model
  *
  * @requires lib/check
  * @requires model/ModelBase
@@ -66,7 +65,7 @@ class Model {
          * @property {Object} dataValues Values object used to store the actual model values. Normally access to the
          * Model data will be done through accessor properties that are generated from the modelDefinition.
          *
-         * @note warning This should not be accessed directly.
+         * @note {warning} This should not be accessed directly.
          */
         Object.defineProperty(this, 'dataValues', {
             enumerable: false,

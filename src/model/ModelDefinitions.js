@@ -58,10 +58,10 @@ class ModelDefinitions {
      * models.mapThroughDefinitions(definition => console.log(definition.name);
      * ```
      *
-     * @note info When mapping through the definition list `transformer` is called with the just the definition
+     * @note {info} When mapping through the definition list `transformer` is called with the just the definition
      * Unlike other map functions, no index or the full object is being passed.
      *
-     * @note warn The resulting array contains references to the actual objects. It does not work like immutable array functions.
+     * @note {warn} The resulting array contains references to the actual objects. It does not work like immutable array functions.
      *
      */
     mapThroughDefinitions(transformer) {
