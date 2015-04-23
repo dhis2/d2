@@ -1,6 +1,6 @@
 'use strict';
 
-import {checkType, isObject, checkDefined} from 'd2/lib/check';
+import {checkType, isObject, isString, checkDefined} from 'd2/lib/check';
 import {addLockedProperty, curry} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 import ModelCollection from 'd2/model/ModelCollection';
@@ -276,8 +276,45 @@ function createValidationSetting(validationObject, schemaProperty) {
         constants: schemaProperty.constants
     };
 
+    //Add a referenceType to be able to get a hold of the reference objects model.
+    //This is the java class name converted to a d2 model name
+    if (validationDetails.type === 'REFERENCE') {
+        validationDetails.referenceType = getReferenceTypeFrom(schemaProperty);
+    }
+
     if (propertyName) {
         validationObject[propertyName] = validationDetails;
+    }
+
+    //TODO: Simplify this when it is easier to grab the type of the reference
+    function getReferenceTypeFrom(schemaProperty) {
+        let classPart;
+        let owningRolePart;
+
+        try {
+            classPart = schemaProperty.klass.split('.').reverse()[0];
+            owningRolePart = schemaProperty.owningRole.split('.').reverse()[0];
+        } catch (e) {
+            return undefined;
+        }
+
+        if (isStringContains(classPart, owningRolePart)) {
+            return lowerCaseFirstLetter(owningRolePart);
+        }
+
+        if (isStringContains(owningRolePart, classPart)) {
+            return lowerCaseFirstLetter(classPart);
+        }
+
+        return undefined;
+
+        function isStringContains(text, contains) {
+            return (text.toLowerCase().indexOf(contains.toLowerCase()) >= 0)
+        }
+
+        function lowerCaseFirstLetter(text) {
+            return text.charAt(0).toLowerCase() + text.slice(1);
+        }
     }
 }
 

@@ -139,7 +139,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should a properties property for each of the schema properties', () => {
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(34);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(39);
             });
 
             it('should not be able to modify the modelProperties array', () => {
@@ -147,13 +147,13 @@ describe('ModelDefinition', () => {
                     dataElementModelDefinition.modelProperties.anotherKey = {};
 
                     //TODO: There is an implementation bug in PhantomJS that does not properly freeze the array
-                    if (Object.keys(dataElementModelDefinition.modelProperties).length === 34) {
+                    if (Object.keys(dataElementModelDefinition.modelProperties).length === 39) {
                         throw new Error();
                     }
                 }
 
                 expect(shouldThrow).to.throw();
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(34);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(39);
             });
         });
 
@@ -295,13 +295,15 @@ describe('ModelDefinition', () => {
                 //});
             });
 
+            describe('id', () => {
+                it('should have a maxLength', () => {
+                    expect(modelValidations.id.max).to.equal(11);
+                });
+            });
+
             describe('name', () => {
                 it('should have have a type property', () => {
                     expect(modelValidations.name.type).to.equal('TEXT');
-                });
-
-                it('should have a maxLength', () => {
-                    expect(modelValidations.name.max).to.equal(230);
                 });
 
                 it('should have a persisted property', () => {
@@ -321,6 +323,23 @@ describe('ModelDefinition', () => {
                 it('should have loaded the constants', () => {
                     expect(modelValidations.domainType.constants).to.deep.equal(['AGGREGATE', 'TRACKER']);
                 });
+            });
+
+            it('should add the referenceType to the optionSet and commentOptionSet', () => {
+                expect(modelValidations.commentOptionSet.referenceType).to.equal('optionSet');
+                expect(modelValidations.optionSet.referenceType).to.equal('optionSet');
+            });
+
+            it('should add the referenceType to the user property', () => {
+                expect(modelValidations.categoryCombo.referenceType).to.equal('categoryCombo');
+            });
+
+            it('should add the referenceType to the user property', () => {
+                expect(modelValidations.user.referenceType).to.equal('user');
+            });
+
+            it('should not add a referenceType for a property that are not a reference', () => {
+                expect(modelValidations.name.referenceType).to.be.undefined;
             });
         });
 
