@@ -1,6 +1,6 @@
 'use strict';
 
-import {checkType, isObject, isString, checkDefined} from 'd2/lib/check';
+import {checkType, isObject, checkDefined} from 'd2/lib/check';
 import {addLockedProperty, curry} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 import ModelCollection from 'd2/model/ModelCollection';
@@ -309,7 +309,7 @@ function createValidationSetting(validationObject, schemaProperty) {
         return undefined;
 
         function isStringContains(text, contains) {
-            return (text.toLowerCase().indexOf(contains.toLowerCase()) >= 0)
+            return (text.toLowerCase().indexOf(contains.toLowerCase()) >= 0);
         }
 
         function lowerCaseFirstLetter(text) {

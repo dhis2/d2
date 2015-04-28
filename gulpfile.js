@@ -100,8 +100,17 @@ gulp.task('clean', function () {
  * Task to be run by travis. This runs coverage which runs the unit tests. Then additionally it runs the e2e tests and
  * the lint and code style checks
  */
-gulp.task('travis', function () {
-    return runSequence('coverage', 'jshint', 'jscs');
+gulp.task('travis', function (cb) {
+    runSequence('coverage', 'jshint', 'jscs', cb);
+});
+
+gulp.task('git:pre-commit', function (cb) {
+    gulp.on('err', function(e){
+        console.log('Pre-commit validate failed');
+        process.exit(1);
+    });
+
+    runSequence('test', 'jshint', 'jscs', cb);
 });
 
 gulp.task('build', ['clean'], function (cb) {
