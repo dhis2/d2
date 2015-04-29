@@ -35,27 +35,6 @@ module.exports = function( config ) {
             }
         },
 
-        //coverageReporter: {
-        //    type: 'lcov',
-        //    dir: '../coverage',
-        //    subdir: function(browser) {
-        //        // normalization process to keep a consistent browser name across different OS
-        //        return browser.toLowerCase().split(/[ /-]/)[0];
-        //    },
-        //    // configure the reporter to use isparta for JavaScript coverage
-        //    // Only on { "karma-coverage": "douglasduteil/karma-coverage#next" }
-        //    instrumenters: { isparta : require('isparta') },
-        //    instrumenter: {
-        //        '**/*.js': 'isparta'
-        //    },
-        //    instrumenterOptions: {
-        //        isparta: { babel : {
-        //            sourceMap: 'inline',
-        //            modules: 'system'
-        //        } }
-        //    }
-        //},
-
         port: 9876,
         colors: true,
         logLevel: config.LOG_INFO,
