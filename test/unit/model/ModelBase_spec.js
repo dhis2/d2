@@ -1,10 +1,12 @@
 function setupFakeModelValidation() {
     let validateSpy = sinon.stub();
+    let validateAgainstSchemaSpy = sinon.stub();
     let proxyquire = require('proxyquire').noCallThru();
 
     class ModelValidation {
         constructor() {
             this.validate = validateSpy;
+            this.validateAgainstSchema = validateAgainstSchemaSpy;
         }
     }
     ModelValidation.getModelValidation = function () {
@@ -15,18 +17,19 @@ function setupFakeModelValidation() {
         'd2/model/ModelValidation': ModelValidation
     });
 
-    return validateSpy;
+    return [validateSpy, validateAgainstSchemaSpy];
 }
 
 describe('ModelBase', () => {
     'use strict';
 
     //TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
-    let validateSpy = setupFakeModelValidation();
+    let [validateSpy, validateAgainstSchemaSpy] = setupFakeModelValidation();
     let modelBase;
 
     beforeEach(() => {
         validateSpy.reset();
+        validateAgainstSchemaSpy.reset();
 
         modelBase = require('d2/model/ModelBase');
     });
@@ -51,7 +54,7 @@ describe('ModelBase', () => {
             class Model{
                 constructor(modelDefinition) {
                     this.modelDefinition = modelDefinition;
-                    this.validate = stub().returns({status: true});
+                    this.validate = stub().returns(Promise.resolve({status: true}));
                     this.dirty = true;
                 }
             }
@@ -60,10 +63,12 @@ describe('ModelBase', () => {
             model = new Model(modelDefinition);
         });
 
-        it('should call the save on the model modelDefinition with itself as a property', () => {
-            model.save();
-
-            expect(modelDefinition.save).to.have.been.calledWith(model);
+        it('should call the save on the model modelDefinition with itself as a parameter', (done) => {
+            model.save()
+                .then(() => {
+                    expect(modelDefinition.save).to.have.been.calledWith(model);
+                    done();
+                });
         });
 
         it('should call validate before calling save', () => {
@@ -94,7 +99,7 @@ describe('ModelBase', () => {
                 });
         });
 
-        it('should return rejected promise when the model is not dirty', function (done) {
+        it('should return rejected promise when the model is not dirty', (done) => {
             model.dirty = false;
 
             model.save()
@@ -105,12 +110,12 @@ describe('ModelBase', () => {
 
         });
 
-        it('should return rejected promise when the model is not valid', function (done) {
-            model.validate.returns({status: false});
+        it('should return rejected promise when the model is not valid', (done) => {
+            model.validate.returns(Promise.resolve({status: false}));
 
             model.save()
                 .catch(function (message) {
-                    expect(message).to.equal('Model status is not valid');
+                    expect(message).to.deep.equal({status: false});
                     done();
                 });
         });
@@ -150,9 +155,11 @@ describe('ModelBase', () => {
             Model.prototype = modelBase;
             model = new Model(modelValidations);
 
-            validateSpy.returns(true);
-            validateSpy.onFirstCall().returns(true);
-            validateSpy.onSecondCall().returns(true);
+            validateSpy.returns({status: true});
+            validateSpy.onFirstCall().returns({status: true});
+            validateSpy.onSecondCall().returns({status: true});
+
+            validateAgainstSchemaSpy.returns(Promise.resolve([]));
         });
 
         it('should call validate on the model validator for each of the validations', () => {
@@ -160,7 +167,10 @@ describe('ModelBase', () => {
             modelValidations.firstName = {};
             modelValidations.lastName = {};
 
-            model.validate();
+            model.validate()
+                .then(function () {
+
+                });
 
             expect(validateSpy).to.have.callCount(4);
         });
@@ -168,38 +178,107 @@ describe('ModelBase', () => {
         it('should call validate on the ModelValidation with the correct data', () => {
             model.validate();
 
-            expect(validateSpy).to.have.been.calledWith(4, modelValidations.age);
+            expect(validateSpy).to.have.been.calledWith(modelValidations.age, 4);
         });
 
-        it('should return true when the value is correct', () => {
-            expect(model.validate().status).to.be.true;
+        it('should return true when the value is correct', (done) => {
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.true;
+                    done();
+                });
         });
 
-        it('should return false when the validation fails', () => {
-            validateSpy.onFirstCall().returns(false);
+        it('should return false when the validation fails', (done) => {
+            validateSpy.onFirstCall().returns({
+                status: false,
+                messages: [{
+                    message: 'Required property missing',
+                    property: 'name',
+                    value: ''
+                }]
+            });
 
-            expect(model.validate().status).to.be.false;
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.false;
+                    done();
+                });
         });
 
-        it('should return false when one of the validations returns false', () => {
+        it('should return false when one of the validations returns false', (done) => {
+            //Some fake validator that does nothing but triggers a validation call
             modelValidations.name = {};
-            validateSpy.onSecondCall().returns(false);
 
-            expect(model.validate().status).to.be.false;
+            validateSpy.onSecondCall().returns({
+                status: false,
+                messages: [{
+                    message: 'Required property missing',
+                    property: 'name',
+                    value: ''
+                }]
+            });
+
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.false;
+                    done();
+                });
         });
 
-        it('should return true when all validations return true', () => {
+        it('should return true when all validations return true', (done) => {
             modelValidations.name = {};
 
-            expect(model.validate().status).to.be.true;
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.true;
+                    done();
+                });
         });
 
-        it('should return a list of invalid fields', () => {
-            validateSpy.onFirstCall().returns(false);
+        it('should return a list of invalid fields', (done) => {
+            validateSpy.onFirstCall().returns({
+                status: false,
+                messages: [{
+                    message: 'Required property missing',
+                    property: 'age',
+                    value: ''
+                }]
+            });
 
             model.dataValues.age = -1;
 
-            expect(model.validate().fields).to.deep.equal(['age']);
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.fields).to.deep.equal(['age']);
+                    done();
+                });
+        });
+
+        it('should fail when the async validate fails', (done) => {
+            validateAgainstSchemaSpy.returns(Promise.reject('Validation against schema endpoint failed.'));
+
+            model.validate()
+                .catch(message => {
+                    expect(message).to.equal('Validation against schema endpoint failed.');
+                    done();
+                });
+        });
+
+        it('should call the validateAgainstSchema method on the modelValidator', (done) => {
+            model.validate()
+                .then(() => {
+                    expect(validateAgainstSchemaSpy).to.be.called;
+                    done();
+                });
+        });
+
+        it('should call validateAgainstSchema with the model', (done) => {
+            model.validate()
+                .then(() => {
+                    expect(validateAgainstSchemaSpy).to.be.calledWith(model);
+                    done();
+                });
         });
     });
 });

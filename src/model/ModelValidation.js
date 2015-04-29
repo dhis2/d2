@@ -4,39 +4,73 @@
 import {checkType, isInteger, isObject, isArray, isString, isNumeric} from 'd2/lib/check';
 import Logger from 'd2/logger/Logger';
 
-var logger;
-var typeSpecificValidations = {
+let logger;
+let typeSpecificValidations = {
     PHONENUMBER: [phoneNumber]
 };
 
+/**
+ * @class ModelBase
+ */
 class ModelValidation {
     constructor(providedLogger) {
         checkType(providedLogger, 'object', 'logger (Logger)');
         logger = providedLogger;
     }
 
-    validate(value, validationSettings) {
-        if (isObject(validationSettings)) {
-
-            //No value when not required is a valid value.
-            if (validationSettings.required === false && !value) {
-                return true;
-            }
-
-            return typeValidation(value, validationSettings.type) &&
-                minMaxValidation(value, validationSettings) &&
-                typeSpecificValidation(value, validationSettings.type);
+    /**
+     * @method validate
+     *
+     * @param {Object} validationSettings
+     * @param {*} value The value to be validated
+     * @returns {{status: boolean, messages: Array}} Returns an object with the status. When the status is false the messages
+     * array will contain messages on why the validation failed.
+     *
+     * @description
+     * Validate a given value against the given validationSettings.
+     * This checks if the value is of the defined `validationSettings.type`
+     * if the value adheres to the set `validationSettings.min` and `validationSettings.max`
+     * and runs any type specific validations like for example on the type PHONENUMBER if it is [0-9+ ] compliant.
+     */
+    validate(validationSettings, value) {
+        if (!isObject(validationSettings)) {
+            throw new TypeError('validationSettings should be of type object');
         }
-        return false;
+        let status = false;
+
+        //No value when not required is a valid value.
+        if (validationSettings.required === false && !value) {
+            return {status: true};
+        }
+
+        status = typeValidation(value, validationSettings.type) &&
+            minMaxValidation(value, validationSettings) &&
+            typeSpecificValidation(value, validationSettings.type);
+
+        return {status: status};
+    }
+
+    validateAgainstSchema() {
+        return Promise.resolve([]);
+    }
+
+    /**
+     * @method getModelValidation
+     * @static
+     *
+     * @returns {ModelValidation}
+     *
+     * @description
+     * Returns the `ModelValidation` singleton. Creates a new one if it does not yet exist.
+     * Grabs a logger instance by calling `Logger.getLogger`
+     */
+    static getModelValidation() {
+        if (this.modelValidation) {
+            return this.modelValidation;
+        }
+        return (this.modelValidation = new ModelValidation(Logger.getLogger(console)));
     }
 }
-
-ModelValidation.getModelValidation = function () {
-    if (this.modelValidation) {
-        return this.modelValidation;
-    }
-    return (this.modelValidation = new ModelValidation(Logger.getLogger(console)));
-};
 
 //TODO: See if we can reduce the complexity of this function
 function typeValidation(value, type) { //jshint maxcomplexity: 16

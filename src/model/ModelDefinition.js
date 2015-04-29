@@ -127,6 +127,7 @@ class ModelDefinition {
      *
      * @note {warning} This should generally not be accessed directly.
      */
+    //TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
         let objectToSave = {};
         let ownedProperties = this.getOwnedPropertyNames();

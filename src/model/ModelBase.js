@@ -10,7 +10,8 @@ class ModelBase {
     /**
      * @method save
      *
-     * @returns {Promise} Returns a promise that resolves when the model has been saved or rejects with an error message.
+     * @returns {Promise} Returns a promise that resolves when the model has been saved
+     * or rejects with the result from the `validate()` call.
      *
      * @description
      * Checks if the model is dirty. When the model is dirty it will check if the values of the model are valid by calling
@@ -26,47 +27,79 @@ class ModelBase {
             return Promise.reject('No changes to be saved');
         }
 
-        if (this.validate().status) {
-            return this.modelDefinition.save(this)
-                .then(() => {
-                    //TODO: check the return status of the save to see if it was actually successful and not ignored
-                    this.dirty = false;
-                });
-        }
+        return this.validate()
+            .then(validationState => {
+                if (!validationState.status) {
+                    return Promise.reject(validationState);
+                }
 
-        return Promise.reject('Model status is not valid');
+                return this.modelDefinition
+                    .save(this)
+                    .then(() => this.dirty = false);
+            });
     }
 
     /**
      * @method validate
      *
-     * @returns {{status: boolean, fields: Array}} Object with a status property that represents if the model is valid or not
-     * the fields array will return the names of the fields that are invalid.
+     * @returns {Promise} Promise that resolves with an object with a status property that represents if the model
+     * is valid or not the fields array will return the names of the fields that are invalid.
      *
      * @description
      * This will run the validations on the properties which have validations set. Normally these validations are defined
-     * through the DHIS2 schema. It will check min/max for strings/numbers etc.
+     * through the DHIS2 schema. It will check min/max for strings/numbers etc. Additionally it will
+     * run model validations against the schema.
      *
      * ```js
-     * let modelValidation = myModel.validate();
-     * if (myModel.status === false) {
-     *   myModel.fields.forEach((fieldName) => console.log(fieldName));
-     * }
+     * myModel.validate()
+     *  .then(myModelStatus => {
+     *    if (myModelStatus.status === false) {
+     *      myModelStatus.fields.forEach((fieldName) => console.log(fieldName));
+     *    }
+     * });
      * ```
      */
     validate() {
-        let invalidFields = [];
+        return new Promise((resolve, reject) => {
+            let validationMessages = [];
+            let validationState;
 
-        Object.keys(this.modelDefinition.modelValidations).forEach((propertyName) => {
-            if (!modelValidator.validate(this.dataValues[propertyName], this.modelDefinition.modelValidations[propertyName])) {
-                invalidFields.push(propertyName);
-            }
+            //Run local validation on the models data values
+            validationMessages = validationMessages.concat(
+                localValidation(this.modelDefinition.modelValidations, this.dataValues)
+            );
+
+            //Run async validation against the api
+            asyncRemoteValidation(this)
+                .then(remoteMessages => {
+                    validationMessages = validationMessages.concat(remoteMessages);
+
+                    validationState = {
+                        status: !validationMessages.length,
+                        fields: validationMessages.map(validationMessage => validationMessage.property),
+                        messages: validationMessages
+                    };
+                    resolve(validationState);
+                })
+                .catch(message => reject(message));
         });
 
-        return {
-            status: !invalidFields.length,
-            fields: invalidFields
-        };
+        function localValidation(modelValidations, dataValues) {
+            let validationMessages = [];
+
+            Object.keys(modelValidations).forEach((propertyName) => {
+                let validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
+                if (!validationStatus.status) {
+                    validationMessages = validationMessages.concat(validationStatus.messages || []);
+                }
+            });
+
+            return validationMessages;
+        }
+
+        function asyncRemoteValidation(model) {
+            return modelValidator.validateAgainstSchema(model);
+        }
     }
 }
 
