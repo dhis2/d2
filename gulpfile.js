@@ -105,6 +105,7 @@ gulp.task('travis', function (cb) {
 });
 
 gulp.task('git:pre-commit', function (cb) {
+    //Gulp exists with 0 and for the pre-commit hook to fail we need to exit with a not 0 error code
     gulp.on('err', function(e){
         console.log('Pre-commit validate failed');
         process.exit(1);
