@@ -61,6 +61,7 @@ class ModelBase {
      */
     validate() {
         return new Promise((resolve, reject) => {
+            let modelValidationStatus = true;
             let validationMessages = [];
             let validationState;
 
@@ -75,31 +76,30 @@ class ModelBase {
                     validationMessages = validationMessages.concat(remoteMessages);
 
                     validationState = {
-                        status: !validationMessages.length,
+                        status: modelValidationStatus,
                         fields: validationMessages.map(validationMessage => validationMessage.property),
                         messages: validationMessages
                     };
                     resolve(validationState);
                 })
                 .catch(message => reject(message));
-        });
 
-        function localValidation(modelValidations, dataValues) {
-            let validationMessages = [];
+            function localValidation(modelValidations, dataValues) {
+                let validationMessages = [];
 
-            Object.keys(modelValidations).forEach((propertyName) => {
-                let validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
-                if (!validationStatus.status) {
+                Object.keys(modelValidations).forEach((propertyName) => {
+                    let validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
+                    modelValidationStatus = modelValidationStatus && validationStatus.status;
                     validationMessages = validationMessages.concat(validationStatus.messages || []);
-                }
-            });
+                });
 
-            return validationMessages;
-        }
+                return validationMessages;
+            }
 
-        function asyncRemoteValidation(model) {
-            return modelValidator.validateAgainstSchema(model);
-        }
+            function asyncRemoteValidation(model) {
+                return modelValidator.validateAgainstSchema(model);
+            }
+        });
     }
 }
 

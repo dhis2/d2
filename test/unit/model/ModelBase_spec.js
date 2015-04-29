@@ -280,5 +280,18 @@ describe('ModelBase', () => {
                     done();
                 });
         });
+
+        it('should not return a false positive when there are no messages', (done) => {
+            validateSpy.onFirstCall().returns({
+                status: false,
+                messages: []
+            });
+
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.false;
+                    done();
+                });
+        });
     });
 });
