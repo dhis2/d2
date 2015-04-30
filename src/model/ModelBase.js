@@ -77,23 +77,37 @@ class ModelBase {
 
                     validationState = {
                         status: modelValidationStatus,
-                        fields: validationMessages.map(validationMessage => validationMessage.property),
+                        fields: validationMessages
+                            .map(validationMessage => validationMessage.property)
+                            .reduce(unique, []),
                         messages: validationMessages
                     };
                     resolve(validationState);
                 })
                 .catch(message => reject(message));
 
+            function unique(current, property) {
+                if (property && current.indexOf(property) === -1) {
+                    current.push(property);
+                }
+                return current;
+            }
+
             function localValidation(modelValidations, dataValues) {
-                let validationMessages = [];
+                let validationMessagesLocal = [];
 
                 Object.keys(modelValidations).forEach((propertyName) => {
                     let validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
+                    if (!validationStatus.status) {
+                        validationStatus.messages.forEach(function (message) {
+                            message.property = propertyName;
+                        });
+                    }
                     modelValidationStatus = modelValidationStatus && validationStatus.status;
-                    validationMessages = validationMessages.concat(validationStatus.messages || []);
+                    validationMessagesLocal = validationMessagesLocal.concat(validationStatus.messages || []);
                 });
 
-                return validationMessages;
+                return validationMessagesLocal;
             }
 
             function asyncRemoteValidation(model) {

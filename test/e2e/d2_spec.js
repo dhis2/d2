@@ -1,34 +1,27 @@
-/* global System */
+import d2 from 'd2';
+
 describe('D2', function () {
     var server;
-    var d2;
 
     beforeEach(function (done) {
-        System.import('d2')
-            .then(function (require) {
-                server = sinon.fakeServer.create();
-                server.autoRespond = true;
+        server = sinon.fakeServer.create();
+        server.autoRespond = true;
 
-                server.respondWith(
-                    'GET',
-                    '/dhis/api/schemas',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify(window.fixtures.schemas)
-                    ]
-                );
+        server.respondWith(
+            'GET',
+            '/dhis/api/schemas',
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify(window.fixtures.schemas)
+            ]
+        );
 
-                require.default({baseUrl: '/dhis/api'})
-                    .then(function (initialisedD2) {
-                        window.d2 = initialisedD2;
-                        done();
-                    });
+        d2({baseUrl: '/dhis/api'})
+            .then(function (initialisedD2) {
+                window.d2 = initialisedD2;
+                done();
             });
-    });
-
-    beforeEach(function () {
-        d2 = window.d2;
     });
 
     it('should be available on the window', function () {

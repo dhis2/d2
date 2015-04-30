@@ -7,7 +7,9 @@ proxyquire('d2/model/ModelDefinition', {
 });
 
 import fixtures from 'fixtures/fixtures';
-import ModelDefinition from 'd2/model/ModelDefinition';
+
+// TODO: Can not use import here as babel will not respect the override
+let ModelDefinition = require('d2/model/ModelDefinition');
 
 describe('ModelDefinition', () => {
     'use strict';

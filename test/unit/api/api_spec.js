@@ -4,7 +4,9 @@ proxyquire('d2/api/Api', {
 });
 
 import fixtures from 'fixtures/fixtures';
-import Api from 'd2/api/Api';
+
+// TODO: Can not use import here as babel will not respect the override
+var Api = require('d2/api/Api');
 
 describe('Api', () => {
     var jqueryMock;

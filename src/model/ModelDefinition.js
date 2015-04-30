@@ -129,6 +129,16 @@ class ModelDefinition {
      */
     //TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
+        let isAnUpdate = model => !!model.id;
+        if (isAnUpdate(model)) {
+            return this.api.update(model.dataValues.href, this.getOwnedPropertyJSON(model));
+        } else {
+            //Its a new object
+            return this.api.post(this.apiEndpoint, this.getOwnedPropertyJSON(model));
+        }
+    }
+
+    getOwnedPropertyJSON(model) {
         let objectToSave = {};
         let ownedProperties = this.getOwnedPropertyNames();
 
@@ -140,13 +150,7 @@ class ModelDefinition {
             }
         });
 
-        let isAnUpdate = model => !!model.id;
-        if (isAnUpdate(model)) {
-            return this.api.update(model.dataValues.href, objectToSave);
-        } else {
-            //Its a new object
-            return this.api.post(this.apiEndpoint, objectToSave);
-        }
+        return objectToSave;
     }
 
     /**

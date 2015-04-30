@@ -1,14 +1,22 @@
+let proxyquire = require('proxyquire').noCallThru();
+proxyquire('d2/api/Api', {
+    'd2/external/jquery': {}
+});
+
 describe('ModelValidations', () => {
     'use strict';
 
-    var ModelValidation = require('d2/model/ModelValidation');
-    var Logger = require('d2/logger/Logger');
+    let ModelValidation = require('d2/model/ModelValidation');
+    let Logger = require('d2/logger/Logger');
+    let Api = require('d2/api/Api');
 
-    var modelValidation;
-    var validationSettings;
+    let api;
+    let modelValidation;
+    let validationSettings;
 
     beforeEach(() => {
-        var logger;
+        api = Api.getApi();
+        let logger;
         logger = stub(new Logger({}));
 
         modelValidation = new ModelValidation(logger);
@@ -36,7 +44,7 @@ describe('ModelValidations', () => {
         });
 
         it('should validate', () => {
-            expect(modelValidation.validate(validationSettings, 2)).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, 2)).to.deep.equal({status: true, messages: []});
         });
 
         it('should throw an error when there are no validationSettings', () => {
@@ -45,42 +53,72 @@ describe('ModelValidations', () => {
 
         describe('min/max', () => {
             it('should not validate when smaller than min value', () => {
-                expect(modelValidation.validate(validationSettings, -1)).to.deep.equal({status: false});
+                let expectedMessages = [{
+                    message: 'Value needs to be larger than or equal to 0',
+                    value: -1
+                }];
+
+                expect(modelValidation.validate(validationSettings, -1)).to.deep.equal({status: false, messages: expectedMessages});
             });
 
             it('should not validate when larger than max value', () => {
-                expect(modelValidation.validate(validationSettings, 2400)).to.deep.equal({status: false});
+                let expectedMessages = [{
+                    message: 'Value needs to be smaller than or equal to 2342',
+                    value: 2400
+                }];
+
+                expect(modelValidation.validate(validationSettings, 2400)).to.deep.equal({status: false, messages: expectedMessages});
             });
 
             it('should validate when the value is exactly the min value', () => {
-                expect(modelValidation.validate(validationSettings, 0)).to.deep.equal({status: true});
+                expect(modelValidation.validate(validationSettings, 0)).to.deep.equal({status: true, messages: []});
             });
 
             it('should validate when the value is exactly the max value', () => {
-                expect(modelValidation.validate(validationSettings, 2342)).to.deep.equal({status: true});
+                expect(modelValidation.validate(validationSettings, 2342)).to.deep.equal({status: true, messages: []});
             });
 
             it('should validate when the value is min value in decimal', () => {
-                expect(modelValidation.validate(validationSettings, 0.0)).to.deep.equal({status: true});
+                expect(modelValidation.validate(validationSettings, 0.0)).to.deep.equal({status: true, messages: []});
             });
         });
 
         describe('type check', () => {
             it('should not validate an object', () => {
-                expect(modelValidation.validate(validationSettings, {})).to.deep.equal({status: false});
+                let expectedMessages = [{
+                    message: 'This is not a valid type',
+                    value: {}
+                }];
+
+                expect(modelValidation.validate(validationSettings, {})).to.deep.equal({status: false, messages: expectedMessages});
             });
 
             it('should not validate when the type does not exist', () => {
+                let expectedMessages = [{
+                    message: 'This is not a valid type',
+                    value: {}
+                }];
+
                 validationSettings.type = 'Fake type';
-                expect(modelValidation.validate(validationSettings, {})).to.deep.equal({status: false});
+                expect(modelValidation.validate(validationSettings, {})).to.deep.equal({status: false, messages: expectedMessages});
             });
 
             it('should not validate an array', () => {
-                expect(modelValidation.validate(validationSettings, [])).to.deep.equal({status: false});
+                let expectedMessages = [{
+                    message: 'This is not a valid type',
+                    value: []
+                }];
+
+                expect(modelValidation.validate(validationSettings, [])).to.deep.equal({status: false, messages: expectedMessages});
             });
 
             it('should not validate undefined', () => {
-                expect(modelValidation.validate(validationSettings, undefined)).to.deep.equal({status: false});
+                let expectedMessages = [{
+                    message: 'This is not a valid type',
+                    value: undefined
+                }];
+
+                expect(modelValidation.validate(validationSettings, undefined)).to.deep.equal({status: false, messages: expectedMessages});
             });
         });
     });
@@ -99,11 +137,16 @@ describe('ModelValidations', () => {
         });
 
         it('should validate a valid integer', () => {
-            expect(modelValidation.validate(validationSettings, 4)).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, 4)).to.deep.equal({status: true, messages: []});
         });
 
         it('should not validate a decimal number', () => {
-            expect(modelValidation.validate(validationSettings, 2.1)).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'This is not a valid type',
+                value: 2.1
+            }];
+
+            expect(modelValidation.validate(validationSettings, 2.1)).to.deep.equal({status: false, messages: expectedMessages});
         });
     });
 
@@ -124,21 +167,29 @@ describe('ModelValidations', () => {
         });
 
         it('should validate a the array', () => {
-            expect(modelValidation.validate(validationSettings, [1, 2])).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, [1, 2])).to.deep.equal({status: true, messages: []});
         });
 
         it('should not validate the when the collection does not contain the mininum item count', () => {
-            expect(modelValidation.validate(validationSettings, [])).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'Value needs to be longer than or equal to 1',
+                value: []
+            }];
+            expect(modelValidation.validate(validationSettings, [])).to.deep.equal({status: false, messages: expectedMessages});
         });
 
         it('should not validate when the collection size is too large', () => {
-            expect(modelValidation.validate(validationSettings, [1, 2, 3, 4])).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'Value needs to be shorter than or equal to 3',
+                value: [1, 2, 3, 4]
+            }];
+            expect(modelValidation.validate(validationSettings, [1, 2, 3, 4])).to.deep.equal({status: false, messages: expectedMessages});
         });
 
         it('should validate a collection when the collection can be empty', () => {
             validationSettings.min = 0;
 
-            expect(modelValidation.validate(validationSettings, [])).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, [])).to.deep.equal({status: true, messages: []});
         });
     });
 
@@ -156,33 +207,48 @@ describe('ModelValidations', () => {
         });
 
         it('should validate the string "SomeString"', () => {
-            expect(modelValidation.validate(validationSettings, 'SomeString')).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, 'SomeString')).to.deep.equal({status: true, messages: []});
         });
 
         it('should not validate a string that is too long', () => {
-            expect(modelValidation.validate(validationSettings, 'SomeString is too long')).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'Value needs to be shorter than or equal to 10',
+                value: 'SomeString is too long'
+            }];
+
+            expect(modelValidation.validate(validationSettings, 'SomeString is too long')).to.deep.equal({status: false, messages: expectedMessages});
         });
 
         it('should not validate a string that is too short', () => {
-            expect(modelValidation.validate(validationSettings, 'ab')).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'Value needs to be longer than or equal to 3',
+                value: 'ab'
+            }];
+
+            expect(modelValidation.validate(validationSettings, 'ab')).to.deep.equal({status: false, messages: expectedMessages});
         });
 
         it('should validate a string that is exactly the min length', () => {
-            expect(modelValidation.validate(validationSettings, 'abc')).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, 'abc')).to.deep.equal({status: true, messages: []});
         });
 
         it('should validate a string in between min max', () => {
-            expect(modelValidation.validate(validationSettings, 'abcdef')).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, 'abcdef')).to.deep.equal({status: true, messages: []});
         });
 
         it('should not validate an empty value', () => {
-            expect(modelValidation.validate(validationSettings, undefined)).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'This is not a valid type',
+                value: undefined
+            }];
+
+            expect(modelValidation.validate(validationSettings, undefined)).to.deep.equal({status: false, messages: expectedMessages});
         });
 
         it('should validate an empty value when required is set to false', () => {
             validationSettings.required = false;
 
-            expect(modelValidation.validate(validationSettings, undefined)).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, undefined)).to.deep.equal({status: true, messages: []});
         });
     });
 
@@ -200,7 +266,7 @@ describe('ModelValidations', () => {
         });
 
         it('should validate the object', () => {
-            expect(modelValidation.validate(validationSettings, {})).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, {})).to.deep.equal({status: true, messages: []});
         });
     });
 
@@ -218,19 +284,29 @@ describe('ModelValidations', () => {
         });
 
         it('should validate a dutch phone number', () => {
-            expect(modelValidation.validate(validationSettings, '+31628456109')).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, '+31628456109')).to.deep.equal({status: true, messages: []});
         });
 
         it('should validate a phone number with spaces', () => {
-            expect(modelValidation.validate(validationSettings, '+31 6 284 56 109')).to.deep.equal({status: true});
+            expect(modelValidation.validate(validationSettings, '+31 6 284 56 109')).to.deep.equal({status: true, messages: []});
         });
 
         it('should not validate a phone number with tabs', () => {
-            expect(modelValidation.validate(validationSettings, '+31\t6284\t56 109')).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'Phone number can only consist of numbers and + and [space]',
+                value: '+31\t6284\t56 109'
+            }];
+
+            expect(modelValidation.validate(validationSettings, '+31\t6284\t56 109')).to.deep.equal({status: false, messages: expectedMessages});
         });
 
         it('should not validate a phone number with new lines', () => {
-            expect(modelValidation.validate(validationSettings, '+31\n6284\r\n56 109')).to.deep.equal({status: false});
+            let expectedMessages = [{
+                message: 'Phone number can only consist of numbers and + and [space]',
+                value: '+31\n6284\r\n56 109'
+            }];
+
+            expect(modelValidation.validate(validationSettings, '+31\n6284\r\n56 109')).to.deep.equal({status: false, messages: expectedMessages});
         });
     });
 
@@ -245,12 +321,52 @@ describe('ModelValidations', () => {
     });
 
     describe('validateAgainstSchema', () => {
+        let modelMock;
+
+        beforeEach(() => {
+            Api.getApi().post = sinon.stub().returns(Promise.resolve());
+            modelMock = {
+                modelDefinition: {
+                    name: 'dataElement',
+                    getOwnedPropertyJSON: sinon.stub()
+                        .returns({id: 'R4dd3wwdwdw', name: 'ANC'})
+                }
+            };
+        });
+
         it('should be a function', () => {
             expect(modelValidation.validateAgainstSchema).to.be.instanceof(Function);
         });
 
         it('should return a promise', () => {
-            expect(modelValidation.validateAgainstSchema()).to.be.instanceof(Promise);
+            expect(modelValidation.validateAgainstSchema(modelMock)).to.be.instanceof(Promise);
+        });
+
+        it('should return a rejected promise if the model.modelDefinition.name is not present', (done) => {
+            modelValidation.validateAgainstSchema()
+                .catch(message => {
+                    expect(message).to.equal('model.modelDefinition.name can not be found');
+                    done();
+                });
+        });
+
+        it('should call the post method on the Api', (done) => {
+            modelValidation.validateAgainstSchema(modelMock)
+                .then(() => {
+                    expect(api.post).to.be.called;
+                    done();
+                });
+        });
+
+        it('should call the post method on the api with the modeldata', (done) => {
+            modelValidation.validateAgainstSchema(modelMock)
+                .then(() => {
+                    expect(api.post).to.be.calledWith(
+                        'schemas/dataElement',
+                        {id: 'R4dd3wwdwdw', name: 'ANC'}
+                    );
+                    done();
+                });
         });
     });
 });

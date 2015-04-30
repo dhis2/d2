@@ -1,30 +1,33 @@
-/* global System */
+import d2Init from 'd2';
+
 describe('D2.models', function () {
     var server;
-    var d2;
+    let d2;
 
     beforeEach(function (done) {
-        System.import('d2')
-            .then(function (require) {
-                server = sinon.fakeServer.create();
-                server.autoRespond = true;
+        server = sinon.fakeServer.create();
 
-                server.respondWith(
-                    'GET',
-                    '/dhis/api/schemas',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify(window.fixtures.schemas)
-                    ]
-                );
+        server.respondWith(
+            'GET',
+            '/dhis/api/schemas',
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify(window.fixtures.schemas)
+            ]
+        );
 
-                require.default({baseUrl: '/dhis/api'})
-                    .then(function (initialisedD2) {
-                        d2 = initialisedD2;
-                        done();
-                    });
+        d2Init({baseUrl: '/dhis/api'})
+            .then(function (initialisedD2) {
+                d2 = initialisedD2;
+                done();
             });
+
+        server.respond();
+    });
+
+    afterEach(() => {
+        server.restore();
     });
 
     it('should be available on the d2 object', function () {
@@ -34,7 +37,7 @@ describe('D2.models', function () {
     it('should have all the models', function () {
         var returnValue = function (item) { return item; };
 
-        expect(d2.models.mapThroughDefinitions(returnValue).length).to.equal(61);
+        expect(d2.models.mapThroughDefinitions(returnValue).length).to.equal(window.fixtures.schemas.schemas.length);
     });
 
     it('should be able to call create on a model definition', function () {
@@ -45,16 +48,16 @@ describe('D2.models', function () {
         var dataElementModel = d2.models.dataElement.create();
 
         expect(dataElementModel).to.be.instanceof(d2.model.Model);
-        expect(Object.isSealed(dataElementModel)).to.be.true;
     });
 
-    it('should not be able to set any arbitrary properties', function () {
-        var dataElementModel = d2.models.dataElement.create();
-
-        dataElementModel.myAmazingProperty = true;
-
-        expect(dataElementModel.myAmazingProperty).to.be.undefined;
-    });
+    // TODO: Disabled because angular needs to be able to set additional property onto a watched object
+    //it('should not be able to set any arbitrary properties', function () {
+    //    var dataElementModel = d2.models.dataElement.create();
+    //
+    //    dataElementModel.myAmazingProperty = true;
+    //
+    //    expect(dataElementModel.myAmazingProperty).to.be.undefined;
+    //});
 
     it('should be able to set properties defined by the schema', function () {
         var dataElementModel = d2.models.dataElement.create();
@@ -65,80 +68,117 @@ describe('D2.models', function () {
         expect(dataElementModel.name).to.equal('myDataElement');
     });
 
-    describe('validate', function () {
-        it('should return false for an empty model', function () {
+    describe('validate', () => {
+        beforeEach(() => {
+            server.respondWith(
+                'POST',
+                '/dhis/api/schemas/dataElement',
+                [
+                    200,
+                    {'Content-Type': 'application/json'},
+                    JSON.stringify([])
+                ]
+            );
+        });
+
+        it('should return false for an empty model', (done) => {
             var dataElementModel = d2.models.dataElement.create();
 
-            expect(dataElementModel.validate().status).to.be.false;
+            dataElementModel.validate()
+                .then((validationStatus) => {
+                    expect(validationStatus.status).to.be.false;
+                    done();
+                });
+
+            server.respond();
         });
 
         describe('model with data', function () {
-            var loadedModel;
+            var loadedDataElementModel;
 
             beforeEach(function (done) {
                 server.respondWith(
                     'GET',
-                    '/dhis/api/dataElement/umC9U5YGDq4?fields=%3Aall',
+                    'http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=%3Aall',
                     [
                         200,
                         {'Content-Type': 'application/json'},
-                        JSON.stringify(window.fixtures.singleUser)
+                        JSON.stringify(window.fixtures.dataElements.umC9U5YGDq4)
                     ]
                 );
 
                 d2.models.dataElement.get('umC9U5YGDq4')
                     .then(function (model) {
-                        loadedModel = model;
-                        done();
-                    }).catch(function (e) {
-                        window.console.log(e);
-                    });
+                        loadedDataElementModel = model;
+                    })
+                    .then(done);
+
+                server.respond();
             });
 
-            it('should return true for an object from the api', function () {
-                expect(loadedModel.validate().status).to.be.true;
+            it('should return true for an object from the api', function (done) {
+                loadedDataElementModel.validate()
+                    .then((validationStatus) => {
+                        expect(validationStatus.status).to.be.true;
+                    })
+                    .then(done);
+
+                server.respond();
             });
 
-            it('should return false when a value is changed to an invalid value', function () {
-                loadedModel.firstName = 'a';
+            it('should return false when a value is changed to an invalid value', function (done) {
+                loadedDataElementModel.name = '';
 
-                expect(loadedModel.validate().status).to.be.false;
+                loadedDataElementModel.validate()
+                    .then((validationStatus) => {
+                        expect(validationStatus.status).to.be.false;
+                        expect(validationStatus.fields).to.deep.equal(['name']);
+                    })
+                    .then(done);
+                server.respond();
             });
-
-            it('should have the correct incorrect fields after calling validate', function () {
-                loadedModel.firstName = 'a';
-
-                expect(loadedModel.validate().fields).to.deep.equal(['firstName']);
-            });
+            //
+            //it('should have the correct incorrect fields after calling validate', function (done) {
+            //    loadedDataElementModel.firstName = 'a';
+            //
+            //    loadedDataElementModel.validate()
+            //        .then((validationStatus) => {
+            //            expect(validationStatus.fields).to.deep.equal(['firstName']);
+            //        })
+            //        .catch(failTest)
+            //        .then(done);
+            //
+            //    server.respond();
+            //});
         });
     });
 
-    describe('save', function () {
-        describe('existing model', function () {
-            var loadedModel;
-
-            beforeEach(function (done) {
-                server.respondWith(
-                    'GET',
-                    '/dhis/api/users/umC9U5YGDq4?fields=%3Aall%2CuserCredentials%5B%3Aowner%5D',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify(window.fixtures.singleUser)
-                    ]
-                );
-
-                d2.models.user.get('umC9U5YGDq4')
-                    .then(function (model) {
-                        loadedModel = model;
-                        done();
-                    });
-            });
-
-            it('should save the model to the server', function () {
-                //TODO: Implement
-                loadedModel.save();
-            });
-        });
-    });
+    //describe('save', function () {
+    //    describe('existing model', function () {
+    //        var loadedModel;
+    //
+    //        beforeEach(function (done) {
+    //            server.respondWith(
+    //                'GET',
+    //                'http://local/dhis/api/users/umC9U5YGDq4?fields=%3Aall%2CuserCredentials%5B%3Aowner%5D',
+    //                [
+    //                    200,
+    //                    {'Content-Type': 'application/json'},
+    //                    JSON.stringify(window.fixtures.users.VWgvyibrAq0)
+    //                ]
+    //            );
+    //
+    //            d2.models.user.get('umC9U5YGDq4')
+    //                .then(function (model) {
+    //                    loadedModel = model;
+    //                    done();
+    //                });
+    //        });
+    //
+    //        it('should save the model to the server', function () {
+    //            //TODO: Implement
+    //            loadedModel.save();
+    //        });
+    //    });
+    //});
 });

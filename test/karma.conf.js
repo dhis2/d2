@@ -1,47 +1,50 @@
 module.exports = function( config ) {
-    //const babelOptions = manifest.babelBoilerplateOptions;
-
     config.set({
         basePath: '..',
-        frameworks: ['mocha', 'chai', 'sinon-chai', 'sinon'],
+        //Frameworks to use with karma
+        frameworks: ['mocha', 'chai', 'sinon-chai', 'sinon', 'systemjs'],
 
-        preprocessors: {
-            './src/**/*.js': ['babel']
-        },
+        //How will the results of the tests be reported
+        reporters: ['mocha'],
 
-        reporters: ['progress'],
-
+        //Files that should be included by karma (that are not served by karma-systemjs)
         files: [
-            './test/fixtures/e2efixtures.js',
-            './node_modules/jquery/dist/jquery.js',
-            './jspm_packages/es6-module-loader.js',
-            './jspm_packages/system.js',
+            //Babel polyfill to polyfill es6 features
+            'node_modules/babel/node_modules/babel-core/browser-polyfill.js',
 
-            './test/e2e/**/*_spec.js',
-            './config.js',
-            { pattern: './src/**/*.js', included: false, served: true }
+            //Include jquery in a regular fashion.
+            'jspm_packages/github/components/jquery@*/jquery.js',
+
+            //Api fixtures to represent the server
+            './test/fixtures/e2efixtures.js'
         ],
 
-        'babelPreprocessor': {
-            options: {
-                modules: 'system',
-                sourceMap: 'inline'
+        //Config for karma-systemjs
+        systemjs: {
+            config: {
+                baseURL: '/',
+                transpiler: 'babel',
+
+                "paths": {
+                    "*": "*.js",
+                    "./src/d2/*": "./src/*.js"
+                },
+
+                map: {
+                    'd2': './src/d2'
+                }
             },
-            filename: function(file) {
-                return file.originalPath.replace(/\.js$/, ".js");
-            },
-            sourceFileName: function(file) {
-                return file.originalPath;
-            }
+
+            files: [
+                //D2 source files
+                'src/**/*.js',
+
+                //Test files
+                'test/e2e/**/*_spec.js'
+            ]
         },
 
-        port: 9876,
-        colors: true,
         logLevel: config.LOG_INFO,
-
-        autoWatch: true,
-        autoWatchBatchDelay: 100,
-        usePolling: true,
 
         browsers: ['PhantomJS'],
         singleRun: true
