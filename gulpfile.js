@@ -124,7 +124,14 @@ gulp.task('build', ['clean'], function (cb) {
     var builder = new Builder({});
     builder.loadConfig('./config.js')
         .then(function () {
-            builder.config({baseURL: './src'});
+            builder.config({
+                baseURL: './src',
+                paths: {
+                    '*': '*.js',
+                    'github:*': '../jspm_packages/github/*.js',
+                    'npm:*': '../jspm_packages/npm/*.js'
+                }
+            });
 
             builder.buildSFX('d2', 'build/d2-sfx.js')
                 .then(function() {
