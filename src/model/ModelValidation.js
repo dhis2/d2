@@ -14,7 +14,7 @@ let typeSpecificValidations = {
 };
 
 /**
- * @class ModelBase
+ * @class ModelValidation
  */
 class ModelValidation {
     constructor(providedLogger) {
