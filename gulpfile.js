@@ -101,7 +101,7 @@ gulp.task('clean', function () {
  * the lint and code style checks
  */
 gulp.task('travis', function (cb) {
-    runSequence('coverage', 'jshint', 'jscs', cb);
+    runSequence('coverage', 'e2e', 'jshint', 'jscs', cb);
 });
 
 gulp.task('git:pre-commit', function (cb) {
