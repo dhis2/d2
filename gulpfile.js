@@ -40,7 +40,7 @@ gulp.task('test', function () {
 /**
  * Watch the files defined in `files` and run the unit tests when a change was detected
  */
-gulp.task('watch', function() {
+gulp.task('watch', function () {
     return gulp.watch(files.concat(['src/**/*.js']), ['test']);
 });
 
@@ -63,10 +63,10 @@ gulp.task('e2e-watch', function () {
  */
 gulp.task('jshint', function () {
     return gulp.src([
-            'test/e2e/**/*.js',
-            'test/unit/**/*.js',
-            'src/**/*.js'
-        ])
+        'test/e2e/**/*.js',
+        'test/unit/**/*.js',
+        'src/**/*.js'
+    ])
         .pipe($.jshint())
         .pipe($.jshint.reporter('jshint-stylish'))
         .pipe($.jshint.reporter('fail'));
@@ -81,7 +81,7 @@ gulp.task('jscs', function () {
         'test/unit/**/*.js',
         'src/**/*.js'
     ])
-    .pipe($.jscs('./.jscsrc'));
+        .pipe($.jscs('./.jscsrc'));
 
     //TODO: Not yet implemented in jscs but should be there soon(tm)
     // .pipe($.jscs.reporter('jscs-stylish'))
@@ -106,7 +106,7 @@ gulp.task('travis', function (cb) {
 
 gulp.task('git:pre-commit', function (cb) {
     //Gulp exists with 0 and for the pre-commit hook to fail we need to exit with a not 0 error code
-    gulp.on('err', function(e){
+    gulp.on('err', function (e) {
         console.log('Pre-commit validate failed');
         process.exit(1);
     });
@@ -119,33 +119,54 @@ gulp.task('build', ['clean'], function (cb) {
 
     var sfxBuildDone = false;
     var buildDone = false;
-    var callDone = function () {if (sfxBuildDone && buildDone) cb()};
+    var callDone = function () {
+        if (sfxBuildDone && buildDone) cb()
+    };
 
     var builder = new Builder({});
-    builder.loadConfig('./config.js')
+    builder.config({
+        baseURL: './src',
+        transpiler: 'babel',
+        paths: {
+            '*': '*.js',
+            "d2/*": "*.js",
+            'github:*': '../jspm_packages/github/*.js',
+            'npm:*': '../jspm_packages/npm/*.js'
+        },
+        meta: {
+            'github:jspm/nodelibs-process@0.1.1': {
+                build: false,
+            },
+            'npm:process@0.10.1/browser': {
+                build: false
+            },
+            'npm:babel-runtime@4.7.16/core-js': {
+                build: false
+            },
+            'npm:babel-runtime@4.7.16/helpers/class-call-check': {
+                build: false
+            },
+            'npm:babel-runtime@4.7.16/helpers/create-class': {
+                build: false
+            },
+            babel: {
+                build: false
+            }
+        }
+    });
+
+    builder.buildSFX('d2', 'build/d2-sfx.js')
         .then(function () {
-            builder.config({
-                baseURL: './src',
-                paths: {
-                    '*': '*.js',
-                    'github:*': '../jspm_packages/github/*.js',
-                    'npm:*': '../jspm_packages/npm/*.js'
-                }
-            });
+            console.log('Build complete');
+            sfxBuildDone = true;
+            callDone();
+        });
 
-            builder.buildSFX('d2', 'build/d2-sfx.js')
-                .then(function() {
-                    console.log('Build complete');
-                    sfxBuildDone = true;
-                    callDone();
-                });
-
-            builder.build('d2', 'build/d2.js')
-                .then(function () {
-                    console.log('Building systemjs library complete');
-                    buildDone = true;
-                    callDone();
-                });
+    builder.build('d2', 'build/d2.js')
+        .then(function () {
+            console.log('Building systemjs library complete');
+            buildDone = true;
+            callDone();
         });
 });
 
@@ -163,13 +184,11 @@ gulp.task('docs', ['clean-docs'], function (cb) {
     var packages = [configPackage];
     var dgeni = new Dgeni(packages);
 
-    dgeni.generate().then(function(docs) {
+    dgeni.generate().then(function (docs) {
         gulp.src(['./docs/app/**']).pipe(gulp.dest('./docs/dist')).pipe(cb);
         console.log(docs.length, 'docs generated');
     });
 });
-
-
 
 /**************************************************************************************************
  * Utility functions
