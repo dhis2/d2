@@ -190,6 +190,14 @@ gulp.task('docs', ['clean-docs'], function (cb) {
     });
 });
 
+gulp.task('docs:app', function () {
+    return gulp.src(['./docs/app/**']).pipe(gulp.dest('./docs/dist'));
+});
+
+gulp.task('docs:d2-build', ['build'], function () {
+    return gulp.src(['./build/**'], {baseUrl: './build'}).pipe(gulp.dest('./docs/dist/jspm_packages/npm/d2/'));
+});
+
 /**************************************************************************************************
  * Utility functions
  */

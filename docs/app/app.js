@@ -1,4 +1,8 @@
 'use strict';
+import codeExampleRunner from 'd2-code-example-runner';
+
+console.log(codeExampleRunner);
+
 angular.module('d2Docs', ['ngMaterial', 'ngRoute']);
 
 angular.module('d2Docs').controller('appController', appController);
@@ -14,7 +18,15 @@ angular.module('d2Docs').config(function($mdThemingProvider) {
         .accentPalette('deep-orange');
 });
 
-function appController($mdSidenav, $mdMedia, $location) {
+angular.module('d2Docs').factory('exampleRunner', function () {
+   return codeExampleRunner;
+});
+
+angular.module('d2Docs').run(function (exampleRunner) {
+    exampleRunner.init('../jspm_packages/npm/d2-code-example-runner@0.2.1/src/examplerunner.js');
+});
+
+function appController($mdSidenav, $mdMedia, $location, $scope, exampleRunner) {
     //jshint validthis:true
     this.showMenuButton = function () {
         return !$mdMedia('gt-md');
@@ -26,6 +38,11 @@ function appController($mdSidenav, $mdMedia, $location) {
     this.isActiveRoute = function (routeToCheck) {
         return $location.$$url === routeToCheck;
     };
+
+    $scope.$on('$viewContentLoaded', function (event) {
+        console.log('View changed');
+        exampleRunner.all();
+    });
 }
 
 function sectionController() {
@@ -70,7 +87,7 @@ function codeDirective() {
             }, false);
 
             if (isCodeBlock) {
-                hljs.highlightBlock(element[0]);
+                element.addClass('d2-code-example');
             }
         }
     };
