@@ -116,23 +116,35 @@ gulp.task('git:pre-commit', function (cb) {
 
 gulp.task('build', ['clean'], function (cb) {
     var Builder = require('systemjs-builder');
-
-    var sfxBuildDone = false;
-    var buildDone = false;
-    var callDone = function () {
-        if (sfxBuildDone && buildDone) cb()
-    };
-
     var builder = new Builder({});
-    builder.config({
+
+    var sharedConfig = {
         baseURL: './src',
         transpiler: 'babel',
         paths: {
             '*': '*.js',
-            "d2/*": "*.js",
+            'd2/*': '*.js',
             'github:*': '../jspm_packages/github/*.js',
             'npm:*': '../jspm_packages/npm/*.js'
         },
+        map: {
+            'babel': 'npm:babel-core@5.2.16',
+            'babel-runtime': 'npm:babel-runtime@5.2.16',
+            'core-js': 'npm:core-js@0.9.6',
+            'npm:core-js@0.9.6': {
+                'process': 'github:jspm/nodelibs-process@0.1.1'
+            },
+            'github:jspm/nodelibs-process@0.1.1': {
+                'process': 'npm:process@0.10.1'
+            }
+        }
+    }
+
+    builder.config({
+        baseURL: sharedConfig.baseURL,
+        transpiler: sharedConfig.transpiler,
+        paths: sharedConfig.paths,
+        map: sharedConfig.map,
         meta: {
             'github:jspm/nodelibs-process@0.1.1': {
                 build: false,
@@ -140,13 +152,13 @@ gulp.task('build', ['clean'], function (cb) {
             'npm:process@0.10.1/browser': {
                 build: false
             },
-            'npm:babel-runtime@4.7.16/core-js': {
+            'npm:babel-runtime@5.2.16/core-js': {
                 build: false
             },
-            'npm:babel-runtime@4.7.16/helpers/class-call-check': {
+            'npm:babel-runtime@5.2.16/helpers/class-call-check': {
                 build: false
             },
-            'npm:babel-runtime@4.7.16/helpers/create-class': {
+            'npm:babel-runtime@5.2.16/helpers/create-class': {
                 build: false
             },
             babel: {
@@ -155,18 +167,32 @@ gulp.task('build', ['clean'], function (cb) {
         }
     });
 
-    builder.buildSFX('d2', 'build/d2-sfx.js')
+    builder.build('d2', 'build/d2.js', {minify: true, mangle: false, sourceMaps: true})
         .then(function () {
-            console.log('Build complete');
-            sfxBuildDone = true;
-            callDone();
-        });
+            console.log('Building systemjs bundle complete');
+        })
+        .then(function () {
+            var builder = new Builder({});
+            builder.config({
+                baseURL: sharedConfig.baseURL,
+                transpiler: sharedConfig.transpiler,
+                "babelOptions": {
+                    "optional": [
+                        "runtime"
+                    ]
+                },
+                paths: sharedConfig.paths,
+                map: sharedConfig.map,
+            });
 
-    builder.build('d2', 'build/d2.js')
-        .then(function () {
-            console.log('Building systemjs library complete');
-            buildDone = true;
-            callDone();
+            return builder.buildSFX('d2', 'build/d2-sfx.js', {minify: true, mangle: false, sourceMaps: true})
+                .then(function () {
+                    console.log('Building systemjs sfx bundle complete')
+                });
+        })
+        .then(cb)
+        .catch(function (error) {
+            console.log(error);
         });
 });
 
@@ -176,26 +202,52 @@ gulp.task('build', ['clean'], function (cb) {
 var Dgeni = require('dgeni');
 var configPackage = require('./docs/config');
 
-gulp.task('clean-docs', function (cb) {
-    del(['./docs/dist/*/**', './docs/dist/*.html'], cb);
+gulp.task('docs:clean', function (cb) {
+    del(['./docs/dist/**/*', './docs/dist/*'], cb);
 });
 
-gulp.task('docs', ['clean-docs'], function (cb) {
+gulp.task('docs:dgeni', function (cb) {
     var packages = [configPackage];
     var dgeni = new Dgeni(packages);
 
     dgeni.generate().then(function (docs) {
-        gulp.src(['./docs/app/**']).pipe(gulp.dest('./docs/dist')).pipe(cb);
-        console.log(docs.length, 'docs generated');
+        cb();
     });
 });
 
-gulp.task('docs:app', function () {
-    return gulp.src(['./docs/app/**']).pipe(gulp.dest('./docs/dist'));
+gulp.task('docs:build', function (cb) {
+    runSequence('docs:clean', 'docs:dgeni', 'docs:d2-build', 'docs:app', cb);
+});
+
+gulp.task('docs:app', function (cb) {
+    var Builder = require('systemjs-builder');
+    var builder = new Builder({});
+
+    builder.loadConfig('./docs/app/config.js')
+        .then(function () {
+            builder.config({baseURL: 'file:./docs/app'});
+            builder.build('app', './docs/dist/app-bundle.js', {minify: true, mangle: false, sourceMaps: true})
+                .then(function () {
+                    gulp.src([
+                        './docs/app/*.{html,css}',
+                        './docs/app/**/system.js',
+                        './docs/app/**/es6-module-loader.js',
+                        './docs/app/**/npm/d2-code-example-runner@*/**',
+                        './docs/app/**/babel-core@*/**',
+                        './docs/app/config.js'
+                    ], {baseUrl: './docs/app'})
+                    .pipe(gulp.dest('./docs/dist'))
+                    .pipe(cb);
+                })
+                .catch(function (err) {
+                    console.log('Building docs:app failed');
+                    console.error(err);
+                });
+        });
 });
 
 gulp.task('docs:d2-build', ['build'], function () {
-    return gulp.src(['./build/**'], {baseUrl: './build'}).pipe(gulp.dest('./docs/dist/jspm_packages/npm/d2/'));
+    return gulp.src(['./build/**'], {baseUrl: './build'}).pipe(gulp.dest('./docs/dist/'));
 });
 
 /**************************************************************************************************
@@ -244,3 +296,47 @@ function runUnitTestsWithCoverage() {
             istanbul: true
         }));
 }
+
+/**
+ * Simple function to show a processing state and will print done when the action is done.
+ *
+ * @param {String} prefix Text to be printed before the status icon and 'done!'
+ * @returns {*}
+ */
+function showProcessing(prefix) {
+    showProcessing.busy = true;
+    function processing() {
+        switch (showProcessing.char) {
+            case '|':
+                showProcessing.char = '/';
+                break;
+            case '/':
+                showProcessing.char = '-';
+                break;
+            case '-':
+                showProcessing.char = '\\';
+                break;
+            case '\\':
+                showProcessing.char = '|';
+                break;
+        }
+
+        process.stdout.clearLine();  // clear current text
+        process.stdout.cursorTo(0);  // move cursor to beginning of line
+
+        if (showProcessing.busy) {
+            process.stdout.write(prefix + ':  ' + showProcessing.char);
+            return setTimeout(processing, 300);
+        } else {
+            console.log(prefix + ': done!');
+            return true;
+        }
+    }
+
+    return processing();
+}
+showProcessing.done = function () {
+    showProcessing.busy = false;
+}
+showProcessing.busy = false;
+showProcessing.char = '|';

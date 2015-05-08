@@ -11,12 +11,14 @@ module.exports = new Package('config', [
 ])
 
     .factory(require('./readers/srcFile'))
+    .factory(require('./readers/mdFile'))
     .factory(require('./services/transforms/to-boolean'))
 
     .processor(require('./processors/docsBuilder'))
     .processor(require('./processors/mergeDocs'))
     .processor(require('./processors/groupTags'))
     .processor(require('./processors/createNavigationDoc'))
+    .processor(require('./processors/md2HtmlPages'))
 
     // Configure rendering
     .config(function(templateEngine) {
@@ -39,12 +41,12 @@ module.exports = new Package('config', [
 
 // Configure our dgeni-example package. We can ask the Dgeni dependency injector
 // to provide us with access to services and processors that we wish to configure
-    .config(function(log, readFilesProcessor, srcFileFileReader, templateFinder, writeFilesProcessor) {
+    .config(function(log, readFilesProcessor, srcFileFileReader, mdFileFileReader, templateFinder, writeFilesProcessor) {
 
         // Set logging level
         log.level = 'info';
 
-        readFilesProcessor.fileReaders = [srcFileFileReader];
+        readFilesProcessor.fileReaders = [srcFileFileReader, mdFileFileReader];
         // Specify the base path used when resolving relative paths to source and output files
         readFilesProcessor.basePath = path.resolve(__dirname, '../..');
 
@@ -52,7 +54,7 @@ module.exports = new Package('config', [
         readFilesProcessor.sourceFiles = [
             {
                 // Process all js files in `src` and its subfolders ...
-                include: 'src/**/*.js',
+                include: ['src/**/*.js', 'docs/pages/**/*.md'],
                 // ... except for this one!
                 exclude: 'src/do-not-read.js',
                 // When calculating the relative path to these files use this as the base path.

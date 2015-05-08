@@ -5,6 +5,13 @@ module.exports = function groupTags(log) {
         $runAfter: ['mergeDocs'],
         $runBefore: ['renderDocsProcessor'],
         $process: function (docs) {
+            var nonJsDocs = _.reject(docs, function (doc) {
+                return doc.fileInfo.extension === 'js';
+            });
+            var docs = _.filter(docs, function (doc) {
+                return doc.fileInfo.extension === 'js';
+            });
+
             docs = _.map(docs, function (doc) {
                 doc.methods = [];
                 doc.properties = [];
@@ -90,7 +97,7 @@ module.exports = function groupTags(log) {
                 })
             .value();
 
-            return docs;
+            return docs = nonJsDocs.concat(docs);;
         }
     };
 };

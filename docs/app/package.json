@@ -2,7 +2,7 @@
   "jspm": {
     "directories": {},
     "dependencies": {
-      "d2-code-example-runner": "npm:d2-code-example-runner@^0.2.1"
+      "d2-code-example-runner": "npm:d2-code-example-runner@^0.2.2"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.1.13",

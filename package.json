@@ -24,7 +24,8 @@
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
     "jshint": "^2.7.0",
-    "jshint-stylish": "^1.0.2"
+    "jshint-stylish": "^1.0.2",
+    "marked": "^0.3.3"
   },
   "devDependencies": {
     "babel": "^5.1.13",
@@ -59,6 +60,7 @@
     "karma-sinon-chai": "^0.3.0",
     "karma-systemjs": "^0.3.0",
     "lodash": "~3.6.0",
+    "markdown": "^0.5.0",
     "mocha": "^2.1.0",
     "phantomjs": "1.9.x",
     "phantomjs-polyfill": "0.0.1",
@@ -67,7 +69,8 @@
     "run-sequence": "^1.0.2",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.7.0",
-    "systemjs": "^0.16.10"
+    "systemjs": "^0.16.10",
+    "systemjs-builder": "^0.10.6"
   },
   "babelBoilerplateOptions": {
     "entryFileName": "src/d2",

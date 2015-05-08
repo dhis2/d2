@@ -17,6 +17,7 @@ module.exports = function createNavigationDoc(log) {
             docs = _.map(docs, function (doc) {
                 navigationDocument.pages.push({
                     name: doc.name,
+                    pageType: doc.pageType,
                     url: doc.outputPath,
                     module: doc.outputPath.replace('.html', '').split('/')[0] || 'default'
                 });
@@ -24,24 +25,47 @@ module.exports = function createNavigationDoc(log) {
                 return doc;
             });
 
-            navigationDocument.sections = _.chain(navigationDocument.pages)
-                .filter('module')
-                .groupBy('module')
-                .map(function (links) {
-                    return _.sortBy(links, 'name');
-                })
-                .map(function (links) {
-                    links.name = links[0].module;
-                    return links;
-                })
-                .value();
+
+            _.map(navigationDocument.pages, function (doc) {
+                console.log(doc.name);
+                console.log(doc.pageType);
+            });
+
+            navigationDocument.documentation = {
+                sections: _.chain(navigationDocument.pages)
+                    .filter({pageType: 'documentation'})
+                    .filter('module')
+                    .groupBy('module')
+                    .map(function (links) {
+                        return _.sortBy(links, 'name');
+                    })
+                    .map(function (links) {
+                        links.name = links[0].module;
+                        return links;
+                    })
+                    .value()
+            };
+            navigationDocument.api = {
+                sections: _.chain(navigationDocument.pages)
+                    .filter({pageType: 'api'})
+                    .filter('module')
+                    .groupBy('module')
+                    .map(function (links) {
+                        return _.sortBy(links, 'name');
+                    })
+                    .map(function (links) {
+                        links.name = links[0].module;
+                        return links;
+                    })
+                    .value()
+            };
 
             var routesDocument = {
                 id: 'routes',
                 name: 'routes',
                 outputPath: 'routes.js',
                 template: 'routes.template.js',
-                sections: navigationDocument.sections
+                sections: navigationDocument.documentation.sections.concat(navigationDocument.api.sections)
             };
 
             docs.push(navigationDocument);

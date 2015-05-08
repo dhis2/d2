@@ -5,7 +5,14 @@ module.exports = function mergeDocs() {
         $runAfter: ['docsBuilder'],
         $runBefore: ['groupTags'],
         $process: function (docs) {
+            var nonJsDocs = _.reject(docs, function (doc) {
+                return doc.fileInfo.extension === 'js';
+            });
+
             docs = _.chain(docs)
+                .filter(function (doc) {
+                    return doc.fileInfo.extension === 'js';
+                })
                 .map(function (doc) {
                     doc.name = doc.fileInfo.baseName;
                     delete doc.fileInfo.content;
@@ -17,6 +24,7 @@ module.exports = function mergeDocs() {
 
                     var docs = {
                         id: firstDoc.name,
+                        pageType: 'api',
                         name: firstDoc.name,
                         moduleName: getModuleName(firstDoc),
                         fileInfo: firstDoc.fileInfo,
@@ -39,8 +47,7 @@ module.exports = function mergeDocs() {
                 })
                 .value();
 
-
-            return docs;
+            return nonJsDocs.concat(docs);
         }
     };
 

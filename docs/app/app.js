@@ -1,4 +1,5 @@
 'use strict';
+import 'babel/browser';
 import codeExampleRunner from 'd2-code-example-runner';
 
 console.log(codeExampleRunner);
@@ -23,7 +24,9 @@ angular.module('d2Docs').factory('exampleRunner', function () {
 });
 
 angular.module('d2Docs').run(function (exampleRunner) {
-    exampleRunner.init('../jspm_packages/npm/d2-code-example-runner@0.2.1/src/examplerunner.js');
+    exampleRunner.init('../jspm_packages/npm/d2-code-example-runner@0.2.2/src/examplerunner.js', {
+        url: 'https://apps.dhis2.org/dev/api'
+    });
 });
 
 function appController($mdSidenav, $mdMedia, $location, $scope, exampleRunner) {

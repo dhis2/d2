@@ -104,10 +104,21 @@ body {
     width: 100%;
 }
 
+.docs-menu h2.md-subheader.md-accent {
+    text-transform: uppercase;
+    background: rgb(255,110,64);
+    margin: 0;
+    color: white;
+}
+
 .docs-button-toggle {
     background-color: #E6E6E6;
     -webkit-transition: all linear 300ms;
     transition: all linear 300ms;
+}
+
+.docs-button-toggle span {
+    text-transform: capitalize;
 }
 
 .docs-button-toggle i {
@@ -210,7 +221,7 @@ body {
 code {
     font-size: 1rem;
 }
-code.hljs {
+code.d2-code-example {
     border-left: .3rem solid rgb(33,150,243);
 }
 

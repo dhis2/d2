@@ -3,7 +3,22 @@
     <h3>Docs Navigation</h3>
 </md-toolbar>
 <md-content class="docs-menu" flex>
-    {% for section in doc.sections %}
+    <md-subheader class="md-accent">Documentation</md-subheader>
+    {% for section in doc.documentation.sections %}
+    <menu-section class="menu-section" section-name="{$ section.name $}">
+        <ul>
+            {% for page in section %}
+            <li ng-class="{active: app.isActiveRoute('/{$ section.name $}/{$ page.name $}')}">
+                <a md-button class="md-button md-default-theme" href="#/{$ section.name $}/{$ page.name $}">{$ page.name $}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        </md-list>
+    </menu-section>
+    {% endfor %}
+
+    <md-subheader class="md-accent">Api</md-subheader>
+    {% for section in doc.api.sections %}
     <menu-section class="menu-section" section-name="{$ section.name $}">
         <ul>
             {% for page in section %}
