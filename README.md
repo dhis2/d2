@@ -7,6 +7,11 @@ d2
 
 == 
 
+#Documentation
+The documentation is temporarily available on [http://d2.markionium.com](http://d2.markionium.com)
+
+#D2
+
 The d2 library is a javascript library that abstacts away the dhis2 api and lets you use javascript models to communicate with your dhis2 server.
 
 The models are dynamically build using the /api/schemas resource that is available through the dhis2 web api.

@@ -253,6 +253,30 @@ gulp.task('docs:d2-build', ['build'], function () {
 /**************************************************************************************************
  * Utility functions
  */
+(function () {
+    var filesToPublish = [
+        'd2.js',
+        'd2.js.map',
+        'd2-sfx.js',
+        'd2-sfx.js.map'
+    ];
+
+    gulp.task('publish:pre', function () {
+        var filesToCopyFromBuildDir = filesToPublish.map(function (fileName) {
+            return './build/' + fileName;
+        });
+
+        return gulp.src(filesToCopyFromBuildDir, {baseUrl: './build'}).pipe(gulp.dest('./'));
+    });
+
+    gulp.task('publish:post', function (cb) {
+        del(filesToPublish, cb);
+    });
+})();
+
+/**************************************************************************************************
+ * Utility functions
+ */
 
 function runKarma(watch) {
     var config = {
