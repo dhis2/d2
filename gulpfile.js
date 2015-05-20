@@ -96,24 +96,6 @@ gulp.task('clean', function () {
     del(coverageDirectory);
 });
 
-/**
- * Task to be run by travis. This runs coverage which runs the unit tests. Then additionally it runs the e2e tests and
- * the lint and code style checks
- */
-gulp.task('travis', function (cb) {
-    runSequence('coverage', 'e2e', 'jshint', 'jscs', cb);
-});
-
-gulp.task('git:pre-commit', function (cb) {
-    //Gulp exists with 0 and for the pre-commit hook to fail we need to exit with a not 0 error code
-    gulp.on('err', function (e) {
-        console.log('Pre-commit validate failed');
-        process.exit(1);
-    });
-
-    runSequence('test', 'jshint', 'jscs', cb);
-});
-
 gulp.task('build', ['clean'], function (cb) {
     var Builder = require('systemjs-builder');
     var builder = new Builder({});
@@ -194,6 +176,30 @@ gulp.task('build', ['clean'], function (cb) {
         .catch(function (error) {
             console.log(error);
         });
+});
+
+/**************************************************************************************************
+ * Continuous Integration
+ */
+/**
+ * Task to be run by travis. This runs coverage which runs the unit tests. Then additionally it runs the e2e tests and
+ * the lint and code style checks
+ */
+gulp.task('ci:travis', function (cb) {
+    runSequence('coverage', 'e2e', 'jshint', 'jscs', cb);
+});
+
+/**************************************************************************************************
+ * Git Hooks
+ */
+gulp.task('git:pre-commit', function (cb) {
+    //Gulp exists with 0 and for the pre-commit hook to fail we need to exit with a not 0 error code
+    gulp.on('err', function (e) {
+        console.log('Pre-commit validate failed');
+        process.exit(1);
+    });
+
+    runSequence('test', 'jshint', 'jscs', cb);
 });
 
 /**************************************************************************************************

@@ -7,8 +7,6 @@ describe('settings.System', () => {
 
     beforeEach(() => {
         systemSettings = new SystemSettings();
-
-        systemSettings.api.get = sinon.stub().returns(Promise.resolve('Tue Mar 10 12:24:00 CET 2015'));
     });
 
     it('should not be allowed to be called without new', () => {
@@ -20,12 +18,34 @@ describe('settings.System', () => {
     });
 
     describe('all', () => {
+        beforeEach(() => {
+            systemSettings.api.get = sinon.stub().returns(Promise.resolve({keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015'}));
+        });
+
         it('should be a function', () => {
             expect(systemSettings.all).to.be.instanceof(Function);
+        });
+
+        it('should call the api to get all the systemSettings', () => {
+            systemSettings.all();
+
+            expect(systemSettings.api.get).to.be.calledWith('systemSettings');
+        });
+
+        it('should resolve the promise with the settings', (done) => {
+            systemSettings.all()
+                .then(settings => {
+                    expect(settings.keyLastSuccessfulResourceTablesUpdate).to.equal('Tue Mar 10 12:24:00 CET 2015');
+                })
+                .then(done);
         });
     });
 
     describe('get', () => {
+        beforeEach(() => {
+            systemSettings.api.get = sinon.stub().returns(Promise.resolve('Tue Mar 10 12:24:00 CET 2015'));
+        });
+
         it('should be a function', () => {
             expect(systemSettings.get).to.be.instanceof(Function);
         });

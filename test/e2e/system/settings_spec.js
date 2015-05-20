@@ -58,6 +58,19 @@ describe('D2.system', function () {
                     '{"dataKey": "DataValue"}'
                 ]
             );
+
+            server.respondWith(
+                'GET',
+                '/dhis/api/systemSettings',
+                [
+                    200,
+                    {'Content-Type': 'application/json'},
+                    JSON.stringify({
+                        keySystemSettingsJson: {dataKey: 'DataValue'},
+                        keyLastSuccessfulResourceTablesUpdate: 'Sun Mar 15 00:00:00 CET 2015'
+                    })
+                ]
+            );
         });
 
         it('should be available on the system object', () => {
@@ -78,6 +91,21 @@ describe('D2.system', function () {
             systemSettings.get('keySystemSettingsJson')
                 .then(systemSettingValue => {
                     expect(systemSettingValue.dataKey).to.equal('DataValue');
+                })
+                .then(done);
+
+            server.respond();
+        });
+
+        it('should return the settings object when all system settings are requested', (done) => {
+            let expectedSystemSettings = {
+                keySystemSettingsJson: {dataKey: 'DataValue'},
+                keyLastSuccessfulResourceTablesUpdate: 'Sun Mar 15 00:00:00 CET 2015'
+            };
+
+            systemSettings.all()
+                .then(returnedSystemSettings => {
+                    expect(returnedSystemSettings).to.deep.equal(expectedSystemSettings);
                 })
                 .then(done);
 

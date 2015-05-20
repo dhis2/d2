@@ -15,13 +15,28 @@ import Api from 'd2/api/Api';
  * @description
  * Handles communication with the systemSettings endpoint. Can be used to get or save systemSettings.
  */
+// TODO: Return the values from the local cache if we have not updated it? We could
 class SystemSettings {
     constructor(api = Api.getApi()) {
         this.api = api;
     }
 
+    /**
+     * @method all
+     *
+     * @returns {Promise} Promise that resolves with the systemsettings object from the api.
+     *
+     * @description
+     * Loads all the system settings in the system and returns them as an object from the promise.
+     * ```js
+     * d2.system.settings.all()
+     *  .then(systemSettings => {
+     *    console.log('Analytics was last updated on: ' + systemSettings.keyLastSuccessfulResourceTablesUpdate);
+     *  });
+     * ```
+     */
     all() {
-
+        return this.api.get('systemSettings');
     }
 
     /**
@@ -31,8 +46,13 @@ class SystemSettings {
      * @returns {Promise} A promise that resolves with the value or will fail if the value is not available.
      *
      * @description
+     * ```js
+     * d2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')
+     *  .then(systemSettingsValue => {
+     *    console.log('Analytics was last updated on: ' + systemSettingsValue);
+     *  });
+     * ```
      */
-    // TODO: Return the value from the local cache if we have not updated it?
     get(systemSettingsKey) {
         return new Promise((resolve, reject) => {
             if (!isString(systemSettingsKey)) {
