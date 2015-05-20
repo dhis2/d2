@@ -5,6 +5,7 @@ import {checkType, isString} from 'd2/lib/check';
 import Logger from 'd2/logger/Logger';
 import model from 'd2/model/models';
 import Api from 'd2/api/Api';
+import System from 'd2/system/System';
 
 /**
  * @function d2Init
@@ -36,7 +37,8 @@ function d2Init(config) {
     var d2 = {
         models: undefined,
         model: model,
-        Api: Api
+        Api: Api,
+        system: System.getSystem()
     };
 
     var api = Api.getApi();

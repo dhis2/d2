@@ -11,14 +11,13 @@ class Api {
         this.defaultRequestSettings = {
             data: {},
             contentType: 'application/json',
-            dataType: 'json',
             type: undefined,
             url: undefined
         };
     }
 
-    get(url, data) {
-        return this.request('GET', getUrl(this.baseUrl, url), data);
+    get(url, data, options) {
+        return this.request('GET', getUrl(this.baseUrl, url), data, options);
     }
 
     post(url, data) {
@@ -34,7 +33,7 @@ class Api {
         return this.request('PUT', url, JSON.stringify(data));
     }
 
-    request(type, url, data) {
+    request(type, url, data, options = {}) {
         checkType(type, 'string', 'Request type');
         checkType(url, 'string', 'Url');
 
@@ -45,7 +44,8 @@ class Api {
                 .ajax(getOptions({
                     type: type,
                     url: url,
-                    data: data || {}
+                    data: data || {},
+                    dataType: options.dataType || 'json'
                 }))
                 .then(processSuccess(resolve), processFailure(reject));
         });

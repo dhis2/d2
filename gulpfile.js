@@ -251,7 +251,7 @@ gulp.task('docs:d2-build', ['build'], function () {
 });
 
 /**************************************************************************************************
- * Utility functions
+ * Npm Publish hooks
  */
 (function () {
     var filesToPublish = [

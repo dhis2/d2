@@ -206,6 +206,18 @@ describe('Api', () => {
                     done();
                 });
         });
+
+        it('should allow the options to be overridden', function () {
+            api.get('dataElements', undefined, {dataType: 'text'});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'GET',
+                url: '/api/dataElements',
+                dataType: 'text',
+                contentType: 'application/json',
+                data: {}
+            });
+        });
     });
 
     describe('post', () => {
