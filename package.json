@@ -24,8 +24,7 @@
     "url": "https://github.com/dhis2/d2/issues"
   },
   "homepage": "https://github.com/dhis2/d2",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel": "^5.1.13",
     "canonical-path": "0.0.2",

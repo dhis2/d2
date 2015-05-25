@@ -65,8 +65,10 @@ class ModelDefinitions {
      *
      */
     mapThroughDefinitions(transformer) {
-        var modelDefinition;
-        var result = [];
+        let modelDefinition;
+        let result = [];
+
+        checkType(transformer, 'function', 'transformer');
 
         for (modelDefinition in this) {
             if (this.hasOwnProperty(modelDefinition)) {

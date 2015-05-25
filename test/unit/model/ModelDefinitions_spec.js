@@ -81,11 +81,8 @@ describe('D2 models', () => {
         });
 
         it('should throw if the transformer passed is not a function', () => {
-            function shouldThrowOnString() { models.mapThroughDefinitions(''); }
-            function shouldThrowOnObject() { models.mapThroughDefinitions({}); }
-
-            expect(shouldThrowOnString).to.throw('string is not a function');
-            expect(shouldThrowOnObject).to.throw('object is not a function');
+            expect(() => models.mapThroughDefinitions('')).to.throw('Expected transformer to have type function');
+            expect(() => models.mapThroughDefinitions({})).to.throw('Expected transformer to have type function');
         });
     });
 });
