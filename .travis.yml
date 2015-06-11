@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '0.10'
 before_install:
-- npm install -g jspm
+- npm install -g jspm@0.16.0-beta
 - jspm config registries.github.auth $JSPM_GITHUB_TOKEN
 - jspm install
 - jspm install --dev

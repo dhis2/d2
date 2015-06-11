@@ -23,21 +23,33 @@ module.exports = function( config ) {
         systemjs: {
             config: {
                 baseURL: '/',
+                "defaultJSExtensions": true,
                 transpiler: 'babel',
+                "babelOptions": {
+                    "optional": [
+                        "runtime"
+                    ]
+                },
 
-                "paths": {
-                    "*": "*.js",
-                    "./src/d2/*": "./src/*.js"
+                paths: {
+                    'd2:*': '/base/src/*',
+                    'd2:d2/*': '/base/src/*',
+                    "github:*": "jspm_packages/github/*",
+                    "npm:*": "jspm_packages/npm/*"
                 },
 
                 map: {
-                    'd2': './src/d2'
+                    'd2': 'd2:d2',
+                    "babel-runtime": "npm:babel-runtime@5.5.6",
+                    "core-js": "npm:core-js@0.9.16",
+                    "process": "npm:process@0.10.1"
                 }
             },
 
             files: [
                 //D2 source files
                 'src/**/*.js',
+                'jspm_packages/**/*.js',
 
                 //Test files
                 'test/e2e/**/*_spec.js'
