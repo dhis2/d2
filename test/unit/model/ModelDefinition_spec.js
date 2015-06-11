@@ -508,6 +508,85 @@ describe('ModelDefinition', () => {
                     done();
                 });
         });
+
+        it('should call the api get method with the correct parameters after filters are set', () => {
+            dataElementModelDefinition
+                .filter().on('name').like('John')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all', filter: ['name:like:John']});
+        });
+
+        it('should return a separate modelDefinition when filter is called', () => {
+            expect(dataElementModelDefinition.filter).not.to.equal(dataElementModelDefinition);
+        });
+
+        it('should not influence the list method of the default modelDefinition', () => {
+            dataElementModelDefinition
+                .filter().on('name').like('John')
+                .list();
+
+            dataElementModelDefinition.list();
+
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all', filter: ['name:like:John']});
+        });
+
+        it('should support multiple filters', () => {
+            dataElementModelDefinition
+                .filter().on('name').like('John')
+                .filter().on('username').equals('admin')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all', filter: ['name:like:John', 'username:eq:admin']});
+        });
+    });
+
+    describe('clone', () => {
+        let dataElementsResult = fixtures.get('/api/dataElements');
+        let dataElementModelDefinition;
+
+        beforeEach (() => {
+            ModelDefinition.prototype.api = {
+                get: stub().returns(new Promise((resolve) => {
+                    resolve(dataElementsResult);
+                }))
+            };
+
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+        });
+
+        it('should be a method', () => {
+            expect(dataElementModelDefinition.clone).to.be.instanceof(Function);
+        });
+
+        it('should return a cloned modelDefinition', () => {
+            expect(dataElementModelDefinition.clone()).not.to.equal(dataElementModelDefinition);
+        });
+
+        it('should deep equal the creator', () => {
+            let clonedDefinition = dataElementModelDefinition.clone();
+
+            expect(clonedDefinition.name).to.equal(dataElementModelDefinition.name);
+            expect(clonedDefinition.plural).to.equal(dataElementModelDefinition.plural);
+            expect(clonedDefinition.isMetaData).to.equal(dataElementModelDefinition.isMetaData);
+            expect(clonedDefinition.apiEndpoint).to.equal(dataElementModelDefinition.apiEndpoint);
+            expect(clonedDefinition.modelProperties).to.equal(dataElementModelDefinition.modelProperties);
+        });
+
+        it('should not have reset the filter', () => {
+            let clonedDefinition = dataElementModelDefinition.clone();
+
+            expect(clonedDefinition.filters).not.to.equal(dataElementModelDefinition.filters);
+        });
+
+        it('should still work like normal modelDefinition', () => {
+            let clonedDefinition = dataElementModelDefinition.clone();
+
+            clonedDefinition.list();
+
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
+        });
     });
 
     describe('save', () => {

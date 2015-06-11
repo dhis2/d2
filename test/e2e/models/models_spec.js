@@ -1,3 +1,5 @@
+'use strict';
+
 import d2Init from 'd2';
 
 describe('D2.models', function () {
@@ -151,6 +153,58 @@ describe('D2.models', function () {
             //    server.respond();
             //});
         });
+    });
+
+    describe('list', () => {
+        beforeEach((done) => {
+            server.respondWith(
+                'GET',
+                'http://localhost:8080/dhis/api/dataElements?fields=%3Aall&filter=id:eq:umC9U5YGDq4',
+                [
+                    200,
+                    {'Content-Type': 'application/json'},
+                    JSON.stringify({
+                        dataElements: [window.fixtures.dataElements.umC9U5YGDq4]
+                    })
+                ]
+            );
+
+            d2.models.dataElement
+                .filter.on('id').equals('umC9U5YGDq4')
+                .list()
+                //.then((dataElementCollection) => modelListResult = dataElementCollection)
+                .then(done);
+
+            server.respond();
+        });
+
+        //it('', () => {
+        //
+        //});
+
+        //it('should call the api with the filters', () => {
+        //    server.respondWith(
+        //        'GET',
+        //        'http://localhost:8080/dhis/api/dataElements?fields=%3Aall&filter=id:eq:umC9U5YGDq4',
+        //        [
+        //            200,
+        //            {'Content-Type': 'application/json'},
+        //            JSON.stringify({
+        //                dataElements: []
+        //            })
+        //        ]
+        //    );
+        //
+        //    d2.models.dataElement
+        //        .filter.on('id').equals('umC9U5YGDq4')
+        //        .list()
+        //        .then((list) => {
+        //            expect(list.size).to.equal(0);
+        //        })
+        //        .then(done);
+        //
+        //    server.respond();
+        //});
     });
 
     //describe('save', function () {

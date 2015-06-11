@@ -1,10 +1,11 @@
 'use strict';
 
-import {checkType, isObject, checkDefined} from 'd2/lib/check';
-import {addLockedProperty, curry} from 'd2/lib/utils';
+import {checkType, isObject, checkDefined, isDefined} from 'd2/lib/check';
+import {addLockedProperty, curry, copyOwnProperties} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
 import ModelCollection from 'd2/model/ModelCollection';
 import schemaTypes from 'd2/lib/SchemaTypes';
+import Filters from 'd2/model/Filters';
 
 /**
  * @class ModelDefinition
@@ -27,6 +28,12 @@ class ModelDefinition {
         addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
         addLockedProperty(this, 'modelProperties', properties);
         addLockedProperty(this, 'modelValidations', validations);
+
+        this.filters = Filters.getFilters(this);
+    }
+
+    filter() {
+        return this.clone().filters;
     }
 
     /**
@@ -55,6 +62,18 @@ class ModelDefinition {
         }
 
         return model;
+    }
+
+    clone() {
+        let ModelDefinitionPrototype = Object.getPrototypeOf(this);
+        let clonedDefinition = Object.create(ModelDefinitionPrototype);
+        let priorFilters = this.filters.filters;
+
+        clonedDefinition = copyOwnProperties(clonedDefinition, this);
+        clonedDefinition.filters = Filters.getFilters(clonedDefinition);
+        clonedDefinition.filters.filters = priorFilters.map(filter => filter);
+
+        return clonedDefinition;
     }
 
     /**
@@ -104,6 +123,11 @@ class ModelDefinition {
      * ```
      */
     list(queryParams = {fields: ':all'}) {
+        let definedFilters = this.filters.getFilters();
+        if (!isDefined(queryParams.filter) && definedFilters.length) {
+            queryParams.filter = definedFilters;
+        }
+
         return this.api.get(this.apiEndpoint, queryParams)
             .then((data) => {
                 return ModelCollection.create(

@@ -37,6 +37,12 @@ class Api {
         checkType(type, 'string', 'Request type');
         checkType(url, 'string', 'Url');
 
+        if (data && data.filter) {
+            let theRealFilter = data.filter.reduce((current, filter) => current + '&filter=' + filter, '');
+            delete data.filter;
+            url += '?' + theRealFilter;
+        }
+
         var api = this;
 
         return new Promise((resolve, reject) => {
