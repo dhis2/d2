@@ -104,23 +104,30 @@ gulp.task('build', ['clean'], function (cb) {
         baseURL: './src',
         transpiler: 'babel',
         paths: {
-            '*': '*.js',
-            'd2/*': '*.js',
-            'github:*': '../jspm_packages/github/*.js',
-            'npm:*': '../jspm_packages/npm/*.js'
+            "*": "*.js",
+            'd2/*': './src/*.js',
+            "github:*": "./jspm_packages/github/*.js",
+            "npm:*": "./jspm_packages/npm/*.js"
         },
-        map: {
-            'babel': 'npm:babel-core@5.2.16',
-            'babel-runtime': 'npm:babel-runtime@5.2.16',
-            'core-js': 'npm:core-js@0.9.6',
-            'npm:core-js@0.9.6': {
-                'process': 'github:jspm/nodelibs-process@0.1.1'
+        "map": {
+            "babel": "npm:babel-core@5.5.8",
+            "babel-runtime": "npm:babel-runtime@5.5.8",
+            "core-js": "npm:core-js@0.9.17",
+            "jquery": "github:components/jquery@2.1.3",
+            "process": "github:jspm/nodelibs-process@0.1.1",
+            "github:jspm/nodelibs-process@0.1.1": {
+                "process": "npm:process@0.10.1"
             },
-            'github:jspm/nodelibs-process@0.1.1': {
-                'process': 'npm:process@0.10.1'
+            "npm:babel-runtime@5.5.8": {
+                "process": "github:jspm/nodelibs-process@0.1.1"
+            },
+            "npm:core-js@0.9.17": {
+                "fs": "github:jspm/nodelibs-fs@0.1.2",
+                "process": "github:jspm/nodelibs-process@0.1.1",
+                "systemjs-json": "github:systemjs/plugin-json@0.1.0"
             }
         }
-    }
+    };
 
     builder.config({
         baseURL: sharedConfig.baseURL,
@@ -128,19 +135,19 @@ gulp.task('build', ['clean'], function (cb) {
         paths: sharedConfig.paths,
         map: sharedConfig.map,
         meta: {
-            'github:jspm/nodelibs-process@0.1.1': {
+            'github:jspm/nodelibs-process@*': {
                 build: false,
             },
-            'npm:process@0.10.1/browser': {
+            'npm:process@*/browser': {
                 build: false
             },
-            'npm:babel-runtime@5.2.16/core-js': {
+            'npm:babel-runtime@*/core-js': {
                 build: false
             },
-            'npm:babel-runtime@5.2.16/helpers/class-call-check': {
+            'npm:babel-runtime@*/helpers/class-call-check': {
                 build: false
             },
-            'npm:babel-runtime@5.2.16/helpers/create-class': {
+            'npm:babel-runtime@*/helpers/create-class': {
                 build: false
             },
             babel: {
@@ -149,7 +156,7 @@ gulp.task('build', ['clean'], function (cb) {
         }
     });
 
-    builder.build('d2', 'build/d2.js', {minify: true, mangle: false, sourceMaps: true})
+    builder.build('d2', 'build/d2.js', {minify: false, mangle: false, sourceMaps: true})
         .then(function () {
             console.log('Building systemjs bundle complete');
         })
@@ -164,7 +171,7 @@ gulp.task('build', ['clean'], function (cb) {
                     ]
                 },
                 paths: sharedConfig.paths,
-                map: sharedConfig.map,
+                map: sharedConfig.map
             });
 
             return builder.buildSFX('d2', 'build/d2-sfx.js', {minify: true, mangle: false, sourceMaps: true})

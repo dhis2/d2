@@ -40,8 +40,8 @@ module.exports = function( config ) {
 
                 map: {
                     'd2': 'd2:d2',
-                    "babel-runtime": "npm:babel-runtime@5.5.6",
-                    "core-js": "npm:core-js@0.9.16",
+                    "babel-runtime": "npm:babel-runtime@5.5.8",
+                    "core-js": "npm:core-js@0.9.17",
                     "process": "npm:process@0.10.1"
                 }
             },
