@@ -1,7 +1,7 @@
 language: node_js
 node_js:
 - '0.10'
-after_install:
+before_install:
 - npm install -g jspm@0.16.0-beta
 - jspm config registries.github.auth $JSPM_GITHUB_TOKEN
 - jspm install
@@ -12,4 +12,4 @@ script:
 - cat ../coverage/lcov.info | ../node_modules/coveralls/bin/coveralls.js
 env:
   global:
-  - secure: Y+1gxlnruQWWAUALz2ybg8eGE47ND9qH9weFzHnoxaNjVVuuu5ObAIi74GZIST9t/i94pNA8bkmn9yYeQkfcyOXHo5jDyBnRlAnzQUgBTY1DcVD5JmN1pjpQMRE+vz1h3ChFPu6l/4RpmtlfbdBcfVC3aGARrvDui2/rES368aY=
+  - secure: Tkvy2f+j1Z2Pl4LgZB2jtYmnr4WqvGzycLbJu/RuJHL6hL3GdHqCP54qfC45iBB+B6U2JG6+oDGFlh2cQlWwQjZhUIHZ58CcTBrkSo53T3XxS7DM/aWGY63wWgp7oU7/vQKnJWT9DkBlMD5ACIIfa+y13zZKekOx8JBKt65P12A=
