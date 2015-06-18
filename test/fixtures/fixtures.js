@@ -32043,7 +32043,8 @@ export default (function () {
                 "manyToMany": false,
                 "oneToOne": false,
                 "manyToOne": true,
-                "owningRole": "org.hisp.dhis.dataelement.DataElement.optionSet"
+                "owningRole": "org.hisp.dhis.dataelement.DataElement.optionSet",
+                "href": "http://localhost:8080/dhis/api/schemas/optionSet"
             }, {
                 "klass": "java.lang.String",
                 "propertyType": "IDENTIFIER",
@@ -32163,7 +32164,8 @@ export default (function () {
                 "manyToMany": false,
                 "oneToOne": false,
                 "manyToOne": true,
-                "owningRole": "org.hisp.dhis.dataelement.DataElement.commentOptionSet"
+                "owningRole": "org.hisp.dhis.dataelement.DataElement.commentOptionSet",
+                "href": "http://localhost:8080/dhis/api/schemas/optionSet"
             }, {
                 "klass": "java.lang.String",
                 "propertyType": "TEXT",
@@ -32582,7 +32584,8 @@ export default (function () {
                 "manyToMany": false,
                 "oneToOne": false,
                 "manyToOne": true,
-                "owningRole": "org.hisp.dhis.dataelement.DataElement.categoryCombo"
+                "owningRole": "org.hisp.dhis.dataelement.DataElement.categoryCombo",
+                "href": "http://localhost:8080/dhis/api/schemas/categoryCombo"
             }, {
                 "klass": "java.lang.String",
                 "propertyType": "TEXT",
@@ -32804,7 +32807,8 @@ export default (function () {
                 "manyToMany": false,
                 "oneToOne": false,
                 "manyToOne": true,
-                "owningRole": "org.hisp.dhis.dataelement.DataElement.user"
+                "owningRole": "org.hisp.dhis.dataelement.DataElement.user",
+                "href": "http://localhost:8080/dhis/api/schemas/user"
             }, {
                 "klass": "java.lang.String",
                 "propertyType": "TEXT",

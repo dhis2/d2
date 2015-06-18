@@ -315,34 +315,9 @@ function createValidationSetting(validationObject, schemaProperty) {
         validationObject[propertyName] = validationDetails;
     }
 
-    //TODO: Simplify this when it is easier to grab the type of the reference
     function getReferenceTypeFrom(schemaProperty) {
-        let classPart;
-        let owningRolePart;
-
-        try {
-            classPart = schemaProperty.klass.split('.').reverse()[0];
-            owningRolePart = schemaProperty.owningRole.split('.').reverse()[0];
-        } catch (e) {
-            return undefined;
-        }
-
-        if (isStringContains(classPart, owningRolePart)) {
-            return lowerCaseFirstLetter(owningRolePart);
-        }
-
-        if (isStringContains(owningRolePart, classPart)) {
-            return lowerCaseFirstLetter(classPart);
-        }
-
-        return undefined;
-
-        function isStringContains(text, contains) {
-            return (text.toLowerCase().indexOf(contains.toLowerCase()) >= 0);
-        }
-
-        function lowerCaseFirstLetter(text) {
-            return text.charAt(0).toLowerCase() + text.slice(1);
+        if (schemaProperty.href) {
+            return schemaProperty.href.split('/').pop();
         }
     }
 }
