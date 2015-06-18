@@ -332,7 +332,7 @@ describe('ModelDefinition', () => {
                 expect(modelValidations.optionSet.referenceType).to.equal('optionSet');
             });
 
-            it('should add the referenceType to the user property', () => {
+            it('should add the referenceType to the categoryCombo property', () => {
                 expect(modelValidations.categoryCombo.referenceType).to.equal('categoryCombo');
             });
 
@@ -342,6 +342,24 @@ describe('ModelDefinition', () => {
 
             it('should not add a referenceType for a property that are not a reference', () => {
                 expect(modelValidations.name.referenceType).to.be.undefined;
+            });
+
+            describe('collection reference', () => {
+                let indicatorGroupModelDefinition;
+                let modelValidations;
+
+                beforeEach(() => {
+                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/indicatorGroup'));
+                    modelValidations = indicatorGroupModelDefinition.modelValidations;
+                });
+
+                it('should add a reference type for a collection of references', () => {
+                    expect(modelValidations.indicators.referenceType).to.equal('indicator');
+                });
+
+                it('should not add a reference type for a collection of complex objects', () => {
+                    expect(modelValidations.userGroupAccesses.referenceType).to.be.undefined;
+                });
             });
         });
 

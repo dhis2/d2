@@ -306,8 +306,7 @@ function createValidationSetting(validationObject, schemaProperty) {
     };
 
     //Add a referenceType to be able to get a hold of the reference objects model.
-    //This is the java class name converted to a d2 model name
-    if (validationDetails.type === 'REFERENCE') {
+    if (validationDetails.type === 'REFERENCE' || (validationDetails.type === 'COLLECTION' && schemaProperty.itemPropertyType === 'REFERENCE')) {
         validationDetails.referenceType = getReferenceTypeFrom(schemaProperty);
     }
 
