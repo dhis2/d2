@@ -8,6 +8,7 @@
 
 import {checkType} from 'd2/lib/check';
 import ModelBase from 'd2/model/ModelBase';
+import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
 
 //TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
@@ -75,6 +76,8 @@ class Model {
         });
 
         Object.defineProperties(this, modelDefinition.modelProperties);
+
+        this[DIRTY_PROPERTY_LIST] = new Set([]);
     }
 
     /**

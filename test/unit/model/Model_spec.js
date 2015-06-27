@@ -137,4 +137,29 @@ describe('Model', () => {
             expect(dataElementModel.name).to.equal('ANC');
         });
     });
+
+    describe('getDirtyPropertyNames', () => {
+        let dataElementModel;
+
+        beforeEach(() => {
+            const ModelDefinition = require('d2/model/ModelDefinition');
+            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+
+            dataElementModel = Model.create(dataElementModelDefinition);
+        });
+
+        it('should be a method', () => {
+            expect(dataElementModel.getDirtyPropertyNames).to.be.instanceof(Function);
+        });
+
+        it('should return the names of properties that are dirty', () => {
+            dataElementModel.name = 'ANC new';
+
+            expect(dataElementModel.getDirtyPropertyNames()).to.deep.equal(['name']);
+        });
+
+        it('should return an empty array for a clean model', () => {
+            expect(dataElementModel.getDirtyPropertyNames()).to.deep.equal([]);
+        });
+    });
 });

@@ -7,6 +7,7 @@ proxyquire('d2/model/ModelDefinition', {
 });
 
 import fixtures from 'fixtures/fixtures';
+import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('d2/model/ModelDefinition');
@@ -217,6 +218,7 @@ describe('ModelDefinition', () => {
 
                     }
                 };
+                model[DIRTY_PROPERTY_LIST] = new Set([]);
 
                 modelProperties.name.set.call(model, 'James');
 
@@ -233,6 +235,8 @@ describe('ModelDefinition', () => {
 
                         }
                     };
+                    model[DIRTY_PROPERTY_LIST] = new Set([]);
+
                 });
 
                 it('should set the dirty property to true when a value is set', () => {
@@ -633,6 +637,7 @@ describe('ModelDefinition', () => {
             class Model {
                 constructor() {
                     this.dataValues = {};
+                    this[DIRTY_PROPERTY_LIST] = new Set([]);
                 }
             }
             model = new Model();

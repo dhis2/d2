@@ -6,6 +6,7 @@ import Model from 'd2/model/Model';
 import ModelCollection from 'd2/model/ModelCollection';
 import schemaTypes from 'd2/lib/SchemaTypes';
 import Filters from 'd2/model/Filters';
+import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
 
 /**
  * @class ModelDefinition
@@ -272,6 +273,7 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
             //TODO: Objects and Arrays are concidered unequal when their data is the same and therefore trigger a dirty
             if ((!isObject(value) && (value !== this.dataValues[propertyName])) || isObject(value)) {
                 this.dirty = true;
+                this[DIRTY_PROPERTY_LIST].add(propertyName);
                 this.dataValues[propertyName] = value;
             }
         };

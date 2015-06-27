@@ -25,13 +25,17 @@ describe('ModelBase', () => {
 
     //TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
     let [validateSpy, validateAgainstSchemaSpy] = setupFakeModelValidation();
+    let modelBaseModule;
     let modelBase;
+    let DIRTY_PROPERTY_LIST;
 
     beforeEach(() => {
         validateSpy.reset();
         validateAgainstSchemaSpy.reset();
 
-        modelBase = require('d2/model/ModelBase');
+        modelBaseModule = require('d2/model/ModelBase');
+        modelBase = modelBaseModule.default;
+        DIRTY_PROPERTY_LIST = modelBaseModule.DIRTY_PROPERTY_LIST;
     });
 
     it('should have a save method', () => {
@@ -56,6 +60,7 @@ describe('ModelBase', () => {
                     this.modelDefinition = modelDefinition;
                     this.validate = stub().returns(Promise.resolve({status: true}));
                     this.dirty = true;
+                    this[DIRTY_PROPERTY_LIST] = new Set(['name']);
                 }
             }
 
@@ -95,6 +100,14 @@ describe('ModelBase', () => {
             model.save()
                 .then(() => {
                     expect(model.dirty).to.be.false;
+                    done();
+                });
+        });
+
+        it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', (done) => {
+            model.save()
+                .then(() => {
+                    expect(model[DIRTY_PROPERTY_LIST].size).to.equal(0);
                     done();
                 });
         });

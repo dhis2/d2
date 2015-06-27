@@ -3,6 +3,8 @@ import ModelValidation from 'd2/model/ModelValidation';
 
 let modelValidator = ModelValidation.getModelValidation();
 
+export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
+
 /**
  * @class ModelBase
  */
@@ -35,7 +37,11 @@ class ModelBase {
 
                 return this.modelDefinition
                     .save(this)
-                    .then(() => this.dirty = false);
+                    .then((result) => {
+                        this.dirty = false;
+                        this[DIRTY_PROPERTY_LIST].clear();
+                        return result;
+                    });
             });
     }
 
@@ -115,6 +121,11 @@ class ModelBase {
             }
         });
     }
+
+    getDirtyPropertyNames() {
+        return Array.from(this[DIRTY_PROPERTY_LIST].values());
+    }
+
 }
 
 export default new ModelBase();
