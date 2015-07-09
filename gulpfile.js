@@ -3,7 +3,7 @@ var runSequence = require('run-sequence');
 var del = require('del');
 var $ = require('gulp-load-plugins')();
 
-const buildDirectory = 'build';
+const buildDirectory = 'dist';
 const coverageDirectory = 'coverage';
 const manifest = require('./package.json');
 const config = manifest.babelBoilerplateOptions;
@@ -96,95 +96,6 @@ gulp.task('clean', function () {
     del(coverageDirectory);
 });
 
-gulp.task('build', ['clean'], function (cb) {
-    var Builder = require('systemjs-builder');
-    var builder = new Builder({});
-
-    var sharedConfig = {
-        baseURL: './src',
-        transpiler: 'babel',
-        paths: {
-            "*": "*.js",
-            'd2/*': './src/*.js',
-            "github:*": "./jspm_packages/github/*.js",
-            "npm:*": "./jspm_packages/npm/*.js"
-        },
-        "map": {
-            "babel": "npm:babel-core@5.5.8",
-            "babel-runtime": "npm:babel-runtime@5.5.8",
-            "core-js": "npm:core-js@0.9.17",
-            "jquery": "github:components/jquery@2.1.3",
-            "process": "github:jspm/nodelibs-process@0.1.1",
-            "github:jspm/nodelibs-process@0.1.1": {
-                "process": "npm:process@0.10.1"
-            },
-            "npm:babel-runtime@5.5.8": {
-                "process": "github:jspm/nodelibs-process@0.1.1"
-            },
-            "npm:core-js@0.9.17": {
-                "fs": "github:jspm/nodelibs-fs@0.1.2",
-                "process": "github:jspm/nodelibs-process@0.1.1",
-                "systemjs-json": "github:systemjs/plugin-json@0.1.0"
-            }
-        }
-    };
-
-    builder.config({
-        baseURL: sharedConfig.baseURL,
-        transpiler: sharedConfig.transpiler,
-        paths: sharedConfig.paths,
-        map: sharedConfig.map,
-        meta: {
-            'github:jspm/nodelibs-process@*': {
-                build: false,
-            },
-            'npm:process@*/browser': {
-                build: false
-            },
-            'npm:babel-runtime@*/core-js': {
-                build: false
-            },
-            'npm:babel-runtime@*/helpers/class-call-check': {
-                build: false
-            },
-            'npm:babel-runtime@*/helpers/create-class': {
-                build: false
-            },
-            babel: {
-                build: false
-            }
-        }
-    });
-
-    builder.build('d2', 'build/d2.js', {minify: false, mangle: false, sourceMaps: true})
-        .then(function () {
-            console.log('Building systemjs bundle complete');
-        })
-        .then(function () {
-            var builder = new Builder({});
-            builder.config({
-                baseURL: sharedConfig.baseURL,
-                transpiler: sharedConfig.transpiler,
-                "babelOptions": {
-                    "optional": [
-                        "runtime"
-                    ]
-                },
-                paths: sharedConfig.paths,
-                map: sharedConfig.map
-            });
-
-            return builder.buildSFX('d2', 'build/d2-sfx.js', {minify: true, mangle: false, sourceMaps: true})
-                .then(function () {
-                    console.log('Building systemjs sfx bundle complete')
-                });
-        })
-        .then(cb)
-        .catch(function (error) {
-            console.log(error);
-        });
-});
-
 /**************************************************************************************************
  * Continuous Integration
  */
@@ -238,8 +149,8 @@ gulp.task('docs:app', function (cb) {
 
     builder.loadConfig('./docs/app/config.js')
         .then(function () {
-            builder.config({baseURL: 'file:./docs/app'});
-            builder.build('app', './docs/dist/app-bundle.js', {minify: true, mangle: false, sourceMaps: true})
+            builder.config({baseURL: './docs/app'});
+            builder.build('app', './docs/dist/app-bundle.js', {minify: false, mangle: false, sourceMaps: true})
                 .then(function () {
                     gulp.src([
                         './docs/app/*.{html,css}',
@@ -259,33 +170,9 @@ gulp.task('docs:app', function (cb) {
         });
 });
 
-gulp.task('docs:d2-build', ['build'], function () {
+gulp.task('docs:d2-build', function () {
     return gulp.src(['./build/**'], {baseUrl: './build'}).pipe(gulp.dest('./docs/dist/'));
 });
-
-/**************************************************************************************************
- * Npm Publish hooks
- */
-(function () {
-    var filesToPublish = [
-        'd2.js',
-        'd2.js.map',
-        'd2-sfx.js',
-        'd2-sfx.js.map'
-    ];
-
-    gulp.task('publish:pre', function () {
-        var filesToCopyFromBuildDir = filesToPublish.map(function (fileName) {
-            return './build/' + fileName;
-        });
-
-        return gulp.src(filesToCopyFromBuildDir, {baseUrl: './build'}).pipe(gulp.dest('./'));
-    });
-
-    gulp.task('publish:post', function (cb) {
-        del(filesToPublish, cb);
-    });
-})();
 
 /**************************************************************************************************
  * Utility functions

@@ -1,13 +1,14 @@
 {
   "name": "d2",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
     "validate": "gulp git:pre-commit",
-    "test": "gulp test",
-    "prepublish": "gulp publish:pre",
-    "postpublish": "gulp publish:post"
+    "test": "gulp test && gulp e2e",
+    "prebuild": "gulp jscs &&  gulp jshint && gulp test && gulp e2e",
+    "build": "./node_modules/babel/bin/babel/index.js src --out-dir dist --source-maps && cp package.json ./dist/package.json",
+    "postbuild": "gulp docs:build"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,7 @@
     "library"
   ],
   "author": "Mark Polak",
-  "license": "ISC",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/dhis2/d2/issues"
   },
