@@ -10,7 +10,7 @@ module.exports = function( config ) {
         //Files that should be included by karma (that are not served by karma-systemjs)
         files: [
             //Babel polyfill to polyfill es6 features
-            './node_modules/babel/node_modules/babel-core/browser-polyfill.js',
+            './node_modules/babel-core/browser-polyfill.js',
 
             //Include jquery in a regular fashion.
             './jspm_packages/github/components/jquery**/jquery.js',
@@ -25,22 +25,23 @@ module.exports = function( config ) {
                 baseURL: '/',
                 "defaultJSExtensions": true,
                 transpiler: 'babel',
-                "babelOptions": {
-                    "optional": [
-                        "runtime"
-                    ]
-                },
+                "babelOptions": {},
 
                 paths: {
                     'd2:*': '/base/src/*',
                     'd2:d2/*': '/base/src/*',
                     "github:*": "jspm_packages/github/*",
-                    "npm:*": "jspm_packages/npm/*"
+                    "npm:*": "jspm_packages/npm/*",
+                    'es6-module-loader': './node_modules/es6-module-loader/dist/es6-module-loader.js',
+                    'systemjs': './node_modules/systemjs/dist/system.js',
+                    'system-polyfills': './node_modules/systemjs/dist/system-polyfills.js',
+                    'phantomjs-polyfill': './node_modules/phantomjs-polyfill/bind-polyfill.js',
+                    'babel': './node_modules/babel-core/browser.js'
                 },
 
                 map: {
                     'd2': 'd2:d2',
-                    "babel-runtime": "npm:babel-runtime@5.5.8",
+                    "babel-runtime": "npm:babel-runtime@5.8.20",
                     "core-js": "npm:core-js@0.9.17",
                     "process": "npm:process@0.10.1"
                 }
