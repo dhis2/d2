@@ -666,6 +666,36 @@ describe('ModelDefinition', () => {
             expect(apiUpdateStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
         });
 
+        it('should let a falsy value pass as an owned property', () => {
+            let expectedPayload = fixtures.get('singleUserOwnerFields');
+            expectedPayload.surname = '';
+
+            model.dataValues.surname = '';
+            userModelDefinition.save(model);
+
+            expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+        });
+
+        it('should not let undefined pass as a value', () => {
+            let expectedPayload = fixtures.get('singleUserOwnerFields');
+            delete expectedPayload.surname;
+
+            model.dataValues.surname = undefined;
+            userModelDefinition.save(model);
+
+            expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+        });
+
+        it('should not let null pass as a value', () => {
+            let expectedPayload = fixtures.get('singleUserOwnerFields');
+            delete expectedPayload.surname;
+
+            model.dataValues.surname = null;
+            userModelDefinition.save(model);
+
+            expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+        });
+
         it('should save to the url set on the model', () => {
             userModelDefinition.save(model);
 

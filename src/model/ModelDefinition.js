@@ -169,7 +169,7 @@ class ModelDefinition {
 
         Object.keys(this.modelValidations).forEach((propertyName) => {
             if (ownedProperties.indexOf(propertyName) >= 0) {
-                if (model.dataValues[propertyName]) {
+                if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
                     objectToSave[propertyName] = model.dataValues[propertyName];
                 }
             }
