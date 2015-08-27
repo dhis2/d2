@@ -84,11 +84,11 @@
       "expect"
     ]
   },
-  "registry": "jspm",
   "jspm": {
     "directories": {
       "lib": "."
     },
+    "dependencies": {},
     "devDependencies": {
       "babel": "npm:babel-core@5.5.8",
       "babel-runtime": "npm:babel-runtime@5.5.8",
