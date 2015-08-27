@@ -8,7 +8,7 @@
     "test": "gulp test && gulp e2e",
     "prebuild": "gulp jscs &&  gulp jshint && gulp test && gulp e2e",
     "build": "./node_modules/babel/bin/babel.js src --out-dir dist --source-maps && cp package.json ./dist/package.json && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "postbuild": "gulp docs:build"
+    "_postbuild": "gulp docs:build"
   },
   "repository": {
     "type": "git",
@@ -27,11 +27,11 @@
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {},
   "devDependencies": {
-    "babel": "5.8.20",
-    "babel-core": "5.8.20",
+    "babel": "5.8.21",
+    "babel-core": "5.8.22",
     "babel-loader": "5.3.2",
     "canonical-path": "0.0.2",
-    "chai": "2.1.0",
+    "chai": "3.0.0",
     "coveralls": "2.11.2",
     "del": "0.1.3",
     "dgeni": "0.4.1",
@@ -62,14 +62,14 @@
     "karma-systemjs": "0.5.0",
     "lodash": "3.6.0",
     "marked": "0.3.3",
-    "mocha": "2.1.0",
+    "mocha": "2.2.5",
     "phantomjs": "1.9.x",
     "phantomjs-polyfill": "0.0.1",
     "precommit-hook": "2.0.1",
     "proxyquire": "1.4.0",
     "run-sequence": "1.0.2",
-    "sinon": "1.12.2",
-    "sinon-chai": "2.7.0",
+    "sinon": "1.16.1",
+    "sinon-chai": "2.8.0",
     "systemjs": "0.17.1",
     "systemjs-builder": "0.11.3",
     "webpack": "1.10.5"
