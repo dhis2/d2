@@ -1,7 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-- '0.10'
+- '0.12.4'
 before_install:
 - npm install -g jspm@0.16.0-beta
 - jspm config registries.github.auth $JSPM_GITHUB_TOKEN
