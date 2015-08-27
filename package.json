@@ -89,9 +89,6 @@
     "directories": {
       "lib": "."
     },
-    "dependencies": {
-      "jquery": "github:components/jquery@2.1.4"
-    },
     "devDependencies": {
       "babel": "npm:babel-core@5.5.8",
       "babel-runtime": "npm:babel-runtime@5.5.8",
