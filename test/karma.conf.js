@@ -13,7 +13,7 @@ module.exports = function( config ) {
             './node_modules/babel-core/browser-polyfill.js',
 
             //Include jquery in a regular fashion.
-            './jspm_packages/github/components/jquery**/jquery.js',
+            './node_modules/jquery/dist/jquery.js',
 
             //Api fixtures to represent the server
             './test/fixtures/e2efixtures.js'
@@ -30,7 +30,6 @@ module.exports = function( config ) {
                 paths: {
                     'd2:*': '/base/src/*',
                     'd2:d2/*': '/base/src/*',
-                    "github:*": "jspm_packages/github/*",
                     "npm:*": "jspm_packages/npm/*",
                     'es6-module-loader': './node_modules/es6-module-loader/dist/es6-module-loader.js',
                     'systemjs': './node_modules/systemjs/dist/system.js',
@@ -43,7 +42,7 @@ module.exports = function( config ) {
                     'd2': 'd2:d2',
                     "babel-runtime": "npm:babel-runtime@5.8.20",
                     "core-js": "npm:core-js@0.9.17",
-                    "process": "npm:process@0.10.1"
+                    "process": "npm:process@0.10.1",
                 }
             },
 
