@@ -40,7 +40,7 @@ gulp.task('test', function () {
 /**
  * Watch the files defined in `files` and run the unit tests when a change was detected
  */
-gulp.task('watch', function () {
+gulp.task('watch', ['test'], function () {
     return gulp.watch(files.concat(['src/**/*.js']), ['test']);
 });
 
