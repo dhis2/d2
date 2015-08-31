@@ -29,26 +29,29 @@ describe('D2', () => {
         ModelDefinitionMock.createFromSchema.callCount = 0;
         var apiMockClass;
         apiMock = {
-            get: stub().returns(new Promise(function (resolve) {
-                resolve({
-                    schemas: [
-                        fixtures.get('/api/schemas/dataElement'),
-                        fixtures.get('/api/schemas/dataElement'),
-                        fixtures.get('/api/schemas/dataElement')
-                    ]
-                });
-            })),
+            get: stub(),
             setBaseUrl: spy()
         };
+
+        apiMock.get.onFirstCall().returns(new Promise(function (resolve) {
+            resolve({
+                schemas: [
+                    fixtures.get('/api/schemas/dataElement'),
+                    fixtures.get('/api/schemas/dataElement'),
+                    fixtures.get('/api/schemas/dataElement')
+                ]
+            });
+        }));
+
+        apiMock.get.onSecondCall().returns(new Promise((resolve) => {
+            resolve(fixtures.get('/api/attributes'));
+        }));
 
         apiMockClass = {
             getApi: () => {
                 return apiMock;
             }
         };
-
-        //loggerMock.restore();
-        //ModelDefinitionMock.createFromSchema.calls.reset();
 
         // jscs:disable
         var ModelDefinitionsMock = function ModelDefinitions() {
@@ -117,7 +120,7 @@ describe('D2', () => {
     });
 
     it('should log the error when schemas can not be requested', (done) => {
-        apiMock.get.returns(Promise.reject(new Error('Failed')));
+        apiMock.get.onFirstCall().returns(Promise.reject(new Error('Failed')));
 
         d2({baseUrl: '/dhis/api'})
             .catch(() => {
@@ -130,6 +133,26 @@ describe('D2', () => {
         d2({baseUrl: '/dhis/api'})
             .then(function (d2) {
                 expect(d2.Api.getApi()).to.equal(apiMock);
+            });
+    });
+
+    it('should call the api for all startup calls', (done) => {
+        d2({baseUrl: '/dhis/api'})
+            .then(() => {
+                expect(apiMock.get).to.be.calledTwice;
+                done();
+            });
+
+    });
+
+    it('should query the api for all the attributes', (done) => {
+        d2({baseUrl: '/dhis/api'})
+            .then(() => {
+                var attributeCall = apiMock.get.getCall(1);
+                /* 0: Url, 1: Data, 1: Query params, 2: Request options */
+                expect(attributeCall.args[0]).to.equal('attributes');
+                expect(attributeCall.args[1]).to.deep.equal({fields: ':all', paging: false});
+                done();
             });
     });
 
@@ -156,7 +179,7 @@ describe('D2', () => {
         it('should call the ModelDefinition.createFromSchema with the schema', (done) => {
             d2()
                 .then(() => {
-                    expect(ModelDefinitionMock.createFromSchema).to.have.been.calledWith(fixtures.get('/api/schemas/dataElement'));
+                    expect(ModelDefinitionMock.createFromSchema).to.have.been.calledWith(fixtures.get('/api/schemas/dataElement'), fixtures.get('dataElementAttributes'));
                     done();
                 });
         });

@@ -104,7 +104,7 @@ describe('ModelDefinition', () => {
         var dataElementModelDefinition;
 
         beforeEach(() => {
-            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/api/attributes').attributes);
         });
 
         it('should be a method on ModelDefinition', () => {
@@ -379,6 +379,22 @@ describe('ModelDefinition', () => {
 
             it('should return a UserModelDefinition for the user schema', () => {
                 expect(userModelDefinition).to.be.instanceof(UserModelDefinition);
+            });
+        });
+
+        describe('attribute properties', () => {
+            let attributeProperties;
+
+            beforeEach(() => {
+                attributeProperties = dataElementModelDefinition.attributeProperties;
+            });
+
+            it('should have added the attribute properties onto the model', () => {
+                expect(attributeProperties).to.not.be.undefined;
+            });
+
+            it('should be descriptor objects', () => {
+                expect(attributeProperties.name).to.be.instanceof(Object);
             });
         });
     });

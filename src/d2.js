@@ -51,11 +51,23 @@ function d2Init(config) {
 
     d2.models = new model.ModelDefinitions();
 
-    return api.get('schemas')
-        .then(pick('schemas'))
-        .then((schemas) => {
-            schemas.forEach((schema) => {
-                d2.models.add(model.ModelDefinition.createFromSchema(schema));
+    return Promise.all([api.get('schemas'), api.get('attributes', {fields: ':all', paging: false})])
+        .then(responses => {
+            return {
+                schemas: pick('schemas')(responses[0]),
+                attributes: pick('attributes')(responses[1])
+            };
+        })
+        .then((responses) => {
+            responses.schemas.forEach((schema) => {
+                // Grab the attributes that are attached to this particular schema
+                const schemaAttributes = responses.attributes
+                    .filter(attributeDescriptor => {
+                        const attributeNameFilter = [schema.name, 'Attribute'].join('');
+                        return attributeDescriptor[attributeNameFilter] === true;
+                    });
+
+                d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
             });
 
             return d2;

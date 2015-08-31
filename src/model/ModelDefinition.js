@@ -1,5 +1,3 @@
-'use strict';
-
 import {checkType, isObject, checkDefined, isDefined} from 'd2/lib/check';
 import {addLockedProperty, curry, copyOwnProperties} from 'd2/lib/utils';
 import Model from 'd2/model/Model';
@@ -19,7 +17,7 @@ import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
  * property is an instance of `Api`.
  */
 class ModelDefinition {
-    constructor(modelName, modelNamePlural, modelOptions, properties, validations) {
+    constructor(modelName, modelNamePlural, modelOptions, properties, validations, attributes) {
         checkType(modelName, 'string');
         checkType(modelNamePlural, 'string', 'Plural');
 
@@ -29,6 +27,7 @@ class ModelDefinition {
         addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
         addLockedProperty(this, 'modelProperties', properties);
         addLockedProperty(this, 'modelValidations', validations);
+        addLockedProperty(this, 'attributeProperties', attributes);
 
         this.filters = Filters.getFilters(this);
     }
@@ -201,6 +200,9 @@ class ModelDefinition {
      * @method createFromSchema
      * @static
      *
+     * @param {Object} schema A schema definition received from the web api (/api/schemas)
+     * @param {Object[]} attributes A list of attribute objects that describe custom attributes (/api/attributes)
+     *
      * @returns {ModelDefinition} Frozen model definition object.
      *
      * @description
@@ -210,13 +212,13 @@ class ModelDefinition {
      * the modelDefinition is frozen to prevent accidental changes to the definition.
      *
      * ```js
-     * ModelDefinition.createFromSchema(schemaDefinition);
+     * ModelDefinition.createFromSchema(schemaDefinition, attributes);
      * ```
      *
      * @note {info} An example of a schema definition can be found on
      * https://apps.dhis2.org/demo/api/schemas/dataElement
      */
-    static createFromSchema(schema) {
+    static createFromSchema(schema, attributes=[]) {
         let ModelDefinitionClass;
         checkType(schema, Object, 'Schema');
 
@@ -231,7 +233,12 @@ class ModelDefinition {
             schema.plural,
             schema,
             Object.freeze(createPropertiesObject(schema.properties)),
-            Object.freeze(createValidations(schema.properties))
+            Object.freeze(createValidations(schema.properties)),
+            attributes
+                .reduce((current, attributeDefinition) => {
+                    current[attributeDefinition.name] = attributeDefinition;
+                    return current;
+                }, {})
         ));
     }
 }
@@ -269,8 +276,7 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     //Only add a setter for writable properties
     if (schemaProperty.writable) {
         propertyDetails.set = function (value) {
-
-            //TODO: Objects and Arrays are concidered unequal when their data is the same and therefore trigger a dirty
+            //TODO: Objects and Arrays are considered unequal when their data is the same and therefore trigger a dirty
             if ((!isObject(value) && (value !== this.dataValues[propertyName])) || isObject(value)) {
                 this.dirty = true;
                 this[DIRTY_PROPERTY_LIST].add(propertyName);

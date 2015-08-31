@@ -17,6 +17,16 @@ describe('D2', function () {
             ]
         );
 
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/attributes\?fields=%3Aall&paging=false$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({attributes: []})
+            ]
+        );
+
         d2({baseUrl: '/dhis/api'})
             .then(function (initialisedD2) {
                 window.d2 = initialisedD2;
