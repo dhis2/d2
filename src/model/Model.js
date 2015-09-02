@@ -74,6 +74,51 @@ class Model {
             value: {}
         });
 
+        const hasKeys = (object) => object && !!Object.keys(object).length;
+        const attributes = {};
+        const attributeProperties = modelDefinition.attributeProperties;
+        if (hasKeys(attributeProperties)) {
+            Object.defineProperty(this, 'attributes', {
+                enumerable: false,
+                value: attributes
+            });
+
+            Object
+                .keys(attributeProperties)
+                .forEach(attributeName => {
+                    Object.defineProperty(attributes, attributeName, {
+                        enumerable: true,
+                        get: () => {
+                            return this.dataValues.attributeValues
+                                .filter(attributeValue => attributeValue.attribute.name === attributeName)
+                                .reduce((current, attributeValue) => {
+                                    return attributeValue.value;
+                                }, undefined);
+                        },
+                        set: (value) => {
+                            if (!this.attributeValues) { this.attributeValues = []; }
+
+                            const attributeValue = this.attributeValues
+                                .filter(attributeValue => attributeValue.attribute.name === attributeName)
+                                .reduce((current, attributeValue) => {
+                                    return attributeValue;
+                                }, undefined);
+                            if (attributeValue) {
+                                attributeValue.value = value;
+                            } else {
+                                this.attributeValues.push({
+                                    value: value,
+                                    attribute: {
+                                        id: attributeProperties[attributeName].id,
+                                        name: attributeProperties[attributeName].name
+                                    }
+                                });
+                            }
+                        }
+                    });
+                });
+        }
+
         Object.defineProperties(this, modelDefinition.modelProperties);
 
         this[DIRTY_PROPERTY_LIST] = new Set([]);

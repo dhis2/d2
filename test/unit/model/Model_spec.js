@@ -1,8 +1,6 @@
 import fixtures from '../../fixtures/fixtures.js';
 
 describe('Model', () => {
-    'use strict';
-
     let Model = require('d2/model/Model');
     let model;
 
@@ -160,6 +158,92 @@ describe('Model', () => {
 
         it('should return an empty array for a clean model', () => {
             expect(dataElementModel.getDirtyPropertyNames()).to.deep.equal([]);
+        });
+    });
+
+    describe('attributes', () => {
+        let dataElementModel;
+
+        beforeEach(() => {
+            const ModelDefinition = require('d2/model/ModelDefinition');
+            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('dataElementAttributes'));
+
+            dataElementModel = Model.create(dataElementModelDefinition);
+        });
+
+        it('should not create the property when there are no attributes', () => {
+            const ModelDefinition = require('d2/model/ModelDefinition');
+            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+
+            dataElementModel = Model.create(dataElementModelDefinition);
+
+            expect(dataElementModel.attributes).to.be.undefined;
+        });
+
+        it('should create the property when there are attributes available', () => {
+            expect(dataElementModel.attributes).to.not.be.undefined;
+        });
+
+        it('should have a property for each of the attributes that belong to this model type', () => {
+            expect(Object.keys(dataElementModel.attributes)).to.deep.equal(['marktribute', 'marktribute2', 'name']);
+        });
+
+        it('should set the correct value onto the attributeValues properties', () => {
+            dataElementModel.attributes.name = 'Mark';
+
+            expect(dataElementModel.attributeValues.length).to.equal(1);
+            expect(dataElementModel.attributeValues[0].value).to.equal('Mark');
+            expect(dataElementModel.attributeValues[0].attribute).to.deep.equal({id: 'S8a2OBRnqEc', name: 'name'});
+        });
+
+        it('should get the correct value from the attributeValues property', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+            }];
+
+            expect(dataElementModel.attributes.marktribute).to.equal('Mark');
+        });
+
+        it('should not add a value for the same attribute twice', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+            }];
+
+            dataElementModel.attributes.marktribute = 'John';
+
+            expect(dataElementModel.attributes.marktribute).to.equal('John');
+            expect(dataElementModel.attributeValues[0].value).to.equal('John');
+            expect(dataElementModel.attributeValues.length).to.equal(1);
+        });
+
+        it('should add a value for the attribute when it does not exist yet', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+            }];
+
+            dataElementModel.attributes.name = 'John';
+
+            expect(dataElementModel.attributes.marktribute).to.equal('Mark');
+            expect(dataElementModel.attributes.name).to.equal('John');
+            expect(dataElementModel.attributeValues[0].value).to.equal('Mark');
+            expect(dataElementModel.attributeValues[1].value).to.equal('John');
+            expect(dataElementModel.attributeValues.length).to.equal(2);
+        });
+
+        it('should not show up in the list of model keys', () => {
+            const modelKeys = Object.keys(dataElementModel);
+
+            expect(modelKeys).not.to.include('attributes');
+        });
+
+        it('should not be able to set attributes to something else', () => {
+            const changeAttributesProperty = () => dataElementModel.attributes = 'something else';
+
+            expect(changeAttributesProperty).to.throw;
+            expect(dataElementModel.attributes).not.to.equal('something else');
         });
     });
 });
