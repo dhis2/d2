@@ -245,5 +245,29 @@ describe('Model', () => {
             expect(changeAttributesProperty).to.throw;
             expect(dataElementModel.attributes).not.to.equal('something else');
         });
+
+        it('should set the model to dirty when an attribute was changed', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+            }];
+
+            expect(dataElementModel.dirty).to.be.false;
+
+            dataElementModel.attributes.marktribute = 'John';
+
+            expect(dataElementModel.dirty).to.be.true;
+        });
+
+        it('should not set the model to be dirty when the attribute value is the same', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+            }];
+
+            dataElementModel.attributes.marktribute = 'Mark';
+
+            expect(dataElementModel.dirty).to.be.false;
+        });
     });
 });

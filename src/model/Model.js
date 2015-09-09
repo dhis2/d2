@@ -103,9 +103,17 @@ class Model {
                                 .reduce((current, attributeValue) => {
                                     return attributeValue;
                                 }, undefined);
+
                             if (attributeValue) {
+                                // Don't do anything if the value stayed the same
+                                if (attributeValue.value === value) {
+                                    return;
+                                }
+
                                 attributeValue.value = value;
                             } else {
+
+                                // Add the new attribute value to the attributeValues collection
                                 this.attributeValues.push({
                                     value: value,
                                     attribute: {
@@ -114,6 +122,9 @@ class Model {
                                     }
                                 });
                             }
+
+                            // Set the model to be dirty
+                            this.dirty = true;
                         }
                     });
                 });
