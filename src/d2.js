@@ -51,7 +51,7 @@ function d2Init(config) {
 
     d2.models = new model.ModelDefinitions();
 
-    return Promise.all([api.get('schemas'), api.get('attributes', {fields: ':all', paging: false})])
+    return Promise.all([api.get('schemas'), api.get('attributes', {fields: ':all,optionSet[:all]', paging: false})])
         .then(responses => {
             return {
                 schemas: pick('schemas')(responses[0]),

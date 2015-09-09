@@ -21,7 +21,7 @@ describe('D2.models', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/attributes\?fields=%3Aall&paging=false$/,
+            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%5D&paging=false$/,
             [
                 200,
                 {'Content-Type': 'application/json'},

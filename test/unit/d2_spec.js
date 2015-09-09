@@ -151,7 +151,7 @@ describe('D2', () => {
                 var attributeCall = apiMock.get.getCall(1);
                 /* 0: Url, 1: Data, 1: Query params, 2: Request options */
                 expect(attributeCall.args[0]).to.equal('attributes');
-                expect(attributeCall.args[1]).to.deep.equal({fields: ':all', paging: false});
+                expect(attributeCall.args[1]).to.deep.equal({fields: ':all,optionSet[:all]', paging: false});
                 done();
             });
     });
