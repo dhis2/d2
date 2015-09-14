@@ -149,7 +149,7 @@ class ModelDefinition {
      * @description
      * This method is used by the `Model` instances to save the model when calling `model.save()`.
      *
-     * @note {warning} This should generally not be accessed directly.
+     * @note {warning} This should generally not be called directly.
      */
     //TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
@@ -194,6 +194,20 @@ class ModelDefinition {
     getOwnedPropertyNames() {
         return Object.keys(this.modelValidations)
             .filter(propertyName => this.modelValidations[propertyName].owner);
+    }
+
+    /**
+     * @method delete
+     *
+     * @returns {Promise} Returns a promise to the deletion operation
+     *
+     * @description
+     * This method is used by the `Model` instances to delete the model when calling `model.delete()`.
+     *
+     * @note {warning} This should generally not be called directly.
+     */
+    delete(model) {
+        return this.api.delete(model.dataValues.href);
     }
 
     /**

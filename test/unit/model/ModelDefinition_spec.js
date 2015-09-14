@@ -728,6 +728,55 @@ describe('ModelDefinition', () => {
         });
     });
 
+    describe('delete', () => {
+        let apiDeleteStub;
+        let model;
+        let userModelDefinition;
+
+        beforeEach(() => {
+            let singleUserAllFields = fixtures.get('singleUserAllFields');
+
+            apiDeleteStub = stub().returns(new Promise((resolve) => {
+                resolve();
+            }));
+
+            ModelDefinition.prototype.api = {
+                delete: apiDeleteStub
+            };
+
+            userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+
+            class Model {
+                constructor() {
+                    this.dataValues = {};
+                    this[DIRTY_PROPERTY_LIST] = new Set([]);
+                }
+            }
+            model = new Model();
+
+            Object.keys(singleUserAllFields).forEach((key) => {
+                model.dataValues[key] = singleUserAllFields[key];
+                model[key] = singleUserAllFields[key];
+            });
+        });
+
+        it('should call the delete method on the api', () => {
+            userModelDefinition.delete(model);
+
+            expect(apiDeleteStub).to.be.called;
+        });
+
+        it('should call delete with the url', () => {
+            userModelDefinition.delete(model);
+
+            expect(apiDeleteStub).to.be.calledWith(model.href);
+        });
+
+        it('should return a promise', () => {
+            expect(userModelDefinition.delete(model)).to.be.instanceof(Promise);
+        });
+    });
+
     describe('getOwnedPropertyNames', () => {
         let dataElementModelDefinition;
 

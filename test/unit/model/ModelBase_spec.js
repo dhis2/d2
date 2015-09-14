@@ -307,4 +307,47 @@ describe('ModelBase', () => {
                 });
         });
     });
+
+    describe('delete', () => {
+        let modelDefinition;
+        let model;
+
+        beforeEach(() => {
+            modelDefinition = {
+                delete: stub().returns(new Promise(function (resolve) {resolve();}))
+            };
+
+            class Model{
+                constructor(modelDefinition) {
+                    this.modelDefinition = modelDefinition;
+                    this.validate = stub().returns(Promise.resolve({status: true}));
+                    this.dirty = true;
+                    this[DIRTY_PROPERTY_LIST] = new Set(['name']);
+                }
+            }
+
+            Model.prototype = modelBase;
+            model = new Model(modelDefinition);
+        });
+
+        it('should have a delete method', () => {
+            expect(model.delete).to.be.instanceof(Function);
+        });
+
+        it('should call delete on the modeldefinition when called', () => {
+            model.delete();
+
+            expect(model.modelDefinition.delete).to.be.called;
+        });
+
+        it('should call the modelDefinition.delete method with the model', () => {
+            model.delete();
+
+            expect(model.modelDefinition.delete).to.be.calledWith(model);
+        });
+
+        it('should return a promise', () => {
+            expect(model.delete()).to.be.instanceof(Promise);
+        });
+    });
 });

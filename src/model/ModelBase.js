@@ -122,6 +122,10 @@ class ModelBase {
         });
     }
 
+    delete() {
+        return this.modelDefinition.delete(this);
+    }
+
     getDirtyPropertyNames() {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }

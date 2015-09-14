@@ -24,8 +24,8 @@ class Api {
         return this.request('POST', getUrl(this.baseUrl, url), JSON.stringify(data));
     }
 
-    remove() {
-
+    delete(url) {
+        return this.request('DELETE', getUrl(this.baseUrl, url));
     }
 
     //TODO: write tests for update

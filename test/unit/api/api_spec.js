@@ -238,9 +238,25 @@ describe('Api', () => {
         });
     });
 
-    describe('remove', () => {
+    describe('delete', () => {
+        beforeEach(() => {
+            jqueryMock.ajax = spy();
+        });
+
         it('should be a method', () => {
-            expect(api.remove).to.be.instanceof(Function);
+            expect(api.delete).to.be.instanceof(Function);
+        });
+
+        it('should call the ajax method with the correct DELETE request', () => {
+            api.delete(fixtures.get('singleUserAllFields').href);
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'DELETE',
+                url: fixtures.get('singleUserAllFields').href,
+                dataType: 'json',
+                contentType: 'application/json',
+                data: {}
+            });
         });
     });
 
