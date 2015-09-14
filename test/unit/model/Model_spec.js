@@ -269,5 +269,20 @@ describe('Model', () => {
 
             expect(dataElementModel.dirty).to.be.false;
         });
+
+        it('should not fail if requesting an attribute but the model has no attributeValues', () => {
+            dataElementModel.dataValues.attributeValues = undefined;
+
+            expect(() => dataElementModel.attributes.marktribute).not.to.throw();
+        });
+
+        it('should still correctly set the attributeValue if the model has initially no attributeValues', () => {
+            dataElementModel.dataValues.attributeValues = undefined;
+
+            dataElementModel.attributes.marktribute = 'John';
+
+            expect(dataElementModel.attributes.marktribute).to.equal('John');
+            expect(dataElementModel.attributeValues[0].attribute.id).to.equal('FpoWdhxCMwH');
+        });
     });
 });

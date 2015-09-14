@@ -89,7 +89,11 @@ class Model {
                     Object.defineProperty(attributes, attributeName, {
                         enumerable: true,
                         get: () => {
-                            return this.dataValues.attributeValues
+                            if (!Array.isArray(this.attributeValues)) {
+                                return undefined;
+                            }
+
+                            return this.attributeValues
                                 .filter(attributeValue => attributeValue.attribute.name === attributeName)
                                 .reduce((current, attributeValue) => {
                                     return attributeValue.value;
