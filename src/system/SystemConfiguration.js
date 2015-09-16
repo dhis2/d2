@@ -44,7 +44,7 @@ class SystemConfiguration {
      * @param {boolean} ignoreCache If set to true, calls the API regardless of cache status
      */
     all(ignoreCache) {
-        if (this.configuration && ignoreCache != true) {
+        if (this.configuration && ignoreCache !== true) {
             return Promise.resolve(this.configuration);
         }
         const that = this;
