@@ -117,7 +117,7 @@ gulp.task('git:pre-commit', function (cb) {
         process.exit(1);
     });
 
-    runSequence('test', 'jshint', 'jscs', cb);
+    runSequence('test', cb);
 });
 
 /**************************************************************************************************
