@@ -6,6 +6,7 @@
  */
 
 import SystemSettings from 'd2/system/SystemSettings';
+import SystemConfiguration from 'd2/system/SystemConfiguration';
 
 /**
  * @class System
@@ -16,7 +17,7 @@ import SystemSettings from 'd2/system/SystemSettings';
  * to get and save systemSettings.
  */
 class System {
-    constructor(settings) {
+    constructor(settings, configuration) {
         /**
          * @property {SystemSettings} settings Contains a reference to a `SystemSettings` instance that can be used
          * to retrieve and save system settings.
@@ -30,6 +31,33 @@ class System {
          * ```
          */
         this.settings = settings;
+
+        /**
+         * @property {SystemConfiguration} configuration
+         *
+         * @description A representation of the system configuration, that can be used to retreive and change system
+         * configuration options.
+         */
+        this.configuration = configuration;
+    }
+
+    /**
+     * Retrieves the complete list of translatable strings relating to system settings and system configuration
+     *
+     * @returns {Set} A set of translatable strings
+     */
+    getI18nStrings() {
+        const strings = new Set();
+        Object.keys(this.settings.mapping).map(key => {
+            const val = this.settings.mapping[key];
+            if (val.hasOwnProperty('label')) {
+                strings.add(val.label);
+            }
+            if (val.hasOwnProperty('description')) {
+                strings.add(val.description);
+            }
+        });
+        return strings;
     }
 
     /**
@@ -42,7 +70,7 @@ class System {
      * Get a new instance of the system object.
      */
     static getSystem() {
-        return new System(new SystemSettings());
+        return new System(new SystemSettings(), new SystemConfiguration);
     }
 }
 
