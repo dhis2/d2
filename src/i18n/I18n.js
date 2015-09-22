@@ -1,0 +1,148 @@
+
+import Api from 'd2/api/Api';
+
+class I18n {
+    constructor(sources = [], api = Api.getApi()) {
+        this.sources = sources;
+        this.api = api;
+        this.strings = new Set();
+        this.translations = undefined;
+    }
+
+    /**
+     * Adds a .properties file to the list of sources to load translations from
+     *
+     * @param {String} path
+     */
+    addSource(path) {
+        this.sources.push(path);
+    }
+
+    /**
+     * Adds one or more strings to the list of strings to translate
+     *
+     * @param {[]|String} strings
+     */
+    addStrings(strings) {
+        if (typeof strings === 'string' && strings.trim().length > 0) {
+            this.strings.add(strings.trim());
+        } else {
+            strings.forEach(string => {
+                if (string.trim().length > 0) {
+                    this.strings.add(string);
+                }
+            });
+        }
+    }
+
+    /**
+     *
+     *
+     * @returns {Promise}
+     */
+    load() {
+        const i18n = this;
+        i18n.translations = {};
+
+        function parseProperties(text) {
+            return text.split('\n').reduce((props, line) => {
+                const [key, value] = line.split('=').map(out => out.trim());
+                if (key !== undefined && value !== undefined && !props.hasOwnProperty(key)) {
+                    props[key] = value.replace(/\\u([0-9a-f]{4})/gi, (match, grp) => {
+                        return String.fromCharCode(parseInt(grp, 16));
+                    });
+                }
+                return props;
+            }, i18n.translations);
+        }
+
+        const propFiles = [];
+
+        this.sources.forEach(source => {
+            propFiles.push(
+                i18n.api.request('GET', source, undefined, {dataType: 'text'}).then(
+                    (data) => {
+                        const props = parseProperties(data);
+                        Object.keys(props).forEach(str => {
+                            this.strings.delete(str);
+                        });
+                        return Promise.resolve(props);
+                    },
+                    () => {
+                        // Resolve errors to an empty object, so that one missing file doesn't prevent
+                        // the rest from being loaded
+                        return Promise.resolve({});
+                    }
+                )
+            );
+        });
+
+        return Promise.all(propFiles).then(() => {
+            if (this.strings.size > 0) {
+                return i18n.api.post('i18n', Array.from(i18n.strings)).then((res) => {
+                    Object.keys(res).forEach(str => {
+                        if (str !== res[str]) {
+                            i18n.translations[str] = res[str];
+                            i18n.strings.delete(str);
+                        }
+                    });
+                    return Promise.resolve(i18n.translations);
+                });
+            }
+
+            return Promise.resolve(i18n.translations);
+        });
+    }
+
+    /**
+     * Gets the translated version of the specified string
+     *
+     * If no translation exists for the specified string, the string is returned as is with two asterisks on each side,
+     * in order to easily identify missing translations in the UI
+     *
+     * @param string
+     * @returns {String}
+     */
+    getTranslation(string) {
+        if (this.translations === undefined) {
+            throw new Error('Tried to translate before loading translations!');
+        }
+        return this.translations.hasOwnProperty(string) ? this.translations[string] : '** ' + string + ' **';
+    }
+
+    /**
+     * Check if a translation exists for the specified string
+     *
+     * @param string
+     * @returns {boolean} True if a translation exists, false otherwise
+     */
+    isTranslated(string) {
+        if (this.translations === undefined) {
+            throw new Error('Tried to translate before loading translations!');
+        }
+        return this.translations.hasOwnProperty(string);
+    }
+
+
+    /**
+     * Get the list of strings that don't have translations
+     *
+     * If no translations have been loaded yet, `undefined` is returned in stead.
+     *
+     * @returns {Array|undefined} Array of untranslated strings, or undefined if translations haven't been loaded
+     */
+    getUntranslatedStrings() {
+        return this.translations ? Array.from(this.strings) : undefined;
+    }
+
+    /**
+     * Return a new instance of this class
+     *
+     * @returns {I18n}
+     */
+    static getI18n() {
+        return new I18n();
+    }
+}
+
+export default I18n;

@@ -6,6 +6,7 @@ import Logger from 'd2/logger/Logger';
 import model from 'd2/model/models';
 import Api from 'd2/api/Api';
 import System from 'd2/system/System';
+import I18n from 'd2/i18n/I18n';
 
 /**
  * @function d2Init
@@ -38,7 +39,8 @@ function d2Init(config) {
         models: undefined,
         model: model,
         Api: Api,
-        system: System.getSystem()
+        system: System.getSystem(),
+        i18n: I18n.getI18n(),
     };
 
     var api = Api.getApi();
