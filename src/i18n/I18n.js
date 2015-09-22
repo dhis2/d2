@@ -12,6 +12,9 @@ class I18n {
     /**
      * Adds a .properties file to the list of sources to load translations from
      *
+     * Files are loaded in the order they're added, and the first translation of each string that's encountered will be
+     * used.
+     *
      * @param {String} path
      */
     addSource(path) {
@@ -36,7 +39,10 @@ class I18n {
     }
 
     /**
+     * Load translations
      *
+     * First, all properties files (specified with addSource) are loaded.
+     * Then, if any untranslated strings remain, these are POSTed to the i18n endpoint of the DHIS2 API.
      *
      * @returns {Promise}
      */
