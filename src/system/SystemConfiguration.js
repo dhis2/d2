@@ -70,8 +70,6 @@ class SystemConfiguration {
                 selfRegistrationOrgUnit: config[7],
             };
             return Promise.resolve(that.configuration);
-        }, (err) => {
-            throw err;
         });
     }
 

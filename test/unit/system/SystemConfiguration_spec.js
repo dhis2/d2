@@ -1063,6 +1063,18 @@ describe('System.configuration', () => {
                     done(err);
                 });
             });
+
+            it('should throw an error when asked for an unknown config option', (done) => {
+                try {
+                    configuration.get('someRandomOptionThatDoesntExist').then(() => {
+                        done(new Error('No error thrown'));
+                    }, () => {
+                        done();
+                    });
+                } catch(e) {
+                    done();
+                }
+            });
         });
 
     });
