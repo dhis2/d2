@@ -177,6 +177,10 @@ describe('D2', () => {
                 done();
             });
         });
+
+        it('should return a promise when calling getInstance before init', () => {
+            expect(d2.getInstance()).to.be.instanceof(Promise);
+        });
     });
 
     it('should set the base url onto the api', () => {

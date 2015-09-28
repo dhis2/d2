@@ -6,7 +6,8 @@ import System from 'd2/system/System';
 import I18n from 'd2/i18n/I18n';
 import Config from 'd2/config';
 
-let deferredD2Init;
+let firstRun = true;
+let deferredD2Init = Deferred.create();
 
 const preInitConfig = Config.create();
 
@@ -51,7 +52,15 @@ export function init(initConfig) {
     // Process the config in a the config class to keep all config calls together.
     Config.processConfigForD2(config, d2);
 
-    deferredD2Init = Deferred.create();
+    // Because when importing the getInstance method in dependencies the getInstance could run before
+    // init we have to resolve the current promise on first run and for consecurtive ones replace the
+    // old one with a fresh promise.
+    if (firstRun) {
+        firstRun = false;
+    } else {
+        deferredD2Init = Deferred.create();
+    }
+
     return Promise.all([
         api.get('schemas'),
         api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
