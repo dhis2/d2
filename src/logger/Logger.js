@@ -1,23 +1,18 @@
-/* global global */
-'use strict';
-
 import {checkType, isType} from 'd2/lib/check';
-
-var console;
 
 class Logger {
     constructor(logging) {
         checkType(logging, 'object', 'console');
-        console = logging;
+        this.logger = logging;
     }
 
     canLog(type) {
-        return !!(type && console && isType(console[type], 'function'));
+        return !!(type && console && isType(this.logger[type], 'function'));
     }
 
     debug(...rest) {
         if (this.canLog('debug')) {
-            console.debug.apply(console, rest);
+            this.logger.debug.apply(console, rest);
             return true;
         }
         return false;
@@ -25,8 +20,7 @@ class Logger {
 
     error(...rest) {
         if (this.canLog('error')) {
-            console.log(arguments);
-            console.error.apply(console, rest);
+            this.logger.error.apply(console, rest);
             return true;
         }
         return false;
@@ -34,7 +28,7 @@ class Logger {
 
     log(...rest) {
         if (this.canLog('log')) {
-            console.log.apply(console, rest);
+            this.logger.log.apply(console, rest);
             return true;
         }
         return false;
@@ -42,29 +36,29 @@ class Logger {
 
     warn(...rest) {
         if (this.canLog('warn')) {
-            console.warn.apply(console, rest);
+            this.logger.warn.apply(console, rest);
             return true;
         }
         return false;
     }
+
+    static getLogger() {
+        let logger;
+
+        // TODO: This is not very clean try to figure out a better way to do this.
+        try {
+            // Node version
+            logger = global.console;
+        } catch (e) {
+            // Browser version fallback
+            logger = window.console;
+        }
+
+        if (this.logger) {
+            return this.logger;
+        }
+        return (this.logger = new Logger(logger));
+    }
 }
-
-Logger.getLogger = function () {
-    var console;
-
-    //TODO: This is not very clean try to figure out a better way to do this.
-    try {
-        //Node version
-        console = global.console;
-    } catch (e) {
-        //Browser version fallback
-        console = window.console;
-    }
-
-    if (this.logger) {
-        return this.logger;
-    }
-    return (this.logger = new Logger(console));
-};
 
 export default Logger;

@@ -1,12 +1,9 @@
-'use strict';
 /**
  * @module System
  *
  * @requires lib/check
  * @requires api/Api
  */
-
-import {isString} from 'd2/lib/check';
 import Api from 'd2/api/Api';
 
 /**

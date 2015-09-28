@@ -9,5 +9,5 @@ export default {
     Model: Model,
     ModelDefinition: ModelDefinition,
     ModelDefinitions: ModelDefinitions,
-    ModelValidations: ModelValidation
+    ModelValidations: ModelValidation,
 };

@@ -1,4 +1,3 @@
-'use strict';
 /**
  * @module System
  *
@@ -58,6 +57,16 @@ class SystemSettings {
      * ```
      */
     get(systemSettingsKey) {
+        function processValue(value) {
+            // Attempt to parse the response as JSON. If this fails we return the value as is.
+            try {
+                return JSON.parse(value);
+            } catch (e) {
+                return value;
+            }
+            return value;
+        }
+
         return new Promise((resolve, reject) => {
             if (!isString(systemSettingsKey)) {
                 throw new TypeError('A "key" parameter should be specified when calling get() on systemSettings');
@@ -65,22 +74,13 @@ class SystemSettings {
 
             this.api.get(['systemSettings', systemSettingsKey].join('/'), undefined, {dataType: 'text'})
                 .then(response => {
-                    let systemSettingValue = processValue(response);
+                    const systemSettingValue = processValue(response);
                     if (systemSettingValue) {
                         resolve(processValue(response));
                     }
                     reject(new Error('The requested systemSetting has no value or does not exist.'));
                 });
         });
-
-        function processValue(value) {
-            //Attempt to parse the response as JSON. If this fails we return the value as is.
-            try {
-                return JSON.parse(value);
-            }
-            catch (e) {}
-            return value;
-        }
     }
 }
 

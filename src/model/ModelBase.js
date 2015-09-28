@@ -1,7 +1,6 @@
-'use strict';
 import ModelValidation from 'd2/model/ModelValidation';
 
-let modelValidator = ModelValidation.getModelValidation();
+const modelValidator = ModelValidation.getModelValidation();
 
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
@@ -67,30 +66,9 @@ class ModelBase {
      */
     validate() {
         return new Promise((resolve, reject) => {
-            let modelValidationStatus = true;
             let validationMessages = [];
             let validationState;
-
-            //Run local validation on the models data values
-            validationMessages = validationMessages.concat(
-                localValidation(this.modelDefinition.modelValidations, this.dataValues)
-            );
-
-            //Run async validation against the api
-            asyncRemoteValidation(this)
-                .then(remoteMessages => {
-                    validationMessages = validationMessages.concat(remoteMessages);
-
-                    validationState = {
-                        status: modelValidationStatus,
-                        fields: validationMessages
-                            .map(validationMessage => validationMessage.property)
-                            .reduce(unique, []),
-                        messages: validationMessages
-                    };
-                    resolve(validationState);
-                })
-                .catch(message => reject(message));
+            let modelValidationStatus = true;
 
             function unique(current, property) {
                 if (property && current.indexOf(property) === -1) {
@@ -103,9 +81,9 @@ class ModelBase {
                 let validationMessagesLocal = [];
 
                 Object.keys(modelValidations).forEach((propertyName) => {
-                    let validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
+                    const validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
                     if (!validationStatus.status) {
-                        validationStatus.messages.forEach(function (message) {
+                        validationStatus.messages.forEach(message => {
                             message.property = propertyName;
                         });
                     }
@@ -119,6 +97,27 @@ class ModelBase {
             function asyncRemoteValidation(model) {
                 return modelValidator.validateAgainstSchema(model);
             }
+
+            // Run local validation on the models data values
+            validationMessages = validationMessages.concat(
+                localValidation(this.modelDefinition.modelValidations, this.dataValues)
+            );
+
+            // Run async validation against the api
+            asyncRemoteValidation(this)
+                .then(remoteMessages => {
+                    validationMessages = validationMessages.concat(remoteMessages);
+
+                    validationState = {
+                        status: modelValidationStatus,
+                        fields: validationMessages
+                            .map(validationMessage => validationMessage.property)
+                            .reduce(unique, []),
+                        messages: validationMessages,
+                    };
+                    resolve(validationState);
+                })
+                .catch(message => reject(message));
         });
     }
 

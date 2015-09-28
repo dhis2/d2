@@ -112,7 +112,7 @@ class Pager {
      * @param {Number} pageNr The number of the page you wish to navigate to.
      * @returns {Promise} Promise that resolves with a new `ModelCollection` containing the data for the requested page.
      */
-    //TODO: Throwing the errors here is not really consistent with the rejection of promises for the getNextPage and getPreviousPage
+    // TODO: Throwing the errors here is not really consistent with the rejection of promises for the getNextPage and getPreviousPage
     goToPage(pageNr) {
         if (pageNr < 1) {
             throw new Error('PageNr can not be less than 1');

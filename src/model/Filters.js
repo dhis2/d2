@@ -1,5 +1,3 @@
-'use strict';
-
 import {isType} from 'd2/lib/check';
 import Filter from 'd2/model/Filter';
 

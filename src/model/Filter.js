@@ -1,4 +1,3 @@
-'use strict';
 import {checkDefined} from 'd2/lib/check';
 
 const FILTER_COMPARATORS = {
@@ -25,7 +24,7 @@ const FILTER_COMPARATORS = {
      * @description
      * This method can be used to add a ilike filter value
      */
-    ilike: 'ilike'
+    ilike: 'ilike',
 };
 
 /**
@@ -78,11 +77,11 @@ class Filter {
     }
 }
 
-//Add the filters to the Filter prototype
-//TODO: Change to for..of. Currently would break e2e tests because of polyfill
+// Add the filters to the Filter prototype
+// TODO: Change to for..of. Currently would break e2e tests because of polyfill
 Object.keys(FILTER_COMPARATORS).forEach(filter => {
     Object.defineProperty(Filter.prototype, filter, {
-        value: function (filterValue) {
+        value: function filterGetter(filterValue) {
             checkDefined(filterValue, 'filterValue');
 
             this.comparator = FILTER_COMPARATORS[filter];
@@ -91,7 +90,7 @@ Object.keys(FILTER_COMPARATORS).forEach(filter => {
             this.filters.add(this);
 
             return this.filters.getReturn();
-        }
+        },
     });
 });
 

@@ -9,7 +9,7 @@ import {checkType} from 'd2/lib/check';
 import ModelBase from 'd2/model/ModelBase';
 import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
 
-//TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
+// TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
  * @class Model
  * @extends ModelBase
@@ -45,7 +45,7 @@ class Model {
             enumerable: false,
             configurable: false,
             writable: false,
-            value: modelDefinition
+            value: modelDefinition,
         });
 
         /**
@@ -58,7 +58,7 @@ class Model {
             enumerable: false,
             configurable: false,
             writable: true,
-            value: false
+            value: false,
         });
 
         /**
@@ -71,7 +71,7 @@ class Model {
             enumerable: false,
             configurable: true,
             writable: true,
-            value: {}
+            value: {},
         });
 
         const hasKeys = (object) => object && !!Object.keys(object).length;
@@ -80,7 +80,7 @@ class Model {
         if (hasKeys(attributeProperties)) {
             Object.defineProperty(this, 'attributes', {
                 enumerable: false,
-                value: attributes
+                value: attributes,
             });
 
             Object
@@ -94,19 +94,17 @@ class Model {
                             }
 
                             return this.attributeValues
-                                .filter(attributeValue => attributeValue.attribute.name === attributeName)
-                                .reduce((current, attributeValue) => {
-                                    return attributeValue.value;
+                                .filter(value => value.attribute.name === attributeName)
+                                .reduce((current, value) => {
+                                    return value.value;
                                 }, undefined);
                         },
                         set: (value) => {
                             if (!this.attributeValues) { this.attributeValues = []; }
 
                             const attributeValue = this.attributeValues
-                                .filter(attributeValue => attributeValue.attribute.name === attributeName)
-                                .reduce((current, attributeValue) => {
-                                    return attributeValue;
-                                }, undefined);
+                                .filter(av => av.attribute.name === attributeName)
+                                .reduce((current, av) => av, undefined);
 
                             if (attributeValue) {
                                 // Don't do anything if the value stayed the same
@@ -116,20 +114,19 @@ class Model {
 
                                 attributeValue.value = value;
                             } else {
-
                                 // Add the new attribute value to the attributeValues collection
                                 this.attributeValues.push({
                                     value: value,
                                     attribute: {
                                         id: attributeProperties[attributeName].id,
-                                        name: attributeProperties[attributeName].name
-                                    }
+                                        name: attributeProperties[attributeName].name,
+                                    },
                                 });
                             }
 
                             // Set the model to be dirty
                             this.dirty = true;
-                        }
+                        },
                     });
                 });
         }

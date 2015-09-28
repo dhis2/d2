@@ -12,7 +12,7 @@ class SchemaTypes {
             'PASSWORD',
             'URL',
             'PHONENUMBER',
-            'GEOLOCATION', //TODO: Geo location could be an advanced type of 2 numbers / strings?
+            'GEOLOCATION', // TODO: Geo location could be an advanced type of 2 numbers / strings?
             'COLOR',
             'COMPLEX',
             'COLLECTION',
@@ -20,14 +20,12 @@ class SchemaTypes {
             'DATE',
             'COMPLEX',
             'IDENTIFIER',
-            'CONSTANT'
+            'CONSTANT',
         ];
     }
 
     typeLookup(propertyType) {
-        if (this.getTypes().indexOf(propertyType) >= 0 &&
-            isString(propertyType)) {
-
+        if (this.getTypes().indexOf(propertyType) >= 0 && isString(propertyType)) {
             return propertyType;
         }
         throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));

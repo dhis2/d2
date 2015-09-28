@@ -1,6 +1,11 @@
-'use strict';
+export function checkDefined(value, name) {
+    if (value !== undefined) {
+        return true;
+    }
+    throw new Error([name || 'Value', 'should be provided'].join(' '));
+}
 
-//TODO: Decide if checkType([], 'object') is a 'false' positive
+// TODO: Decide if checkType([], 'object') is a 'false' positive
 export function checkType(value, type, name) {
     checkDefined(value, name);
     checkDefined(type, 'Type');
@@ -12,18 +17,16 @@ export function checkType(value, type, name) {
     throw new Error(['Expected', name || value,  'to have type', type].join(' '));
 }
 
-export function checkDefined(value, name) {
-    if (value !== undefined) {
-        return true;
-    }
-    throw new Error([name || 'Value', 'should be provided'].join(' '));
-}
-
+// TODO: Log type error?
 export function isType(value, type) {
+    const noop = () => {};
+
     try {
         checkType(value, type);
         return true;
-    } catch (e) {}
+    } catch (e) {
+        noop();
+    }
 
     return false;
 }
@@ -44,18 +47,18 @@ export function isDefined(value) {
     return value !== undefined;
 }
 
-// Polyfill for the isInteger function that will be added in ES6
-// http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
-if (!Number.isInteger) {
-    Number.isInteger = isInteger;
-}
-
 export function isInteger(nVal) {
     return typeof nVal === 'number' &&
         isFinite(nVal) &&
         nVal > -9007199254740992 &&
         nVal < 9007199254740992 &&
         Math.floor(nVal) === nVal;
+}
+
+// Polyfill for the isInteger function that will be added in ES6
+// http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
+if (!Number.isInteger) {
+    Number.isInteger = isInteger;
 }
 
 export function isNumeric(nVal) {
@@ -65,9 +68,9 @@ export function isNumeric(nVal) {
 }
 
 export function contains(item, list) {
-    list = (isArray(list) && list) || [];
+    const listToCheck = (isArray(list) && list) || [];
 
-    return list.indexOf(item) >= 0;
+    return listToCheck.indexOf(item) >= 0;
 }
 
 export function isValidUid(value) {
@@ -84,5 +87,5 @@ export default {
     isString: isString,
     isType: isType,
     contains: contains,
-    isValidUid: isValidUid
+    isValidUid: isValidUid,
 };

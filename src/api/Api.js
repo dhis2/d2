@@ -1,8 +1,37 @@
-'use strict';
-
 import {checkType} from 'd2/lib/check';
 import {copyOwnProperties} from 'd2/lib/utils';
 import jQuery from 'd2/external/jquery';
+
+function processSuccess(resolve) {
+    return (data/* , textStatus, jqXHR */) => {
+        resolve(data);
+    };
+}
+
+function processFailure(reject) {
+    return (jqXHR/* , textStatus, errorThrown */) => {
+        delete jqXHR.then;
+        reject(jqXHR);
+    };
+}
+
+function getUrl(baseUrl, url) {
+    // If we are dealing with an absolute url use that instead
+    if (new RegExp('^(:?https?:)?//').test(url)) {
+        return url;
+    }
+
+    const urlParts = [];
+
+    if (baseUrl) {
+        urlParts.push(baseUrl);
+    }
+    urlParts.push(url);
+
+    return urlParts.join('/')
+        .replace(new RegExp('(.(?:[^:]))\/\/+', 'g'), '$1/')
+        .replace(new RegExp('\/$'), '');
+}
 
 class Api {
     constructor(jquery) {
@@ -12,7 +41,7 @@ class Api {
             data: {},
             contentType: 'application/json',
             type: undefined,
-            url: undefined
+            url: undefined,
         };
     }
 
@@ -28,7 +57,7 @@ class Api {
         return this.request('DELETE', getUrl(this.baseUrl, url));
     }
 
-    //TODO: write tests for update
+    // TODO: write tests for update
     update(url, data) {
         return this.request('PUT', url, JSON.stringify(data));
     }
@@ -36,34 +65,35 @@ class Api {
     request(type, url, data, options = {}) {
         checkType(type, 'string', 'Request type');
         checkType(url, 'string', 'Url');
+        let requestUrl = url;
 
         if (data && data.filter) {
-            let theRealFilter = data.filter.reduce((current, filter) => current + '&filter=' + filter, '');
+            const urlQueryParams = data.filter.reduce((current, filter) => current + '&filter=' + filter, '');
             delete data.filter;
-            url += '?' + theRealFilter;
+            requestUrl += '?' + urlQueryParams;
         }
 
-        var api = this;
+        const api = this;
+
+        function getOptions(mergeOptions) {
+            const resultOptions = {};
+
+            copyOwnProperties(resultOptions, api.defaultRequestSettings);
+            copyOwnProperties(resultOptions, mergeOptions);
+
+            return resultOptions;
+        }
 
         return new Promise((resolve, reject) => {
             api.jquery
                 .ajax(getOptions({
                     type: type,
-                    url: url,
+                    url: requestUrl,
                     data: data || {},
-                    dataType: options.dataType || 'json'
+                    dataType: options.dataType || 'json',
                 }))
                 .then(processSuccess(resolve), processFailure(reject));
         });
-
-        function getOptions(mergeOptions) {
-            var options = {};
-
-            copyOwnProperties(options, api.defaultRequestSettings);
-            copyOwnProperties(options, mergeOptions);
-
-            return options;
-        }
     }
 
     setBaseUrl(baseUrl) {
@@ -75,7 +105,6 @@ class Api {
     }
 }
 
-Api.getApi = getApi;
 function getApi() {
     if (getApi.api) {
         return getApi.api;
@@ -83,35 +112,6 @@ function getApi() {
     return (getApi.api = new Api(jQuery));
 }
 
-function processSuccess(resolve) {
-    return (data/*, textStatus, jqXHR*/) => {
-        resolve(data);
-    };
-}
-
-function processFailure(reject) {
-    return (jqXHR/*, textStatus, errorThrown*/) => {
-        delete jqXHR.then;
-        reject(jqXHR);
-    };
-}
-
-function getUrl(baseUrl, url) {
-    //If we are dealing with an absolute url use that instead
-    if (new RegExp('^(:?https?:)?//').test(url)) {
-        return url;
-    }
-
-    var urlParts = [];
-
-    if (baseUrl) {
-        urlParts.push(baseUrl);
-    }
-    urlParts.push(url);
-
-    return urlParts.join('/')
-        .replace(new RegExp('(.(?:[^:]))\/\/+', 'g'), '$1/')
-        .replace(new RegExp('\/$'), '');
-}
+Api.getApi = getApi;
 
 export default Api;

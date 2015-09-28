@@ -1,5 +1,3 @@
-'use strict';
-
 import {checkType} from 'd2/lib/check';
 
 /**
@@ -17,7 +15,7 @@ import {checkType} from 'd2/lib/check';
  * ```
  */
 class ModelDefinitions {
-    //TODO: Elaborate this documentation
+    // TODO: Elaborate this documentation
     /**
      * @method add
      * @param {ModelDefinition} modelDefinition Add a model definition to the definitions collection
@@ -65,8 +63,8 @@ class ModelDefinitions {
      *
      */
     mapThroughDefinitions(transformer) {
+        const result = [];
         let modelDefinition;
-        let result = [];
 
         checkType(transformer, 'function', 'transformer');
 

@@ -4,6 +4,28 @@ import Model from 'd2/model/Model';
 import ModelDefinition from 'd2/model/ModelDefinition';
 import Pager from 'd2/pager/Pager';
 
+function throwIfContainsOtherThanModelObjects(values) {
+    if (values && values[Symbol.iterator]) {
+        const toCheck = [...values];
+        toCheck.forEach((value) => {
+            if (!(value instanceof Model)) {
+                throwError('Values of a ModelCollection must be instances of Model');
+            }
+        });
+    }
+}
+
+function throwIfContainsModelWithoutUid(values) {
+    if (values && values[Symbol.iterator]) {
+        const toCheck = [...values];
+        toCheck.forEach((value) => {
+            if (!isValidUid(value.id)) {
+                throwError('Can not add a Model without id to a ModelCollection');
+            }
+        });
+    }
+}
+
 /**
  * @class ModelCollection
  *
@@ -41,14 +63,14 @@ class ModelCollection {
          */
         this.pager = new Pager(pagerData, modelDefinition);
 
-        //We can not extend the Map object right away in v8 contexts.
+        // We can not extend the Map object right away in v8 contexts.
         this.valuesContainerMap = new Map();
         this[Symbol.iterator] = this.valuesContainerMap[Symbol.iterator].bind(this.valuesContainerMap);
 
         throwIfContainsOtherThanModelObjects(values);
         throwIfContainsModelWithoutUid(values);
 
-        //Add the values separately as not all Iterators return the same values
+        // Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
             values.forEach((value) => this.add(value));
         }
@@ -97,7 +119,7 @@ class ModelCollection {
      * of the collection as an Array object.
      */
     toArray() {
-        var resultArray = [];
+        const resultArray = [];
 
         this.forEach((model) => {
             resultArray.push(model);
@@ -118,7 +140,7 @@ class ModelCollection {
      * @description
      * Clear the collection and remove all it's values.
      */
-    //TODO: Reset the pager?
+    // TODO: Reset the pager?
     clear() {
         return this.valuesContainerMap.clear.apply(this.valuesContainerMap);
     }
@@ -131,7 +153,7 @@ class ModelCollection {
         return this.valuesContainerMap.entries.apply(this.valuesContainerMap);
     }
 
-    //FIXME: This calls the forEach function with the values Map and not with the ModelCollection as the third argument
+    // FIXME: This calls the forEach function with the values Map and not with the ModelCollection as the third argument
     forEach(...args) {
         return this.valuesContainerMap.forEach.apply(this.valuesContainerMap, args);
     }
@@ -154,28 +176,6 @@ class ModelCollection {
 
     values() {
         return this.valuesContainerMap.values.apply(this.valuesContainerMap);
-    }
-}
-
-function throwIfContainsOtherThanModelObjects(values) {
-    if (values && values[Symbol.iterator]) {
-        let toCheck = [...values];
-        toCheck.forEach((value) => {
-            if (!(value instanceof Model)) {
-                throwError('Values of a ModelCollection must be instances of Model');
-            }
-        });
-    }
-}
-
-function throwIfContainsModelWithoutUid(values) {
-    if (values && values[Symbol.iterator]) {
-        let toCheck = [...values];
-        toCheck.forEach((value) => {
-            if (!isValidUid(value.id)) {
-                throwError('Can not add a Model without id to a ModelCollection');
-            }
-        });
     }
 }
 

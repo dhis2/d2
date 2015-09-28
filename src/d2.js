@@ -1,5 +1,4 @@
 import {pick, Deferred} from 'd2/lib/utils';
-import {checkType, isString} from 'd2/lib/check';
 import Logger from 'd2/logger/Logger';
 import model from 'd2/model/models';
 import Api from 'd2/api/Api';
@@ -54,13 +53,13 @@ export function init(initConfig) {
 
     deferredD2Init = Deferred.create();
     return Promise.all([
-            api.get('schemas'),
-            api.get('attributes', {fields: ':all,optionSet[:all]', paging: false})
-        ])
+        api.get('schemas'),
+        api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
+    ])
         .then(responses => {
             return {
                 schemas: pick('schemas')(responses[0]),
-                attributes: pick('attributes')(responses[1])
+                attributes: pick('attributes')(responses[1]),
             };
         })
         .then((responses) => {

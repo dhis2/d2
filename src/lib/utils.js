@@ -1,13 +1,11 @@
-'use strict';
-
 export function throwError(message) {
     throw new Error(message);
 }
 
 export function curry(toCurry, parameter) {
     if (typeof toCurry === 'function') {
-        return function () {
-            var args = Array.prototype.slice.call(arguments, 0);
+        return function curried() {
+            const args = Array.prototype.slice.call(arguments, 0);
 
             return toCurry.apply(this, [parameter].concat(args));
         };
@@ -15,17 +13,17 @@ export function curry(toCurry, parameter) {
 }
 
 export function addLockedProperty(object, name, value) {
-    var propertyDescriptor = {
+    const propertyDescriptor = {
         enumerable: true,
         configurable: false,
         writable: false,
-        value: value
+        value: value,
     };
     Object.defineProperty(object, name, propertyDescriptor);
 }
 
 export function copyOwnProperties(to, from) {
-    var key;
+    let key;
 
     for (key in from) {
         if (from.hasOwnProperty(key)) {
@@ -37,7 +35,7 @@ export function copyOwnProperties(to, from) {
 }
 
 export function pick(property) {
-    return function (item) {
+    return item => {
         if (item) {
             return item[property];
         }

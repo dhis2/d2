@@ -6,6 +6,82 @@ import schemaTypes from 'd2/lib/SchemaTypes';
 import Filters from 'd2/model/Filters';
 import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
 
+function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
+    const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
+    const propertyDetails = {
+        // Actual property descriptor properties
+        configurable: false,
+        enumerable: true,
+        get() {
+            return this.dataValues[propertyName];
+        },
+    };
+
+    // Only add a setter for writable properties
+    if (schemaProperty.writable) {
+        propertyDetails.set = function dynamicPropertySetter(value) {
+            // TODO: Objects and Arrays are considered unequal when their data is the same and therefore trigger a dirty
+            if ((!isObject(value) && (value !== this.dataValues[propertyName])) || isObject(value)) {
+                this.dirty = true;
+                this[DIRTY_PROPERTY_LIST].add(propertyName);
+                this.dataValues[propertyName] = value;
+            }
+        };
+    }
+
+    if (propertyName) {
+        propertiesObject[propertyName] = propertyDetails;
+    }
+}
+
+function createPropertiesObject(schemaProperties) {
+    const propertiesObject = {};
+    const createModelPropertyDescriptorOn = curry(createModelPropertyDescriptor, propertiesObject);
+
+    (schemaProperties || []).forEach(createModelPropertyDescriptorOn);
+
+    return propertiesObject;
+}
+
+function createValidationSetting(validationObject, schemaProperty) {
+    const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
+    const validationDetails = {
+        persisted: schemaProperty.persisted,
+        type: schemaTypes.typeLookup(schemaProperty.propertyType),
+        required: schemaProperty.required,
+        min: schemaProperty.min,
+        max: schemaProperty.max,
+        owner: schemaProperty.owner,
+        unique: schemaProperty.unique,
+        writable: schemaProperty.writable,
+        constants: schemaProperty.constants,
+    };
+
+    function getReferenceTypeFrom(property) {
+        if (property.href) {
+            return property.href.split('/').pop();
+        }
+    }
+
+    // Add a referenceType to be able to get a hold of the reference objects model.
+    if (validationDetails.type === 'REFERENCE' || (validationDetails.type === 'COLLECTION' && schemaProperty.itemPropertyType === 'REFERENCE')) {
+        validationDetails.referenceType = getReferenceTypeFrom(schemaProperty);
+    }
+
+    if (propertyName) {
+        validationObject[propertyName] = validationDetails;
+    }
+}
+
+function createValidations(schemaProperties) {
+    const validationsObject = {};
+    const createModelPropertyOn = curry(createValidationSetting, validationsObject);
+
+    (schemaProperties || []).forEach(createModelPropertyOn);
+
+    return validationsObject;
+}
+
 /**
  * @class ModelDefinition
  *
@@ -52,10 +128,10 @@ class ModelDefinition {
      * ```
      */
     create(data) {
-        let model = Model.create(this);
+        const model = Model.create(this);
 
         if (data) {
-            //Set the datavalues onto the model directly
+            // Set the datavalues onto the model directly
             Object.keys(model).forEach((key) => {
                 model.dataValues[key] = data[key];
             });
@@ -65,9 +141,9 @@ class ModelDefinition {
     }
 
     clone() {
-        let ModelDefinitionPrototype = Object.getPrototypeOf(this);
+        const ModelDefinitionPrototype = Object.getPrototypeOf(this);
+        const priorFilters = this.filters.filters;
         let clonedDefinition = Object.create(ModelDefinitionPrototype);
-        let priorFilters = this.filters.filters;
 
         clonedDefinition = copyOwnProperties(clonedDefinition, this);
         clonedDefinition.filters = Filters.getFilters(clonedDefinition);
@@ -97,7 +173,7 @@ class ModelDefinition {
     get(identifier, queryParams = {fields: ':all'}) {
         checkDefined(identifier, 'Identifier');
 
-        //TODO: should throw error if API has not been defined
+        // TODO: should throw error if API has not been defined
         return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
             .then((data) => this.create(data))
             .catch((response) => {
@@ -123,17 +199,17 @@ class ModelDefinition {
      * ```
      */
     list(queryParams = {fields: ':all'}) {
-        let definedFilters = this.filters.getFilters();
+        const definedFilters = this.filters.getFilters();
         if (!isDefined(queryParams.filter) && definedFilters.length) {
             queryParams.filter = definedFilters;
         }
 
         return this.api.get(this.apiEndpoint, queryParams)
-            .then((data) => {
+            .then((responseData) => {
                 return ModelCollection.create(
                     this,
-                    data[this.plural].map((data) => this.create(data)),
-                    data.pager
+                    responseData[this.plural].map((data) => this.create(data)),
+                    responseData.pager
                 );
             });
     }
@@ -151,20 +227,19 @@ class ModelDefinition {
      *
      * @note {warning} This should generally not be called directly.
      */
-    //TODO: check the return status of the save to see if it was actually successful and not ignored
+    // TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
-        let isAnUpdate = model => !!model.id;
+        const isAnUpdate = modelToCheck => !!modelToCheck.id;
         if (isAnUpdate(model)) {
             return this.api.update(model.dataValues.href, this.getOwnedPropertyJSON(model));
-        } else {
-            //Its a new object
-            return this.api.post(this.apiEndpoint, this.getOwnedPropertyJSON(model));
         }
+        // Its a new object
+        return this.api.post(this.apiEndpoint, this.getOwnedPropertyJSON(model));
     }
 
     getOwnedPropertyJSON(model) {
-        let objectToSave = {};
-        let ownedProperties = this.getOwnedPropertyNames();
+        const objectToSave = {};
+        const ownedProperties = this.getOwnedPropertyNames();
 
         Object.keys(this.modelValidations).forEach((propertyName) => {
             if (ownedProperties.indexOf(propertyName) >= 0) {
@@ -232,7 +307,7 @@ class ModelDefinition {
      * @note {info} An example of a schema definition can be found on
      * https://apps.dhis2.org/demo/api/schemas/dataElement
      */
-    static createFromSchema(schema, attributes=[]) {
+    static createFromSchema(schema, attributes = []) {
         let ModelDefinitionClass;
         checkType(schema, Object, 'Schema');
 
@@ -264,83 +339,7 @@ class UserModelDefinition extends ModelDefinition {
 }
 
 ModelDefinition.specialClasses = {
-    user: UserModelDefinition
+    user: UserModelDefinition,
 };
-
-function createPropertiesObject(schemaProperties) {
-    var propertiesObject = {};
-    var createModelPropertyDescriptorOn = curry(createModelPropertyDescriptor, propertiesObject);
-
-    (schemaProperties || []).forEach(createModelPropertyDescriptorOn);
-
-    return propertiesObject;
-}
-
-function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
-    var propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
-    var propertyDetails = {
-        //Actual property descriptor properties
-        configurable: false,
-        enumerable: true,
-        get: function () {
-            return this.dataValues[propertyName];
-        }
-    };
-
-    //Only add a setter for writable properties
-    if (schemaProperty.writable) {
-        propertyDetails.set = function (value) {
-            //TODO: Objects and Arrays are considered unequal when their data is the same and therefore trigger a dirty
-            if ((!isObject(value) && (value !== this.dataValues[propertyName])) || isObject(value)) {
-                this.dirty = true;
-                this[DIRTY_PROPERTY_LIST].add(propertyName);
-                this.dataValues[propertyName] = value;
-            }
-        };
-    }
-
-    if (propertyName) {
-        propertiesObject[propertyName] = propertyDetails;
-    }
-}
-
-function createValidations(schemaProperties) {
-    var validationsObject = {};
-    var createModelPropertyOn = curry(createValidationSetting, validationsObject);
-
-    (schemaProperties || []).forEach(createModelPropertyOn);
-
-    return validationsObject;
-}
-
-function createValidationSetting(validationObject, schemaProperty) {
-    var propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
-    var validationDetails = {
-        persisted: schemaProperty.persisted,
-        type: schemaTypes.typeLookup(schemaProperty.propertyType),
-        required: schemaProperty.required,
-        min: schemaProperty.min,
-        max: schemaProperty.max,
-        owner: schemaProperty.owner,
-        unique: schemaProperty.unique,
-        writable: schemaProperty.writable,
-        constants: schemaProperty.constants
-    };
-
-    //Add a referenceType to be able to get a hold of the reference objects model.
-    if (validationDetails.type === 'REFERENCE' || (validationDetails.type === 'COLLECTION' && schemaProperty.itemPropertyType === 'REFERENCE')) {
-        validationDetails.referenceType = getReferenceTypeFrom(schemaProperty);
-    }
-
-    if (propertyName) {
-        validationObject[propertyName] = validationDetails;
-    }
-
-    function getReferenceTypeFrom(schemaProperty) {
-        if (schemaProperty.href) {
-            return schemaProperty.href.split('/').pop();
-        }
-    }
-}
 
 export default ModelDefinition;
