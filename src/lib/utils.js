@@ -44,3 +44,16 @@ export function pick(property) {
         return undefined;
     };
 }
+
+export class Deferred {
+    constructor() {
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
+
+    static create() {
+        return new Deferred();
+    }
+}

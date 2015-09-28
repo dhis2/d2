@@ -27,7 +27,7 @@ describe('D2', function () {
             ]
         );
 
-        d2({baseUrl: '/dhis/api'})
+        d2.init({baseUrl: '/dhis/api'})
             .then(function (initialisedD2) {
                 window.d2 = initialisedD2;
                 done();

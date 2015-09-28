@@ -1,4 +1,4 @@
-import d2Init from 'd2';
+import {init, getInstance} from 'd2';
 
 describe('D2.system', function () {
     let server;
@@ -27,7 +27,8 @@ describe('D2.system', function () {
             ]
         );
 
-        d2Init({baseUrl: '/dhis/api'})
+        init({baseUrl: '/dhis/api'});
+        getInstance()
             .then(function (initialisedD2) {
                 d2 = initialisedD2;
                 done();

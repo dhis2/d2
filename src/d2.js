@@ -1,41 +1,47 @@
-'use strict';
-
-import {pick} from 'd2/lib/utils';
+import {pick, Deferred} from 'd2/lib/utils';
 import {checkType, isString} from 'd2/lib/check';
 import Logger from 'd2/logger/Logger';
 import model from 'd2/model/models';
 import Api from 'd2/api/Api';
 import System from 'd2/system/System';
 import I18n from 'd2/i18n/I18n';
+import Config from 'd2/config';
+
+let deferredD2Init;
+
+const preInitConfig = Config.create();
 
 /**
- * @function d2Init
+ * @function init
  *
- * @param {Object} config Configuration object that will be used to configure to define D2 Setting.
+ * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.
  * See the description for more information on the available settings.
  * @returns {Promise} A promise that resolves with the intialized d2 object. Which is an object that exposes `model`, `models` and `Api`
  *
  * @description
  * Init function that used to initialise D2. This will load the schemas from the DHIS2 api and configure your D2 instance.
  *
- * The `options` object that can be passed into D2 can have the following properties:
+ * The `config` object that can be passed into D2 can have the following properties:
  *
  * baseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain
  * for example http://localhost/dhis/ you should set the base url to `/dhis/api`
  *
  * ```js
- * import d2Init from 'd2';
+ * import init from 'd2';
  *
- * d2Init({baseUrl: '/dhis/api'})
+ * init({baseUrl: '/dhis/api'})
  *   .then((d2) => {
  *     console.log(d2.model.dataElement.list());
  *   });
  * ```
  */
-function d2Init(config) {
-    var logger = Logger.getLogger();
+export function init(initConfig) {
+    const api = Api.getApi();
+    const logger = Logger.getLogger();
 
-    var d2 = {
+    const config = Config.create(preInitConfig, initConfig);
+
+    const d2 = {
         models: undefined,
         model: model,
         Api: Api,
@@ -43,17 +49,14 @@ function d2Init(config) {
         i18n: I18n.getI18n(),
     };
 
-    var api = Api.getApi();
+    // Process the config in a the config class to keep all config calls together.
+    Config.processConfigForD2(config, d2);
 
-    if (config && checkType(config, 'object', 'Config parameter')) {
-        processConfig(api, config);
-    }
-
-    model.ModelDefinition.prototype.api = api;
-
-    d2.models = new model.ModelDefinitions();
-
-    return Promise.all([api.get('schemas'), api.get('attributes', {fields: ':all,optionSet[:all]', paging: false})])
+    deferredD2Init = Deferred.create();
+    return Promise.all([
+            api.get('schemas'),
+            api.get('attributes', {fields: ':all,optionSet[:all]', paging: false})
+        ])
         .then(responses => {
             return {
                 schemas: pick('schemas')(responses[0]),
@@ -62,7 +65,8 @@ function d2Init(config) {
         })
         .then((responses) => {
             responses.schemas.forEach((schema) => {
-                // Grab the attributes that are attached to this particular schema
+                // Attributes that do not have values do not by default get returned with the data.
+                // Therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
                 const schemaAttributes = responses.attributes
                     .filter(attributeDescriptor => {
                         const attributeNameFilter = [schema.name, 'Attribute'].join('');
@@ -72,7 +76,8 @@ function d2Init(config) {
                 d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
             });
 
-            return d2;
+            deferredD2Init.resolve(d2);
+            return deferredD2Init.promise;
         })
         .catch((error) => {
             logger.error('Unable to get schemas from the api', error);
@@ -81,16 +86,57 @@ function d2Init(config) {
         });
 }
 
-function processConfig(api, config) {
-    if (isString(config.baseUrl)) {
-        api.setBaseUrl(config.baseUrl);
-    } else {
-        api.setBaseUrl('/api');
-    }
+/**
+ * @function getInstance
+ *
+ * @returns {Promise} A promise to an initialized d2 instance.
+ *
+ * @description
+ * This function can be used to retrieve the `singleton` instance of d2. The instance is being created by calling
+ * the `init` method.
+ *
+ * ```js
+ * import {init, getInstance} from 'd2';
+ *
+ * init({baseUrl: '/dhis2/api/'});
+ * getInstance()
+ *   .then(d2 => {
+ *      d2.models.dataElement.list();
+ *      // and all your other d2 magic.
+ *   });
+ */
+export function getInstance() {
+    return deferredD2Init.promise;
 }
 
-if (typeof window !== 'undefined') {
-    window.d2 = d2Init;
-}
+// Alias preInitConfig to be able to `import {config} from 'd2';`
+/**
+ * @property config
+ *
+ * @description
+ * Can be used to set config options before initialisation of d2.
+ *
+ * ```js
+ * import {config, init} from 'd2';
+ *
+ * config.baseUrl = '/demo/api';
+ * config.i18n.sources.add('i18n/systemsettingstranslations.properties');
+ *
+ * init()
+ *   .then(d2 => {
+ *     d2.system.settings.all())
+ *       .then(systemSettings => Object.keys())
+ *       .then(systemSettingsKey => {
+ *         d2.i18n.getTranslation(systemSettingsKey);
+ *       });
+ *   });
+ *
+ * ```
+ */
+export const config = preInitConfig;
 
-export default d2Init;
+export default {
+    init: init,
+    config: config,
+    getInstance: getInstance,
+};
