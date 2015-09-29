@@ -39,7 +39,8 @@ describe('D2.models', function () {
             .then(function (initialisedD2) {
                 d2 = initialisedD2;
                 done();
-            });
+            })
+            .catch(done);
 
         server.respond();
     });
@@ -237,7 +238,8 @@ describe('D2.models', function () {
                     .then(function (model) {
                         loadedModel = model;
                         done();
-                    });
+                    })
+                    .catch(done);
 
                 server.respond();
             });
@@ -256,7 +258,8 @@ describe('D2.models', function () {
                 loadedModel.save()
                     .then(function () {
                         done();
-                    });
+                    })
+                    .catch(done);
 
                 //Respond to validation against schema
                 server.respond();

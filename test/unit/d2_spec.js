@@ -34,7 +34,7 @@ describe('D2', () => {
             schemas: [
                 fixtures.get('/api/schemas/dataElement'),
                 fixtures.get('/api/schemas/dataElement'),
-                fixtures.get('/api/schemas/dataElement')
+                fixtures.get('/api/schemas/dataElement'),
             ]
         };
 
@@ -79,6 +79,8 @@ describe('D2', () => {
         I18n = require('d2/i18n/I18n');
         i18nStub = {
             addSource: stub(),
+            addStrings: stub(),
+            load: stub().returns(Promise.resolve()),
         };
         I18n.getI18n = stub().returns(i18nStub);
 
@@ -91,6 +93,18 @@ describe('D2', () => {
 
     it('should have a getInstance function', () => {
         expect(d2.getInstance).to.be.a('function');
+    });
+
+    describe('init', () => {
+        it('should call load on i18n instance', (done) => {
+            d2.init();
+            d2.getInstance()
+                .then(() => {
+                    expect(i18nStub.load).to.be.calledOnce;
+                    done();
+                })
+                .catch(done);
+        });
     });
 
     describe('config', () => {
@@ -134,6 +148,21 @@ describe('D2', () => {
                     done(e);
                 });
 
+        });
+
+        it('should call addStrings for the pre-init added strings', (done) => {
+            d2.config.i18n.strings.add('name');
+            d2.config.i18n.strings.add('yes');
+
+            d2.init();
+            d2.getInstance()
+                .then((d2) => {
+                    expect(i18nStub.addStrings).to.be.calledWith(['name', 'yes']);
+                    done();
+                })
+                .catch((e) => {
+                    done(e);
+                });
         });
     });
 

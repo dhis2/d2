@@ -64,6 +64,7 @@ export function init(initConfig) {
     return Promise.all([
         api.get('schemas'),
         api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
+        d2.i18n.load(),
     ])
         .then(responses => {
             return {

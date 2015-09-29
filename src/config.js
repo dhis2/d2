@@ -28,5 +28,9 @@ export default class Config {
             Array.from(config.i18n.sources)
                 .forEach(source => d2.i18n.addSource(source));
         }
+
+        if (config.i18n && config.i18n.strings) {
+            d2.i18n.addStrings(Array.from(config.i18n.strings));
+        }
     }
 }
