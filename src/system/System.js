@@ -55,6 +55,13 @@ class System {
             if (val.hasOwnProperty('description')) {
                 strings.add(val.description);
             }
+            if (val.hasOwnProperty('options')) {
+                for (const opt in val.options) {
+                    if (val.options.hasOwnProperty(opt)) {
+                        strings.add(val.options[opt]);
+                    }
+                }
+            }
         });
         return strings;
     }
