@@ -59,7 +59,7 @@ class I18n {
                     });
                 }
                 return props;
-            }, i18n.translations);
+            }, {});
         }
 
         const propFiles = [];
@@ -68,11 +68,7 @@ class I18n {
             propFiles.push(
                 i18n.api.request('GET', source, undefined, {dataType: 'text'}).then(
                     (data) => {
-                        const props = parseProperties(data);
-                        Object.keys(props).forEach(str => {
-                            this.strings.delete(str);
-                        });
-                        return Promise.resolve(props);
+                        return Promise.resolve(parseProperties(data));
                     },
                     () => {
                         // Resolve errors to an empty object, so that one missing file doesn't prevent
@@ -83,7 +79,16 @@ class I18n {
             );
         });
 
-        return Promise.all(propFiles).then(() => {
+        return Promise.all(propFiles).then((propFile) => {
+            propFile.forEach(props => {
+                Object.keys(props).forEach(str => {
+                    if (!i18n.translations.hasOwnProperty(str)) {
+                        i18n.translations[str] = props[str];
+                    }
+                    this.strings.delete(str);
+                });
+            });
+
             if (this.strings.size > 0) {
                 return i18n.api.post('i18n', Array.from(i18n.strings)).then((res) => {
                     Object.keys(res).forEach(str => {

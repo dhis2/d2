@@ -3,17 +3,22 @@ describe('Internationalisation (I18n)', () => {
     const Api = require('d2/api/Api');
     const I18n = require('d2/i18n/I18n');
     let i18n;
-    let stub;
-    
+
     const mockTranslations = {
         'general_settings': 'General settings',
         'yes': 'Yup',
         'no': 'Nope',
         'system_settings_in_french': 'Paramètres du système',
+        // 'escapes': 'Characters may be escaped! Even\nnewlines...?',
     };
 
-    const mockUnicode = "Param\\u00e8tres du syst\\u00e8me";
-    const mockPropsFile = "general_settings=General settings\nyes=Yup\nno=Nope\nsystem_settings_in_french=Param\\u00e8tres du syst\\u00e8me\n";
+    const mockUnicode = 'Param\\u00e8tres du syst\\u00e8me';
+    const mockEscape = 'Characters\\ may \\b\\e \\e\\s\\c\\a\\p\\e\\d\\!\\\\ Even\\\nnewline\\s\\?\\!\\?';
+    const mockPropsFile = 'general_settings=General settings\n' +
+        'yes=Yup\n' +
+        'no=Nope\n\n# Blank lines and commends - ignored?\n#\n\n' +
+        'system_settings_in_french=' + mockUnicode + '\n' +
+        'escapes=' + mockEscape + '\n';
 
     beforeEach(() => {
         i18n = new I18n();
@@ -130,7 +135,7 @@ describe('Internationalisation (I18n)', () => {
                     expect(apiReq.callCount).to.equal(0);
                     expect(i18n.getTranslation('yes')).to.eql(mockTranslations.yes);
                     done();
-                } catch(e) {
+                } catch (e) {
                     done(e);
                 }
             }, err => {
@@ -164,6 +169,28 @@ describe('Internationalisation (I18n)', () => {
                     expect(apiGet.callCount).to.equal(0);
                     expect(apiPost.callCount).to.equal(0);
                     expect(apiReq.callCount).to.equal(3);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            }, (err) => {
+                done(err);
+            });
+        });
+
+        it('chooses strings based on source order', (done) => {
+            i18n.addSource('slow_props_file');
+            i18n.addSource('fast_props_file');
+            apiReq.onCall(0).returns(new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve('result=first priority file\n');
+                });
+            }));
+            apiReq.onCall(1).returns(Promise.resolve('result=first file to load\n'));
+            apiReq.throws(new Error('Requested too many files'));
+            i18n.load().then(() => {
+                try {
+                    expect(i18n.getTranslation('result')).to.eql('first priority file');
                     done();
                 } catch (e) {
                     done(e);
@@ -221,6 +248,21 @@ describe('Internationalisation (I18n)', () => {
                         expect(apiReq.callCount).to.equal(1);
                         expect(i18n.getTranslation('system_settings_in_french')).to.eql(mockTranslations.system_settings_in_french);
                         expect(i18n.getTranslation('system_settings_in_french')).to.not.eql(mockUnicode);
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
+            });
+
+            xit('handles escaped characters properly', (done) => {
+                i18n.load().then(() => {
+                    try {
+                        expect(apiGet.callCount).to.equal(0);
+                        expect(apiPost.callCount).to.equal(0);
+                        expect(apiReq.callCount).to.equal(1);
+                        expect(i18n.getTranslation('escapes')).to.eql(mockTranslations.escapes);
+                        expect(i18n.getTranslation('escapes')).to.not.eql(mockEscape);
                         done();
                     } catch (e) {
                         done(e);
