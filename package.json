@@ -9,7 +9,7 @@
     "test": "gulp test && gulp e2e",
     "test-watch": "gulp watch",
     "prebuild": "gulp test && gulp e2e",
-    "build": "./node_modules/babel/bin/babel.js src --out-dir dist --source-maps && cp package.json ./dist/package.json && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
+    "build": "rm -rf dist/ && ./node_modules/babel/bin/babel.js src --out-dir dist --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "_postbuild": "gulp docs:build",
     "lint": "./node_modules/eslint/bin/eslint.js src"
   },
