@@ -93,7 +93,7 @@ function createValidations(schemaProperties) {
  * property is an instance of `Api`.
  */
 class ModelDefinition {
-    constructor(modelName, modelNamePlural, modelOptions, properties, validations, attributes) {
+    constructor(modelName, modelNamePlural, modelOptions, properties, validations, attributes, authorities) {
         checkType(modelName, 'string');
         checkType(modelNamePlural, 'string', 'Plural');
 
@@ -104,6 +104,7 @@ class ModelDefinition {
         addLockedProperty(this, 'modelProperties', properties);
         addLockedProperty(this, 'modelValidations', validations);
         addLockedProperty(this, 'attributeProperties', attributes);
+        addLockedProperty(this, 'authorities', authorities);
 
         this.filters = Filters.getFilters(this);
     }
@@ -331,7 +332,8 @@ class ModelDefinition {
                 .reduce((current, attributeDefinition) => {
                     current[attributeDefinition.name] = attributeDefinition;
                     return current;
-                }, {})
+                }, {}),
+            schema.authorities
         ));
     }
 }

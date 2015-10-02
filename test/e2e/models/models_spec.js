@@ -40,7 +40,7 @@ describe('D2.models', function () {
             [
                 200,
                 {'Content-Type': 'application/json'},
-                JSON.stringify({attributes: []})
+                JSON.stringify([])
             ]
         );
 
@@ -50,7 +50,7 @@ describe('D2.models', function () {
             [
                 200,
                 {'Content-Type': 'application/json'},
-                JSON.stringify({attributes: []})
+                JSON.stringify({})
             ]
         );
 

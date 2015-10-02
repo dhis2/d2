@@ -329,4 +329,16 @@ describe('D2', () => {
                 });
         });
     });
+
+    describe('currentUser', () => {
+        it('should be available on the d2 object', (done) => {
+            d2.init();
+            d2.getInstance()
+                .then(d2 => {
+                    expect(d2.currentUser).to.not.be.undefined;
+                    done();
+                })
+                .catch(done);
+        });
+    });
 });

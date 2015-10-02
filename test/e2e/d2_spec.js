@@ -33,7 +33,7 @@ describe('D2', function () {
             [
                 200,
                 {'Content-Type': 'application/json'},
-                JSON.stringify({attributes: []})
+                JSON.stringify([])
             ]
         );
 
@@ -43,7 +43,7 @@ describe('D2', function () {
             [
                 200,
                 {'Content-Type': 'application/json'},
-                JSON.stringify({attributes: []})
+                JSON.stringify({})
             ]
         );
 

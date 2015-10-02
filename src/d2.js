@@ -5,6 +5,7 @@ import Api from 'd2/api/Api';
 import System from 'd2/system/System';
 import I18n from 'd2/i18n/I18n';
 import Config from 'd2/config';
+import CurrentUser from 'd2/current-user/CurrentUser';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -72,6 +73,8 @@ export function init(initConfig) {
             return {
                 schemas: pick('schemas')(responses[0]),
                 attributes: pick('attributes')(responses[1]),
+                currentUser: responses[2],
+                authorities: responses[3],
             };
         })
         .then((responses) => {
@@ -86,6 +89,8 @@ export function init(initConfig) {
 
                 d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
             });
+
+            d2.currentUser = CurrentUser.create(responses.currentUser, responses.authorities, d2.models);
 
             deferredD2Init.resolve(d2);
             return deferredD2Init.promise;
