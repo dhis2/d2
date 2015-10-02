@@ -64,6 +64,8 @@ export function init(initConfig) {
     return Promise.all([
         api.get('schemas'),
         api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
+        api.get('me', {fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]'}),
+        api.get('me/authorization'),
         d2.i18n.load(),
     ])
         .then(responses => {

@@ -482,6 +482,32 @@ describe('ModelDefinition', () => {
                     done();
                 });
         });
+
+        describe('multiple', () => {
+            it('should return a ModelCollection object', (done) => {
+                const dataElementsResult = fixtures.get('/api/dataElements');
+                ModelDefinition.prototype.api.get = stub().returns(Promise.resolve(dataElementsResult));
+
+                dataElementModelDefinition.get(['id1', 'id2'])
+                    .then((dataElementCollection) => {
+                        expect(dataElementCollection).to.be.instanceof(ModelCollection);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should call the api with the in filter', (done) => {
+                const dataElementsResult = fixtures.get('/api/dataElements');
+                ModelDefinition.prototype.api.get = stub().returns(Promise.resolve(dataElementsResult));
+
+                dataElementModelDefinition.get(['id1', 'id2'])
+                    .then((dataElementCollection) => {
+                        expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {filter: ['id:in:[id1,id2]'], fields: ':all'});
+                        done();
+                    })
+                    .catch(done);
+            });
+        });
     });
 
     describe('list', () => {

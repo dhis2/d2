@@ -34,6 +34,26 @@ describe('D2.models', function () {
             ]
         );
 
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/me\/authorization$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({attributes: []})
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/me\?fields=%3Aall%2CorganisationUnits%5Bid%5D%2CuserGroups%5Bid%5D%2CuserCredentials%5B%3Aall%2C!user%2CuserRoles%5Bid%5D$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({attributes: []})
+            ]
+        );
+
         init({baseUrl: '/dhis/api'});
         getInstance()
             .then(function (initialisedD2) {

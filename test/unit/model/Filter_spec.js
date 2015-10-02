@@ -1,5 +1,3 @@
-'use strict';
-
 import Filters from 'd2/model/Filters';
 import Filter from 'd2/model/Filter';
 

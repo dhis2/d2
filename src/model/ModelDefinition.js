@@ -173,6 +173,10 @@ class ModelDefinition {
     get(identifier, queryParams = {fields: ':all'}) {
         checkDefined(identifier, 'Identifier');
 
+        if (Array.isArray(identifier)) {
+            return this.list({filter: [`id:in:[${identifier.join(',')}]`]});
+        }
+
         // TODO: should throw error if API has not been defined
         return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
             .then((data) => this.create(data))
@@ -185,7 +189,7 @@ class ModelDefinition {
      * @method list
      *
      * @param {Object} [queryParams={fields: ':all'}] Query parameters that should be passed to the GET query.
-     * @returns {ModelCollection} Collection of model objects of the `ModelDefinition` type.
+     * @returns {Promise} ModelCollection collection of models objects of the `ModelDefinition` type.
      *
      * @description
      * Loads a list of models.
@@ -198,13 +202,13 @@ class ModelDefinition {
      *   });
      * ```
      */
-    list(queryParams = {fields: ':all'}) {
+    list(queryParams = {}) {
         const definedFilters = this.filters.getFilters();
         if (!isDefined(queryParams.filter) && definedFilters.length) {
             queryParams.filter = definedFilters;
         }
 
-        return this.api.get(this.apiEndpoint, queryParams)
+        return this.api.get(this.apiEndpoint, Object.assign({fields: ':all'}, queryParams))
             .then((responseData) => {
                 return ModelCollection.create(
                     this,

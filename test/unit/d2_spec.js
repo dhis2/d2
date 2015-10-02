@@ -44,10 +44,14 @@ describe('D2', () => {
         };
 
         apiMock.get
-            .onFirstCall().returns(new Promise(resolve => resolve(schemasResponse)))
+            .onFirstCall().returns(Promise.resolve(schemasResponse))
             .onSecondCall().returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
-            .onThirdCall().returns(new Promise(resolve => resolve(schemasResponse)))
-            .onCall(3).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))));
+            .onThirdCall().returns(Promise.resolve({}))
+            .onCall(3).returns(Promise.resolve([]))
+            .onCall(4).returns(new Promise(resolve => resolve(schemasResponse)))
+            .onCall(5).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
+            .onCall(6).returns(Promise.resolve({}))
+            .onCall(7).returns(Promise.resolve([]));
 
         apiMockClass = {
             getApi: () => apiMock,
@@ -272,10 +276,10 @@ describe('D2', () => {
     it('should call the api for all startup calls', (done) => {
         d2.init({baseUrl: '/dhis/api'})
             .then(() => {
-                expect(apiMock.get).to.be.calledTwice;
+                expect(apiMock.get).to.be.callCount(4);
                 done();
-            });
-
+            })
+            .catch(done);
     });
 
     it('should query the api for all the attributes', (done) => {
