@@ -9,6 +9,14 @@ const propertiesToIgnore = new Set([
     'dataViewOrganisationUnits',
 ]);
 
+const authTypes = {
+    READ: ['READ'],
+    CREATE: ['CREATE', 'CREATE_PUBLIC', 'CREATE_PRIVATE'],
+    DELETE: ['DELETE'],
+    UPDATE: ['UPDATE'],
+    EXTERNALIZE: ['EXTERNALIZE'],
+};
+
 const propertySymbols = Array
     .from(propertiesToIgnore)
     .reduce((result, property) => {
@@ -69,6 +77,38 @@ export default class CurrentUser {
         const organisationUnitsIds = this[propertySymbols.dataViewOrganisationUnits];
 
         return this[models].organisationUnit.get({filter: [`id:in:[${organisationUnitsIds.join(',')}]`]});
+    }
+
+    checkAuthorityForType(authorityType, modelType) {
+        if (!modelType || !Array.isArray(modelType.authorities)) {
+            return false;
+        }
+
+        return modelType.authorities
+            .filter(authority => authorityType.some(authToHave => authToHave === authority.type))
+            .some(authority => this.authorities.has(authority));
+    }
+
+    canCreate(modelType) {
+        return this.checkAuthorityForType(authTypes.CREATE, modelType);
+    }
+
+    canDelete(modelType) {
+        return this.checkAuthorityForType(authTypes.DELETE, modelType);
+    }
+
+    canUpdate(modelType) {
+        if (this.checkAuthorityForType(authTypes.UPDATE, modelType)) {
+            return true;
+        }
+        return this.checkAuthorityForType(authTypes.CREATE, modelType);
+    }
+
+    get uiLocale() {
+        if (this.userSettings && this.userSettings.keyUiLocale) {
+            return this.userSettings.keyUiLocale;
+        }
+        return 'en';
     }
 
     static create(userData, authorities, modelDefinitions) {

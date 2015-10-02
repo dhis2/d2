@@ -67,6 +67,11 @@ export function init(initConfig) {
         api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
         api.get('me', {fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]'}),
         api.get('me/authorization'),
+        api.get('userSettings/keyUiLocale', {}, {dataType: 'text'})
+            // Set the default language to english when a 404 is returned
+            .catch(() => {
+                return 'en';
+            }),
         d2.i18n.load(),
     ])
         .then(responses => {
@@ -75,6 +80,7 @@ export function init(initConfig) {
                 attributes: pick('attributes')(responses[1]),
                 currentUser: responses[2],
                 authorities: responses[3],
+                uiLocale: responses[4],
             };
         })
         .then((responses) => {
@@ -91,6 +97,9 @@ export function init(initConfig) {
             });
 
             d2.currentUser = CurrentUser.create(responses.currentUser, responses.authorities, d2.models);
+            d2.currentUser.userSettings = {
+                keyUiLocale: responses.uiLocale,
+            };
 
             deferredD2Init.resolve(d2);
             return deferredD2Init.promise;

@@ -11,13 +11,30 @@ describe('CurrentUser', () => {
         modelDefinitions = {
             userGroup: {
                 get: stub().returns(Promise.resolve([])),
+                authorities: [{type: 'CREATE_PUBLIC', authorities: ['F_USERGROUP_PUBLIC_ADD']}]
             },
             userRole: {
                 get: stub().returns(Promise.resolve([])),
             },
             organisationUnit: {
                 get: stub().returns(Promise.resolve([])),
-            }
+                authorities: [
+                    {
+                        type: 'CREATE',
+                        authorities: [
+                            'F_ORGANISATIONUNIT_ADD',
+                        ],
+                    }, {
+                        type: 'DELETE',
+                        authorities: [
+                            'F_ORGANISATIONUNIT_DELETE',
+                        ],
+                    },
+                ],
+            },
+            organisationUnitLevel: {
+                authorities: [{type: 'UPDATE', authorities: ['F_ORGANISATIONUNITLEVEL_UPDATE']}]
+            },
         };
 
         userData = fixtures.get('me');
@@ -132,6 +149,70 @@ describe('CurrentUser', () => {
             currentUser.getDataViewOrganisationUnits();
 
             expect(modelDefinitions.organisationUnit.get).to.be.calledWith({filter: ['id:in:[]']});
+        });
+    });
+
+    describe('canCreate', () => {
+        it('should return false if the no model is passed', () => {
+            expect(currentUser.canCreate()).to.equal(false);
+        });
+
+        it('should return false for userRole', () => {
+            expect(currentUser.canCreate(modelDefinitions.userRole)).to.be.false;
+        });
+
+        it('should return true for organisationUnit', () => {
+            expect(currentUser.canCreate(modelDefinitions.organisationUnit)).to.be.true;
+        });
+
+        it('should return for userGroup', () => {
+            expect(currentUser.canCreate(modelDefinitions.userGroup)).to.be.true;
+        });
+    });
+
+    describe('canDelete', () => {
+        it('should return false if the no model is passed', () => {
+            expect(currentUser.canDelete()).to.equal(false);
+        });
+
+        it('should return false for userGroup', () => {
+            expect(currentUser.canDelete(modelDefinitions.userGroup)).to.be.false;
+        });
+
+        it('should return true for organisationUnit', () => {
+            expect(currentUser.canDelete(modelDefinitions.organisationUnit)).to.be.true;
+        });
+    });
+
+    describe('canUpdate', () => {
+        it('should return false if no model is passed', () => {
+            expect(currentUser.canUpdate()).to.equal(false);
+        });
+
+        it('should return false for userRole', () => {
+            expect(currentUser.canCreate(modelDefinitions.userRole)).to.be.false;
+        });
+
+        it('should return false for userGroup', () => {
+            expect(currentUser.canUpdate(modelDefinitions.userGroup)).to.be.true;
+        });
+
+        it('should return true for organisationUnitLevel', () => {
+            expect(currentUser.canUpdate(modelDefinitions.organisationUnitLevel)).to.be.true
+        });
+    });
+
+    describe('uiLocale', () => {
+        it('should return the default uiLocale for the user', () => {
+            expect(currentUser.uiLocale).to.equal('en');
+        });
+
+        it('should return the set ui locale from the userSettings', () => {
+            currentUser.userSettings = {
+                keyUiLocale: 'fr',
+            };
+
+            expect(currentUser.uiLocale).to.equal('fr');
         });
     });
 });

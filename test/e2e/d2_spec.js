@@ -47,6 +47,16 @@ describe('D2', function () {
             ]
         );
 
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/userSettings\/keyUiLocale$/,
+            [
+                200,
+                {'Content-Type': 'text/plain'},
+                'en'
+            ]
+        );
+
         d2.init({baseUrl: '/dhis/api'})
             .then(function (initialisedD2) {
                 window.d2 = initialisedD2;

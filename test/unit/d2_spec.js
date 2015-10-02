@@ -6,7 +6,7 @@ describe('D2', () => {
     let i18nStub;
     let I18n;
     let loggerMock = {
-        error: sinon.spy()
+        error: sinon.spy(),
     };
     let loggerMockObject = {
         getLogger: () => {
@@ -48,10 +48,13 @@ describe('D2', () => {
             .onSecondCall().returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
             .onThirdCall().returns(Promise.resolve({}))
             .onCall(3).returns(Promise.resolve([]))
-            .onCall(4).returns(new Promise(resolve => resolve(schemasResponse)))
-            .onCall(5).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
-            .onCall(6).returns(Promise.resolve({}))
-            .onCall(7).returns(Promise.resolve([]));
+            .onCall(4).returns(Promise.resolve('en'))
+            .onCall(5).returns(new Promise(resolve => resolve(schemasResponse)))
+            .onCall(6).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
+            .onCall(7).returns(Promise.resolve({}))
+            .onCall(8).returns(Promise.resolve([]))
+            .onCall(9).returns(Promise.resolve('en'));
+
 
         apiMockClass = {
             getApi: () => apiMock,
@@ -276,7 +279,7 @@ describe('D2', () => {
     it('should call the api for all startup calls', (done) => {
         d2.init({baseUrl: '/dhis/api'})
             .then(() => {
-                expect(apiMock.get).to.be.callCount(4);
+                expect(apiMock.get).to.be.callCount(5);
                 done();
             })
             .catch(done);
