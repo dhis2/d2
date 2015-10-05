@@ -12,6 +12,8 @@ const propertiesToIgnore = new Set([
 const authTypes = {
     READ: ['READ'],
     CREATE: ['CREATE', 'CREATE_PUBLIC', 'CREATE_PRIVATE'],
+    CREATE_PUBLIC: ['CREATE_PUBLIC'],
+    CREATE_PRIVATE: ['CREATE_PRIVATE'],
     DELETE: ['DELETE'],
     UPDATE: ['UPDATE'],
     EXTERNALIZE: ['EXTERNALIZE'],
@@ -85,12 +87,26 @@ export default class CurrentUser {
         }
 
         return modelType.authorities
+            // Filter the correct authority to check for from the model
             .filter(authority => authorityType.some(authToHave => authToHave === authority.type))
-            .some(authority => this.authorities.has(authority));
+            // Check the left over schema authority types
+            .some(schemaAuthority => {
+                // Check if one of the schema authorities are available in the users authorities
+                return schemaAuthority.authorities
+                    .some(authorityToCheckFor => this.authorities.has(authorityToCheckFor));
+            });
     }
 
     canCreate(modelType) {
         return this.checkAuthorityForType(authTypes.CREATE, modelType);
+    }
+
+    canCreatePublic(modelType) {
+        return this.checkAuthorityForType(authTypes.CREATE_PUBLIC, modelType);
+    }
+
+    canCreatePrivate(modelType) {
+        return this.checkAuthorityForType(authTypes.CREATE_PRIVATE, modelType);
     }
 
     canDelete(modelType) {

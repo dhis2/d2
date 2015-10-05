@@ -1,5 +1,9 @@
 import fixtures from '../fixtures/fixtures.js';
 
+function resetCachedResponse(d2) {
+    delete d2.getUserLocale.cachedResponse;
+}
+
 describe('D2', () => {
     let proxyquire = require('proxyquire').noCallThru();
     let apiMock;
@@ -23,7 +27,7 @@ describe('D2', () => {
     // jscs:enable
     let ModelDefinitionMock = {
         createFromSchema: sinon.stub().returns(new ModelDefinition()),
-        prototype: {}
+        prototype: {},
     };
     let d2;
 
@@ -35,12 +39,12 @@ describe('D2', () => {
                 fixtures.get('/api/schemas/dataElement'),
                 fixtures.get('/api/schemas/dataElement'),
                 fixtures.get('/api/schemas/dataElement'),
-            ]
+            ],
         };
 
         apiMock = {
             get: stub(),
-            setBaseUrl: spy()
+            setBaseUrl: spy(),
         };
 
         apiMock.get
@@ -56,26 +60,33 @@ describe('D2', () => {
             .onCall(9).returns(Promise.resolve('en'));
 
 
-        apiMockClass = {
-            getApi: () => apiMock,
-        };
+        apiMockClass = function () {
+            return apiMock;
+        }
+        apiMockClass.getApi = () => apiMock;
 
         // jscs:disable
-        let ModelDefinitionsMock = function ModelDefinitions() {
+        const ModelDefinitionsMock = function ModelDefinitions() {
             this.modelsMockList = true;
         };
         // jscs:enable
         ModelDefinitionsMock.prototype = {
-            add: function (schema) {
+            add(schema) {
                 this[schema.name] = schema;
-            }
+            },
         };
+
+        const jQueryMock = {
+            ajax: stub(),
+        };
+
         proxyquire('d2/d2', {
             'd2/model/models': {
                 ModelDefinitions: ModelDefinitionsMock,
-                ModelDefinition: ModelDefinitionMock
+                ModelDefinition: ModelDefinitionMock,
             },
             'd2/api/Api': apiMockClass,
+            'd2/external/jquery': jQueryMock,
             'd2/logger/Logger': loggerMockObject,
         });
 
@@ -92,6 +103,7 @@ describe('D2', () => {
         I18n.getI18n = stub().returns(i18nStub);
 
         d2 = require('d2/d2');
+        resetCachedResponse(d2);
     });
 
     it('should have an init function', () => {
@@ -271,7 +283,7 @@ describe('D2', () => {
 
     it('should return an object with the api object', () => {
         d2.init({baseUrl: '/dhis/api'})
-            .then(function (d2) {
+            .then(d2 => {
                 expect(d2.Api.getApi()).to.equal(apiMock);
             });
     });
@@ -299,7 +311,7 @@ describe('D2', () => {
     describe('creation of ModelDefinitions', () => {
         it('should add the model definitions object to the d2 object', (done) => {
             d2.init()
-                .then(function (d2) {
+                .then(d2 => {
                     expect(d2.models).to.not.be.undefined;
                     expect(d2.models.modelsMockList).to.equal(true);
                     done();
@@ -313,7 +325,6 @@ describe('D2', () => {
                     expect(ModelDefinitionMock.createFromSchema.callCount).to.equal(3);
                     done();
                 });
-
         });
 
         it('should call the ModelDefinition.createFromSchema with the schema', (done) => {
@@ -326,7 +337,7 @@ describe('D2', () => {
 
         it('should add the ModelDefinitions to the models list', (done) => {
             d2.init()
-                .then(function (d2) {
+                .then(d2 => {
                     expect(d2.models.dataElement).to.not.be.undefined;
                     done();
                 });
@@ -339,6 +350,111 @@ describe('D2', () => {
             d2.getInstance()
                 .then(d2 => {
                     expect(d2.currentUser).to.not.be.undefined;
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('getUserSettings', () => {
+        beforeEach(() => {
+            resetCachedResponse(d2);
+        });
+
+        it('should be a function', () => {
+            expect(d2.getUserSettings).to.be.a('function');
+        });
+
+        it('should return an object with the uiLocale', (done) => {
+            apiMock.get.onFirstCall().returns(Promise.resolve('fr'));
+
+            d2.getUserSettings()
+                .then(settings => {
+                    expect(settings.uiLocale).to.equal('fr');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should call the api for keyUiLocale', () => {
+            d2.getUserSettings();
+
+            expect(apiMock.get).to.be.called;
+        });
+
+        it('should set the default locale if the call fails', (done) => {
+            apiMock.get.onFirstCall().returns(Promise.reject({message: 'Not found'}));
+
+            d2.getUserSettings()
+                .then(settings => {
+                    expect(settings.uiLocale).to.equal('en');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should preset the baseUrl from the config', (done) => {
+            d2.config.baseUrl = '/dhis/api';
+
+            d2.getUserSettings()
+                .then(d2 => {
+                    expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('getManifest', () => {
+        it('should be a function', () => {
+            expect(d2.getManifest).to.be.a('function');
+        });
+
+        it('should return a promise', () => {
+            expect(d2.getManifest()).to.be.instanceof(Promise);
+        });
+
+        it('should request the manifest.webapp', (done) => {
+            apiMock.get.onFirstCall().returns(Promise.resolve({}));
+
+            d2.getManifest('manifest.webapp')
+                .then(() => {
+                    expect(apiMock.get).to.be.calledWith('manifest.webapp');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should return the manifest.webapp object', (done) => {
+            const expectedManifest = {
+                name: 'MyApp',
+            };
+
+            apiMock.get.onFirstCall().returns(Promise.resolve(expectedManifest));
+
+            d2.getManifest('manifest.webapp')
+                .then((manifest) => {
+                    expect(manifest.name).to.equal(expectedManifest.name);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should add the getBaseUrl convenience method', (done) => {
+            const expectedManifest = {
+                name: 'MyApp',
+                activities: {
+                    dhis: {
+                        href: 'http://localhost:8080',
+                    },
+                },
+            };
+
+            apiMock.get.onFirstCall().returns(Promise.resolve(expectedManifest));
+
+            d2.getManifest('manifest.webapp')
+                .then((manifest) => {
+                    expect(manifest.getBaseUrl()).to.equal('http://localhost:8080');
                     done();
                 })
                 .catch(done);

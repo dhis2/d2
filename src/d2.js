@@ -6,11 +6,73 @@ import System from 'd2/system/System';
 import I18n from 'd2/i18n/I18n';
 import Config from 'd2/config';
 import CurrentUser from 'd2/current-user/CurrentUser';
+import jQuery from 'd2/external/jquery';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
 
 const preInitConfig = Config.create();
+
+export function getManifest(url) {
+    const api = new Api(jQuery);
+    api.setBaseUrl('./');
+
+    const manifestUtilities = {
+        getBaseUrl() {
+            return this.activities.dhis.href;
+        },
+    };
+
+    return api.get(`${url}`)
+        .then(manifest => {
+            return Object.assign({}, manifest, manifestUtilities);
+        });
+}
+
+export function getUserLocale() {
+    const api = Api.getApi();
+
+    if (getUserLocale.cachedResponse) {
+        return getUserLocale.cachedResponse;
+    }
+
+    // Cache the Locale response so we don't request it again.
+    getUserLocale.cachedResponse = api.get('userSettings/keyUiLocale', {}, {dataType: 'text'})
+        // Set the default language to english when a 404 is returned
+        .catch(() => {
+            return 'en';
+        });
+
+    return getUserLocale.cachedResponse;
+}
+
+/**
+ * @function getUserSettings
+ *
+ * @returns {Promise} A promise to the current user settings
+ *
+ * @description
+ * The object that is the result of the promise will have the following properties
+ * ```json
+ * {
+ *   "uiLocale": "en" // The users locale, that can be used for translations)
+ * }
+ * ```
+ */
+export function getUserSettings() {
+    const api = Api.getApi();
+
+    if (preInitConfig.baseUrl) {
+        api.setBaseUrl(preInitConfig.baseUrl);
+    }
+
+    return Promise.all([getUserLocale()])
+        .then(([uiLocale]) => {
+            return {
+                uiLocale,
+            };
+        });
+}
 
 /**
  * @function init
@@ -67,11 +129,7 @@ export function init(initConfig) {
         api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
         api.get('me', {fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]'}),
         api.get('me/authorization'),
-        api.get('userSettings/keyUiLocale', {}, {dataType: 'text'})
-            // Set the default language to english when a 404 is returned
-            .catch(() => {
-                return 'en';
-            }),
+        getUserLocale(),
         d2.i18n.load(),
     ])
         .then(responses => {
@@ -161,7 +219,9 @@ export function getInstance() {
 export const config = preInitConfig;
 
 export default {
-    init: init,
-    config: config,
-    getInstance: getInstance,
+    init,
+    config,
+    getInstance,
+    getUserSettings,
+    getManifest,
 };

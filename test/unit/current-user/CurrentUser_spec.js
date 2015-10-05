@@ -6,6 +6,7 @@ describe('CurrentUser', () => {
     let currentUser;
     let userData;
     let modelDefinitions;
+    let mockUserAuthorities;
 
     beforeEach(() => {
         modelDefinitions = {
@@ -39,7 +40,13 @@ describe('CurrentUser', () => {
 
         userData = fixtures.get('me');
         spy(UserAuthorities, 'create');
-        currentUser = CurrentUser.create(userData, ['ALL'], modelDefinitions);
+        mockUserAuthorities = [
+            'F_ORGANISATIONUNIT_ADD',
+            'F_ORGANISATIONUNIT_DELETE',
+            'F_ORGANISATIONUNITLEVEL_UPDATE',
+            'F_USERGROUP_PUBLIC_ADD',
+        ];
+        currentUser = CurrentUser.create(userData, mockUserAuthorities, modelDefinitions);
     });
 
     it('should be an instance of CurrentUser', () => {
@@ -52,7 +59,7 @@ describe('CurrentUser', () => {
 
     describe('create', () => {
         it('should call create on UserAuthorities with the user authorities array', () => {
-            expect(UserAuthorities.create).to.be.calledWith(['ALL']);
+            expect(UserAuthorities.create).to.be.calledWith(mockUserAuthorities);
         });
     });
 
@@ -193,12 +200,32 @@ describe('CurrentUser', () => {
             expect(currentUser.canCreate(modelDefinitions.userRole)).to.be.false;
         });
 
-        it('should return false for userGroup', () => {
+        it('should return true for userGroup', () => {
             expect(currentUser.canUpdate(modelDefinitions.userGroup)).to.be.true;
         });
 
         it('should return true for organisationUnitLevel', () => {
-            expect(currentUser.canUpdate(modelDefinitions.organisationUnitLevel)).to.be.true
+            expect(currentUser.canUpdate(modelDefinitions.organisationUnitLevel)).to.be.true;
+        });
+    });
+
+    describe('canCreatePublic', () => {
+        it('should return false if no model is passed', () => {
+            expect(currentUser.canCreatePublic()).to.equal(false);
+        });
+
+        it('should return false for userGroup', () => {
+            expect(currentUser.canCreatePublic(modelDefinitions.userGroup)).to.be.true;
+        });
+    });
+
+    describe('canCreatePrivate', () => {
+        it('should return false if no model is passed', () => {
+            expect(currentUser.canCreatePrivate()).to.equal(false);
+        });
+
+        it('should return false for userGroup', () => {
+            expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).to.be.false;
         });
     });
 
