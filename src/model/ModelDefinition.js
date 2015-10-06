@@ -182,7 +182,11 @@ class ModelDefinition {
         return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
             .then((data) => this.create(data))
             .catch((response) => {
-                return Promise.reject(response.data);
+                if (response.message) {
+                    return Promise.reject(response.message);
+                }
+
+                return Promise.reject(response);
             });
     }
 

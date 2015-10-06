@@ -195,19 +195,38 @@ describe('Api', () => {
                 });
         });
 
-        it('should call the success resolve handler', function (done) {
+        it('should call the failure handler with the message if a webmessage was returned', () => {
+            jqueryMock.ajax.returns(Promise.reject({
+                responseJSON: {
+                    httpStatus: 'Not Found',
+                    httpStatusCode: 404,
+                    status: 'ERROR',
+                    message: 'DataElementCategory with id sdfsf could not be found.',
+                },
+            }));
+
+            api.get('/api/dataElements', {fields: 'id,name'})
+                .catch(requestFailedHandler)
+                .then(() => {
+                    expect(requestFailedHandler).to.be.called;
+                    expect(requestFailedHandler).to.be.calledWith('DataElementCategory with id sdfsf could not be found.');
+                    done();
+                });
+        });
+
+        it('should call the success resolve handler',(done) => {
             jqueryMock.ajax.returns(Promise.resolve('Success data'));
 
             api.get('/api/dataElements', {fields: 'id,name'})
                 .then(requestSuccessHandler)
-                .then(function () {
+                .then(() => {
                     expect(requestSuccessHandler).to.be.called;
                     expect(requestSuccessHandler).to.be.calledWith('Success data');
                     done();
                 });
         });
 
-        it('should allow the options to be overridden', function () {
+        it('should allow the options to be overridden', () => {
             api.get('dataElements', undefined, {dataType: 'text'});
 
             expect(jqueryMock.ajax).to.be.calledWith({

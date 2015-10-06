@@ -207,7 +207,7 @@ export function getInstance() {
  *
  * init()
  *   .then(d2 => {
- *     d2.system.settings.all())
+ *     d2.system.settings.all()
  *       .then(systemSettings => Object.keys())
  *       .then(systemSettingsKey => {
  *         d2.i18n.getTranslation(systemSettingsKey);

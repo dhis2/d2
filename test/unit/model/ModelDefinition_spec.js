@@ -473,12 +473,18 @@ describe('ModelDefinition', () => {
 
         it('should reject the promise with the message when the request fails', (done) => {
             ModelDefinition.prototype.api.get = stub().returns(new Promise((resolve, reject) => {
-                reject({data: 'id not found'});
+                reject({
+                    httpStatus: 'Not Found',
+                    httpStatusCode: 404,
+                    status: 'ERROR',
+                    message: 'DataElementCategory with id sdfsf could not be found.'
+                });
             }));
 
             dataElementModelDefinition.get('d4343fsss')
+                .then(done)
                 .catch((dataElementError) => {
-                    expect(dataElementError).to.equal('id not found');
+                    expect(dataElementError).to.equal('DataElementCategory with id sdfsf could not be found.');
                     done();
                 });
         });

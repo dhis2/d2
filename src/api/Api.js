@@ -10,6 +10,10 @@ function processSuccess(resolve) {
 
 function processFailure(reject) {
     return (jqXHR/* , textStatus, errorThrown */) => {
+        if (jqXHR.responseJSON) {
+            return reject(jqXHR.responseJSON);
+        }
+
         delete jqXHR.then;
         reject(jqXHR);
     };
