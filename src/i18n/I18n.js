@@ -31,7 +31,7 @@ class I18n {
             this.strings.add(strings.trim());
         } else {
             strings.forEach(string => {
-                if ((''+string).trim().length > 0) {
+                if (('' + string).trim().length > 0) {
                     this.strings.add(string);
                 }
             });
