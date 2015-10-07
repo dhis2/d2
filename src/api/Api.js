@@ -53,8 +53,13 @@ class Api {
         return this.request('GET', getUrl(this.baseUrl, url), data, options);
     }
 
-    post(url, data) {
-        return this.request('POST', getUrl(this.baseUrl, url), JSON.stringify(data));
+    post(url, data, options) {
+        // Pass data through JSON.stringify, unless options.contentType is 'text/plain'
+        const
+            payload = (options && options.contentType && options.contentType === 'text/plain')
+            ? data
+            : JSON.stringify(data);
+        return this.request('POST', getUrl(this.baseUrl, url), payload, options);
     }
 
     delete(url) {
@@ -89,12 +94,19 @@ class Api {
         }
 
         return new Promise((resolve, reject) => {
+            let payload = data;
+            if (payload === undefined) {
+                payload = {};
+            } else if (payload === true || payload === false) {
+                payload = payload.toString();
+            }
             api.jquery
                 .ajax(getOptions({
                     type: type,
                     url: requestUrl,
-                    data: data || {},
+                    data: payload,
                     dataType: options.dataType || 'json',
+                    contentType: options.contentType || 'application/json',
                 }))
                 .then(processSuccess(resolve), processFailure(reject));
         });

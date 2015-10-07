@@ -252,7 +252,55 @@ describe('Api', () => {
                 url: fixtures.get('singleUserAllFields').href,
                 dataType: 'json',
                 contentType: 'application/json',
-                data: JSON.stringify(fixtures.get('singleUserOwnerFields'))
+                data: JSON.stringify(fixtures.get('singleUserOwnerFields')),
+            });
+        });
+
+        it('should not stringify plain text data', () => {
+            api.post('systemSettings/mySettingsKey', 'string=test', {contentType: 'text/plain'});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'POST',
+                url: '/api/systemSettings/mySettingsKey',
+                dataType: 'json',
+                contentType: 'text/plain',
+                data: 'string=test',
+            });
+        });
+
+        it('should post the number zero', () => {
+            api.post('systemSettings/numberZero', 0, {contentType: 'text/plain'});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'POST',
+                url: '/api/systemSettings/numberZero',
+                dataType: 'json',
+                contentType: 'text/plain',
+                data: 0,
+            });
+        });
+
+        it('should send plain text boolean true values as "true"', () => {
+            api.post('systemSettings/keyTrue', true, {contentType: 'text/plain'});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'POST',
+                url: '/api/systemSettings/keyTrue',
+                dataType: 'json',
+                contentType: 'text/plain',
+                data: 'true',
+            });
+        });
+
+        it('should send plain text boolean false values as "false"', () => {
+            api.post('systemSettings/keyFalse', false, {contentType: 'text/plain'});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'POST',
+                url: '/api/systemSettings/keyFalse',
+                dataType: 'json',
+                contentType: 'text/plain',
+                data: 'false',
             });
         });
     });
