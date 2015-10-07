@@ -57,7 +57,7 @@ class System {
             }
             if (val.hasOwnProperty('options')) {
                 for (const opt in val.options) {
-                    if (val.options.hasOwnProperty(opt)) {
+                    if (val.options.hasOwnProperty(opt) && !isNaN(val.options[opt])) {
                         strings.add(val.options[opt]);
                     }
                 }
