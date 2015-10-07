@@ -82,6 +82,18 @@ class SystemSettings {
                 });
         });
     }
+
+    set(systemSettingsKey, value) {
+        return new Promise((resolve, reject) => {
+            const settingUrl = ['systemSettings', systemSettingsKey].join('/');
+            return this.api.post(settingUrl, value, {dataType: 'text', contentType: 'text/plain'})
+                .then(res => {
+                    resolve(res);
+                }).catch(err => {
+                    reject(err);
+                });
+        });
+    }
 }
 
 export default SystemSettings;
