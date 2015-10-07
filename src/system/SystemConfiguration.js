@@ -75,18 +75,30 @@ class SystemConfiguration {
      *
      * This is a convenience method that works exactly the same as calling `configuration.all()[name]`.
      *
-     * @param name
+     * @param key
      * @param ignoreCache
      * @returns {*|Promise}
      */
-    get(name, ignoreCache) {
+    get(key, ignoreCache) {
         return this.all(ignoreCache).then(config => {
-            if (config.hasOwnProperty(name)) {
-                return config[name];
+            if (config.hasOwnProperty(key)) {
+                return config[key];
             }
 
-            throw new Error('Unknown config option: ' + name);
+            throw new Error('Unknown config option: ' + key);
         });
+    }
+
+
+    /**
+     * Send a query to the API to change the value of a configuration key to the specified value
+     *
+     * @param key
+     * @param value
+     * @returns {Promise}
+     */
+    set(key, value) {
+        return this.api.post(['configuration', key, value].join('/'), '', {dataType: 'text'});
     }
 }
 
