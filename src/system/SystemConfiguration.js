@@ -17,7 +17,7 @@ class SystemConfiguration {
     constructor(api = Api.getApi()) {
         this.api = api;
 
-        this.configuration = undefined;
+        this._configuration = undefined;
     }
 
     /**
@@ -41,8 +41,8 @@ class SystemConfiguration {
      * @param {boolean} ignoreCache If set to true, calls the API regardless of cache status
      */
     all(ignoreCache) {
-        if (this.configuration && ignoreCache !== true) {
-            return Promise.resolve(this.configuration);
+        if (this._configuration && ignoreCache !== true) {
+            return Promise.resolve(this._configuration);
         }
         const that = this;
 
@@ -56,7 +56,7 @@ class SystemConfiguration {
             this.api.get(['configuration', 'selfRegistrationRole'].join('/')),
             this.api.get(['configuration', 'selfRegistrationOrgUnit'].join('/')),
         ]).then(config => {
-            that.configuration = {
+            that._configuration = {
                 systemId: config[0],
                 feedbackRecipients: config[1],
                 offlineOrganisationUnitLevel: config[2],
@@ -66,7 +66,7 @@ class SystemConfiguration {
                 selfRegistrationRole: config[6],
                 selfRegistrationOrgUnit: config[7],
             };
-            return Promise.resolve(that.configuration);
+            return Promise.resolve(that._configuration);
         });
     }
 
@@ -82,10 +82,10 @@ class SystemConfiguration {
     get(key, ignoreCache) {
         return this.all(ignoreCache).then(config => {
             if (config.hasOwnProperty(key)) {
-                return config[key];
+                return Promise.resolve(config[key]);
             }
 
-            throw new Error('Unknown config option: ' + key);
+            return Promise.reject('Unknown config option: ' + key);
         });
     }
 
@@ -98,7 +98,13 @@ class SystemConfiguration {
      * @returns {Promise}
      */
     set(key, value) {
-        return this.api.post(['configuration', key, value].join('/'), '', {dataType: 'text'});
+        const that = this;
+        return this.api.post(['configuration', key, value].join('/'), '', {dataType: 'text'}).then(() => {
+            // Ideally we'd update the cache here, but doing so requires another trip to the server
+            // For now, just bust the cache to ensure it's not incorrect
+            that._configuration = undefined;
+            return Promise.resolve();
+        });
     }
 }
 
