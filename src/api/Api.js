@@ -62,8 +62,8 @@ class Api {
         return this.request('POST', getUrl(this.baseUrl, url), payload, options);
     }
 
-    delete(url) {
-        return this.request('DELETE', getUrl(this.baseUrl, url));
+    delete(url, options) {
+        return this.request('DELETE', getUrl(this.baseUrl, url), undefined, options);
     }
 
     // TODO: write tests for update
