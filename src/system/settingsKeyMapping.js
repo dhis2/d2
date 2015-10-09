@@ -165,6 +165,7 @@ const settingsKeyMapping = {
         label: 'application_introduction',
         description: 'allows_html',
         appendLocale: true,
+        multiLine: true,
     },
     'keyApplicationNotification': {
         label: 'application_notification',
@@ -176,13 +177,25 @@ const settingsKeyMapping = {
         label: 'application_left_footer',
         description: 'allows_html',
         appendLocale: true,
+        multiLine: true,
     },
     'keyApplicationRightFooter': {
         label: 'application_right_footer',
         description: 'allows_html',
         appendLocale: true,
+        multiLine: true,
     },
-    'currentStyle': {label: 'style'},
+    'currentStyle': {
+        label: 'style',
+        type: 'dropdown',
+        options: {
+            'light_blue/light_blue.css': 'light_blue',
+            'green/green.css': 'green',
+            'myanmar/myanmar.css': 'myanmar',
+            'vietnam/vietnam.css': 'vietnam',
+            'india/india.css': 'india',
+        },
+    },
     'startModule': {label: 'start_page'},
     'keyFlag': {label: 'flag'},
     'keyRequireAddToView': {
@@ -258,7 +271,12 @@ const settingsKeyMapping = {
     },
     'keyOpenIdProvider': {label: 'openid_provider'},
     'keyOpenIdProviderLabel': {label: 'openid_provider_label'},
-    'keyCorsWhitelist': {label: 'cors_whitelist'},
+    'corsWhitelist': {
+        label: 'cors_whitelist',
+        configuration: 'corsWhitelist',
+        type: 'editlist',
+        multiLine: true,
+    },
     /* ============================================================================================================ */
     /* Category: Approval                                                                                           */
     /* ============================================================================================================ */
@@ -271,13 +289,34 @@ const settingsKeyMapping = {
         type: 'checkbox',
     },
     'dataApprovalLevels': {
-        label: 'DATA APPROVAL LOLVELS',
+        label: 'data_approval_levels',
+        type: 'dataapproval',
     },
     /* ============================================================================================================ */
     /* Category: Calendar                                                                                           */
     /* ============================================================================================================ */
-    'keyCalendar': {label: 'calendar'},
-    'keyDateFormat': {label: 'date_format'},
+    'keyCalendar': {
+        label: 'calendar',
+        type: 'dropdown',
+        options: {
+            'coptic': 'coptic',
+            'ethiopian': 'ethiopian',
+            'gregorian': 'gregorian',
+            'islamic': 'islamic',
+            'iso8601': 'iso8601',
+            'julian': 'julian',
+            'nepali': 'nepali',
+            'thai': 'thai',
+        },
+    },
+    'keyDateFormat': {
+        label: 'date_format',
+        type: 'dropdown',
+        options: {
+            'yyyy-MM-dd': 'yyyy-MM-dd',
+            'dd-MM-yyyy': 'dd-MM-yyyy',
+        },
+    },
     /* ============================================================================================================ */
     /* Category: Calendar                                                                                           */
     /* ============================================================================================================ */
@@ -286,13 +325,46 @@ const settingsKeyMapping = {
         configuration: 'remoteServerUrl',
     },
     'remoteServerUsername': {
-        label: 'remote_server_user_name',
+        label: 'remote_server_username',
         configuration: 'remoteServerUsername',
     },
     'remoteServerPassword': {
         label: 'remote_server_password',
         configuration: 'remoteServerPassword',
         type: 'password',
+    },
+    /* ============================================================================================================ */
+    /* Category: Data Import                                                                                        */
+    /* ============================================================================================================ */
+    'keyDataImportStrictPeriods': {
+        label: 'require_periods_to_match_period_type',
+        text: 'Require periods to match period type of data set',
+        type: 'checkbox',
+    },
+    'keyDataImportStrictCategoryOptionCombos': {
+        label: 'require_category_option_combos_to_match',
+        text: 'Require category option combos to match category combo of data element',
+        type: 'checkbox',
+    },
+    'keyDataImportStrictOrganisationUnits': {
+        label: 'require_organisation_units_to_match_assignment',
+        text: 'Require organisation units to match assignment of data set',
+        type: 'checkbox',
+    },
+    'keyDataImportStrictAttributeOptionCombos': {
+        label: 'require_attribute_option_combos_to_match',
+        text: 'Require attribute option combos to match category combo of data set',
+        type: 'checkbox',
+    },
+    'keyDataImportRequireCategoryOptionCombo': {
+        label: 'require_category_option_combo_to_be_specified',
+        text: 'Require category option combo to be specified',
+        type: 'checkbox',
+    },
+    'keyDataImportRequireAttributeOptionCombo': {
+        label: 'require_attribute_option_combo_to_be_specified',
+        text: 'Require attribute option combo to be specified',
+        type: 'checkbox',
     },
 
     /* ============================================================================================================ */
