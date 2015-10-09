@@ -55,6 +55,9 @@ class SystemConfiguration {
             this.api.get(['configuration', 'infrastructuralPeriodType'].join('/')),
             this.api.get(['configuration', 'selfRegistrationRole'].join('/')),
             this.api.get(['configuration', 'selfRegistrationOrgUnit'].join('/')),
+            this.api.get(['configuration', 'remoteServerUrl'].join('/')),
+            this.api.get(['configuration', 'remoteServerUsername'].join('/')),
+            this.api.get(['configuration', 'corsWhitelist'].join('/')),
         ]).then(config => {
             that._configuration = {
                 systemId: config[0],
@@ -65,6 +68,9 @@ class SystemConfiguration {
                 infrastructuralPeriodType: config[5],
                 selfRegistrationRole: config[6],
                 selfRegistrationOrgUnit: config[7],
+                remoteServerUrl: config[8],
+                remoteServerUsername: config[9],
+                corsWhitelist: config[10],
             };
             return Promise.resolve(that._configuration);
         });
@@ -99,7 +105,17 @@ class SystemConfiguration {
      */
     set(key, value) {
         const that = this;
-        return this.api.post(['configuration', key, value].join('/'), '', {dataType: 'text'}).then(() => {
+        let req;
+
+        if (key === 'feedbackRecipients' && value === 'null' || value === null) {
+            req = this.api.delete(['configuration', key].join('/'), {dataType: 'text'});
+        } else if (key === 'corsWhitelist') {
+            req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'), {dataType: 'text'});
+        } else {
+            req = this.api.post(['configuration', key, value].join('/'), '', {dataType: 'text'});
+        }
+
+        return req.then(() => {
             // Ideally we'd update the cache here, but doing so requires another trip to the server
             // For now, just bust the cache to ensure it's not incorrect
             that._configuration = undefined;
