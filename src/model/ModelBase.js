@@ -1,4 +1,4 @@
-import ModelValidation from 'd2/model/ModelValidation';
+import ModelValidation from './ModelValidation';
 
 const modelValidator = ModelValidation.getModelValidation();
 

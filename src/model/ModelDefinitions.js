@@ -1,4 +1,4 @@
-import {checkType} from 'd2/lib/check';
+import {checkType} from '../lib/check';
 
 /**
  * @class ModelDefinitions

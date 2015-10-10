@@ -1,5 +1,5 @@
-import {throwError} from 'd2/lib/utils';
-import {isString} from 'd2/lib/check';
+import {throwError} from './utils';
+import {isString} from './check';
 
 class SchemaTypes {
     getTypes() {

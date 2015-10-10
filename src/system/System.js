@@ -4,8 +4,8 @@
  * @requires d2/system/SystemSettings
  */
 
-import SystemSettings from 'd2/system/SystemSettings';
-import SystemConfiguration from 'd2/system/SystemConfiguration';
+import SystemSettings from './SystemSettings';
+import SystemConfiguration from './SystemConfiguration';
 
 /**
  * @class System

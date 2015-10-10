@@ -1,5 +1,5 @@
-import defaultConfig from 'd2/defaultConfig';
-import {isType, isString} from 'd2/lib/check';
+import defaultConfig from './defaultConfig';
+import {isType, isString} from './lib/check';
 
 export default class Config {
     static create(...args) {

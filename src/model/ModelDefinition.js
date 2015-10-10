@@ -1,10 +1,10 @@
-import {checkType, isObject, checkDefined, isDefined} from 'd2/lib/check';
-import {addLockedProperty, curry, copyOwnProperties} from 'd2/lib/utils';
-import Model from 'd2/model/Model';
-import ModelCollection from 'd2/model/ModelCollection';
-import schemaTypes from 'd2/lib/SchemaTypes';
-import Filters from 'd2/model/Filters';
-import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
+import {checkType, isObject, checkDefined, isDefined} from '../lib/check';
+import {addLockedProperty, curry, copyOwnProperties} from '../lib/utils';
+import Model from './Model';
+import ModelCollection from './ModelCollection';
+import schemaTypes from '../lib/SchemaTypes';
+import Filters from './Filters';
+import {DIRTY_PROPERTY_LIST} from './ModelBase';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;

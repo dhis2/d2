@@ -1,4 +1,4 @@
-import fixtures from '../fixtures/fixtures.js';
+import fixtures from '../fixtures/fixtures';
 
 function resetCachedResponse(d2) {
     delete d2.getUserLocale.cachedResponse;
@@ -80,21 +80,21 @@ describe('D2', () => {
             ajax: stub(),
         };
 
-        proxyquire('d2/d2', {
-            'd2/model/models': {
+        proxyquire('../../src/d2', {
+            './model/models': {
                 ModelDefinitions: ModelDefinitionsMock,
                 ModelDefinition: ModelDefinitionMock,
             },
-            'd2/api/Api': apiMockClass,
-            'd2/external/jquery': jQueryMock,
-            'd2/logger/Logger': loggerMockObject,
+            './api/Api': apiMockClass,
+            './external/jquery': jQueryMock,
+            './logger/Logger': loggerMockObject,
         });
 
-        proxyquire('d2/i18n/I18n', {
-            'd2/api/Api': apiMockClass,
+        proxyquire('../../src/i18n/I18n', {
+            './api/Api': apiMockClass,
         });
 
-        I18n = require('d2/i18n/I18n');
+        I18n = require('../../src/i18n/I18n');
         i18nStub = {
             addSource: stub(),
             addStrings: stub(),
@@ -102,7 +102,7 @@ describe('D2', () => {
         };
         I18n.getI18n = stub().returns(i18nStub);
 
-        d2 = require('d2/d2');
+        d2 = require('../../src/d2');
         resetCachedResponse(d2);
     });
 

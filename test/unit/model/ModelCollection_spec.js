@@ -15,10 +15,10 @@ function getFakeModelClass() {
 
     let Pager = sinon.stub();
 
-    proxyquire('d2/model/ModelCollection', {
-        'd2/model/Model': Model,
-        'd2/model/ModelDefinition': ModelDefinition,
-        'd2/pager/Pager': Pager
+    proxyquire('../../../src/model/ModelCollection', {
+        './Model': Model,
+        './ModelDefinition': ModelDefinition,
+        '../pager/Pager': Pager
     });
 
     return [Model, ModelDefinition, Pager];
@@ -40,7 +40,7 @@ describe('ModelCollection', () => {
         Pager.reset();
         Pager.returns(pagerObject);
 
-        ModelCollection = require('d2/model/ModelCollection');
+        ModelCollection = require('../../../src/model/ModelCollection');
     });
 
     describe('extension of Map', () => {

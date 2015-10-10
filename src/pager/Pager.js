@@ -1,4 +1,4 @@
-import {isDefined} from 'd2/lib/check';
+import {isDefined} from '../lib/check';
 
 /**
  * @class Pager

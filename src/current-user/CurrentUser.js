@@ -1,4 +1,4 @@
-import UserAuthorities from 'd2/current-user/UserAuthorities';
+import UserAuthorities from './UserAuthorities';
 
 const models = Symbol('models');
 const propertiesToIgnore = new Set([

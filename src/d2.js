@@ -1,12 +1,12 @@
-import {pick, Deferred} from 'd2/lib/utils';
-import Logger from 'd2/logger/Logger';
-import model from 'd2/model/models';
-import Api from 'd2/api/Api';
-import System from 'd2/system/System';
-import I18n from 'd2/i18n/I18n';
-import Config from 'd2/config';
-import CurrentUser from 'd2/current-user/CurrentUser';
-import jQuery from 'd2/external/jquery';
+import {pick, Deferred} from './lib/utils';
+import Logger from './logger/Logger';
+import model from './model/models';
+import Api from './api/Api';
+import System from './system/System';
+import I18n from './i18n/I18n';
+import Config from './config';
+import CurrentUser from './current-user/CurrentUser';
+import jQuery from './external/jquery';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();

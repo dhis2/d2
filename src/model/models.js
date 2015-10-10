@@ -1,8 +1,8 @@
-import ModelBase from 'd2/model/ModelBase';
-import Model from 'd2/model/Model';
-import ModelDefinition from 'd2/model/ModelDefinition';
-import ModelDefinitions from 'd2/model/ModelDefinitions';
-import ModelValidation from 'd2/model/ModelValidation';
+import ModelBase from './ModelBase';
+import Model from './Model';
+import ModelDefinition from './ModelDefinition';
+import ModelDefinitions from './ModelDefinitions';
+import ModelValidation from './ModelValidation';
 
 export default {
     ModelBase: ModelBase,

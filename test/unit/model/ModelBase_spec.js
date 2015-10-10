@@ -13,8 +13,8 @@ function setupFakeModelValidation() {
         return new ModelValidation();
     };
 
-    proxyquire('d2/model/ModelBase', {
-        'd2/model/ModelValidation': ModelValidation
+    proxyquire('../../../src/model/ModelBase', {
+        './ModelValidation': ModelValidation
     });
 
     return [validateSpy, validateAgainstSchemaSpy];
@@ -33,7 +33,7 @@ describe('ModelBase', () => {
         validateSpy.reset();
         validateAgainstSchemaSpy.reset();
 
-        modelBaseModule = require('d2/model/ModelBase');
+        modelBaseModule = require('../../../src/model/ModelBase');
         modelBase = modelBaseModule.default;
         DIRTY_PROPERTY_LIST = modelBaseModule.DIRTY_PROPERTY_LIST;
     });

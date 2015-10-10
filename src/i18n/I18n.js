@@ -1,5 +1,4 @@
-
-import Api from 'd2/api/Api';
+import Api from '../api/Api';
 
 class I18n {
     constructor(sources = [], api = Api.getApi()) {

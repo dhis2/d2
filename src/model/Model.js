@@ -5,9 +5,9 @@
  * @requires model/ModelBase
  */
 
-import {checkType} from 'd2/lib/check';
-import ModelBase from 'd2/model/ModelBase';
-import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
+import {checkType} from '../lib/check';
+import ModelBase from './ModelBase';
+import {DIRTY_PROPERTY_LIST} from './ModelBase';
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**

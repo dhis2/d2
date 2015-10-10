@@ -1,8 +1,8 @@
-import {isValidUid, isArray, checkType} from 'd2/lib/check';
-import {throwError} from 'd2/lib/utils';
-import Model from 'd2/model/Model';
-import ModelDefinition from 'd2/model/ModelDefinition';
-import Pager from 'd2/pager/Pager';
+import {isValidUid, isArray, checkType} from '../lib/check';
+import {throwError} from '../lib/utils';
+import Model from './Model';
+import ModelDefinition from './ModelDefinition';
+import Pager from '../pager/Pager';
 
 function throwIfContainsOtherThanModelObjects(values) {
     if (values && values[Symbol.iterator]) {

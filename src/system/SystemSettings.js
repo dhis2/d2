@@ -5,10 +5,10 @@
  * @requires api/Api
  */
 
-import {isString} from 'd2/lib/check';
-import Api from 'd2/api/Api';
+import {isString} from '../lib/check';
+import Api from '../api/Api';
 
-import settingsKeyMapping from 'd2/system/settingsKeyMapping';
+import settingsKeyMapping from './settingsKeyMapping';
 
 /**
  * @class SystemSettings

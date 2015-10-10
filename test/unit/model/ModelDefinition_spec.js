@@ -2,12 +2,12 @@
 let proxyquire = require('proxyquire').noCallThru();
 let ModelCollection = function () {};
 ModelCollection.create = sinon.stub().returns(new ModelCollection());
-proxyquire('d2/model/ModelDefinition', {
-    'd2/model/ModelCollection': ModelCollection
+proxyquire('../../../src/model/ModelDefinition', {
+    './ModelCollection': ModelCollection
 });
 
 import fixtures from 'fixtures/fixtures';
-import {DIRTY_PROPERTY_LIST} from 'd2/model/ModelBase';
+import {DIRTY_PROPERTY_LIST} from '../../../src/model/ModelBase';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('d2/model/ModelDefinition');
@@ -555,15 +555,17 @@ describe('ModelDefinition', () => {
                 .then((dataElementCollection) => {
                     expect(dataElementCollection).to.be.instanceof(ModelCollection);
                     done();
-                });
+                })
+                .catch(done);
         });
 
-        it('should not call the model collection create function with', (done) => {
+        it('should not call the model collection create function with new', (done) => {
             dataElementModelDefinition.list()
                 .then(() => {
                     expect(ModelCollection.create).to.not.be.calledWithNew;
                     done();
-                });
+                })
+                .catch(done);
         });
 
         it('should call the model collection constructor with the correct data', (done) => {
@@ -576,7 +578,8 @@ describe('ModelDefinition', () => {
                     expect(firstCallArguments[2]).to.equal(dataElementsResult.pager);
 
                     done();
-                });
+                })
+                .catch(done);
         });
 
         it('should call the api get method with the correct parameters after filters are set', () => {

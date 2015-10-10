@@ -4,7 +4,7 @@
  * @requires lib/check
  * @requires api/Api
  */
-import Api from 'd2/api/Api';
+import Api from '../api/Api';
 
 /**
  * @class SystemConfiguration

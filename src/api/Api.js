@@ -1,6 +1,6 @@
-import {checkType} from 'd2/lib/check';
-import {copyOwnProperties} from 'd2/lib/utils';
-import jQuery from 'd2/external/jquery';
+import {checkType} from '../lib/check';
+import {copyOwnProperties} from '../lib/utils';
+import jQuery from '../external/jquery';
 
 function processSuccess(resolve) {
     return (data/* , textStatus, jqXHR */) => {

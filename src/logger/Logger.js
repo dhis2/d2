@@ -1,4 +1,4 @@
-import {checkType, isType} from 'd2/lib/check';
+import {checkType, isType} from '../lib/check';
 
 class Logger {
     constructor(logging) {

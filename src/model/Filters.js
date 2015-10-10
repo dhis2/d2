@@ -1,5 +1,5 @@
-import {isType} from 'd2/lib/check';
-import Filter from 'd2/model/Filter';
+import {isType} from '../lib/check';
+import Filter from '../model/Filter';
 
 class Filters {
     constructor(modelDefinition) {

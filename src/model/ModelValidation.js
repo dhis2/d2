@@ -1,6 +1,6 @@
-import {checkType, isInteger, isObject, isArray, isString, isNumeric} from 'd2/lib/check';
-import Logger from 'd2/logger/Logger';
-import Api from 'd2/api/Api';
+import {checkType, isInteger, isObject, isArray, isString, isNumeric} from '../lib/check';
+import Logger from '../logger/Logger';
+import Api from '../api/Api';
 
 let logger;
 
