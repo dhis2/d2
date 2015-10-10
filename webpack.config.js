@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
     entry: "./src/d2.js",
     output: {
-        path: __dirname + '/dist',
+        path: __dirname + '/lib',
         filename: "d2-browser.js",
         libraryTarget: 'var'
     },
