@@ -103,6 +103,7 @@
   },
   "pre-commit": [
     "validate",
-    "lint"
+    "lint",
+    "test"
   ]
 }
