@@ -43,35 +43,11 @@ class SystemConfiguration {
      */
     all(ignoreCache) {
         if (this._configPromise === null || ignoreCache === true) {
-            const that = this;
-            this._configPromise = Promise.all([
-                this.api.get(['configuration', 'systemId'].join('/')),
-                this.api.get(['configuration', 'feedbackRecipients'].join('/')),
-                this.api.get(['configuration', 'offlineOrganisationUnitLevel'].join('/')),
-                this.api.get(['configuration', 'infrastructuralIndicators'].join('/')),
-                this.api.get(['configuration', 'infrastructuralDataElements'].join('/')),
-                this.api.get(['configuration', 'infrastructuralPeriodType'].join('/')),
-                this.api.get(['configuration', 'selfRegistrationRole'].join('/')),
-                this.api.get(['configuration', 'selfRegistrationOrgUnit'].join('/')),
-                this.api.get(['configuration', 'remoteServerUrl'].join('/')),
-                this.api.get(['configuration', 'remoteServerUsername'].join('/')),
-                this.api.get(['configuration', 'corsWhitelist'].join('/')),
-            ]).then(config => {
-                that._configuration = {
-                    systemId: config[0],
-                    feedbackRecipients: config[1],
-                    offlineOrganisationUnitLevel: config[2],
-                    infrastructuralIndicators: config[3],
-                    infrastructuralDataElements: config[4],
-                    infrastructuralPeriodType: config[5],
-                    selfRegistrationRole: config[6],
-                    selfRegistrationOrgUnit: config[7],
-                    remoteServerUrl: config[8],
-                    remoteServerUsername: config[9],
-                    corsWhitelist: config[10],
-                };
-                return that._configuration;
-            });
+            this._configPromise = this.api.get('configuration')
+                .then(configuration => {
+                    this._configuration = configuration;
+                    return this._configuration;
+                });
         }
 
         return this._configPromise;

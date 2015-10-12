@@ -928,18 +928,7 @@ describe('System.configuration', () => {
         beforeEach(() => {
             apiGet = sinon.stub(configuration.api, 'get');
 
-            apiGet.withArgs('configuration/systemId').returns(Promise.resolve(mockConfiguration.systemId));
-            apiGet.withArgs('configuration/feedbackRecipients').returns(Promise.resolve(mockConfiguration.feedbackRecipients));
-            apiGet.withArgs('configuration/offlineOrganisationUnitLevel').returns(Promise.resolve(mockConfiguration.offlineOrganisationUnitLevel));
-            apiGet.withArgs('configuration/infrastructuralIndicators').returns(Promise.resolve(mockConfiguration.infrastructuralIndicators));
-            apiGet.withArgs('configuration/infrastructuralDataElements').returns(Promise.resolve(mockConfiguration.infrastructuralDataElements));
-            apiGet.withArgs('configuration/infrastructuralPeriodType').returns(Promise.resolve(mockConfiguration.infrastructuralPeriodType));
-            apiGet.withArgs('configuration/selfRegistrationRole').returns(Promise.resolve(mockConfiguration.selfRegistrationRole));
-            apiGet.withArgs('configuration/selfRegistrationOrgUnit').returns(Promise.resolve(mockConfiguration.selfRegistrationOrgUnit));
-            apiGet.withArgs('configuration/remoteServerUrl').returns(Promise.resolve(mockConfiguration.remoteServerUrl));
-            apiGet.withArgs('configuration/remoteServerUsername').returns(Promise.resolve(mockConfiguration.remoteServerUsername));
-            apiGet.withArgs('configuration/corsWhitelist').returns(Promise.resolve(mockConfiguration.corsWhitelist));
-            apiGet.throws();
+            apiGet.withArgs('configuration').returns(Promise.resolve(mockConfiguration));
         });
 
         afterEach(() => {
@@ -959,82 +948,32 @@ describe('System.configuration', () => {
             it('should query the API for all configuration endpoints', (done) => {
                 configuration.all();
 
-                expect(apiGet.callCount).to.equal(11);
-                expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/feedbackRecipients').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/offlineOrganisationUnitLevel').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/infrastructuralIndicators').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/infrastructuralDataElements').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/infrastructuralPeriodType').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/selfRegistrationRole').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/selfRegistrationOrgUnit').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/remoteServerUrl').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/remoteServerUsername').callCount).to.equal(1);
-                expect(apiGet.withArgs('configuration/corsWhitelist').callCount).to.equal(1);
+                expect(apiGet.callCount).to.equal(1);
+                expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 done();
             });
 
             it('should only call the API once', (done) => {
                 configuration.all().then(() => {
                     configuration.all().then(() => {
-                        expect(apiGet.callCount).to.equal(11);
-                        expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/feedbackRecipients').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/offlineOrganisationUnitLevel').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/infrastructuralIndicators').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/infrastructuralDataElements').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/infrastructuralPeriodType').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/selfRegistrationRole').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/selfRegistrationOrgUnit').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/remoteServerUrl').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/remoteServerUsername').callCount).to.equal(1);
-                        expect(apiGet.withArgs('configuration/corsWhitelist').callCount).to.equal(1);
+                        expect(apiGet.callCount).to.equal(1);
+                        expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                         done();
                     });
-                    expect(apiGet.callCount).to.equal(8);
-                    expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/feedbackRecipients').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/offlineOrganisationUnitLevel').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/infrastructuralIndicators').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/infrastructuralDataElements').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/infrastructuralPeriodType').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/selfRegistrationRole').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/selfRegistrationOrgUnit').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/remoteServerUrl').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/remoteServerUsername').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/corsWhitelist').callCount).to.equal(1);
+                    expect(apiGet.callCount).to.equal(1);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 });
             });
 
             it('should call the API again if ignoreCache is true', (done) => {
                 configuration.all(true).then(() => {
                     configuration.all(true).then(() => {
-                        expect(apiGet.callCount).to.equal(22);
-                        expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/feedbackRecipients').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/offlineOrganisationUnitLevel').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/infrastructuralIndicators').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/infrastructuralDataElements').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/infrastructuralPeriodType').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/selfRegistrationRole').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/selfRegistrationOrgUnit').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/remoteServerUrl').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/remoteServerUsername').callCount).to.equal(2);
-                        expect(apiGet.withArgs('configuration/corsWhitelist').callCount).to.equal(2);
+                        expect(apiGet.callCount).to.equal(2);
+                        expect(apiGet.withArgs('configuration').callCount).to.equal(2);
                         done();
                     });
-                    expect(apiGet.callCount).to.equal(11);
-                    expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/feedbackRecipients').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/offlineOrganisationUnitLevel').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/infrastructuralIndicators').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/infrastructuralDataElements').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/infrastructuralPeriodType').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/selfRegistrationRole').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/selfRegistrationOrgUnit').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/remoteServerUrl').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/remoteServerUsername').callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration/corsWhitelist').callCount).to.equal(1);
+                    expect(apiGet.callCount).to.equal(1);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 });
             });
         });
@@ -1061,13 +1000,13 @@ describe('System.configuration', () => {
                 configuration.get('systemId').then(() => {
                     configuration.get('systemId').then((res) => {
                         expect(res).to.equal(mockConfiguration.systemId);
-                        expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
+                        expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                         done();
                     }, (err) => {
                         done(err);
                     });
                     expect(res).to.equal(mockConfiguration.systemId);
-                    expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 }, (err) => {
                     done(err);
                 });
@@ -1077,13 +1016,13 @@ describe('System.configuration', () => {
                 configuration.get('systemId', true).then(() => {
                     configuration.get('systemId', true).then((res) => {
                         expect(res).to.equal(mockConfiguration.systemId);
-                        expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(2);
+                        expect(apiGet.withArgs('configuration').callCount).to.equal(2);
                         done();
                     }, (err) => {
                         done(err);
                     });
                     expect(res).to.equal(mockConfiguration.systemId);
-                    expect(apiGet.withArgs('configuration/systemId').callCount).to.equal(1);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 }, (err) => {
                     done(err);
                 });
