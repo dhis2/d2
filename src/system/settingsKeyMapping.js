@@ -432,33 +432,34 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     'keyDataImportStrictPeriods': {
         label: 'require_periods_to_match_period_type',
-        text: 'Require periods to match period type of data set',
         type: 'checkbox',
     },
     'keyDataImportStrictCategoryOptionCombos': {
         label: 'require_category_option_combos_to_match',
-        text: 'Require category option combos to match category combo of data element',
         type: 'checkbox',
     },
     'keyDataImportStrictOrganisationUnits': {
         label: 'require_organisation_units_to_match_assignment',
-        text: 'Require organisation units to match assignment of data set',
         type: 'checkbox',
     },
     'keyDataImportStrictAttributeOptionCombos': {
         label: 'require_attribute_option_combos_to_match',
-        text: 'Require attribute option combos to match category combo of data set',
         type: 'checkbox',
     },
     'keyDataImportRequireCategoryOptionCombo': {
         label: 'require_category_option_combo_to_be_specified',
-        text: 'Require category option combo to be specified',
         type: 'checkbox',
     },
     'keyDataImportRequireAttributeOptionCombo': {
         label: 'require_attribute_option_combo_to_be_specified',
-        text: 'Require attribute option combo to be specified',
         type: 'checkbox',
+    },
+    /* ============================================================================================================ */
+    /* Category: oAuth2 clients                                                                                     */
+    /* ============================================================================================================ */
+    'oauth2clients': {
+        label: 'oauth2clients',
+        type: 'oauth2clients',
     },
 
     /* ============================================================================================================ */
