@@ -106,7 +106,14 @@ describe('D2.models', function () {
                 [
                     200,
                     {'Content-Type': 'application/json'},
-                    JSON.stringify([])
+                    JSON.stringify({
+                        "httpStatus": "OK",
+                        "httpStatusCode": 200,
+                        "status": "OK",
+                        "response": {
+                            "responseType": "ValidationViolations"
+                        }
+                    })
                 ]
             );
         });
@@ -240,7 +247,14 @@ describe('D2.models', function () {
                     [
                         200,
                         {'Content-Type': 'application/json'},
-                        JSON.stringify([])
+                        JSON.stringify({
+                            "httpStatus": "OK",
+                            "httpStatusCode": 200,
+                            "status": "OK",
+                            "response": {
+                                "responseType": "ValidationViolations"
+                            }
+                        })
                     ]
                 );
 

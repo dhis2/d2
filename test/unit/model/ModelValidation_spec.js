@@ -324,7 +324,14 @@ describe('ModelValidations', () => {
         let modelMock;
 
         beforeEach(() => {
-            Api.getApi().post = sinon.stub().returns(Promise.resolve());
+            Api.getApi().post = sinon.stub().returns(Promise.resolve({
+                "httpStatus": "OK",
+                "httpStatusCode": 200,
+                "status": "OK",
+                "response": {
+                    "responseType": "ValidationViolations"
+                }
+            }));
             modelMock = {
                 modelDefinition: {
                     name: 'dataElement',
@@ -367,6 +374,35 @@ describe('ModelValidations', () => {
                     );
                     done();
                 });
+        });
+
+        it('should return the validationViolations array from the webmessage', (done) => {
+            const schemaValidationResult = {
+                httpStatus: 'Bad Request',
+                httpStatusCode: 400,
+                status: 'ERROR',
+                response: {
+                    responseType: 'ValidationViolations',
+                    validationViolations: [{message: 'Required property missing.', property: 'name'}],
+                },
+            };
+            Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
+
+            modelValidation.validateAgainstSchema(modelMock)
+                .then(function (validationMessages) {
+                    expect(validationMessages).to.equal(schemaValidationResult.response.validationViolations);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should return an empty array when the validation passed', (done) => {
+            modelValidation.validateAgainstSchema(modelMock)
+                .then(function (validationMessages) {
+                    expect(validationMessages).to.deep.equal([]);
+                    done();
+                })
+                .catch(done);
         });
     });
 });

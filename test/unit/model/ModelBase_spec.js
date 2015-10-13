@@ -306,6 +306,38 @@ describe('ModelBase', () => {
                     done();
                 });
         });
+
+        it('should return false when there are the asyncValidation against the schema failed', (done) => {
+            validateAgainstSchemaSpy.returns(Promise.resolve([{message: 'Required property missing.', property: 'name'}]));
+            validateSpy.onFirstCall().returns({
+                status: true,
+                messages: []
+            });
+
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.false;
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should return the valid status when asyncValidation against the schema passed', () => {
+            it('should return false when there are the asyncValidation against the schema failed', (done) => {
+                validateAgainstSchemaSpy.returns(Promise.resolve([]));
+                validateSpy.onFirstCall().returns({
+                    status: true,
+                    messages: []
+                });
+
+                model.validate()
+                    .then(validationState => {
+                        expect(validationState.status).to.be.true;
+                        done();
+                    })
+                    .catch(done);
+            });
+        });
     });
 
     describe('delete', () => {

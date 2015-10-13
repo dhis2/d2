@@ -109,7 +109,7 @@ class ModelBase {
                     validationMessages = validationMessages.concat(remoteMessages);
 
                     validationState = {
-                        status: modelValidationStatus,
+                        status: modelValidationStatus && remoteMessages.length === 0,
                         fields: validationMessages
                             .map(validationMessage => validationMessage.property)
                             .reduce(unique, []),

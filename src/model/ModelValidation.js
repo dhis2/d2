@@ -216,11 +216,22 @@ class ModelValidation {
             return Promise.reject('model.modelDefinition.name can not be found');
         }
 
-        return Api.getApi()
-            .post(
-            ['schemas', model.modelDefinition.name].join('/'),
-            model.modelDefinition.getOwnedPropertyJSON(model)
-        );
+        function extractValidationViolations(webmessage) {
+            if (webmessage.response && webmessage.response.validationViolations) {
+                return webmessage.response.validationViolations;
+            }
+            throw new Error('Response was not a WebMessage with the exprected format');
+        }
+
+        const url = `schemas/${model.modelDefinition.name}`;
+        return Api.getApi().post(url, model.modelDefinition.getOwnedPropertyJSON(model))
+            .then((webMessage) => {
+                if (webMessage.status === 'OK') {
+                    return [];
+                }
+                return Promise.reject(webMessage);
+            })
+            .catch(extractValidationViolations);
     }
 
     /**
