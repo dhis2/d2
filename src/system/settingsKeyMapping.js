@@ -324,6 +324,11 @@ const settingsKeyMapping = {
         type: 'checkbox',
     },
     'keyEmailSender': {label: 'email_sender'},
+    'emailTestButton': {
+        label: 'send_test_email',
+        type: 'post_button',
+        uri: '/email/test',
+    },
     /* ============================================================================================================ */
     /* Category: Access                                                                                             */
     /* ============================================================================================================ */
