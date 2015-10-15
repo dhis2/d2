@@ -160,6 +160,7 @@ const settingsKeyMapping = {
     'applicationTitle': {
         label: 'application_title',
         appendLocale: true,
+        multiLine: true,
     },
     'keyApplicationIntro': {
         label: 'application_introduction',
@@ -196,7 +197,10 @@ const settingsKeyMapping = {
             'india/india.css': 'india',
         },
     },
-    'startModule': {label: 'start_page'},
+    'startModule': {
+        label: 'start_page',
+        type: 'startModules',
+    },
     'keyFlag': {
         label: 'flag',
         type: 'dropdown',
@@ -310,6 +314,12 @@ const settingsKeyMapping = {
     'keyEmailHostName': {label: 'host_name'},
     'keyEmailPort': {
         label: 'port',
+        type: 'dropdown',
+        options: [
+            587,
+            465,
+            25,
+        ],
     },
     'keyEmailUsername': {
         label: 'username',
@@ -375,6 +385,7 @@ const settingsKeyMapping = {
         configuration: 'corsWhitelist',
         type: 'editlist',
         multiLine: true,
+        helpText: 'one_url_per_line',
     },
     /* ============================================================================================================ */
     /* Category: Approval                                                                                           */
