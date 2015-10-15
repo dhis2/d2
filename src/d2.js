@@ -15,7 +15,7 @@ const preInitConfig = Config.create();
 
 export function getManifest(url) {
     const api = new Api(jQuery);
-    api.setBaseUrl('./');
+    api.setBaseUrl('');
 
     const manifestUtilities = {
         getBaseUrl() {
