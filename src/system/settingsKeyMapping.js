@@ -133,7 +133,6 @@ const settingsKeyMapping = {
     },
     'helpPageLink': {
         label: 'help_page_link',
-        validators: ['url'],
     },
     'keyInstanceBaseUrl': {
         label: 'server_base_url',
@@ -235,7 +234,10 @@ const settingsKeyMapping = {
         label: 'tls',
         type: 'checkbox',
     },
-    'keyEmailSender': {label: 'email_sender'},
+    'keyEmailSender': {
+        label: 'email_sender',
+        validators: ['email'],
+    },
     'emailTestButton': {
         label: 'send_test_email',
         type: 'post_button',
@@ -335,6 +337,7 @@ const settingsKeyMapping = {
     'remoteServerUrl': {
         label: 'remote_server_url',
         configuration: 'remoteServerUrl',
+        validators: ['url'],
     },
     'remoteServerUsername': {
         label: 'remote_server_username',
