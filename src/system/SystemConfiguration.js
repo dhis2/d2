@@ -5,6 +5,7 @@
  * @requires api/Api
  */
 import Api from '../api/Api';
+import settingsKeyMapping from './settingsKeyMapping';
 
 /**
  * @class SystemConfiguration
@@ -89,7 +90,14 @@ class SystemConfiguration {
         } else if (key === 'corsWhitelist') {
             req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'), {dataType: 'text'});
         } else {
-            req = this.api.post(['configuration', key, value].join('/'), '', {dataType: 'text'});
+            const postLoc = settingsKeyMapping.hasOwnProperty(key) &&
+                settingsKeyMapping[key].hasOwnProperty('configuration') &&
+                settingsKeyMapping[key].configuration;
+            if (postLoc) {
+                req = this.api.post(['configuration', postLoc, value].join('/'), '', {dataType: 'text'});
+            } else {
+                return Promise.reject('No configuration found for ' + key);
+            }
         }
 
         return req.then(() => {
