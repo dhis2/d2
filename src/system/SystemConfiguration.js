@@ -94,7 +94,8 @@ class SystemConfiguration {
                 settingsKeyMapping[key].hasOwnProperty('configuration') &&
                 settingsKeyMapping[key].configuration;
             if (postLoc) {
-                req = this.api.post(['configuration', postLoc, value].join('/'), '', {dataType: 'text'});
+                console.log(value);
+                req = this.api.post(['configuration', postLoc].join('/'), value, {dataType: 'text', contentType: 'text/plain'});
             } else {
                 return Promise.reject('No configuration found for ' + key);
             }
