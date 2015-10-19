@@ -7,7 +7,7 @@
 
 d2.iml
 
-config.js
+./config.js
 gulpfile.js
 
 .idea
