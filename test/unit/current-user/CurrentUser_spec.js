@@ -1,6 +1,6 @@
-import fixtures from 'fixtures/fixtures';
-import CurrentUser from 'd2/current-user/CurrentUser';
-import UserAuthorities from 'd2/current-user/UserAuthorities';
+import fixtures from '../../fixtures/fixtures';
+import CurrentUser from '../../../src/current-user/CurrentUser';
+import UserAuthorities from '../../../src/current-user/UserAuthorities';
 
 describe('CurrentUser', () => {
     let currentUser;

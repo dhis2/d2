@@ -1,4 +1,4 @@
-import Pager from 'd2/pager/Pager';
+import Pager from '../../../src/pager/Pager';
 
 describe('Pager', () => {
     let pagerFixtureOne;

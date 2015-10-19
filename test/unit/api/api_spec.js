@@ -2,7 +2,7 @@ let proxyquire = require('proxyquire').noCallThru();
 proxyquire('../../../src/api/Api', {
 });
 
-import fixtures from 'fixtures/fixtures';
+import fixtures from '../../fixtures/fixtures';
 
 // TODO: Can not use import here as babel will not respect the override
 var Api = require('../../../src/api/Api');

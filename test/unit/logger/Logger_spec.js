@@ -13,7 +13,7 @@ describe('Logger', () => {
             warn: spy()
         };
 
-        Logger = require('d2/logger/Logger');
+        Logger = require('../../../src/logger/Logger');
         logger = new Logger(consoleMock);
     });
 

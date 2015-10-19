@@ -1,5 +1,5 @@
-import fixtures from 'fixtures/fixtures';
-import UserAuthorities from 'd2/current-user/UserAuthorities';
+import fixtures from '../../fixtures/fixtures';
+import UserAuthorities from '../../../src/current-user/UserAuthorities';
 
 describe('UserAuthorities', () => {
     let authorities;

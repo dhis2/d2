@@ -1,14 +1,14 @@
 let proxyquire = require('proxyquire').noCallThru();
-proxyquire('d2/api/Api', {
-    'd2/external/jquery': {}
+proxyquire('../../../src/api/Api', {
+    '../../../src/external/jquery': {}
 });
 
 describe('ModelValidations', () => {
     'use strict';
 
-    let ModelValidation = require('d2/model/ModelValidation');
-    let Logger = require('d2/logger/Logger');
-    let Api = require('d2/api/Api');
+    let ModelValidation = require('../../../src/model/ModelValidation');
+    let Logger = require('../../../src/logger/Logger');
+    let Api = require('../../../src/api/Api');
 
     let api;
     let modelValidation;

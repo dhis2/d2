@@ -1,8 +1,8 @@
 describe('settings.System', () => {
     'use strict';
 
-    let Api = require('d2/api/Api');
-    let SystemSettings = require('d2/system/SystemSettings');
+    let Api = require('../../../src/api/Api');
+    let SystemSettings = require('../../../src/system/SystemSettings');
     let systemSettings;
 
     beforeEach(() => {

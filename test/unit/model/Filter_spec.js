@@ -1,5 +1,5 @@
-import Filters from 'd2/model/Filters';
-import Filter from 'd2/model/Filter';
+import Filters from '../../../src/model/Filters';
+import Filter from '../../../src/model/Filter';
 
 describe('Filter', () => {
     describe('getFilter', () => {

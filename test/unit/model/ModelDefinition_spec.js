@@ -6,11 +6,11 @@ proxyquire('../../../src/model/ModelDefinition', {
     './ModelCollection': ModelCollection
 });
 
-import fixtures from 'fixtures/fixtures';
+import fixtures from '../../fixtures/fixtures';
 import {DIRTY_PROPERTY_LIST} from '../../../src/model/ModelBase';
 
 // TODO: Can not use import here as babel will not respect the override
-let ModelDefinition = require('d2/model/ModelDefinition');
+let ModelDefinition = require('../../../src/model/ModelDefinition');
 
 describe('ModelDefinition', () => {
     'use strict';
@@ -372,7 +372,7 @@ describe('ModelDefinition', () => {
             let userModelDefinition;
 
             beforeEach(() => {
-                UserModelDefinition = require('d2/model/ModelDefinition').specialClasses.user;
+                UserModelDefinition = require('../../../src/model/ModelDefinition').specialClasses.user;
 
                 userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
             });
@@ -405,7 +405,7 @@ describe('ModelDefinition', () => {
 
         //TODO: Figure out a way to mock a require
         beforeEach(() => {
-            Model = require('d2/model/Model');
+            Model = require('../../../src/model/Model');
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
@@ -840,7 +840,7 @@ describe('ModelDefinition subsclasses', () => {
 
     beforeEach(() => {
         getOnApiStub = stub().returns(new Promise(function () {}));
-        ModelDefinition = require('d2/model/ModelDefinition');
+        ModelDefinition = require('../../../src/model/ModelDefinition');
 
         ModelDefinition.prototype.api = {
             get: getOnApiStub

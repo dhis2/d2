@@ -4,7 +4,7 @@ describe('Utils', () => {
     var utils;
 
     beforeEach(() => {
-        utils = require('d2/lib/utils');
+        utils = require('../../../src/lib/utils');
     });
 
     describe('throwError', () => {

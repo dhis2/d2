@@ -1,8 +1,8 @@
 
 describe('System', () => {
-    const System = require('d2/system/System');
-    const SystemConfiguration = require('d2/system/SystemConfiguration');
-    const SystemSettings = require('d2/system/SystemSettings');
+    const System = require('../../../src/system/System');
+    const SystemConfiguration = require('../../../src/system/SystemConfiguration');
+    const SystemSettings = require('../../../src/system/SystemSettings');
     let sys;
 
     const mockSettingsMapping = {

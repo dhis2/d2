@@ -1,7 +1,7 @@
 
 describe('Internationalisation (I18n)', () => {
-    const Api = require('d2/api/Api');
-    const I18n = require('d2/i18n/I18n');
+    const Api = require('../../../src/api/Api');
+    const I18n = require('../../../src/i18n/I18n');
     let i18n;
 
     const mockTranslations = {

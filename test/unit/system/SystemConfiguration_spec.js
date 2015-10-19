@@ -1,7 +1,7 @@
 
 describe('System.configuration', () => {
-    const Api = require('d2/api/Api');
-    const SystemConfiguration = require('d2/system/SystemConfiguration');
+    const Api = require('../../../src/api/Api');
+    const SystemConfiguration = require('../../../src/system/SystemConfiguration');
     let configuration;
     let apiGet;
 
