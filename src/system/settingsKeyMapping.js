@@ -16,16 +16,6 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: General                                                                                            */
     /* ============================================================================================================ */
-    'keyCacheStrategy': {
-        label: 'cache_strategy',
-        type: 'dropdown',
-        options: {
-            'NO_CACHE': 'no_cache',
-            'CACHE_1_HOUR': 'cache_for_one_hour',
-            'CACHE_6AM_TOMORROW': 'cache_until_6am_tomorrow',
-            'CACHE_TWO_WEEKS': 'cache_for_two_weeks',
-        },
-    },
     'keyAnalyticsMaxLimit': {
         label: 'analytics_max_limit',
         type: 'dropdown',
@@ -34,15 +24,6 @@ const settingsKeyMapping = {
             100000: 100000,
             200000: 200000,
             0: 'unlimited',
-        },
-    },
-    'keyDatabaseServerCpus': {
-        label: 'no_of_database_server_cpus',
-        type: 'dropdown',
-        options: {
-            0: 'detect_based_on_web_server',
-            1: '1', 2: '2', 3: '3', 4: '4', 5: '5',
-            6: '6', 7: '7', 8: '8', 16: '16', 32: '32',
         },
     },
     'infrastructuralIndicators': {
@@ -119,10 +100,6 @@ const settingsKeyMapping = {
         configuration: 'offlineOrganisationUnitLevel',
         type: 'organisationUnitLevels',
     },
-    'keySystemNotificationsEmail': {
-        label: 'system_notifications_email_address',
-        validators: ['email'],
-    },
     'factorDeviation': {
         label: 'data_analysis_factor',
         validators: ['number'],
@@ -133,13 +110,7 @@ const settingsKeyMapping = {
     },
     'helpPageLink': {
         label: 'help_page_link',
-    },
-    'keyInstanceBaseUrl': {
-        label: 'server_base_url',
-        validators: ['url'],
-    },
-    'googleAnalyticsUA': {
-        label: 'google_analytics_ua_key',
+        validators: ['relative_url'],
     },
     'multiOrganisationUnitForms': {
         label: 'multi_organisation_unit_forms',
@@ -152,6 +123,39 @@ const settingsKeyMapping = {
     'keyAnalyticsMaintenanceMode': {
         label: 'put_analytics_in_maintenance_mode',
         type: 'checkbox',
+    },
+    /* ============================================================================================================ */
+    /* Category: Server                                                                                             */
+    /* ============================================================================================================ */
+    'keyCacheStrategy': {
+        label: 'cache_strategy',
+        type: 'dropdown',
+        options: {
+            'NO_CACHE': 'no_cache',
+            'CACHE_1_HOUR': 'cache_for_one_hour',
+            'CACHE_6AM_TOMORROW': 'cache_until_6am_tomorrow',
+            'CACHE_TWO_WEEKS': 'cache_for_two_weeks',
+        },
+    },
+    'keyDatabaseServerCpus': {
+        label: 'no_of_database_server_cpus',
+        type: 'dropdown',
+        options: {
+            0: 'detect_based_on_web_server',
+            1: '1', 2: '2', 3: '3', 4: '4', 5: '5',
+            6: '6', 7: '7', 8: '8', 16: '16', 32: '32',
+        },
+    },
+    'keySystemNotificationsEmail': {
+        label: 'system_notifications_email_address',
+        validators: ['email'],
+    },
+    'keyInstanceBaseUrl': {
+        label: 'server_base_url',
+        validators: ['url'],
+    },
+    'googleAnalyticsUA': {
+        label: 'google_analytics_ua_key',
     },
     /* ============================================================================================================ */
     /* Category: Appearance                                                                                         */
@@ -290,6 +294,7 @@ const settingsKeyMapping = {
         type: 'editlist',
         multiLine: true,
         helpText: 'one_url_per_line',
+        validators: ['url_array'],
     },
     /* ============================================================================================================ */
     /* Category: Approval                                                                                           */
