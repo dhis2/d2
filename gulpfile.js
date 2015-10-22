@@ -149,7 +149,7 @@ gulp.task('docs:app', function (cb) {
 
     builder.loadConfig('./docs/app/config.js')
         .then(function () {
-            builder.config({baseURL: './docs/app'});
+            //builder.config({baseURL: './docs/app'});
             builder.build('app', './docs/dist/app-bundle.js', {minify: false, mangle: false, sourceMaps: true})
                 .then(function () {
                     gulp.src([

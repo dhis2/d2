@@ -6,12 +6,12 @@ module.exports = function createNavigationDoc(log) {
         $runBefore: ['renderDocsProcessor'],
         $process: function (docs) {
             var navigationDocument = {
-                outputPath: 'nav.html',
+                outputPath: 'nav.json',
                 name: 'Documentation Navigation',
                 id: 'navigation',
-                docType: 'template',
-                template: 'navigation.template.html',
-                pages: []
+                docType: 'navigation',
+                template: 'navigation.template.json',
+                pages: [],
             };
 
             docs = _.map(docs, function (doc) {
@@ -19,7 +19,7 @@ module.exports = function createNavigationDoc(log) {
                     name: doc.name,
                     pageType: doc.pageType,
                     url: doc.outputPath,
-                    module: doc.outputPath.replace('.html', '').split('/')[0] || 'default'
+                    module: doc.outputPath.replace('.json', '').split('/')[0] || 'default'
                 });
 
                 return doc;

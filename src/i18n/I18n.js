@@ -23,7 +23,7 @@ class I18n {
     /**
      * Adds one or more strings to the list of strings to translate
      *
-     * @param {[]|String} strings
+     * @param {(String[]|String)} strings
      */
     addStrings(strings) {
         if (typeof strings === 'string' && strings.trim().length > 0) {

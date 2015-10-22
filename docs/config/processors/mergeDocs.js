@@ -28,7 +28,7 @@ module.exports = function mergeDocs() {
                         name: firstDoc.name,
                         moduleName: getModuleName(firstDoc),
                         fileInfo: firstDoc.fileInfo,
-                        outputPath: [getModuleName(firstDoc), 'html'].join('.'),
+                        outputPath: [getModuleName(firstDoc), 'json'].join('.'),
                         subDocs: _.map(subDocs, function (doc) { return _.omit(doc, [
                             'fileInfo',
                             'content',

@@ -13,8 +13,8 @@ module.exports = function md2HtmlPages(log) {
             docs = _.forEach(docs, function (doc) {
                 if (doc.fileInfo.extension === 'md') {
                     doc.module = doc.fileInfo.relativePath.split('/').slice(-2).shift() || 'default';
-                    doc.outputPath = doc.module + '/' + doc.fileInfo.baseName + '.html';
-                    doc.template = 'page.template.html';
+                    doc.outputPath = doc.module + '/' + doc.fileInfo.baseName + '.json';
+                    doc.template = 'page.template.json';
                     doc.pageName = doc.fileInfo.baseName.charAt(0).toUpperCase() + doc.fileInfo.baseName.slice(1).toLowerCase().replace('_', ' ');
                     doc.content = marked(doc.content, {renderer: renderer});
                     doc.name = doc.pageName;

@@ -70,10 +70,10 @@ module.exports = new Package('config', [
         // In this case we just use the same static template for all docs
         templateFinder.templatePatterns = [
             '${ doc.template }',
-            '${ doc.id }.${ doc.docType }.template.html',
-            '${ doc.id }.template.html',
-            '${ doc.docType }.template.html',
-            'common.template.html'
+            '${ doc.id }.${ doc.docType }.template.json',
+            '${ doc.id }.template.json',
+            '${ doc.docType }.template.json',
+            'common.template.json',
         ];
 
         // Specify where the writeFilesProcessor will write our generated doc files
