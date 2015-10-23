@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto,sans-serif;
+}
+
+main {
+    padding: 8rem 5rem 2rem;
+}
+
+code {
+    font-size: 1rem;
+}

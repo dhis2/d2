@@ -1,0 +1,216 @@
+{
+    "id": "ModelValidation",
+    "pageType": "api",
+    "name": "ModelValidation",
+    "moduleName": "model/ModelValidation",
+    "methods": [
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "",
+                    "startingLine": 169,
+                    "typeExpression": "Object",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Object"
+                    },
+                    "typeList": [
+                        "Object"
+                    ],
+                    "name": "validationSettings"
+                },
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "The value to be validated",
+                    "startingLine": 170,
+                    "typeExpression": "*",
+                    "type": {
+                        "type": "AllLiteral"
+                    },
+                    "typeList": [
+                        "*"
+                    ],
+                    "name": "value"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns an object with the status. When the status is false the messages\narray will contain messages on why the validation failed.",
+                "startingLine": 171,
+                "typeExpression": "{status: boolean, messages: Array}",
+                "type": {
+                    "type": "RecordType",
+                    "fields": [
+                        {
+                            "type": "FieldType",
+                            "key": {
+                                "type": "NameExpression",
+                                "name": "status"
+                            },
+                            "value": {
+                                "type": "NameExpression",
+                                "name": "boolean"
+                            }
+                        },
+                        {
+                            "type": "FieldType",
+                            "key": {
+                                "type": "NameExpression",
+                                "name": "messages"
+                            },
+                            "value": {
+                                "type": "NameExpression",
+                                "name": "Array"
+                            }
+                        }
+                    ]
+                },
+                "typeList": [
+                    "Object"
+                ]
+            },
+            "description": "Validate a given value against the given validationSettings.\nThis checks if the value is of the defined `validationSettings.type`\nif the value adheres to the set `validationSettings.min` and `validationSettings.max`\nand runs any type specific validations like for example on the type PHONENUMBER if it is [0-9+ ] compliant.",
+            "method": "validate",
+            "codeName": "_createClass",
+            "id": "_createClass",
+            "aliases": [
+                "_createClass"
+            ],
+            "name": "validate"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "The model that should be validated.",
+                    "startingLine": 212,
+                    "typeExpression": "Model",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Model"
+                    },
+                    "typeList": [
+                        "Model"
+                    ],
+                    "name": "model"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns an array with validation messages if there are any.",
+                "startingLine": 213,
+                "typeExpression": "Array",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Array"
+                },
+                "typeList": [
+                    "Array"
+                ]
+            },
+            "description": "Sends a POST request against the `api/schemas` endpoint to check if the model is valid.",
+            "method": "validateAgainstSchema",
+            "notes": [
+                {
+                    "type": "warn",
+                    "message": "Currently only checks"
+                }
+            ],
+            "codeName": null,
+            "id": "model/ModelValidation",
+            "aliases": [
+                "model/ModelValidation"
+            ],
+            "name": "validateAgainstSchema"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "New or memoized instance of `ModelInstance`",
+                "startingLine": 247,
+                "typeExpression": "ModelValidation",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "ModelValidation"
+                },
+                "typeList": [
+                    "ModelValidation"
+                ]
+            },
+            "description": "Returns the `ModelValidation` singleton. Creates a new one if it does not yet exist.\nGrabs a logger instance by calling `Logger.getLogger`",
+            "method": "getModelValidation",
+            "static": true,
+            "codeName": null,
+            "id": "model/ModelValidation",
+            "aliases": [
+                "model/ModelValidation"
+            ],
+            "name": "getModelValidation"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "ModelValidation",
+    "docType": "class"
+}

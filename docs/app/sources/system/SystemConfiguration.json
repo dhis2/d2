@@ -1,0 +1,71 @@
+{
+    "id": "SystemConfiguration",
+    "pageType": "api",
+    "name": "SystemConfiguration",
+    "moduleName": "system/SystemConfiguration",
+    "methods": [
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "If set to true, calls the API regardless of cache status",
+                    "startingLine": 50,
+                    "typeExpression": "boolean",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "boolean"
+                    },
+                    "typeList": [
+                        "boolean"
+                    ],
+                    "name": "ignoreCache"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Promise that resolves with all the individual configuration options from the api.",
+                "startingLine": 35,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "Fetches all system configuration settings from the API and caches them so that future calls to this function\nwon't call the API again.\n```js\nd2.system.configuration.all()\n .then(configuration => {\n   console.log(\n     'Self-registered users will be assigned to the : ' +\n     configuration.selfRegistrationOrgUnit + ' org unit'\n   );\n });\n```",
+            "method": "all",
+            "codeName": "_createClass",
+            "id": "_createClass",
+            "aliases": [
+                "_createClass"
+            ],
+            "name": "all"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "SystemConfiguration",
+    "docType": "class"
+}

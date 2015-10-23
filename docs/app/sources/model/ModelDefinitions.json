@@ -1,0 +1,117 @@
+{
+    "id": "ModelDefinitions",
+    "pageType": "api",
+    "name": "ModelDefinitions",
+    "moduleName": "model/ModelDefinitions",
+    "methods": [
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Add a model definition to the definitions collection",
+                    "startingLine": 32,
+                    "typeExpression": "ModelDefinition",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "ModelDefinition"
+                    },
+                    "typeList": [
+                        "ModelDefinition"
+                    ],
+                    "name": "modelDefinition"
+                }
+            ],
+            "description": "This will allow you to add your own custom ModelDefinitions.\n\nThe Definition object should have the following properties\n`modelName, modelNamePlural, modelOptions, properties, validations`\n\n```js\nmodels.add({name: 'MyDefinition', plural: 'MyDefinitions', endPointname: '/myDefinition'});\n```",
+            "method": "add",
+            "codeName": "add",
+            "id": "add",
+            "aliases": [
+                "add"
+            ],
+            "name": "add"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Transformer function that will be run for each `ModelDefinition`",
+                    "startingLine": 60,
+                    "typeExpression": "Function",
+                    "type": {
+                        "type": "FunctionType",
+                        "params": []
+                    },
+                    "typeList": [
+                        "Function"
+                    ],
+                    "name": "transformer"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Array with the `ModelDefinition` objects.",
+                "startingLine": 61,
+                "typeExpression": "Array",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Array"
+                },
+                "typeList": [
+                    "Array"
+                ]
+            },
+            "description": "Map through the modelDefinitions like you would with a simple `Array.map()`\n\n```js\nmodels.mapThroughDefinitions(definition => console.log(definition.name);\n```",
+            "method": "mapThroughDefinitions",
+            "notes": [
+                {
+                    "type": "info",
+                    "message": "When mapping through the definition list `transformer` is called with the just the definition\nUnlike other map functions, no index or the full object is being passed."
+                },
+                {
+                    "type": "warn",
+                    "message": "The resulting array contains references to the actual objects. It does not work like immutable array functions."
+                }
+            ],
+            "codeName": null,
+            "id": "model/ModelDefinitions",
+            "aliases": [
+                "model/ModelDefinitions"
+            ],
+            "name": "mapThroughDefinitions"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "ModelDefinitions",
+    "docType": "class"
+}

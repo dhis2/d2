@@ -1,0 +1,463 @@
+{
+    "id": "ModelDefinition",
+    "pageType": "api",
+    "name": "ModelDefinition",
+    "moduleName": "model/ModelDefinition",
+    "methods": [
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Datavalues that should be loaded into the model.",
+                    "startingLine": 125,
+                    "typeExpression": "Object",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Object"
+                    },
+                    "typeList": [
+                        "Object"
+                    ],
+                    "name": "data",
+                    "optional": true
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns the newly created model instance.",
+                "startingLine": 127,
+                "typeExpression": "Model",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Model"
+                },
+                "typeList": [
+                    "Model"
+                ]
+            },
+            "description": "Creates a fresh Model instance based on the `ModelDefinition`. If data is passed into the method that\ndata will be loaded into the matching properties of the model.\n\n```js\ndataElement.create({name: 'ANC', id: 'd2sf33s3ssf'});\n```",
+            "method": "create",
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "create"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "",
+                    "startingLine": 170,
+                    "typeExpression": "String",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "String"
+                    },
+                    "typeList": [
+                        "String"
+                    ],
+                    "name": "identifier"
+                },
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Query parameters that should be passed to the GET query.",
+                    "startingLine": 171,
+                    "typeExpression": "Object",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Object"
+                    },
+                    "typeList": [
+                        "Object"
+                    ],
+                    "name": "queryParams",
+                    "optional": true,
+                    "defaultValue": "{fields: ':all'}"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Resolves with a `Model` instance or an error message.",
+                "startingLine": 172,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "Get a `Model` instance from the api loaded with data that relates to `identifier`.\nThis will do an API call and return a Promise that resolves with a `Model` or rejects with the api error message.\n\n```js\n//Do a get request for the dataElement with given id (d2sf33s3ssf) and print it's name\n//when that request is complete and the model is loaded.\ndataElement.get('d2sf33s3ssf')\n  .then(model => console.log(model.name));\n```",
+            "method": "get",
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "get"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Query parameters that should be passed to the GET query.",
+                    "startingLine": 213,
+                    "typeExpression": "Object",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Object"
+                    },
+                    "typeList": [
+                        "Object"
+                    ],
+                    "name": "queryParams",
+                    "optional": true,
+                    "defaultValue": "{fields: ':all'}"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "ModelCollection collection of models objects of the `ModelDefinition` type.",
+                "startingLine": 214,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "Loads a list of models.\n\n```js\n// Loads a list of models and prints their name.\ndataElement.list()\n  .then(modelCollection => {\n    modelCollection.forEach(model => console.log(model.name));\n  });\n```",
+            "method": "list",
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "list"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "The model that should be saved to the server.",
+                    "startingLine": 249,
+                    "typeExpression": "Model",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Model"
+                    },
+                    "typeList": [
+                        "Model"
+                    ],
+                    "name": "model"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "A promise which resolves when the save was successful\nor rejects when it failed. The promise will resolve with the data that is\nreturned from the server.",
+                "startingLine": 250,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "This method is used by the `Model` instances to save the model when calling `model.save()`.",
+            "method": "save",
+            "notes": [
+                {
+                    "type": "warning",
+                    "message": "This should generally not be called directly."
+                }
+            ],
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "save"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns an array of property names.",
+                "startingLine": 292,
+                "typeExpression": "String[]",
+                "type": {
+                    "type": "TypeApplication",
+                    "expression": {
+                        "type": "NameExpression",
+                        "name": "Array"
+                    },
+                    "applications": [
+                        {
+                            "name": "String",
+                            "type": "NameExpression"
+                        }
+                    ]
+                },
+                "typeList": [
+                    "String[]"
+                ]
+            },
+            "description": "This method returns a list of property names that that are defined\nas \"owner\" properties on this schema. This means these properties are used\nwhen saving the model to the server.\n\n```js\ndataElement.getOwnedPropertyNames()\n```",
+            "method": "getOwnedPropertyNames",
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "getOwnedPropertyNames"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns a promise to the deletion operation",
+                "startingLine": 316,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "This method is used by the `Model` instances to delete the model when calling `model.delete()`.",
+            "method": "delete",
+            "notes": [
+                {
+                    "type": "warning",
+                    "message": "This should generally not be called directly."
+                }
+            ],
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "delete"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "A schema definition received from the web api (/api/schemas)",
+                    "startingLine": 333,
+                    "typeExpression": "Object",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Object"
+                    },
+                    "typeList": [
+                        "Object"
+                    ],
+                    "name": "schema"
+                },
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "A list of attribute objects that describe custom attributes (/api/attributes)",
+                    "startingLine": 334,
+                    "typeExpression": "Object[]",
+                    "type": {
+                        "type": "TypeApplication",
+                        "expression": {
+                            "type": "NameExpression",
+                            "name": "Array"
+                        },
+                        "applications": [
+                            {
+                                "name": "Object",
+                                "type": "NameExpression"
+                            }
+                        ]
+                    },
+                    "typeList": [
+                        "Object[]"
+                    ],
+                    "name": "attributes"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Frozen model definition object.",
+                "startingLine": 336,
+                "typeExpression": "ModelDefinition",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "ModelDefinition"
+                },
+                "typeList": [
+                    "ModelDefinition"
+                ]
+            },
+            "description": "This method creates a new `ModelDefinition` based on a JSON structure called\na schema. A schema represents the structure of a domain model as it is\nrequired by DHIS. Since these schemas can not be altered on the server from\nthe modelDefinition is frozen to prevent accidental changes to the definition.\n\n```js\nModelDefinition.createFromSchema(schemaDefinition, attributes);\n```",
+            "method": "createFromSchema",
+            "static": true,
+            "notes": [
+                {
+                    "type": "info",
+                    "message": "An example of a schema definition can be found on\nhttps://apps.dhis2.org/demo/api/schemas/dataElement"
+                }
+            ],
+            "codeName": null,
+            "id": "model/ModelDefinition",
+            "aliases": [
+                "model/ModelDefinition"
+            ],
+            "name": "createFromSchema"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "ModelDefinition",
+    "docType": "class"
+}

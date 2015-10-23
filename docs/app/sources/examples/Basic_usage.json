@@ -1,0 +1,9 @@
+{
+    "docType": "md",
+    "content": "<h1 id=\"examples\">Examples</h1>\n<h2 id=\"initialise-the-library\">Initialise the library</h2>\n<p>To be able to use d2 you will first need to initalise the library. This is required to let the library know\nwhere it should load the schemas from. The schemas are the definitions of the datamodel as it is used in DHIS2. To do this\nyou have can provide d2 with a <code>baseUrl</code>.</p>\n<pre><code class=\"d2-code-example\">import {init} from 'd2/lib/d2';\n\ninit({baseUrl: 'http://apps.dhis2.org/dev/api'})\n  .then(d2 => {\n    //Your d2 is initialised and ready to use.\n  });</code></pre><h2 id=\"get-first-page-of-users-and-print-their-name\">Get first page of users and print their name</h2>\n<pre><code class=\"d2-runnable-code-example\">d2.models.user.list()\n  .then(userCollection => {\n    userCollection.forEach(user => console.log(user.name)));\n  });</code></pre>",
+    "description": "# Examples\n\n## Initialise the library\nTo be able to use d2 you will first need to initalise the library. This is required to let the library know\nwhere it should load the schemas from. The schemas are the definitions of the datamodel as it is used in DHIS2. To do this\nyou have can provide d2 with a `baseUrl`.\n\n```js\nimport {init} from 'd2/lib/d2';\n\ninit({baseUrl: 'http://apps.dhis2.org/dev/api'})\n  .then(d2 => {\n    //Your d2 is initialised and ready to use.\n  });\n```\n\n## Get first page of users and print their name\n```js\nd2.models.user.list()\n  .then(userCollection => {\n    userCollection.forEach(user => console.log(user.name)));\n  });\n```\n",
+    "module": "examples",
+    "pageName": "Basic usage",
+    "name": "Basic usage",
+    "pageType": "documentation"
+}

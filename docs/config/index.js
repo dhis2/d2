@@ -77,5 +77,5 @@ module.exports = new Package('config', [
         ];
 
         // Specify where the writeFilesProcessor will write our generated doc files
-        writeFilesProcessor.outputFolder  = 'docs/dist';
+        writeFilesProcessor.outputFolder  = 'docs/app/sources';
     });

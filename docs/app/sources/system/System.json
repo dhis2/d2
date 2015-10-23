@@ -1,0 +1,97 @@
+{
+    "id": "System",
+    "pageType": "api",
+    "name": "System",
+    "moduleName": "system/System",
+    "methods": [
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Object with the system interaction properties",
+                "startingLine": 83,
+                "typeExpression": "System",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "System"
+                },
+                "typeList": [
+                    "System"
+                ]
+            },
+            "description": "Get a new instance of the system object.",
+            "method": "getSystem",
+            "static": true,
+            "codeName": null,
+            "id": "system/System",
+            "aliases": [
+                "system/System"
+            ],
+            "name": "getSystem"
+        }
+    ],
+    "properties": [
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "Contains a reference to a `SystemSettings` instance that can be used\nto retrieve and save system settings.",
+            "startingLine": 26,
+            "typeExpression": "SystemSettings",
+            "type": {
+                "type": "NameExpression",
+                "name": "SystemSettings"
+            },
+            "typeList": [
+                "SystemSettings"
+            ],
+            "name": "settings",
+            "extraInfo": "```js\nd2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')\n .then(systemSettingsValue => {\n   console.log('Analytics was last updated on: ' + systemSettingsValue);\n });\n```"
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "",
+            "startingLine": 40,
+            "typeExpression": "SystemConfiguration",
+            "type": {
+                "type": "NameExpression",
+                "name": "SystemConfiguration"
+            },
+            "typeList": [
+                "SystemConfiguration"
+            ],
+            "name": "configuration",
+            "extraInfo": "A representation of the system configuration, that can be used to retreive and change system\nconfiguration options."
+        }
+    ],
+    "functions": [],
+    "className": "System",
+    "docType": "class"
+}

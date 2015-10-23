@@ -1,0 +1,393 @@
+{
+    "id": "Pager",
+    "pageType": "api",
+    "name": "Pager",
+    "moduleName": "pager/Pager",
+    "methods": [
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Result is true when there is a next page, false when there is not.",
+                "startingLine": 74,
+                "typeExpression": "Boolean",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Boolean"
+                },
+                "typeList": [
+                    "Boolean"
+                ]
+            },
+            "description": "Check whether there is a next page.",
+            "method": "hasNextPage",
+            "codeName": "_createClass",
+            "id": "_createClass",
+            "aliases": [
+                "_createClass"
+            ],
+            "name": "hasNextPage"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Result is true when there is a previous page, false when there is not.",
+                "startingLine": 89,
+                "typeExpression": "Boolean",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Boolean"
+                },
+                "typeList": [
+                    "Boolean"
+                ]
+            },
+            "description": "Check whether there is a previous page.",
+            "method": "hasPreviousPage",
+            "codeName": null,
+            "id": "pager/Pager",
+            "aliases": [
+                "pager/Pager"
+            ],
+            "name": "hasPreviousPage"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Promise that resolves with a new `ModelCollection` containing the next page's data. Or rejects with\na string when there is no next page for this collection or when the request for the next page failed.",
+                "startingLine": 103,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "",
+            "method": "getNextPage",
+            "codeName": null,
+            "id": "pager/Pager",
+            "aliases": [
+                "pager/Pager"
+            ],
+            "name": "getNextPage"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Promise that resolves with a new `ModelCollection` containing the previous page's data. Or rejects with\na string when there is no previous page for this collection or when the request for the previous page failed.",
+                "startingLine": 118,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "",
+            "method": "getPreviousPage",
+            "codeName": null,
+            "id": "pager/Pager",
+            "aliases": [
+                "pager/Pager"
+            ],
+            "name": "getPreviousPage"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "The number of the page you wish to navigate to.",
+                    "startingLine": 133,
+                    "typeExpression": "Number",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Number"
+                    },
+                    "typeList": [
+                        "Number"
+                    ],
+                    "name": "pageNr"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Promise that resolves with a new `ModelCollection` containing the data for the requested page.",
+                "startingLine": 134,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "",
+            "method": "goToPage",
+            "codeName": null,
+            "id": "pager/Pager",
+            "aliases": [
+                "pager/Pager"
+            ],
+            "name": "goToPage"
+        }
+    ],
+    "properties": [
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "Current page number",
+            "startingLine": 34,
+            "typeExpression": "number",
+            "type": {
+                "type": "NameExpression",
+                "name": "number"
+            },
+            "typeList": [
+                "number"
+            ],
+            "name": "page",
+            "extraInfo": ""
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "The total number of pages available",
+            "startingLine": 39,
+            "typeExpression": "number",
+            "type": {
+                "type": "NameExpression",
+                "name": "number"
+            },
+            "typeList": [
+                "number"
+            ],
+            "name": "pageCount",
+            "extraInfo": ""
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "The total number of items available.",
+            "startingLine": 44,
+            "typeExpression": "number",
+            "type": {
+                "type": "NameExpression",
+                "name": "number"
+            },
+            "typeList": [
+                "number"
+            ],
+            "name": "total",
+            "extraInfo": "This represents the total number of items available in the system. Note it is not the number of items\non the current page."
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "The url to the next page.",
+            "startingLine": 53,
+            "typeExpression": "string",
+            "type": {
+                "type": "NameExpression",
+                "name": "string"
+            },
+            "typeList": [
+                "string"
+            ],
+            "name": "nextPage",
+            "extraInfo": "If there is no next page then this will be undefined."
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "The url to the previous page",
+            "startingLine": 61,
+            "typeExpression": "string",
+            "type": {
+                "type": "NameExpression",
+                "name": "string"
+            },
+            "typeList": [
+                "string"
+            ],
+            "name": "prevPage",
+            "extraInfo": "If there is no previous page then this will be undefined."
+        }
+    ],
+    "functions": [],
+    "className": "Pager",
+    "docType": "class",
+    "constructorFunction": {
+        "params": [
+            {
+                "tagDef": {
+                    "name": "param",
+                    "multi": true,
+                    "docProperty": "params",
+                    "transforms": [
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "param",
+                "description": "Paging information object.",
+                "startingLine": 18,
+                "typeExpression": "Object",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Object"
+                },
+                "typeList": [
+                    "Object"
+                ],
+                "name": "pager",
+                "optional": true,
+                "defaultValue": "{page: 1, pageCount: 1}"
+            },
+            {
+                "tagDef": {
+                    "name": "param",
+                    "multi": true,
+                    "docProperty": "params",
+                    "transforms": [
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "param",
+                "description": "Paging handler object. The requirement for this object is that it has a list method.",
+                "startingLine": 19,
+                "typeExpression": "Object",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Object"
+                },
+                "typeList": [
+                    "Object"
+                ],
+                "name": "pagingHandler",
+                "optional": true,
+                "defaultValue": "{list: () => Promise.reject('No handler available')}"
+            }
+        ],
+        "description": "Returns a newly created pager object with methods to navigate pages.",
+        "constructor": "",
+        "codeName": "Pager",
+        "id": "Pager",
+        "aliases": [
+            "Pager"
+        ],
+        "name": "Pager"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "docType": "md",
+    "content": "<h1 id=\"how-to-install-d2-for-your-project-\">How to install d2 for your project...</h1>\n<p>Install d2 dependency. This dependency will be removed in a future version as we are moving towards adopting the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API\">fetch</a> api.</p>\n<pre><code class=\"d2-code-example\">npm install jquery</code></pre><p>Install d2 from npm</p>\n<pre><code class=\"d2-code-example\">npm install d2</code></pre><p>After installing you will be able to import the library into your project by using the files in the <code>lib</code> folder.</p>\n<pre><code class=\"d2-code-example\">// Using ES2015 imports\nimport d2 from 'd2/lib/d2';\n\n// Using CommonJS imports\nvar d2 = require('d2/lib/d2');</code></pre><p>If you want to use <code>d2</code> as just a global variable on the window object you can include one of the following scripts in\nyour page <code>d2/lib/d2-browser.js</code> or <code>d2/lib/d2-browser.min.js</code></p>\n",
+    "description": "# How to install d2 for your project...\n\nInstall d2 dependency. This dependency will be removed in a future version as we are moving towards adopting the [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) api.\n```sh\nnpm install jquery\n```\n\nInstall d2 from npm\n```sh\nnpm install d2\n```\n\nAfter installing you will be able to import the library into your project by using the files in the `lib` folder.\n\n```js\n// Using ES2015 imports\nimport d2 from 'd2/lib/d2';\n\n// Using CommonJS imports\nvar d2 = require('d2/lib/d2');\n```\n\nIf you want to use `d2` as just a global variable on the window object you can include one of the following scripts in\nyour page `d2/lib/d2-browser.js` or `d2/lib/d2-browser.min.js`\n",
+    "module": "general",
+    "pageName": "Install",
+    "name": "Install",
+    "pageType": "documentation"
+}

@@ -1,0 +1,9 @@
+{
+    "id": "settingsKeyMapping",
+    "pageType": "api",
+    "name": "settingsKeyMapping",
+    "moduleName": "system/settingsKeyMapping",
+    "methods": [],
+    "properties": [],
+    "functions": []
+}

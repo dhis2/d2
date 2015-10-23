@@ -1,0 +1,233 @@
+{
+    "name": "Documentation Navigation",
+    "id": "navigation",
+    "docType": "navigation",
+    "pages": [
+        {
+            "name": "Basic usage",
+            "pageType": "documentation",
+            "url": "examples/Basic_usage.json",
+            "module": "examples"
+        },
+        {
+            "name": "How do i",
+            "pageType": "documentation",
+            "url": "examples/How_do_i.json",
+            "module": "examples"
+        },
+        {
+            "name": "Install",
+            "pageType": "documentation",
+            "url": "general/Install.json",
+            "module": "general"
+        },
+        {
+            "name": "d2",
+            "pageType": "api",
+            "url": "d2.json",
+            "module": "d2"
+        },
+        {
+            "name": "I18n",
+            "pageType": "api",
+            "url": "i18n/I18n.json",
+            "module": "i18n"
+        },
+        {
+            "name": "Filter",
+            "pageType": "api",
+            "url": "model/Filter.json",
+            "module": "model"
+        },
+        {
+            "name": "Model",
+            "pageType": "api",
+            "url": "model/Model.json",
+            "module": "model"
+        },
+        {
+            "name": "ModelBase",
+            "pageType": "api",
+            "url": "model/ModelBase.json",
+            "module": "model"
+        },
+        {
+            "name": "ModelCollection",
+            "pageType": "api",
+            "url": "model/ModelCollection.json",
+            "module": "model"
+        },
+        {
+            "name": "ModelDefinition",
+            "pageType": "api",
+            "url": "model/ModelDefinition.json",
+            "module": "model"
+        },
+        {
+            "name": "ModelDefinitions",
+            "pageType": "api",
+            "url": "model/ModelDefinitions.json",
+            "module": "model"
+        },
+        {
+            "name": "ModelValidation",
+            "pageType": "api",
+            "url": "model/ModelValidation.json",
+            "module": "model"
+        },
+        {
+            "name": "Pager",
+            "pageType": "api",
+            "url": "pager/Pager.json",
+            "module": "pager"
+        },
+        {
+            "name": "System",
+            "pageType": "api",
+            "url": "system/System.json",
+            "module": "system"
+        },
+        {
+            "name": "SystemConfiguration",
+            "pageType": "api",
+            "url": "system/SystemConfiguration.json",
+            "module": "system"
+        },
+        {
+            "name": "SystemSettings",
+            "pageType": "api",
+            "url": "system/SystemSettings.json",
+            "module": "system"
+        },
+        {
+            "name": "settingsKeyMapping",
+            "pageType": "api",
+            "url": "system/settingsKeyMapping.json",
+            "module": "system"
+        }
+    ],
+    "documentation": {
+        "sections": [
+            [
+                {
+                    "name": "Basic usage",
+                    "pageType": "documentation",
+                    "url": "examples/Basic_usage.json",
+                    "module": "examples"
+                },
+                {
+                    "name": "How do i",
+                    "pageType": "documentation",
+                    "url": "examples/How_do_i.json",
+                    "module": "examples"
+                }
+            ],
+            [
+                {
+                    "name": "Install",
+                    "pageType": "documentation",
+                    "url": "general/Install.json",
+                    "module": "general"
+                }
+            ]
+        ]
+    },
+    "api": {
+        "sections": [
+            [
+                {
+                    "name": "d2",
+                    "pageType": "api",
+                    "url": "d2.json",
+                    "module": "d2"
+                }
+            ],
+            [
+                {
+                    "name": "I18n",
+                    "pageType": "api",
+                    "url": "i18n/I18n.json",
+                    "module": "i18n"
+                }
+            ],
+            [
+                {
+                    "name": "Filter",
+                    "pageType": "api",
+                    "url": "model/Filter.json",
+                    "module": "model"
+                },
+                {
+                    "name": "Model",
+                    "pageType": "api",
+                    "url": "model/Model.json",
+                    "module": "model"
+                },
+                {
+                    "name": "ModelBase",
+                    "pageType": "api",
+                    "url": "model/ModelBase.json",
+                    "module": "model"
+                },
+                {
+                    "name": "ModelCollection",
+                    "pageType": "api",
+                    "url": "model/ModelCollection.json",
+                    "module": "model"
+                },
+                {
+                    "name": "ModelDefinition",
+                    "pageType": "api",
+                    "url": "model/ModelDefinition.json",
+                    "module": "model"
+                },
+                {
+                    "name": "ModelDefinitions",
+                    "pageType": "api",
+                    "url": "model/ModelDefinitions.json",
+                    "module": "model"
+                },
+                {
+                    "name": "ModelValidation",
+                    "pageType": "api",
+                    "url": "model/ModelValidation.json",
+                    "module": "model"
+                }
+            ],
+            [
+                {
+                    "name": "Pager",
+                    "pageType": "api",
+                    "url": "pager/Pager.json",
+                    "module": "pager"
+                }
+            ],
+            [
+                {
+                    "name": "System",
+                    "pageType": "api",
+                    "url": "system/System.json",
+                    "module": "system"
+                },
+                {
+                    "name": "SystemConfiguration",
+                    "pageType": "api",
+                    "url": "system/SystemConfiguration.json",
+                    "module": "system"
+                },
+                {
+                    "name": "SystemSettings",
+                    "pageType": "api",
+                    "url": "system/SystemSettings.json",
+                    "module": "system"
+                },
+                {
+                    "name": "settingsKeyMapping",
+                    "pageType": "api",
+                    "url": "system/settingsKeyMapping.json",
+                    "module": "system"
+                }
+            ]
+        ]
+    }
+}

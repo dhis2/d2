@@ -1,0 +1,153 @@
+{
+    "id": "d2",
+    "pageType": "api",
+    "name": "d2",
+    "moduleName": "d2",
+    "methods": [],
+    "properties": [
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "",
+            "startingLine": 185,
+            "name": "config",
+            "extraInfo": "Can be used to set config options before initialisation of d2.\n\n```js\nimport {config, init} from 'd2';\n\nconfig.baseUrl = '/demo/api';\nconfig.i18n.sources.add('i18n/systemsettingstranslations.properties');\n\ninit()\n  .then(d2 => {\n    d2.system.settings.all()\n      .then(systemSettings => Object.keys())\n      .then(systemSettingsKey => {\n        d2.i18n.getTranslation(systemSettingsKey);\n      });\n  });\n\n```"
+        }
+    ],
+    "functions": [
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "A promise to the current user settings",
+                "startingLine": 44,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "The object that is the result of the promise will have the following properties\n```js\n{\n  \"uiLocale\": \"en\" // The users locale, that can be used for translations)\n}\n```",
+            "function": "getUserSettings",
+            "codeName": "getUserSettings",
+            "id": "getUserSettings",
+            "aliases": [
+                "getUserSettings"
+            ],
+            "name": "getUserSettings"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Configuration object that will be used to configure to define D2 Setting.\nSee the description for more information on the available settings.",
+                    "startingLine": 76,
+                    "typeExpression": "Object",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Object"
+                    },
+                    "typeList": [
+                        "Object"
+                    ],
+                    "name": "initConfig"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "A promise that resolves with the intialized d2 object. Which is an object that exposes `model`, `models` and `Api`",
+                "startingLine": 78,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "Init function that used to initialise D2. This will load the schemas from the DHIS2 api and configure your D2 instance.\n\nThe `config` object that can be passed into D2 can have the following properties:\n\nbaseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain\nfor example http://localhost/dhis/ you should set the base url to `/dhis/api`\n\n```js\nimport init from 'd2';\n\ninit({baseUrl: '/dhis/api'})\n  .then((d2) => {\n    console.log(d2.model.dataElement.list());\n  });\n```",
+            "function": "init",
+            "codeName": "init",
+            "id": "init",
+            "aliases": [
+                "init"
+            ],
+            "name": "init"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "A promise to an initialized d2 instance.",
+                "startingLine": 161,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "This function can be used to retrieve the `singleton` instance of d2. The instance is being created by calling\nthe `init` method.\n\n```js\nimport {init, getInstance} from 'd2';\n\ninit({baseUrl: '/dhis2/api/'});\ngetInstance()\n  .then(d2 => {\n     d2.models.dataElement.list();\n     // and all your other d2 magic.\n  });\n```",
+            "function": "getInstance",
+            "codeName": "getInstance",
+            "id": "getInstance",
+            "aliases": [
+                "getInstance"
+            ],
+            "name": "getInstance"
+        }
+    ]
+}

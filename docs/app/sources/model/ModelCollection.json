@@ -1,0 +1,351 @@
+{
+    "id": "ModelCollection",
+    "pageType": "api",
+    "name": "ModelCollection",
+    "moduleName": "model/ModelCollection",
+    "methods": [
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Model instance to add to the collection.",
+                    "startingLine": 103,
+                    "typeExpression": "Model",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Model"
+                    },
+                    "typeList": [
+                        "Model"
+                    ],
+                    "name": "value"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns itself for chaining purposes.",
+                "startingLine": 104,
+                "typeExpression": "ModelCollection",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "ModelCollection"
+                },
+                "typeList": [
+                    "ModelCollection"
+                ]
+            },
+            "description": "Adds a Model instance to the collection. The model is checked if it is a correct instance of `Model` and if it has\na valid id. A valid id is a uid string of 11 alphanumeric characters.",
+            "method": "add",
+            "throws": [
+                {
+                    "tagDef": {
+                        "name": "throws",
+                        "multi": true,
+                        "transforms": [
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "throws",
+                    "description": "When the passed value is not an instance of `Model`",
+                    "startingLine": 106,
+                    "typeExpression": "Error",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Error"
+                    },
+                    "typeList": [
+                        "Error"
+                    ]
+                },
+                {
+                    "tagDef": {
+                        "name": "throws",
+                        "multi": true,
+                        "transforms": [
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "throws",
+                    "description": "Throws error when the passed value does not have a valid id.",
+                    "startingLine": 107,
+                    "typeExpression": "Error",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Error"
+                    },
+                    "typeList": [
+                        "Error"
+                    ]
+                }
+            ],
+            "codeName": "add",
+            "id": "add",
+            "aliases": [
+                "add"
+            ],
+            "name": "add"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns the values of the collection as an array.",
+                "startingLine": 124,
+                "typeExpression": "Array",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Array"
+                },
+                "typeList": [
+                    "Array"
+                ]
+            },
+            "description": "If working with the Map type object is inconvenient this method can be used to return the values\nof the collection as an Array object.",
+            "method": "toArray",
+            "codeName": null,
+            "id": "model/ModelCollection",
+            "aliases": [
+                "model/ModelCollection"
+            ],
+            "name": "toArray"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns itself for chaining purposes;",
+                "startingLine": 147,
+                "typeExpression": "this",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "this",
+                    "reservedWord": true
+                },
+                "typeList": [
+                    "this"
+                ]
+            },
+            "description": "Clear the collection and remove all it's values.",
+            "method": "clear",
+            "codeName": "clear",
+            "id": "clear",
+            "aliases": [
+                "clear"
+            ],
+            "name": "clear"
+        }
+    ],
+    "properties": [
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "The `ModelDefinition` that this collection is for. This defines the type of models that\nare allowed to be added to the collection.",
+            "startingLine": 62,
+            "typeExpression": "ModelDefinition",
+            "type": {
+                "type": "NameExpression",
+                "name": "ModelDefinition"
+            },
+            "typeList": [
+                "ModelDefinition"
+            ],
+            "name": "modelDefinition",
+            "extraInfo": ""
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "Pager object that is created from the pagerData that was passed when the collection was constructed. If no pager data was present\nthe pager will have default values.",
+            "startingLine": 68,
+            "typeExpression": "Pager",
+            "type": {
+                "type": "NameExpression",
+                "name": "Pager"
+            },
+            "typeList": [
+                "Pager"
+            ],
+            "name": "pager",
+            "extraInfo": ""
+        },
+        {
+            "tagDef": {
+                "name": "property",
+                "multi": true,
+                "docProperty": "properties",
+                "transforms": [
+                    null,
+                    null,
+                    null
+                ]
+            },
+            "tagName": "property",
+            "description": "The number of Model objects that are in the collection.",
+            "startingLine": 89,
+            "typeExpression": "Number",
+            "type": {
+                "type": "NameExpression",
+                "name": "Number"
+            },
+            "typeList": [
+                "Number"
+            ],
+            "name": "size",
+            "extraInfo": "Contains the number of Model objects that are in this collection. If the collection is a collection with a pager. This\ndoes not take into account all the items in the database. Therefore when a pager is present on the collection\nthe size will return the items on that page. To get the total number of items consult the pager."
+        }
+    ],
+    "functions": [],
+    "className": "ModelCollection",
+    "docType": "class",
+    "constructorFunction": {
+        "params": [
+            {
+                "tagDef": {
+                    "name": "param",
+                    "multi": true,
+                    "docProperty": "params",
+                    "transforms": [
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "param",
+                "description": "The `ModelDefinition` that this collection is for. This defines the type of models that\nare allowed to be added to the collection.",
+                "startingLine": 43,
+                "typeExpression": "ModelDefinition",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "ModelDefinition"
+                },
+                "typeList": [
+                    "ModelDefinition"
+                ],
+                "name": "modelDefinition"
+            },
+            {
+                "tagDef": {
+                    "name": "param",
+                    "multi": true,
+                    "docProperty": "params",
+                    "transforms": [
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "param",
+                "description": "Initial values that should be added to the collection.",
+                "startingLine": 45,
+                "typeExpression": "Model[]",
+                "type": {
+                    "type": "TypeApplication",
+                    "expression": {
+                        "type": "NameExpression",
+                        "name": "Array"
+                    },
+                    "applications": [
+                        {
+                            "name": "Model",
+                            "type": "NameExpression"
+                        }
+                    ]
+                },
+                "typeList": [
+                    "Model[]"
+                ],
+                "name": "values"
+            },
+            {
+                "tagDef": {
+                    "name": "param",
+                    "multi": true,
+                    "docProperty": "params",
+                    "transforms": [
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "param",
+                "description": "Object with pager data. This object contains data that will be put into the `Pager` instance.",
+                "startingLine": 46,
+                "typeExpression": "Object",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Object"
+                },
+                "typeList": [
+                    "Object"
+                ],
+                "name": "pagerData"
+            }
+        ],
+        "description": "Creates a new `ModelCollection` object based on the passed `modelDefinition`. Additionally values can be added by passing\n`Model` objects in the `values` parameter. The collection also exposes a pager object which can be used to navigate through\nthe pages in the collection. For more information see the `Pager` class.",
+        "constructor": "",
+        "codeName": "ModelCollection",
+        "id": "ModelCollection",
+        "aliases": [
+            "ModelCollection"
+        ],
+        "name": "ModelCollection"
+    }
+}

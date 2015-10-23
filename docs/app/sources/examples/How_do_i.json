@@ -1,0 +1,9 @@
+{
+    "docType": "md",
+    "content": "<h1 id=\"how-do-i-\">How do i?</h1>\n<h1 id=\"figure-out-which-models-i-can-use-\">Figure out which models i can use?</h1>\n<p>The types of models to use include almost all the available endpoint points in DHIS2. The ones available are the <em>generic</em> endpoints.\nA more practical way to get the list is to use either the schemas endpoint, or use <code>d2</code> itself.</p>\n<p>A request to the following url will get you all the names of schemas available. <code>http://play.dhis2.org/demo/api/schemas.json?fields=name</code></p>\n<p>If you already have <code>d2</code> available you can do the following.</p>\n<pre><code class=\"d2-code-example\">import {getInstance} from 'd2/lib/d2';\n\ngetInstance(d2 => {\n    console.log(Object.keys(d2.models));\n});</code></pre>",
+    "description": "# How do i?\n\n# Figure out which models i can use?\n\nThe types of models to use include almost all the available endpoint points in DHIS2. The ones available are the _generic_ endpoints.\nA more practical way to get the list is to use either the schemas endpoint, or use `d2` itself.\n\nA request to the following url will get you all the names of schemas available. `http://play.dhis2.org/demo/api/schemas.json?fields=name`\n\nIf you already have `d2` available you can do the following.\n\n```js\nimport {getInstance} from 'd2/lib/d2';\n\ngetInstance(d2 => {\n    console.log(Object.keys(d2.models));\n});\n```",
+    "module": "examples",
+    "pageName": "How do i",
+    "name": "How do i",
+    "pageType": "documentation"
+}

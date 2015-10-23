@@ -1,0 +1,78 @@
+{
+    "id": "ModelBase",
+    "pageType": "api",
+    "name": "ModelBase",
+    "moduleName": "model/ModelBase",
+    "methods": [
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns a promise that resolves when the model has been saved\nor rejects with the result from the `validate()` call.",
+                "startingLine": 25,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "Checks if the model is dirty. When the model is dirty it will check if the values of the model are valid by calling\n`validate`. If this is correct it will attempt to save the [Model](#/model/Model) to the api.\n\n```js\nmyModel.save()\n  .then((message) => console.log(message));\n```",
+            "method": "save",
+            "codeName": "save",
+            "id": "save",
+            "aliases": [
+                "save"
+            ],
+            "name": "save"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Promise that resolves with an object with a status property that represents if the model\nis valid or not the fields array will return the names of the fields that are invalid.",
+                "startingLine": 60,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "This will run the validations on the properties which have validations set. Normally these validations are defined\nthrough the DHIS2 schema. It will check min/max for strings/numbers etc. Additionally it will\nrun model validations against the schema.\n\n```js\nmyModel.validate()\n .then(myModelStatus => {\n   if (myModelStatus.status === false) {\n     myModelStatus.fields.forEach((fieldName) => console.log(fieldName));\n   }\n});\n```",
+            "method": "validate",
+            "codeName": null,
+            "id": "model/ModelBase",
+            "aliases": [
+                "model/ModelBase"
+            ],
+            "name": "validate"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "ModelBase",
+    "docType": "class"
+}

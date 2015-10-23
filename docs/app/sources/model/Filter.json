@@ -1,0 +1,258 @@
+{
+    "id": "Filter",
+    "pageType": "api",
+    "name": "Filter",
+    "moduleName": "model/Filter",
+    "methods": [
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns the modified filter for chaining",
+                "startingLine": 9,
+                "typeExpression": "Filter",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Filter"
+                },
+                "typeList": [
+                    "Filter"
+                ]
+            },
+            "description": "This method can be used to add a equals filter value",
+            "method": "equals",
+            "codeName": "eq",
+            "id": "eq",
+            "aliases": [
+                "eq"
+            ],
+            "name": "equals"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns the modified filter for chaining",
+                "startingLine": 17,
+                "typeExpression": "Filter",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Filter"
+                },
+                "typeList": [
+                    "Filter"
+                ]
+            },
+            "description": "This method can be used to add a like filter value",
+            "method": "like",
+            "codeName": "like",
+            "id": "like",
+            "aliases": [
+                "like"
+            ],
+            "name": "like"
+        },
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Returns the modified filter for chaining",
+                "startingLine": 25,
+                "typeExpression": "Filter",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Filter"
+                },
+                "typeList": [
+                    "Filter"
+                ]
+            },
+            "description": "This method can be used to add a ilike filter value",
+            "method": "ilike",
+            "codeName": "ilike",
+            "id": "ilike",
+            "aliases": [
+                "ilike"
+            ],
+            "name": "ilike"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Property name that the filter should be applied on.",
+                    "startingLine": 59,
+                    "typeExpression": "String",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "String"
+                    },
+                    "typeList": [
+                        "String"
+                    ],
+                    "name": "propertyName"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "",
+                "startingLine": 60,
+                "typeExpression": "Filter",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Filter"
+                },
+                "typeList": [
+                    "Filter"
+                ]
+            },
+            "description": "",
+            "method": "on",
+            "codeName": "_createClass",
+            "id": "_createClass",
+            "aliases": [
+                "_createClass"
+            ],
+            "name": "on"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "Filters list that this filter will be added to when it is completed.",
+                    "startingLine": 81,
+                    "typeExpression": "Filters",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "Filters"
+                    },
+                    "typeList": [
+                        "Filters"
+                    ],
+                    "name": "filters"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "A instance of the Filter class that can be used to create\nfilters.\n",
+                "startingLine": 83
+            },
+            "description": "Create a filter instance",
+            "method": "getFilter",
+            "static": true,
+            "codeName": null,
+            "id": "model/Filter",
+            "aliases": [
+                "model/Filter"
+            ],
+            "name": "getFilter"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "Filter",
+    "docType": "class",
+    "constructorFunction": {
+        "params": [
+            {
+                "tagDef": {
+                    "name": "param",
+                    "multi": true,
+                    "docProperty": "params",
+                    "transforms": [
+                        null,
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "param",
+                "description": "Filters list that this filter will be added to when it is completed.",
+                "startingLine": 42,
+                "typeExpression": "Filters",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Filters"
+                },
+                "typeList": [
+                    "Filters"
+                ],
+                "name": "filters"
+            }
+        ],
+        "description": "",
+        "constructor": "",
+        "codeName": "Filter",
+        "id": "Filter",
+        "aliases": [
+            "Filter"
+        ],
+        "name": "Filter"
+    }
+}

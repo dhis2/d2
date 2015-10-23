@@ -53,7 +53,7 @@ export function getUserLocale() {
  *
  * @description
  * The object that is the result of the promise will have the following properties
- * ```json
+ * ```js
  * {
  *   "uiLocale": "en" // The users locale, that can be used for translations)
  * }
@@ -187,6 +187,7 @@ export function init(initConfig) {
  *      d2.models.dataElement.list();
  *      // and all your other d2 magic.
  *   });
+ * ```
  */
 export function getInstance() {
     return deferredD2Init.promise;

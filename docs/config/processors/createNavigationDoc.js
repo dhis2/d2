@@ -26,10 +26,10 @@ module.exports = function createNavigationDoc(log) {
             });
 
 
-            _.map(navigationDocument.pages, function (doc) {
-                console.log(doc.name);
-                console.log(doc.pageType);
-            });
+            // _.map(navigationDocument.pages, function (doc) {
+            //     console.log(doc.name);
+            //     console.log(doc.pageType);
+            // });
 
             navigationDocument.documentation = {
                 sections: _.chain(navigationDocument.pages)

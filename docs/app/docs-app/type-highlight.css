@@ -1,0 +1,37 @@
+.type-hint {
+    color: white;
+    background-color: #808080;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    padding: 3px 6px;
+    font-size: .8em;
+    border-radius: .3rem;
+    font-weight: bold;
+}
+
+.type-hint-string {
+    background-color: lightgreen;
+}
+
+.type-hint-number,
+.type-hint-integer,
+.type-hint-float {
+    background-color: cornflowerblue;
+}
+
+.type-hint-object {
+    background-color: #800080;
+}
+
+.type-hint-model,
+.type-hint-modelbase,
+.type-hint-modelvalidation,
+.type-hint-modelcollection,
+.type-hint-modeldefinition,
+.type-hint-modeldefinitions,
+.type-hint-pager {
+    background-color: orange;
+}
+
+.type-hint-error {
+    background-color: red;
+}

@@ -1,0 +1,104 @@
+{
+    "id": "SystemSettings",
+    "pageType": "api",
+    "name": "SystemSettings",
+    "moduleName": "system/SystemSettings",
+    "methods": [
+        {
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "Promise that resolves with the systemsettings object from the api.",
+                "startingLine": 35,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "Loads all the system settings in the system and returns them as an object from the promise.\n```js\nd2.system.settings.all()\n .then(systemSettings => {\n   console.log('Analytics was last updated on: ' + systemSettings.keyLastSuccessfulResourceTablesUpdate);\n });\n```",
+            "method": "all",
+            "codeName": "_createClass",
+            "id": "_createClass",
+            "aliases": [
+                "_createClass"
+            ],
+            "name": "all"
+        },
+        {
+            "params": [
+                {
+                    "tagDef": {
+                        "name": "param",
+                        "multi": true,
+                        "docProperty": "params",
+                        "transforms": [
+                            null,
+                            null,
+                            null
+                        ]
+                    },
+                    "tagName": "param",
+                    "description": "The identifier of the system setting that should be retrieved.",
+                    "startingLine": 56,
+                    "typeExpression": "String",
+                    "type": {
+                        "type": "NameExpression",
+                        "name": "String"
+                    },
+                    "typeList": [
+                        "String"
+                    ],
+                    "name": "systemSettingsKey"
+                }
+            ],
+            "returns": {
+                "tagDef": {
+                    "name": "returns",
+                    "aliases": [
+                        "return"
+                    ],
+                    "transforms": [
+                        null,
+                        null
+                    ]
+                },
+                "tagName": "returns",
+                "description": "A promise that resolves with the value or will fail if the value is not available.",
+                "startingLine": 57,
+                "typeExpression": "Promise",
+                "type": {
+                    "type": "NameExpression",
+                    "name": "Promise"
+                },
+                "typeList": [
+                    "Promise"
+                ]
+            },
+            "description": "```js\nd2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')\n .then(systemSettingsValue => {\n   console.log('Analytics was last updated on: ' + systemSettingsValue);\n });\n```",
+            "method": "get",
+            "codeName": null,
+            "id": "system/SystemSettings",
+            "aliases": [
+                "system/SystemSettings"
+            ],
+            "name": "get"
+        }
+    ],
+    "properties": [],
+    "functions": [],
+    "className": "SystemSettings",
+    "docType": "class"
+}
