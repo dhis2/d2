@@ -1,19 +1,19 @@
-let proxyquire = require('proxyquire').noCallThru();
+const proxyquire = require('proxyquire').noCallThru();
 proxyquire('../../../src/api/Api', {
 });
 
 import fixtures from '../../fixtures/fixtures';
 
 // TODO: Can not use import here as babel will not respect the override
-var Api = require('../../../src/api/Api');
+const Api = require('../../../src/api/Api');
 
 describe('Api', () => {
-    var jqueryMock;
-    var api;
+    let jqueryMock;
+    let api;
 
     beforeEach(() => {
         jqueryMock = {
-            ajax: stub().returns(Promise.resolve([fixtures.get('/api/schemas/dataElement')]))
+            ajax: stub().returns(Promise.resolve([fixtures.get('/api/schemas/dataElement')])),
         };
 
         api = new Api(jqueryMock);
@@ -32,7 +32,9 @@ describe('Api', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Api()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+        /* eslint new-cap: 0 */
+        expect(() => Api()).to.throw('Cannot call a class as a function');
+        /* eslint new-cap: 1 */
     });
 
     describe('getApi', () => {
@@ -46,8 +48,6 @@ describe('Api', () => {
     });
 
     describe('setBaseUrl', () => {
-        var api;
-
         beforeEach(() => {
             api = new Api({});
         });
@@ -72,8 +72,8 @@ describe('Api', () => {
     });
 
     describe('get', () => {
-        var requestFailedHandler;
-        var requestSuccessHandler;
+        let requestFailedHandler;
+        let requestSuccessHandler;
 
         beforeEach(() => {
             requestSuccessHandler = spy();
@@ -84,7 +84,7 @@ describe('Api', () => {
             expect(api.get).to.be.instanceof(Function);
         });
 
-        it('should return a promise', function () {
+        it('should return a promise', function() {
             expect(api.get('dataElements')).to.be.instanceof(Promise);
         });
 
@@ -96,7 +96,7 @@ describe('Api', () => {
                 url: '/api/dataElements',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
 
@@ -108,7 +108,7 @@ describe('Api', () => {
                 url: '/api/path/of/sorts/dataElements',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
 
@@ -120,7 +120,7 @@ describe('Api', () => {
                 url: '/api/dataElements.json',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
 
@@ -134,7 +134,7 @@ describe('Api', () => {
                 url: 'http://localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
 
@@ -148,7 +148,7 @@ describe('Api', () => {
                 url: '//localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
 
@@ -160,7 +160,7 @@ describe('Api', () => {
                 url: '/api/dataElements',
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
 
@@ -173,14 +173,14 @@ describe('Api', () => {
                 dataType: 'json',
                 contentType: 'application/json',
                 data: {
-                    fields: 'id,name'
-                }
+                    fields: 'id,name',
+                },
             });
         });
 
-        it('should call the failed reject handler', function (done) {
-            jqueryMock.ajax.returns((function () {
-                return new Promise(function (resolve, reject) {
+        it('should call the failed reject handler', function(done) {
+            jqueryMock.ajax.returns((function() {
+                return new Promise(function(resolve, reject) {
                     reject(new Error('Request failed'));
                 });
             })());
@@ -213,7 +213,7 @@ describe('Api', () => {
                 });
         });
 
-        it('should call the success resolve handler',(done) => {
+        it('should call the success resolve handler', (done) => {
             jqueryMock.ajax.returns(Promise.resolve('Success data'));
 
             api.get('/api/dataElements', {fields: 'id,name'})
@@ -233,7 +233,7 @@ describe('Api', () => {
                 url: '/api/dataElements',
                 dataType: 'text',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
     });
@@ -243,7 +243,7 @@ describe('Api', () => {
             expect(api.post).to.be.instanceof(Function);
         });
 
-        it('should call the api the with the correct data', function () {
+        it('should call the api the with the correct data', function() {
             api.post(fixtures.get('singleUserAllFields').href, fixtures.get('singleUserOwnerFields'));
 
             expect(jqueryMock.ajax).to.be.calledWith({
@@ -321,7 +321,7 @@ describe('Api', () => {
                 url: fixtures.get('singleUserAllFields').href,
                 dataType: 'json',
                 contentType: 'application/json',
-                data: {}
+                data: {},
             });
         });
     });
