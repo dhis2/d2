@@ -222,11 +222,11 @@ const settingsKeyMapping = {
     'keyEmailPort': {
         label: 'port',
         type: 'dropdown',
-        options: [
-            587,
-            465,
-            25,
-        ],
+        options: {
+            587: 587,
+            465: 465,
+            25: 25,
+        },
     },
     'keyEmailUsername': {
         label: 'username',
