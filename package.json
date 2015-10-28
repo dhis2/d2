@@ -9,7 +9,8 @@
     "test": "gulp test && gulp e2e",
     "test-watch": "gulp watch",
     "prebuild": "gulp test && gulp e2e",
-    "build": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
+    "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
+    "build": "npm run-script build-only",
     "_postbuild": "gulp docs:build",
     "lint": "./node_modules/eslint/bin/eslint.js src"
   },
