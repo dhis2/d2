@@ -1,5 +1,4 @@
 import {checkType} from '../lib/check';
-import {copyOwnProperties} from '../lib/utils';
 import jQuery from '../external/jquery';
 
 function processSuccess(resolve) {
@@ -54,9 +53,9 @@ class Api {
     }
 
     post(url, data, options) {
-        // Pass data through JSON.stringify, unless options.contentType is 'text/plain'
+        // Pass data through JSON.stringify, unless options.contentType is 'text/plain' or false (meaning don't process)
         const
-            payload = (options && options.contentType && options.contentType === 'text/plain')
+            payload = (options && options.contentType !== undefined && (options.contentType === 'text/plain' || options.contentType === false))
             ? data
             : JSON.stringify(data);
         return this.request('POST', getUrl(this.baseUrl, url), payload, options);
@@ -84,11 +83,14 @@ class Api {
 
         const api = this;
 
-        function getOptions(mergeOptions) {
-            const resultOptions = {};
+        function getOptions(mergeOptions, payload) {
+            const resultOptions = Object.assign({}, api.defaultRequestSettings, mergeOptions);
 
-            copyOwnProperties(resultOptions, api.defaultRequestSettings);
-            copyOwnProperties(resultOptions, mergeOptions);
+            resultOptions.type = type;
+            resultOptions.url = requestUrl;
+            resultOptions.data = payload;
+            resultOptions.dataType = options.dataType !== undefined ? options.dataType : 'json';
+            resultOptions.contentType = options.contentType !== undefined ? options.contentType : 'application/json';
 
             return resultOptions;
         }
@@ -101,13 +103,7 @@ class Api {
                 payload = payload.toString();
             }
             api.jquery
-                .ajax(getOptions({
-                    type: type,
-                    url: requestUrl,
-                    data: payload,
-                    dataType: options.dataType || 'json',
-                    contentType: options.contentType || 'application/json',
-                }))
+                .ajax(getOptions(options, payload))
                 .then(processSuccess(resolve), processFailure(reject));
         });
     }
