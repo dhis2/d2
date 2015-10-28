@@ -205,13 +205,15 @@ const settingsKeyMapping = {
         label: 'require_authority_to_add_to_view_object_lists',
         type: 'checkbox',
     },
-    'keyCustomLoginPageLogo': {
+    'keyUseCustomLogoFront': {
         label: 'custom_login_page_logo',
-        type: 'checkbox',
+        type: 'staticContent',
+        name: 'logo_front',
     },
-    'keyCustomTopMenuLogo': {
+    'keyUseCustomLogoBanner': {
         label: 'custom_top_menu_logo',
-        type: 'checkbox',
+        type: 'staticContent',
+        name: 'logo_banner',
     },
     /* ============================================================================================================ */
     /* Category: Email                                                                                              */
