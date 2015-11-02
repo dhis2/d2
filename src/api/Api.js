@@ -65,7 +65,6 @@ class Api {
         return this.request('DELETE', getUrl(this.baseUrl, url), undefined, options);
     }
 
-    // TODO: write tests for update
     update(url, data) {
         return this.request('PUT', url, JSON.stringify(data));
     }
@@ -76,7 +75,7 @@ class Api {
         let requestUrl = url;
 
         if (data && data.filter) {
-            const urlQueryParams = data.filter.reduce((current, filter) => current + '&filter=' + filter, '');
+            const urlQueryParams = data.filter.reduce((str, filter) => { return str + (str.length ? '&' : '') + 'filter=' + filter;}, '');
             delete data.filter;
             requestUrl += '?' + urlQueryParams;
         }

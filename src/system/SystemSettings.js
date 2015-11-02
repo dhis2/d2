@@ -64,7 +64,6 @@ class SystemSettings {
             } catch (e) {
                 return value;
             }
-            return value;
         }
 
         return new Promise((resolve, reject) => {
