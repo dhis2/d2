@@ -9,7 +9,7 @@ describe('Internationalisation (I18n)', () => {
         'yes': 'Yup',
         'no': 'Nope',
         'system_settings_in_french': 'Paramètres du système',
-        // 'escapes': 'Characters may be escaped! Even\nnewlines...?',
+        // 'escapes': 'Characters may be escaped! Even\nnewlines?!?',
     };
 
     const mockUnicode = 'Param\\u00e8tres du syst\\u00e8me';
@@ -25,7 +25,7 @@ describe('Internationalisation (I18n)', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => I18n()).to.throw('Cannot call a class as a function');
+        expect(() => I18n()).to.throw('Cannot call a class as a function'); // eslint-disable-line
     });
 
     it('should set an instance of Api onto the SystemConfiguration instance', () => {
@@ -270,7 +270,7 @@ describe('Internationalisation (I18n)', () => {
                 });
             });
 
-            it('returns ** <string> ** for unknown strings', (done) => {
+            it('returns ** string ** for unknown strings', (done) => {
                 i18n.load().then(() => {
                     try {
                         expect(i18n.getTranslation('string')).to.eql('** string **');

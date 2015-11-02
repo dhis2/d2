@@ -11,6 +11,16 @@ describe('System', () => {
         'keyDescLabel': {label: 'label_2', description: 'desc_2'},
         'keyDuplicate1': {label: 'label_1'},
         'keyDuplicate2': {label: 'label_2', description: 'desc_1'},
+        'keyWithOptions': {
+            label: 'label_3',
+            options: {
+                1: 'first_option_label',
+                2: 'second_option_label',
+                3: 3,
+                4: 4,
+                5: 'fifth_option_label',
+            },
+        },
     };
 
     beforeEach(() => {
@@ -47,7 +57,7 @@ describe('System', () => {
         });
 
         it('should only export duplicate strings once', () => {
-            expect(Array.from(sys.getI18nStrings()).length).to.equal(4);
+            expect(Array.from(sys.getI18nStrings()).length).to.equal(8);
         });
 
         it('should export all the labels and descriptions', () => {
@@ -56,6 +66,22 @@ describe('System', () => {
             expect(strings).to.contain('label_2');
             expect(strings).to.contain('desc_1');
             expect(strings).to.contain('desc_2');
+        });
+
+        it('should include option labels', () => {
+            const strings = Array.from(sys.getI18nStrings());
+            expect(strings).to.contain('label_3');
+            expect(strings).to.contain('first_option_label');
+            expect(strings).to.contain('second_option_label');
+            expect(strings).to.contain('fifth_option_label');
+        });
+
+        it('should not treat numeric options as labels', () => {
+            const strings = Array.from(sys.getI18nStrings());
+            expect(strings).to.not.contain('3');
+            expect(strings).to.not.contain(3);
+            expect(strings).to.not.contain('4');
+            expect(strings).to.not.contain(4);
         });
     });
 });

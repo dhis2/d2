@@ -236,6 +236,18 @@ describe('Api', () => {
                 data: {},
             });
         });
+
+        it('should encode filters', () => {
+            api.get('filterTest', {filter: ['a:1', 'b:2']});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'GET',
+                url: '/api/filterTest?filter=a:1&filter=b:2',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: {},
+            });
+        });
     });
 
     describe('post', () => {
@@ -302,6 +314,18 @@ describe('Api', () => {
                 data: 'false',
             });
         });
+
+        it('shouldn\'t stringify data if content-type is false', () => {
+            api.post('some/api/endpoint', {obj: 'yes'}, {contentType: false});
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'POST',
+                url: '/api/some/api/endpoint',
+                dataType: 'json',
+                contentType: false,
+                data: {obj: 'yes'},
+            });
+        });
     });
 
     describe('delete', () => {
@@ -327,8 +351,33 @@ describe('Api', () => {
     });
 
     describe('update', () => {
+        beforeEach(() => {
+            jqueryMock.ajax = spy();
+        });
+
         it('should be a method', () => {
             expect(api.update).to.be.instanceof(Function);
+        });
+
+        it('should call the ajax method with the correct UPDATE request', () => {
+            const theData = {
+                a: 'A',
+                b: 'B!',
+                obj: {
+                    oa: 'o.a',
+                    ob: 'o.b',
+                },
+                arr: [1, 2, 3],
+            };
+            api.update('some/fake/api/endpoint', theData);
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'PUT',
+                url: 'some/fake/api/endpoint',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(theData),
+            });
         });
     });
 });
