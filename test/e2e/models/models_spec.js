@@ -192,7 +192,7 @@ describe('D2.models', function () {
 
             server.respondWith(
                 'GET',
-                'http://localhost:8080/dhis/api/dataElements?&filter=id:eq:umC9U5YGDq4&fields=%3Aall',
+                'http://localhost:8080/dhis/api/dataElements?filter=id:eq:umC9U5YGDq4&fields=%3Aall',
                 [
                     200,
                     {'Content-Type': 'application/json'},
@@ -221,7 +221,11 @@ describe('D2.models', function () {
                 .then((list) => {
                     expect(list.size).to.equal(0);
                 })
-                .then(done);
+                .then(done)
+                .catch((err) => {
+                    done(err);
+                })
+            ;
 
             server.respond();
         });
