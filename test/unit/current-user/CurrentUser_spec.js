@@ -18,7 +18,7 @@ describe('CurrentUser', () => {
                 get: stub().returns(Promise.resolve([])),
             },
             organisationUnit: {
-                get: stub().returns(Promise.resolve([])),
+                list: stub().returns(Promise.resolve([])),
                 authorities: [
                     {
                         type: 'CREATE',
@@ -143,7 +143,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.get).to.be.calledWith({filter: ['id:in:[ImspTQPwCqd]']});
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({filter: ['id:in:[ImspTQPwCqd]']});
         });
     });
 
@@ -155,7 +155,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getDataViewOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.get).to.be.calledWith({filter: ['id:in:[]']});
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({filter: ['id:in:[]']});
         });
     });
 
