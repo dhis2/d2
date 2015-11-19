@@ -219,7 +219,7 @@ export default createClass({
                 <Functions functions={content.functions || []} />
                 <Page page={content} />
                 <pre>
-                    {JSON.stringify(this.state.content, undefined, 4)}
+                    {/*JSON.stringify(this.state.content, undefined, 4)*/}
                 </pre>
             </main>
         );
