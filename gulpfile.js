@@ -23,6 +23,15 @@ var files = [
     'test/unit/**/*_spec.js'
 ];
 
+function swallowError(error) {
+    console.log(
+        '-- Swallowing error: -------------------------------------\n',
+        error.toString(),
+        '\n----------------------------------------------------------'
+    );
+    this.emit('end');
+}
+
 /**
  * Run code coverage for the unit tests
  */
@@ -202,7 +211,8 @@ function runUnitTests() {
         .pipe($.mocha({
             reporter: 'dot',
             globals: config.mochaGlobals,
-        }));
+        }))
+        .on('error', swallowError);
 }
 
 /**
