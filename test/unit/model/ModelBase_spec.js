@@ -1,7 +1,7 @@
 function setupFakeModelValidation() {
-    let validateSpy = sinon.stub();
-    let validateAgainstSchemaSpy = sinon.stub();
-    let proxyquire = require('proxyquire').noCallThru();
+    const validateSpy = sinon.stub();
+    const validateAgainstSchemaSpy = sinon.stub();
+    const proxyquire = require('proxyquire').noCallThru();
 
     class ModelValidation {
         constructor() {
@@ -9,22 +9,20 @@ function setupFakeModelValidation() {
             this.validateAgainstSchema = validateAgainstSchemaSpy;
         }
     }
-    ModelValidation.getModelValidation = function () {
+    ModelValidation.getModelValidation = () => {
         return new ModelValidation();
     };
 
     proxyquire('../../../src/model/ModelBase', {
-        './ModelValidation': ModelValidation
+        './ModelValidation': ModelValidation,
     });
 
     return [validateSpy, validateAgainstSchemaSpy];
 }
 
 describe('ModelBase', () => {
-    'use strict';
-
-    //TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
-    let [validateSpy, validateAgainstSchemaSpy] = setupFakeModelValidation();
+    // TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
+    const [validateSpy, validateAgainstSchemaSpy] = setupFakeModelValidation();
     let modelBaseModule;
     let modelBase;
     let DIRTY_PROPERTY_LIST;
@@ -52,12 +50,12 @@ describe('ModelBase', () => {
 
         beforeEach(() => {
             modelDefinition = {
-                save: stub().returns(new Promise(function (resolve) {resolve();}))
+                save: stub().returns(new Promise((resolve) => {resolve();})),
             };
 
-            class Model{
-                constructor(modelDefinition) {
-                    this.modelDefinition = modelDefinition;
+            class Model {
+                constructor(modelDef) {
+                    this.modelDefinition = modelDef;
                     this.validate = stub().returns(Promise.resolve({status: true}));
                     this.dirty = true;
                     this[DIRTY_PROPERTY_LIST] = new Set(['name']);
@@ -73,6 +71,9 @@ describe('ModelBase', () => {
                 .then(() => {
                     expect(modelDefinition.save).to.have.been.calledWith(model);
                     done();
+                })
+                .catch((err) => {
+                    done(err);
                 });
         });
 
@@ -101,6 +102,8 @@ describe('ModelBase', () => {
                 .then(() => {
                     expect(model.dirty).to.be.false;
                     done();
+                }).catch((err) => {
+                    done(err);
                 });
         });
 
@@ -109,6 +112,8 @@ describe('ModelBase', () => {
                 .then(() => {
                     expect(model[DIRTY_PROPERTY_LIST].size).to.equal(0);
                     done();
+                }).catch((err) => {
+                    done(err);
                 });
         });
 
@@ -116,18 +121,17 @@ describe('ModelBase', () => {
             model.dirty = false;
 
             model.save()
-                .catch(function (message) {
+                .catch((message) => {
                     expect(message).to.equal('No changes to be saved');
                     done();
                 });
-
         });
 
         it('should return rejected promise when the model is not valid', (done) => {
             model.validate.returns(Promise.resolve({status: false}));
 
             model.save()
-                .catch(function (message) {
+                .catch((message) => {
                     expect(message).to.deep.equal({status: false});
                     done();
                 });
@@ -151,16 +155,16 @@ describe('ModelBase', () => {
                     min: 0,
                     max: 2342,
                     owner: true,
-                    unique: false
-                }
+                    unique: false,
+                },
             };
 
-            class Model{
-                constructor(modelValidations) {
+            class Model {
+                constructor(validations) {
                     this.modelDefinition = {};
-                    this.modelDefinition.modelValidations = modelValidations;
+                    this.modelDefinition.modelValidations = validations;
                     this.dataValues = {
-                        age: 4
+                        age: 4,
                     };
                 }
             }
@@ -181,9 +185,7 @@ describe('ModelBase', () => {
             modelValidations.lastName = {};
 
             model.validate()
-                .then(function () {
-
-                });
+                .then(() => {});
 
             expect(validateSpy).to.have.callCount(4);
         });
@@ -208,8 +210,8 @@ describe('ModelBase', () => {
                 messages: [{
                     message: 'Required property missing',
                     property: 'name',
-                    value: ''
-                }]
+                    value: '',
+                }],
             });
 
             model.validate()
@@ -220,7 +222,7 @@ describe('ModelBase', () => {
         });
 
         it('should return false when one of the validations returns false', (done) => {
-            //Some fake validator that does nothing but triggers a validation call
+            // Some fake validator that does nothing but triggers a validation call
             modelValidations.name = {};
 
             validateSpy.onSecondCall().returns({
@@ -228,8 +230,8 @@ describe('ModelBase', () => {
                 messages: [{
                     message: 'Required property missing',
                     property: 'name',
-                    value: ''
-                }]
+                    value: '',
+                }],
             });
 
             model.validate()
@@ -255,8 +257,8 @@ describe('ModelBase', () => {
                 messages: [{
                     message: 'Required property missing',
                     property: 'age',
-                    value: ''
-                }]
+                    value: '',
+                }],
             });
 
             model.dataValues.age = -1;
@@ -297,7 +299,7 @@ describe('ModelBase', () => {
         it('should not return a false positive when there are no messages', (done) => {
             validateSpy.onFirstCall().returns({
                 status: false,
-                messages: []
+                messages: [],
             });
 
             model.validate()
@@ -311,7 +313,7 @@ describe('ModelBase', () => {
             validateAgainstSchemaSpy.returns(Promise.resolve([{message: 'Required property missing.', property: 'name'}]));
             validateSpy.onFirstCall().returns({
                 status: true,
-                messages: []
+                messages: [],
             });
 
             model.validate()
@@ -327,7 +329,7 @@ describe('ModelBase', () => {
                 validateAgainstSchemaSpy.returns(Promise.resolve([]));
                 validateSpy.onFirstCall().returns({
                     status: true,
-                    messages: []
+                    messages: [],
                 });
 
                 model.validate()
@@ -346,12 +348,12 @@ describe('ModelBase', () => {
 
         beforeEach(() => {
             modelDefinition = {
-                delete: stub().returns(new Promise(function (resolve) {resolve();}))
+                delete: stub().returns(new Promise((resolve) => {resolve();})),
             };
 
-            class Model{
-                constructor(modelDefinition) {
-                    this.modelDefinition = modelDefinition;
+            class Model {
+                constructor(modelDef) {
+                    this.modelDefinition = modelDef;
                     this.validate = stub().returns(Promise.resolve({status: true}));
                     this.dirty = true;
                     this[DIRTY_PROPERTY_LIST] = new Set(['name']);

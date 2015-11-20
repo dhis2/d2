@@ -5,27 +5,27 @@ function resetCachedResponse(d2) {
 }
 
 describe('D2', () => {
-    let proxyquire = require('proxyquire').noCallThru();
+    const proxyquire = require('proxyquire').noCallThru();
     let apiMock;
     let i18nStub;
     let I18n;
-    let loggerMock = {
+    const loggerMock = {
         error: sinon.spy(),
     };
-    let loggerMockObject = {
+    const loggerMockObject = {
         getLogger: () => {
             return loggerMock;
-        }
+        },
     };
 
-    //TODO: Make this mock a bit more dynamic so we can test for different ModelDefinition
+    // TODO: Make this mock a bit more dynamic so we can test for different ModelDefinition
     // jscs:disable
-    let ModelDefinition = function ModelDefinition() {
+    const ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
     };
     ModelDefinition.prototype = {};
     // jscs:enable
-    let ModelDefinitionMock = {
+    const ModelDefinitionMock = {
         createFromSchema: sinon.stub().returns(new ModelDefinition()),
         prototype: {},
     };
@@ -60,9 +60,11 @@ describe('D2', () => {
             .onCall(9).returns(Promise.resolve('en'));
 
 
-        apiMockClass = function () {
+        function apiMocker() {
             return apiMock;
         }
+        apiMockClass = apiMocker;
+
         apiMockClass.getApi = () => apiMock;
 
         // jscs:disable
@@ -136,7 +138,7 @@ describe('D2', () => {
 
             d2.init();
             d2.getInstance()
-                .then(d2 => {
+                .then(() => {
                     expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
                     done();
                 });
@@ -146,7 +148,7 @@ describe('D2', () => {
             d2.config.baseUrl = '/dhis/api';
 
             d2.init({baseUrl: '/demo/api'});
-            d2.getInstance().then(d2 => {
+            d2.getInstance().then(() => {
                 expect(apiMock.setBaseUrl).to.be.calledWith('/demo/api');
                 done();
             });
@@ -159,14 +161,13 @@ describe('D2', () => {
 
             d2.init();
             d2.getInstance()
-                .then((d2) => {
+                .then(() => {
                     expect(i18nStub.addSource).to.have.callCount(3);
                     done();
                 })
                 .catch((e) => {
                     done(e);
                 });
-
         });
 
         it('should call addStrings for the pre-init added strings', (done) => {
@@ -175,7 +176,7 @@ describe('D2', () => {
 
             d2.init();
             d2.getInstance()
-                .then((d2) => {
+                .then(() => {
                     expect(i18nStub.addStrings).to.be.calledWith(['name', 'yes']);
                     done();
                 })
@@ -200,7 +201,7 @@ describe('D2', () => {
         });
 
         it('should return the same instance on getInstance calls', (done) => {
-            d2.init({baseUrl: '/dhis/api'})
+            d2.init({baseUrl: '/dhis/api'});
 
             Promise.all([d2.getInstance(), d2.getInstance()])
                 .then(([firstCallResult, secondCallResult]) => {
@@ -275,16 +276,26 @@ describe('D2', () => {
         apiMock.get.onFirstCall().returns(Promise.reject(new Error('Failed')));
 
         d2.init({baseUrl: '/dhis/api'})
+            .then(
+                () => {
+                    done('No error occurred');
+                },
+                () => {
+                    expect(loggerMock.error.callCount).to.equal(1);
+                    expect(loggerMock.error.withArgs('Unable to get schemas from the api').callCount).to.equal(1);
+                    done();
+                }
+            )
             .catch(() => {
-                expect(loggerMock.error).to.have.been.calledWith('Unable to get schemas from the api', new Error('Failed'));
-                done();
+                done('No proper promises here...');
             });
+        console.info('no console!');
     });
 
     it('should return an object with the api object', () => {
         d2.init({baseUrl: '/dhis/api'})
-            .then(d2 => {
-                expect(d2.Api.getApi()).to.equal(apiMock);
+            .then(newD2 => {
+                expect(newD2.Api.getApi()).to.equal(apiMock);
             });
     });
 
@@ -300,7 +311,7 @@ describe('D2', () => {
     it('should query the api for all the attributes', (done) => {
         d2.init({baseUrl: '/dhis/api'})
             .then(() => {
-                let attributeCall = apiMock.get.getCall(1);
+                const attributeCall = apiMock.get.getCall(1);
                 /* 0: Url, 1: Data, 1: Query params, 2: Request options */
                 expect(attributeCall.args[0]).to.equal('attributes');
                 expect(attributeCall.args[1]).to.deep.equal({fields: ':all,optionSet[:all]', paging: false});
@@ -311,9 +322,9 @@ describe('D2', () => {
     describe('creation of ModelDefinitions', () => {
         it('should add the model definitions object to the d2 object', (done) => {
             d2.init()
-                .then(d2 => {
-                    expect(d2.models).to.not.be.undefined;
-                    expect(d2.models.modelsMockList).to.equal(true);
+                .then(newD2 => {
+                    expect(newD2.models).to.not.be.undefined;
+                    expect(newD2.models.modelsMockList).to.equal(true);
                     done();
                 });
         });
@@ -337,8 +348,8 @@ describe('D2', () => {
 
         it('should add the ModelDefinitions to the models list', (done) => {
             d2.init()
-                .then(d2 => {
-                    expect(d2.models.dataElement).to.not.be.undefined;
+                .then(newD2 => {
+                    expect(newD2.models.dataElement).to.not.be.undefined;
                     done();
                 });
         });
@@ -348,8 +359,8 @@ describe('D2', () => {
         it('should be available on the d2 object', (done) => {
             d2.init();
             d2.getInstance()
-                .then(d2 => {
-                    expect(d2.currentUser).to.not.be.undefined;
+                .then(newD2 => {
+                    expect(newD2.currentUser).to.not.be.undefined;
                     done();
                 })
                 .catch(done);
@@ -397,7 +408,7 @@ describe('D2', () => {
             d2.config.baseUrl = '/dhis/api';
 
             d2.getUserSettings()
-                .then(d2 => {
+                .then(() => {
                     expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
                     done();
                 })
