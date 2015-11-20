@@ -23,18 +23,26 @@ describe('Api', () => {
         expect(Api).to.be.instanceof(Function);
     });
 
+    it('should throw an error if jQuery isn\'t available', (done) => {
+        try {
+            const a = new Api();
+            done('No error thrown:' + a);
+        } catch (e) {
+            expect(e).to.be.instanceof(Error);
+            done();
+        }
+    });
+
     it('should create a new instance of Api', () => {
-        expect(new Api()).to.be.instanceof(Api);
+        expect(new Api(jqueryMock)).to.be.instanceof(Api);
     });
 
     it('should have a baseUrl property that is set to /api', () => {
-        expect(new Api().baseUrl).to.equal('/api');
+        expect(new Api(jqueryMock).baseUrl).to.equal('/api');
     });
 
     it('should not be allowed to be called without new', () => {
-        /* eslint new-cap: 0 */
-        expect(() => Api()).to.throw('Cannot call a class as a function');
-        /* eslint new-cap: 1 */
+        expect(() => Api(jqueryMock)).to.throw('Cannot call a class as a function'); // eslint-disable-line
     });
 
     describe('getApi', () => {
@@ -84,7 +92,7 @@ describe('Api', () => {
             expect(api.get).to.be.instanceof(Function);
         });
 
-        it('should return a promise', function() {
+        it('should return a promise', () => {
             expect(api.get('dataElements')).to.be.instanceof(Promise);
         });
 
@@ -178,9 +186,9 @@ describe('Api', () => {
             });
         });
 
-        it('should call the failed reject handler', function(done) {
-            jqueryMock.ajax.returns((function() {
-                return new Promise(function(resolve, reject) {
+        it('should call the failed reject handler', (done) => {
+            jqueryMock.ajax.returns((() => {
+                return new Promise((resolve, reject) => {
                     reject(new Error('Request failed'));
                 });
             })());
@@ -255,7 +263,7 @@ describe('Api', () => {
             expect(api.post).to.be.instanceof(Function);
         });
 
-        it('should call the api the with the correct data', function() {
+        it('should call the api the with the correct data', () => {
             api.post(fixtures.get('singleUserAllFields').href, fixtures.get('singleUserOwnerFields'));
 
             expect(jqueryMock.ajax).to.be.calledWith({
