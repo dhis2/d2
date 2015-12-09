@@ -72,7 +72,7 @@ class ModelCollection {
 
         // Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
-            values.forEach((value) => this.add(value));
+            values.forEach((value) => this.valuesContainerMap.set(value.id, value));
         }
     }
 
@@ -130,6 +130,14 @@ class ModelCollection {
 
     static create(modelDefinition, values, pagerData) {
         return new ModelCollection(modelDefinition, values, pagerData);
+    }
+
+    static throwIfContainsOtherThanModelObjects(value) {
+        return throwIfContainsOtherThanModelObjects(value);
+    }
+
+    static throwIfContainsModelWithoutUid(value) {
+        return throwIfContainsModelWithoutUid(value);
     }
 
     /**

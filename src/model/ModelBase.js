@@ -23,9 +23,13 @@ class ModelBase {
      *   .then((message) => console.log(message));
      * ```
      */
-    save() {
-        if (!this.dirty) {
+    save(includeChildren = false) {
+        if (!(this.dirty || includeChildren === true && this.hasDirtyChildren())) {
             return Promise.reject('No changes to be saved');
+        }
+
+        if (includeChildren === true && this.hasDirtyChildren()) {
+            return Promise.reject('Not yet able to save the children');
         }
 
         return this.validate()
@@ -129,6 +133,13 @@ class ModelBase {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }
 
+    hasDirtyChildren() {
+        return Object.keys(this)
+            .filter(propertyName => this.modelDefinition.modelValidations[propertyName].owner)
+            .reduce((prev, curr) => {
+                return prev || (this[curr] && this[curr].dirty) === true;
+            }, false);
+    }
 }
 
 export default new ModelBase();

@@ -1,7 +1,9 @@
 import {checkType, isObject, checkDefined, isDefined} from '../lib/check';
 import {addLockedProperty, curry, copyOwnProperties} from '../lib/utils';
+import ModelDefinitions from './ModelDefinitions';
 import Model from './Model';
 import ModelCollection from './ModelCollection';
+import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
 import {DIRTY_PROPERTY_LIST} from './ModelBase';
@@ -130,11 +132,18 @@ class ModelDefinition {
      */
     create(data) {
         const model = Model.create(this);
+        const models = ModelDefinitions.getModelDefinitions();
 
         if (data) {
             // Set the datavalues onto the model directly
-            Object.keys(model).forEach((key) => {
-                model.dataValues[key] = data[key];
+            Object.keys(model).forEach((modelProperty) => {
+                // For collections of objects, create ModelCollectionProperties rather than plain arrays
+                if (models && models.hasOwnProperty(modelProperty) && data[modelProperty] && data[modelProperty] instanceof Array) {
+                    data[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], data[modelProperty].map(d => {
+                        return models[modelProperty].create(d);
+                    }));
+                }
+                model.dataValues[modelProperty] = data[modelProperty];
             });
         }
 
@@ -238,7 +247,15 @@ class ModelDefinition {
      */
     // TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
-        const isAnUpdate = modelToCheck => !!modelToCheck.id;
+        // TODO: Check for dirty ModelCollectionProperties
+        // TODO: Add parameter to enable property saving
+        const isAnUpdate = (modelToCheck) => {
+            if (modelToCheck instanceof ModelCollection) {
+                console.error(modelToCheck.name, ' is a collection!');
+                return modelToCheck.added && modelToCheck.added.size > 0 || modelToCheck.removed && modelToCheck.removed.size > 0;
+            }
+            return !!modelToCheck.id;
+        };
         if (isAnUpdate(model)) {
             return this.api.update(model.dataValues.href, this.getOwnedPropertyJSON(model));
         }

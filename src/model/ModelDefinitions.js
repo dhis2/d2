@@ -41,6 +41,14 @@ class ModelDefinitions {
             throw new Error(['Model', modelDefinition.name, 'already exists'].join(' '));
         }
         this[modelDefinition.name] = modelDefinition;
+
+        try {
+            if (checkType(modelDefinition.plural, 'string')) {
+                this[modelDefinition.plural] = modelDefinition;
+            }
+        } catch (e) {
+            return;
+        }
     }
 
     /**
@@ -69,7 +77,7 @@ class ModelDefinitions {
         checkType(transformer, 'function', 'transformer');
 
         for (modelDefinition in this) {
-            if (this.hasOwnProperty(modelDefinition)) {
+            if (this.hasOwnProperty(modelDefinition) && !(this[modelDefinition].plural === modelDefinition)) {
                 result.push(transformer(this[modelDefinition]));
             }
         }
@@ -77,5 +85,15 @@ class ModelDefinitions {
         return result;
     }
 }
+
+// Model definitions singleton!
+function getModelDefinitions() {
+    if (getModelDefinitions.modelDefinitions) {
+        return getModelDefinitions.modelDefinitions;
+    }
+    return (getModelDefinitions.modelDefinitions = new ModelDefinitions());
+}
+
+ModelDefinitions.getModelDefinitions = getModelDefinitions;
 
 export default ModelDefinitions;
