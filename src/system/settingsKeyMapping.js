@@ -168,6 +168,12 @@ const settingsKeyMapping = {
         label: 'app_base_url',
         helpText: 'public_path_to_apps_on_web',
     },
+    'resetAppsConfig': {
+        label: 'set_to_default',
+        type: 'post_button',
+        query_type: 'DELETE',
+        uri: '/apps/config',
+    },
     /* ============================================================================================================ */
     /* Category: Appearance                                                                                         */
     /* ============================================================================================================ */
