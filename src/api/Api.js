@@ -38,6 +38,10 @@ function getUrl(baseUrl, url) {
 
 class Api {
     constructor(jquery) {
+        if (!jquery) {
+            throw new Error('D2 requires jQuery');
+        }
+
         this.jquery = jquery;
         this.baseUrl = '/api';
         this.defaultRequestSettings = {

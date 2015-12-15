@@ -116,7 +116,7 @@ export function init(initConfig) {
     Config.processConfigForD2(config, d2);
 
     // Because when importing the getInstance method in dependencies the getInstance could run before
-    // init we have to resolve the current promise on first run and for consecurtive ones replace the
+    // init we have to resolve the current promise on first run and for consecutive ones replace the
     // old one with a fresh promise.
     if (firstRun) {
         firstRun = false;
@@ -132,16 +132,15 @@ export function init(initConfig) {
         getUserLocale(),
         d2.i18n.load(),
     ])
-        .then(responses => {
-            return {
-                schemas: pick('schemas')(responses[0]),
-                attributes: pick('attributes')(responses[1]),
-                currentUser: responses[2],
-                authorities: responses[3],
-                uiLocale: responses[4],
+        .then(res => {
+            const responses = {
+                schemas: pick('schemas')(res[0]),
+                attributes: pick('attributes')(res[1]),
+                currentUser: res[2],
+                authorities: res[3],
+                uiLocale: res[4],
             };
-        })
-        .then((responses) => {
+
             responses.schemas.forEach((schema) => {
                 // Attributes that do not have values do not by default get returned with the data.
                 // Therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
@@ -163,9 +162,10 @@ export function init(initConfig) {
             return deferredD2Init.promise;
         })
         .catch((error) => {
-            logger.error('Unable to get schemas from the api', error);
+            logger.error('Unable to get schemas from the api', JSON.stringify(error));
 
-            return Promise.reject(error);
+            deferredD2Init.reject('Unable to get schemas from the DHIS2 API');
+            return deferredD2Init.promise;
         });
 }
 
