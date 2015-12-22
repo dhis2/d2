@@ -7,6 +7,7 @@ import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
 import {DIRTY_PROPERTY_LIST} from './ModelBase';
+import Logger from '../logger/Logger';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
@@ -145,6 +146,20 @@ class ModelDefinition {
                 }
                 model.dataValues[modelProperty] = data[modelProperty];
             });
+        } else {
+            // Create empty ModelCollectionProperties for models without data.
+            Object.keys(model)
+                .filter(modelProperty => {
+                    return model &&
+                        models && models.hasOwnProperty(modelProperty) &&
+                        model.modelDefinition &&
+                        model.modelDefinition.modelValidations &&
+                        model.modelDefinition.modelValidations[modelProperty] &&
+                        model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION';
+                })
+                .forEach((modelProperty) => {
+                    model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], []);
+                });
         }
 
         return model;
@@ -251,10 +266,10 @@ class ModelDefinition {
         // TODO: Add parameter to enable property saving
         const isAnUpdate = (modelToCheck) => {
             if (modelToCheck instanceof ModelCollection) {
-                console.error(modelToCheck.name, ' is a collection!');
+                Logger.getLogger.error(modelToCheck.name, ' is a collection!');
                 return modelToCheck.added && modelToCheck.added.size > 0 || modelToCheck.removed && modelToCheck.removed.size > 0;
             }
-            return !!modelToCheck.id;
+            return Boolean(modelToCheck.id);
         };
         if (isAnUpdate(model)) {
             return this.api.update(model.dataValues.href, this.getOwnedPropertyJSON(model));
@@ -268,9 +283,22 @@ class ModelDefinition {
         const ownedProperties = this.getOwnedPropertyNames();
 
         Object.keys(this.modelValidations).forEach((propertyName) => {
+            const collectionProperties = model.getCollectionChildren().map(v => v.modelDefinition.plural);
+
             if (ownedProperties.indexOf(propertyName) >= 0) {
                 if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
-                    objectToSave[propertyName] = model.dataValues[propertyName];
+                    // Handle collections and plain values different
+                    if (collectionProperties.indexOf(propertyName) === -1) {
+                        objectToSave[propertyName] = model.dataValues[propertyName];
+                    } else {
+                        // Transform an object collection to an array of objects with id properties
+                        objectToSave[propertyName] = Array
+                            .from(model.dataValues[propertyName].values())
+                            .filter(value => value.id)
+                            .map(({id}) => {
+                                return {id};
+                            });
+                    }
                 }
             }
         });
@@ -308,7 +336,10 @@ class ModelDefinition {
      * @note {warning} This should generally not be called directly.
      */
     delete(model) {
-        return this.api.delete(model.dataValues.href);
+        if (model.dataValues.href) {
+            return this.api.delete(model.dataValues.href);
+        }
+        return this.api.delete([model.modelDefinition.apiEndpoint, model.dataValues.id].join('/'));
     }
 
     /**

@@ -87,7 +87,7 @@ function typeValidation(value, type) {
     case 'NUMBER':
         return isNumeric(value);
     case 'COLLECTION':
-        return isArray(value); // || isModelCollection();
+        return isArray(value) || isArray(Array.from(value.values()));
     case 'PHONENUMBER':
     case 'EMAIL':
     case 'URL':

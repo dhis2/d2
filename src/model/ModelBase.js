@@ -1,4 +1,5 @@
 import ModelValidation from './ModelValidation';
+import {isValidUid} from '../lib/check';
 
 const modelValidator = ModelValidation.getModelValidation();
 
@@ -23,13 +24,9 @@ class ModelBase {
      *   .then((message) => console.log(message));
      * ```
      */
-    save(includeChildren = false) {
+    save(includeChildren = true) {
         if (!(this.dirty || includeChildren === true && this.hasDirtyChildren())) {
             return Promise.reject('No changes to be saved');
-        }
-
-        if (includeChildren === true && this.hasDirtyChildren()) {
-            return Promise.reject('Not yet able to save the children');
         }
 
         return this.validate()
@@ -41,7 +38,14 @@ class ModelBase {
                 return this.modelDefinition
                     .save(this)
                     .then((result) => {
+                        if (result && result.response.importCount.imported === 1 && isValidUid(result.response.lastImported)) {
+                            this.dataValues.id = result.response.lastImported;
+                            this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
+                        }
                         this.dirty = false;
+                        this.getDirtyChildren()
+                            .forEach(value => value.dirty = false);
+
                         this[DIRTY_PROPERTY_LIST].clear();
                         return result;
                     });
@@ -133,12 +137,19 @@ class ModelBase {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }
 
-    hasDirtyChildren() {
+    getCollectionChildren() {
         return Object.keys(this)
-            .filter(propertyName => this.modelDefinition.modelValidations[propertyName].owner)
-            .reduce((prev, curr) => {
-                return prev || (this[curr] && this[curr].dirty) === true;
-            }, false);
+            .filter(propertyName => this[propertyName] && this.modelDefinition.modelValidations[propertyName].owner && this[propertyName].size >= 0)
+            .map(propertyName => this[propertyName]);
+    }
+
+    getDirtyChildren() {
+        return this.getCollectionChildren()
+            .filter(property => property && (property.dirty === true));
+    }
+
+    hasDirtyChildren() {
+        return this.getDirtyChildren().length > 0;
     }
 }
 
