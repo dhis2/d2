@@ -102,6 +102,7 @@ class ModelDefinition {
 
         addLockedProperty(this, 'name', modelName);
         addLockedProperty(this, 'plural', modelNamePlural);
+        addLockedProperty(this, 'isSharable', (modelOptions && modelOptions.shareable) || false);
         addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
         addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
         addLockedProperty(this, 'modelProperties', properties);
