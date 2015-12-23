@@ -195,7 +195,7 @@ class ModelDefinition {
      *   .then(model => console.log(model.name));
      * ```
      */
-    get(identifier, queryParams = {fields: ':all'}) {
+    get(identifier, queryParams = {fields: ':all,attributeValues[:all,attribute[id,name,displayName]]'}) {
         checkDefined(identifier, 'Identifier');
 
         if (Array.isArray(identifier)) {

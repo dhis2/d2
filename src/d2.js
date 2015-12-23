@@ -126,7 +126,7 @@ export function init(initConfig) {
 
     return Promise.all([
         api.get('schemas'),
-        api.get('attributes', {fields: ':all,optionSet[:all]', paging: false}),
+        api.get('attributes', {fields: ':all,optionSet[:all,options[:all]]', paging: false}),
         api.get('me', {fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]'}),
         api.get('me/authorization'),
         getUserLocale(),
