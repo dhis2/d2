@@ -130,6 +130,8 @@ export function init(initConfig) {
         api.get('me', {fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]'}),
         api.get('me/authorization'),
         getUserLocale(),
+        api.get('system/info'),
+        api.get('apps'),
         d2.i18n.load(),
     ])
         .then(res => {
@@ -139,6 +141,8 @@ export function init(initConfig) {
                 currentUser: res[2],
                 authorities: res[3],
                 uiLocale: res[4],
+                systemInfo: res[5],
+                apps: res[6],
             };
 
             responses.schemas.forEach((schema) => {
@@ -157,6 +161,9 @@ export function init(initConfig) {
             d2.currentUser.userSettings = {
                 keyUiLocale: responses.uiLocale,
             };
+
+            d2.system.setSystemInfo(responses.systemInfo);
+            d2.system.setInstalledApps(responses.apps);
 
             deferredD2Init.resolve(d2);
             return deferredD2Init.promise;
