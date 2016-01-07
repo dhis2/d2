@@ -70,7 +70,7 @@ class Api {
     }
 
     update(url, data) {
-        return this.request('PUT', url, JSON.stringify(data));
+        return this.request('PUT', getUrl(this.baseUrl, url), JSON.stringify(data));
     }
 
     request(type, url, data, options = {}) {

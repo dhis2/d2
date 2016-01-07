@@ -226,7 +226,7 @@ class System {
      */
     reloadApps() {
         const api = Api.getApi();
-        return api.update('api/apps').then(() => { return this.loadInstalledApps(); });
+        return api.update('apps').then(() => { return this.loadInstalledApps(); });
     }
 
     // TODO: Document
