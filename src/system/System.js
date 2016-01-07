@@ -32,6 +32,7 @@ class System {
          */
         this.settings = settings;
 
+
         /**
          * @property {SystemConfiguration} configuration
          *
@@ -40,10 +41,31 @@ class System {
          */
         this.configuration = configuration;
 
+
+        /**
+         * @property {Object} systemInfo
+         *
+         * @description An object containing system information about the DHIS2 instance
+         */
         this.systemInfo = undefined;
 
+
+        /**
+         * @property {Object} version
+         *
+         * @description An object containing version information about the DHIS2 instance
+         */
+        this.version = undefined;
+
+
+        /**
+         * @property {Array} installedApps
+         *
+         * @description An array of all the webapps that are installed on the current DHIS2 instance
+         */
         this.installedApps = undefined;
     }
+
 
     /**
      * Retrieves the complete list of translatable strings relating to system settings and system configuration
@@ -72,18 +94,33 @@ class System {
     }
 
 
-    // TODO: Document
+    /**
+     * Sets the systemInfo and version properties
+     *
+     * @param systemInfo
+     */
     setSystemInfo(systemInfo) {
         this.version = System.parseVersionString(systemInfo.version);
         this.systemInfo = systemInfo;
     }
 
-    // TODO: Document
+
+    /**
+     * Sets the list of currently installed webapps
+     *
+     * @param apps
+     */
     setInstalledApps(apps) {
         this.installedApps = apps;
     }
 
-    reloadInstalledApps() {
+
+    /**
+     * Refreshes the list of currently installed webapps
+     *
+     * @returns {Promise} A promise that resolves to the list of installed apps
+     */
+    loadInstalledApps() {
         const api = Api.getApi();
         return new Promise((resolve) => {
             api.get('apps').then(apps => {
@@ -93,20 +130,43 @@ class System {
         });
     }
 
-    // TODO: Document
-    // TODO: Upload progress
-    uploadApp(zipFile) {
+
+    /**
+     * Upload and install a zip file containing a new webapp
+     *
+     * @param zipFile Zip file data from a file input form field
+     * @param onProgress An optional callback that will be called whenever file upload progress info is available
+     * @returns {Promise}
+     */
+    uploadApp(zipFile, onProgress) {
+        const api = Api.getApi();
         const data = new FormData();
+        let xhr = undefined;
         data.append('file', zipFile);
 
-        const api = Api.getApi();
+        if (onProgress !== undefined) {
+            xhr = new XMLHttpRequest();
+            xhr.upload.onprogress = (progress) => {
+                if (progress.lengthComputable) {
+                    onProgress(progress.loaded / progress.total);
+                }
+            };
+        }
+
         return api.post('apps', data, {
             contentType: false,
             processData: false,
+            xhr: xhr !== undefined ? () => xhr : undefined,
         });
     }
 
-    // TODO: Document
+
+    /**
+     * Load the list of apps available in the DHIS 2 app store
+     *
+     * @param compatibleOnly If true, apps that are incompatible with the current system will be filtered out
+     * @returns {Promise}
+     */
     loadAppStore(compatibleOnly = true) {
         return new Promise((resolve, reject) => {
             const api = Api.getApi();
@@ -124,17 +184,31 @@ class System {
         });
     }
 
-    // TODO: Document
-    installApp(uid) {
+
+    /**
+     * Install the specified app version from the DHIS 2 app store
+     *
+     * @param uid The uid of the app version to install
+     * @returns {Promise}
+     */
+    installAppVersion(uid) {
         const api = Api.getApi();
-        return new Promise((resolve) => {
-            api.post(['appStore', uid].join('/')).catch(() => {
+        return new Promise((resolve, reject) => {
+            api.post(['appStore', uid].join('/'), '', {dataType: 'text'}).then(() => {
                 resolve();
+            }).catch((err) => {
+                reject(err);
             });
         });
     }
 
-    // TODO: Document
+
+    /**
+     * Remove the specified app from the system
+     *
+     * @param appKey The key of the app to remove
+     * @returns {Promise}
+     */
     uninstallApp(appKey) {
         const api = Api.getApi();
         return new Promise((resolve) => {
@@ -144,10 +218,15 @@ class System {
         });
     }
 
-    // TODO: Document
-    refreshApp(appKey) {
+
+    /**
+     * Refresh the list of apps that are installed on the server
+     *
+     * @returns {Promise} A promise that resolves to the updated list of installed apps
+     */
+    reloadApps() {
         const api = Api.getApi();
-        return api.update(['apps', appKey].join('/'));
+        return api.update('api/apps').then(() => { return this.loadInstalledApps(); });
     }
 
     // TODO: Document
