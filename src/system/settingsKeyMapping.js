@@ -233,7 +233,6 @@ const settingsKeyMapping = {
     },
     'keyEmailPassword': {
         label: 'password',
-        configuration: 'smtpPassword',
         type: 'password',
     },
     'keyEmailTls': {
@@ -341,18 +340,15 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: Calendar                                                                                           */
     /* ============================================================================================================ */
-    'remoteServerUrl': {
+    'keyRemoteInstanceUrl': {
         label: 'remote_server_url',
-        configuration: 'remoteServerUrl',
         validators: ['url'],
     },
-    'remoteServerUsername': {
+    'keyRemoteInstanceUsername': {
         label: 'remote_server_username',
-        configuration: 'remoteServerUsername',
     },
-    'remoteServerPassword': {
+    'keyRemoteInstancePassword': {
         label: 'remote_server_password',
-        configuration: 'remoteServerPassword',
         type: 'password',
     },
     /* ============================================================================================================ */
