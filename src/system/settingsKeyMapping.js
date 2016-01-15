@@ -189,7 +189,7 @@ const settingsKeyMapping = {
         appendLocale: true,
         multiLine: true,
     },
-    'currentStyle': {
+    'keyCurrentStyle': {
         label: 'style',
         type: 'styles',
     },
