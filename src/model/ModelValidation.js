@@ -97,7 +97,7 @@ function typeValidation(value, type) {
     case 'TEXT':
         return isString(value);
     case 'COMPLEX':
-        return isObject(value) || isString(value);
+        return isObject(value);
     case 'DATE':
     case 'REFERENCE':
     case 'BOOLEAN':
@@ -190,7 +190,6 @@ class ModelValidation {
             result.status = false;
             result.messages.push({
                 message: 'This is not a valid type',
-                type: validationSettings.type,
                 value: value,
             });
         }
