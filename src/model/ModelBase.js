@@ -1,4 +1,5 @@
 import ModelValidation from './ModelValidation';
+import {isValidUid} from '../lib/check';
 
 const modelValidator = ModelValidation.getModelValidation();
 
@@ -23,8 +24,8 @@ class ModelBase {
      *   .then((message) => console.log(message));
      * ```
      */
-    save() {
-        if (!this.dirty) {
+    save(includeChildren = true) {
+        if (!(this.dirty || includeChildren === true && this.hasDirtyChildren())) {
             return Promise.reject('No changes to be saved');
         }
 
@@ -37,7 +38,14 @@ class ModelBase {
                 return this.modelDefinition
                     .save(this)
                     .then((result) => {
+                        if (result && result.response.importCount.imported === 1 && isValidUid(result.response.lastImported)) {
+                            this.dataValues.id = result.response.lastImported;
+                            this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
+                        }
                         this.dirty = false;
+                        this.getDirtyChildren()
+                            .forEach(value => value.dirty = false);
+
                         this[DIRTY_PROPERTY_LIST].clear();
                         return result;
                     });
@@ -129,6 +137,20 @@ class ModelBase {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }
 
+    getCollectionChildren() {
+        return Object.keys(this)
+            .filter(propertyName => this[propertyName] && this.modelDefinition.modelValidations[propertyName].owner && this[propertyName].size >= 0)
+            .map(propertyName => this[propertyName]);
+    }
+
+    getDirtyChildren() {
+        return this.getCollectionChildren()
+            .filter(property => property && (property.dirty === true));
+    }
+
+    hasDirtyChildren() {
+        return this.getDirtyChildren().length > 0;
+    }
 }
 
 export default new ModelBase();

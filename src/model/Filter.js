@@ -25,6 +25,7 @@ const FILTER_COMPARATORS = {
      * This method can be used to add a ilike filter value
      */
     ilike: 'ilike',
+    notEqual: 'ne',
 };
 
 /**

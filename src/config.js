@@ -16,7 +16,7 @@ export default class Config {
     static processConfigForD2(config, d2) {
         const api = d2.Api.getApi();
         d2.model.ModelDefinition.prototype.api = api;
-        d2.models = new d2.model.ModelDefinitions();
+        d2.models = d2.model.ModelDefinitions.getModelDefinitions();
 
         if (isString(config.baseUrl)) {
             api.setBaseUrl(config.baseUrl);

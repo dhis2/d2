@@ -1,10 +1,13 @@
 import {checkType, isObject, checkDefined, isDefined} from '../lib/check';
 import {addLockedProperty, curry, copyOwnProperties} from '../lib/utils';
+import ModelDefinitions from './ModelDefinitions';
 import Model from './Model';
 import ModelCollection from './ModelCollection';
+import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
 import {DIRTY_PROPERTY_LIST} from './ModelBase';
+import Logger from '../logger/Logger';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
@@ -99,8 +102,11 @@ class ModelDefinition {
 
         addLockedProperty(this, 'name', modelName);
         addLockedProperty(this, 'plural', modelNamePlural);
+        addLockedProperty(this, 'isSharable', (modelOptions && modelOptions.shareable) || false);
         addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
         addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
+        addLockedProperty(this, 'javaClass', modelOptions && modelOptions.klass);
+        addLockedProperty(this, 'translated', modelOptions && modelOptions.translated);
         addLockedProperty(this, 'modelProperties', properties);
         addLockedProperty(this, 'modelValidations', validations);
         addLockedProperty(this, 'attributeProperties', attributes);
@@ -130,12 +136,33 @@ class ModelDefinition {
      */
     create(data) {
         const model = Model.create(this);
+        const models = ModelDefinitions.getModelDefinitions();
 
         if (data) {
             // Set the datavalues onto the model directly
-            Object.keys(model).forEach((key) => {
-                model.dataValues[key] = data[key];
+            Object.keys(model).forEach((modelProperty) => {
+                // For collections of objects, create ModelCollectionProperties rather than plain arrays
+                if (models && models.hasOwnProperty(modelProperty) && data[modelProperty] && data[modelProperty] instanceof Array) {
+                    data[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], data[modelProperty].map(d => {
+                        return models[modelProperty].create(d);
+                    }));
+                }
+                model.dataValues[modelProperty] = data[modelProperty];
             });
+        } else {
+            // Create empty ModelCollectionProperties for models without data.
+            Object.keys(model)
+                .filter(modelProperty => {
+                    return model &&
+                        models && models.hasOwnProperty(modelProperty) &&
+                        model.modelDefinition &&
+                        model.modelDefinition.modelValidations &&
+                        model.modelDefinition.modelValidations[modelProperty] &&
+                        model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION';
+                })
+                .forEach((modelProperty) => {
+                    model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], []);
+                });
         }
 
         return model;
@@ -171,7 +198,7 @@ class ModelDefinition {
      *   .then(model => console.log(model.name));
      * ```
      */
-    get(identifier, queryParams = {fields: ':all'}) {
+    get(identifier, queryParams = {fields: ':all,attributeValues[:all,attribute[id,name,displayName]]'}) {
         checkDefined(identifier, 'Identifier');
 
         if (Array.isArray(identifier)) {
@@ -238,7 +265,15 @@ class ModelDefinition {
      */
     // TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
-        const isAnUpdate = modelToCheck => !!modelToCheck.id;
+        // TODO: Check for dirty ModelCollectionProperties
+        // TODO: Add parameter to enable property saving
+        const isAnUpdate = (modelToCheck) => {
+            if (modelToCheck instanceof ModelCollection) {
+                Logger.getLogger.error(modelToCheck.name, ' is a collection!');
+                return modelToCheck.added && modelToCheck.added.size > 0 || modelToCheck.removed && modelToCheck.removed.size > 0;
+            }
+            return Boolean(modelToCheck.id);
+        };
         if (isAnUpdate(model)) {
             return this.api.update(model.dataValues.href, this.getOwnedPropertyJSON(model));
         }
@@ -251,9 +286,22 @@ class ModelDefinition {
         const ownedProperties = this.getOwnedPropertyNames();
 
         Object.keys(this.modelValidations).forEach((propertyName) => {
+            const collectionProperties = model.getCollectionChildren().map(v => v.modelDefinition.plural);
+
             if (ownedProperties.indexOf(propertyName) >= 0) {
                 if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
-                    objectToSave[propertyName] = model.dataValues[propertyName];
+                    // Handle collections and plain values different
+                    if (collectionProperties.indexOf(propertyName) === -1) {
+                        objectToSave[propertyName] = model.dataValues[propertyName];
+                    } else {
+                        // Transform an object collection to an array of objects with id properties
+                        objectToSave[propertyName] = Array
+                            .from(model.dataValues[propertyName].values())
+                            .filter(value => value.id)
+                            .map(({id}) => {
+                                return {id};
+                            });
+                    }
                 }
             }
         });
@@ -291,7 +339,10 @@ class ModelDefinition {
      * @note {warning} This should generally not be called directly.
      */
     delete(model) {
-        return this.api.delete(model.dataValues.href);
+        if (model.dataValues.href) {
+            return this.api.delete(model.dataValues.href);
+        }
+        return this.api.delete([model.modelDefinition.apiEndpoint, model.dataValues.id].join('/'));
     }
 
     /**
