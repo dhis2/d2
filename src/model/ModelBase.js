@@ -5,6 +5,13 @@ const modelValidator = ModelValidation.getModelValidation();
 
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
+function hasModelValidationForProperty(model, property) {
+    return model.modelDefinition &&
+        model.modelDefinition.modelValidations &&
+        model.modelDefinition.modelValidations[property] &&
+        Object.prototype.hasOwnProperty.call(model.modelDefinition.modelValidations, property);
+}
+
 /**
  * @class ModelBase
  */
@@ -138,8 +145,9 @@ class ModelBase {
     }
 
     getCollectionChildren() {
+        // TODO: Can't be sure that this has a `modelDefinition` property
         return Object.keys(this)
-            .filter(propertyName => this[propertyName] && this.modelDefinition.modelValidations[propertyName].owner && this[propertyName].size >= 0)
+            .filter(propertyName => this[propertyName] && hasModelValidationForProperty(this, propertyName) && this.modelDefinition.modelValidations[propertyName].owner && this[propertyName].size >= 0)
             .map(propertyName => this[propertyName]);
     }
 

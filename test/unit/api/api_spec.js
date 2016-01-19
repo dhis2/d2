@@ -381,7 +381,7 @@ describe('Api', () => {
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'PUT',
-                url: 'some/fake/api/endpoint',
+                url: '/api/some/fake/api/endpoint',
                 dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify(theData),

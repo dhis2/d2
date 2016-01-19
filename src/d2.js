@@ -154,7 +154,9 @@ export function init(initConfig) {
                         return attributeDescriptor[attributeNameFilter] === true;
                     });
 
-                d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
+                if (!Object.prototype.hasOwnProperty.call(d2.models, schema.name)) {
+                    d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
+                }
             });
 
             d2.currentUser = CurrentUser.create(responses.currentUser, responses.authorities, d2.models);

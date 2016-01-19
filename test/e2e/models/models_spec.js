@@ -9,10 +9,10 @@ describe('D2.models', function () {
         server.xhr.useFilters = true;
 
         // Show the requests made to the fake server.
-        //server.xhr.addFilter(function (method, url) {
-        //    console.log(method, url);
-        //    return false;
-        //});
+        // server.xhr.addFilter(function (method, url) {
+        //     console.log(method, url);
+        //     return false;
+        // });
 
         server.respondWith(
             'GET',
@@ -26,7 +26,7 @@ describe('D2.models', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%5D&paging=false$/,
+            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%2Coptions%5B%3Aall%5D%5D&paging=false$/,
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -51,6 +51,26 @@ describe('D2.models', function () {
                 200,
                 {'Content-Type': 'application/json'},
                 JSON.stringify({})
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/system\/info$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({version: '2.21'})
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/apps$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({apps: []})
             ]
         );
 
@@ -136,7 +156,7 @@ describe('D2.models', function () {
             beforeEach(function (done) {
                 server.respondWith(
                     'GET',
-                    'http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=%3Aall',
+                    'http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=%3Aall%2CattributeValues%5B%3Aall%2Cattribute%5Bid%2Cname%2CdisplayName%5D%5D',
                     [
                         200,
                         {'Content-Type': 'application/json'},
@@ -268,7 +288,13 @@ describe('D2.models', function () {
                     [
                         200,
                         {'Content-Type': 'application/json'},
-                        '{}'
+                        JSON.stringify({
+                            response: {
+                                importCount: {
+
+                                }
+                            }
+                        })
                     ]
                 );
 

@@ -436,7 +436,7 @@ describe('ModelDefinition', () => {
             ModelDefinition.prototype.api = {
                 get: stub().returns(new Promise((resolve) => {
                     resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
-                }))
+                })),
             };
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
@@ -460,7 +460,7 @@ describe('ModelDefinition', () => {
         it('should call the api for the requested id', () => {
             dataElementModelDefinition.get('d4343fsss');
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements/d4343fsss', {fields: ':all'});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements/d4343fsss', {fields: ':all,attributeValues[:all,attribute[id,name,displayName]]'});
         });
 
         it('should set the data onto the model when it is available', (done) => {
@@ -534,13 +534,13 @@ describe('ModelDefinition', () => {
             expect(dataElementModelDefinition.list).to.be.instanceof(Function);
         });
 
-        it('should call the get method on the api', function () {
+        it('should call the get method on the api', () => {
             dataElementModelDefinition.list();
 
             expect(ModelDefinition.prototype.api.get).to.be.called;
         });
 
-        it('should return a promise', function () {
+        it('should return a promise', () => {
             expect(dataElementModelDefinition.list()).to.be.instanceof(Promise);
         });
 
@@ -689,6 +689,10 @@ describe('ModelDefinition', () => {
                 constructor() {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
+                }
+
+                getCollectionChildren() {
+                    return [];
                 }
             }
             model = new Model();

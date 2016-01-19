@@ -19,7 +19,7 @@ describe('D2.system', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%5D&paging=false$/,
+            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%2Coptions%5B%3Aall%5D%5D&paging=false$/,
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -44,6 +44,26 @@ describe('D2.system', function () {
                 200,
                 {'Content-Type': 'application/json'},
                 JSON.stringify({})
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/system\/info$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({version: '2.21'})
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            /^\/dhis\/api\/apps$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({apps: []})
             ]
         );
 

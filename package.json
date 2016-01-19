@@ -12,7 +12,7 @@
     "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "_postbuild": "gulp docs:build",
-    "lint": "eslint src/d2.js `git diff --cached --name-only | egrep '^src|^test' | egrep '\\.jsx?$'`"
+    "lint": "eslint src/d2.js `git diff --cached --name-only | egrep '^src|^test\/unit' | egrep '\\.jsx?$'`"
   },
   "repository": {
     "type": "git",
