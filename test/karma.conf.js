@@ -38,7 +38,7 @@ module.exports = function( config ) {
                     'systemjs': './node_modules/systemjs/dist/system.js',
                     'system-polyfills': './node_modules/systemjs/dist/system-polyfills.js',
                     'phantomjs-polyfill': './node_modules/phantomjs-polyfill/bind-polyfill.js',
-                    'babel': './node_modules/babel-core/browser.js'
+                    'babel': './node_modules/babel-core/browser.js',
                 },
 
                 map: {
