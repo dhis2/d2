@@ -113,7 +113,7 @@ gulp.task('clean', function () {
  * the lint and code style checks
  */
 gulp.task('ci:travis', function (cb) {
-    runSequence('coverage', 'e2e', cb);
+    runSequence('coverage', /*'e2e',*/ cb);
 });
 
 /**************************************************************************************************
