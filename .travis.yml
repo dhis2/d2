@@ -2,19 +2,13 @@ sudo: false
 language: node_js
 node_js:
 - 5.1.1
-before_script:
-- npm install -g jspm@0.16.0-beta
-- jspm config registries.github.auth $JSPM_GITHUB_TOKEN
-- jspm install
-- jspm install --dev
+
 script:
 - npm test
 - npm run e2e
-- cd src
-- cat ../coverage/lcov.info | ../node_modules/coveralls/bin/coveralls.js
-env:
-  global:
-  - secure: Tkvy2f+j1Z2Pl4LgZB2jtYmnr4WqvGzycLbJu/RuJHL6hL3GdHqCP54qfC45iBB+B6U2JG6+oDGFlh2cQlWwQjZhUIHZ58CcTBrkSo53T3XxS7DM/aWGY63wWgp7oU7/vQKnJWT9DkBlMD5ACIIfa+y13zZKekOx8JBKt65P12A=
+# - cd src
+# - cat ../coverage/lcov.info | ../node_modules/coveralls/bin/coveralls.js
+
 notifications:
   slack:
     secure: MPEurDUvYfcl3b5Hji/42sKF6TQLRcrkqMfKINy6buFePKdbkwDjQd+r0GYAC153lLpbJeiFy7p8TAVp2QP3wmC02ea9n3CG8juKpCBabyaZq3RBvhJ7kKUd/BdTLPNWU1ttSrQlzOoAs3HcuEAaeUzhW3d0LPH+bVvYx4aG8UM=
