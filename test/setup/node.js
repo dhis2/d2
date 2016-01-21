@@ -2,4 +2,4 @@ global.chai = require('chai');
 global.sinon = require('sinon');
 global.chai.use(require('sinon-chai'));
 
-require('./setup')();
+global.expect = global.chai.expect;

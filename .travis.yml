@@ -1,14 +1,15 @@
 sudo: false
 language: node_js
 node_js:
-- 0.12.4
+- 5.1.1
 before_script:
 - npm install -g jspm@0.16.0-beta
 - jspm config registries.github.auth $JSPM_GITHUB_TOKEN
 - jspm install
 - jspm install --dev
 script:
-- gulp ci:travis
+- npm test
+- npm run e2e
 - cd src
 - cat ../coverage/lcov.info | ../node_modules/coveralls/bin/coveralls.js
 env:

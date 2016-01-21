@@ -1,4 +1,4 @@
-import d2 from 'd2';
+import d2 from '../../src/d2';
 
 describe('D2', function () {
     var server;

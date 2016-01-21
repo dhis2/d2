@@ -1,4 +1,4 @@
-import {init, getInstance} from 'd2';
+import {init, getInstance} from '../../../src/d2';
 
 describe('D2.system', function () {
     let server;

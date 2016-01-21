@@ -1,3 +1,6 @@
+// Import for global beforeEach / afterEach
+import '../setup/setup.js';
+
 import fixtures from '../fixtures/fixtures';
 
 function resetCachedResponse(d2) {
