@@ -4,12 +4,12 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "coverage": "gulp coverage",
-    "validate": "gulp git:pre-commit",
-    "test": "mocha --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit --slow 2",
+    "coverage": "istanbul cover _mocha -- --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
+    "validate": "npm ls --depth 0",
+    "test": "mocha --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
     "e2e": "karma start test/setup/karma.config.js",
     "test-watch": "gulp watch",
-    "prebuild": "gulp test && gulp e2e",
+    "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
     "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "_postbuild": "gulp docs:build",
@@ -73,26 +73,6 @@
   "engines": {
     "npm": ">=3.5.1",
     "node" : ">=5.1.1"
-  },
-  "babelBoilerplateOptions": {
-    "entryFileName": "src/d2",
-    "exportVarName": "d2",
-    "mochaGlobals": [
-      "stub",
-      "spy",
-      "expect"
-    ]
-  },
-  "jspm": {
-    "directories": {
-      "lib": "."
-    },
-    "dependencies": {},
-    "devDependencies": {
-      "babel": "npm:babel-core@5.5.8",
-      "babel-runtime": "npm:babel-runtime@5.5.8",
-      "core-js": "npm:core-js@0.9.17"
-    }
   },
   "pre-commit": [
     "lint"
