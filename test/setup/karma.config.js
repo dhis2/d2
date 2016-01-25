@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = function karmaConfigHandler(config) {
     config.set({
-        browsers: [ 'PhantomJS' ], // run in Headless browser PhantomJS
+        browsers: ['PhantomJS'], // run in Headless browser PhantomJS
         singleRun: true,
         frameworks: [
             'mocha', // Test runner
@@ -18,9 +18,9 @@ module.exports = function karmaConfigHandler(config) {
             './tests.webpack.js', // just load this file as entry for webpack
         ],
         preprocessors: {
-            'tests.webpack.js': [ 'webpack' ], // preprocess with webpack and our sourcemap loader
+            'tests.webpack.js': ['webpack'], // preprocess with webpack and our sourcemap loader
         },
-        reporters: [ 'spec', 'coverage' ], // report results in this format
+        reporters: ['spec', 'coverage'], // report results in this format
         coverageReporter: {
             type: 'lcov',
             dir: '../../coverage',
@@ -33,6 +33,12 @@ module.exports = function karmaConfigHandler(config) {
             devtool: 'inline-source-map', // just do inline source maps instead of the default
             module: {
                 preLoaders: [
+                    // instrument only testing sources with Istanbul
+                    {
+                        test: /\.js$/,
+                        include: path.resolve('../../src/'),
+                        loader: 'istanbul-instrumenter',
+                    },
                     // transpile all files except testing sources with babel as usual
                     {
                         test: /\.js$/,
