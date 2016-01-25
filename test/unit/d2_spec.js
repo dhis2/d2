@@ -442,6 +442,39 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+
+        it('should use the default base url when the set baseUrl is not valid', (done) => {
+            d2.config.baseUrl = undefined;
+
+            d2.getUserSettings()
+                .then(() => {
+                    expect(apiMock.setBaseUrl).not.to.be.called;
+                    expect(apiMock.get).to.be.calledWith('userSettings/keyUiLocale');
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('getUserLocale', () => {
+        beforeEach(() => resetCachedResponse(d2));
+
+        it('should get the userlocale from the server', (done) => {
+            d2.getUserLocale()
+                .then(() => {
+                    expect(apiMock.get).to.be.calledWith('userSettings/keyUiLocale');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should just request the locale once from the server when called multiple times', () => {
+            return Promise.all([d2.getUserLocale(), d2.getUserLocale()])
+                .then(() => {
+                    expect(apiMock.get).to.be.calledWith('userSettings/keyUiLocale');
+                    expect(apiMock.get).to.have.callCount(1);
+                });
+        });
     });
 
     describe('getManifest', () => {
