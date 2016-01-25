@@ -1,5 +1,5 @@
 import defaultConfig from './defaultConfig';
-import {isType, isString} from './lib/check';
+import { isType, isString } from './lib/check';
 
 export default class Config {
     static create(...args) {
@@ -15,8 +15,8 @@ export default class Config {
 
     static processConfigForD2(config, d2) {
         const api = d2.Api.getApi();
-        d2.model.ModelDefinition.prototype.api = api;
-        d2.models = d2.model.ModelDefinitions.getModelDefinitions();
+        d2.model.ModelDefinition.prototype.api = api; // eslint-disable-line no-param-reassign
+        d2.models = d2.model.ModelDefinitions.getModelDefinitions(); // eslint-disable-line no-param-reassign
 
         if (isString(config.baseUrl)) {
             api.setBaseUrl(config.baseUrl);

@@ -12,7 +12,7 @@ describe('D2 models', () => {
     }
 
     beforeEach(() => {
-        models = new ModelDefinitions(); //jshint nonew:false
+        models = new ModelDefinitions();
     });
 
     it('should be an object', () => {
@@ -20,14 +20,14 @@ describe('D2 models', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinitions()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+        expect(() => ModelDefinitions()).to.throw('Cannot call a class as a function');
     });
 
     describe('add method', () => {
         var dataElementModelDefinition;
 
         beforeEach(() => {
-            dataElementModelDefinition = new ModelDefinition({name: 'dataElement'});
+            dataElementModelDefinition = new ModelDefinition({ name: 'dataElement' });
         });
 
         it('should be a function', () => {
@@ -51,7 +51,7 @@ describe('D2 models', () => {
 
         it('should reject a ModelDefinition that does not have a name property', () => {
             function shouldThrow() {
-                models.add({apiEndPoint: '/dataElement'});
+                models.add({ apiEndPoint: '/dataElement' });
             }
             models.add(dataElementModelDefinition);
 
@@ -61,10 +61,10 @@ describe('D2 models', () => {
 
     describe('mapThroughDefinitions method', () => {
         beforeEach(() => {
-            models.add({name: 'dataElement'});
-            models.add({name: 'dataValue'});
-            models.add({name: 'user'});
-            models.add({name: 'userGroup'});
+            models.add({ name: 'dataElement' });
+            models.add({ name: 'dataValue' });
+            models.add({ name: 'user' });
+            models.add({ name: 'userGroup' });
         });
 
         it('should should be a function', () => {
@@ -72,7 +72,7 @@ describe('D2 models', () => {
         });
 
         it('should return an array of ModelDefinitions', () => {
-            var expectedArray = [{name: 'dataElement'}, {name: 'dataValue'}, {name: 'user'}, {name: 'userGroup'}];
+            var expectedArray = [{ name: 'dataElement' }, { name: 'dataValue' }, { name: 'user' }, { name: 'userGroup' }];
             function returnValue(item) {
                 return item;
             }

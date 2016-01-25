@@ -6,11 +6,11 @@ describe('System', () => {
     let sys;
 
     const mockSettingsMapping = {
-        'keyLabelOnly': {label: 'label_1'},
-        'keyDescOnly': {description: 'desc_1'},
-        'keyDescLabel': {label: 'label_2', description: 'desc_2'},
-        'keyDuplicate1': {label: 'label_1'},
-        'keyDuplicate2': {label: 'label_2', description: 'desc_1'},
+        'keyLabelOnly': { label: 'label_1' },
+        'keyDescOnly': { description: 'desc_1' },
+        'keyDescLabel': { label: 'label_2', description: 'desc_2' },
+        'keyDuplicate1': { label: 'label_1' },
+        'keyDuplicate2': { label: 'label_2', description: 'desc_1' },
         'keyWithOptions': {
             label: 'label_3',
             options: {

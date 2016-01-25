@@ -52,7 +52,7 @@ class SystemConfiguration {
                 return Promise.resolve(config[key]);
             }
 
-            return Promise.reject('Unknown config option: ' + key);
+            return Promise.reject(`Unknown config option: ${key}`);
         });
     }
 
@@ -70,18 +70,18 @@ class SystemConfiguration {
 
         if (key === 'feedbackRecipients' && value === 'null' || value === null) {
             // Only valid UIDs are accepted when POST'ing, so we have to use DELETE in stead of POST'ing a null value.
-            req = this.api.delete(['configuration', key].join('/'), {dataType: 'text'});
+            req = this.api.delete(['configuration', key].join('/'), { dataType: 'text' });
         } else if (key === 'corsWhitelist') {
             // The corsWhitelist endpoint expects an array of URL's, while here value is expected to be a string.
-            req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'), {dataType: 'text'});
+            req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'), { dataType: 'text' });
         } else {
             const postLoc = settingsKeyMapping.hasOwnProperty(key) &&
                 settingsKeyMapping[key].hasOwnProperty('configuration') &&
                 settingsKeyMapping[key].configuration;
             if (postLoc) {
-                req = this.api.post(['configuration', postLoc].join('/'), value, {dataType: 'text', contentType: 'text/plain'});
+                req = this.api.post(['configuration', postLoc].join('/'), value, { dataType: 'text', contentType: 'text/plain' });
             } else {
-                return Promise.reject('No configuration found for ' + key);
+                return Promise.reject(`No configuration found for ${key}`);
             }
         }
 

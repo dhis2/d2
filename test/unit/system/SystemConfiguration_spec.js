@@ -257,7 +257,7 @@ describe('System.configuration', () => {
                         expect(apiPost.withArgs('configuration/corsWhitelist', mockConfiguration.corsWhitelist).callCount).to.equal(1);
                         done();
                     })
-                    .catch((err)=> {
+                    .catch((err) => {
                         done(err);
                     });
             });

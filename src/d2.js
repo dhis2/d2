@@ -1,4 +1,4 @@
-import {pick, Deferred} from './lib/utils';
+import { pick, Deferred } from './lib/utils';
 import Logger from './logger/Logger';
 import model from './model/models';
 import Api from './api/Api';
@@ -24,9 +24,7 @@ export function getManifest(url) {
     };
 
     return api.get(`${url}`)
-        .then(manifest => {
-            return Object.assign({}, manifest, manifestUtilities);
-        });
+        .then(manifest => Object.assign({}, manifest, manifestUtilities));
 }
 
 export function getUserLocale() {
@@ -37,11 +35,9 @@ export function getUserLocale() {
     }
 
     // Cache the Locale response so we don't request it again.
-    getUserLocale.cachedResponse = api.get('userSettings/keyUiLocale', {}, {dataType: 'text'})
+    getUserLocale.cachedResponse = api.get('userSettings/keyUiLocale', {}, { dataType: 'text' })
         // Set the default language to english when a 404 is returned
-        .catch(() => {
-            return 'en';
-        });
+        .catch(() => 'en');
 
     return getUserLocale.cachedResponse;
 }
@@ -67,11 +63,7 @@ export function getUserSettings() {
     }
 
     return Promise.all([getUserLocale()])
-        .then(([uiLocale]) => {
-            return {
-                uiLocale,
-            };
-        });
+        .then(([uiLocale]) => ({ uiLocale }));
 }
 
 /**
@@ -106,8 +98,8 @@ export function init(initConfig) {
 
     const d2 = {
         models: undefined,
-        model: model,
-        Api: Api,
+        model,
+        Api,
         system: System.getSystem(),
         i18n: I18n.getI18n(),
     };
@@ -126,8 +118,8 @@ export function init(initConfig) {
 
     return Promise.all([
         api.get('schemas'),
-        api.get('attributes', {fields: ':all,optionSet[:all,options[:all]]', paging: false}),
-        api.get('me', {fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]'}),
+        api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }),
+        api.get('me', { fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]' }),
         api.get('me/authorization'),
         getUserLocale(),
         api.get('system/info'),

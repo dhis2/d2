@@ -12,7 +12,7 @@ describe('CurrentUser', () => {
         modelDefinitions = {
             userGroup: {
                 get: stub().returns(Promise.resolve([])),
-                authorities: [{type: 'CREATE_PUBLIC', authorities: ['F_USERGROUP_PUBLIC_ADD']}]
+                authorities: [{ type: 'CREATE_PUBLIC', authorities: ['F_USERGROUP_PUBLIC_ADD'] }]
             },
             userRole: {
                 get: stub().returns(Promise.resolve([])),
@@ -34,7 +34,7 @@ describe('CurrentUser', () => {
                 ],
             },
             organisationUnitLevel: {
-                authorities: [{type: 'UPDATE', authorities: ['F_ORGANISATIONUNITLEVEL_UPDATE']}]
+                authorities: [{ type: 'UPDATE', authorities: ['F_ORGANISATIONUNITLEVEL_UPDATE'] }]
             },
         };
 
@@ -70,7 +70,7 @@ describe('CurrentUser', () => {
         });
 
         it('should not override the authorities property', () => {
-            currentUser = CurrentUser.create({authorities: []}, ['ALL'], modelDefinitions);
+            currentUser = CurrentUser.create({ authorities: [] }, ['ALL'], modelDefinitions);
             expect(currentUser.authorities).to.be.instanceof(UserAuthorities);
         });
     });
@@ -119,7 +119,7 @@ describe('CurrentUser', () => {
         it('should be called with the userGroup ids', () => {
             currentUser.getUserGroups();
 
-            expect(modelDefinitions.userGroup.get).to.be.calledWith({filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]']})
+            expect(modelDefinitions.userGroup.get).to.be.calledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
         });
     });
 
@@ -131,7 +131,7 @@ describe('CurrentUser', () => {
         it('should be called with the userRole ids', () => {
             currentUser.getUserRoles();
 
-            expect(modelDefinitions.userRole.get).to.be.calledWith({filter: ['id:in:[Ufph3mGRmMo]']})
+            expect(modelDefinitions.userRole.get).to.be.calledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
         });
     });
 
@@ -143,7 +143,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({filter: ['id:in:[ImspTQPwCqd]']});
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ filter: ['id:in:[ImspTQPwCqd]'] });
         });
     });
 
@@ -155,7 +155,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getDataViewOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({filter: ['id:in:[]']});
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ filter: ['id:in:[]'] });
         });
     });
 

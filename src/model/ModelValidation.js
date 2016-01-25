@@ -1,4 +1,4 @@
-import {checkType, isInteger, isObject, isArray, isString, isNumeric} from '../lib/check';
+import { checkType, isInteger, isObject, isArray, isString, isNumeric } from '../lib/check';
 import Logger from '../logger/Logger';
 import Api from '../api/Api';
 
@@ -38,14 +38,14 @@ function isSmallerThanLength(value, maxValue) {
 }
 
 function lengthMinMaxValidation(value, validationSettings) {
-    const resultStatus = {status: true, messages: []};
+    const resultStatus = { status: true, messages: [] };
 
     if (isArray(value) || isString(value)) {
         if (!isLargerThanLength(value, validationSettings.min)) {
             resultStatus.status = false;
             resultStatus.messages.push({
                 message: ['Value needs to be longer than or equal to', validationSettings.min].join(' '),
-                value: value,
+                value,
             });
         }
 
@@ -53,7 +53,7 @@ function lengthMinMaxValidation(value, validationSettings) {
             resultStatus.status = false;
             resultStatus.messages.push({
                 message: ['Value needs to be shorter than or equal to', validationSettings.max].join(' '),
-                value: value,
+                value,
             });
         }
     }
@@ -61,17 +61,18 @@ function lengthMinMaxValidation(value, validationSettings) {
     return resultStatus;
 }
 
+// TODO: Remove client side validation on models
 function typeSpecificValidation(result, value, valueType) {
     if (!valueType || !isArray(typeSpecificValidations[valueType])) {
         return result;
     }
 
-    result.status = typeSpecificValidations[valueType]
+    result.status = typeSpecificValidations[valueType] // eslint-disable-line no-param-reassign
         .reduce((currentValidationStatus, customValidator) => {
             if (!customValidator.validator.apply(null, [value])) {
                 result.messages.push({
                     message: customValidator.message,
-                    value: value,
+                    value,
                 });
                 return false;
             }
@@ -111,15 +112,16 @@ function typeValidation(value, type) {
     return false;
 }
 
+// TODO: Remove client side validation on models
 function numberMinMaxValidation(value, validationSettings) {
-    const resultStatus = {status: true, messages: []};
+    const resultStatus = { status: true, messages: [] };
 
     if (isNumeric(value)) {
         if (!isLargerThanMin(value, validationSettings.min)) {
             resultStatus.status = false;
             resultStatus.messages.push({
                 message: ['Value needs to be larger than or equal to', validationSettings.min].join(' '),
-                value: value,
+                value,
             });
         }
 
@@ -127,7 +129,7 @@ function numberMinMaxValidation(value, validationSettings) {
             resultStatus.status = false;
             resultStatus.messages.push({
                 message: ['Value needs to be smaller than or equal to', validationSettings.max].join(' '),
-                value: value,
+                value,
             });
         }
     }
@@ -135,17 +137,18 @@ function numberMinMaxValidation(value, validationSettings) {
     return resultStatus;
 }
 
+// TODO: Remove client side validation on models
 function minMaxValidation(result, value, validationSettings) {
     const numberMinMaxValidationStatus = numberMinMaxValidation(value, validationSettings);
     if (!numberMinMaxValidationStatus.status) {
-        result.status = false;
-        result.messages = result.messages.concat(numberMinMaxValidationStatus.messages);
+        result.status = false;  // eslint-disable-line no-param-reassign
+        result.messages = result.messages.concat(numberMinMaxValidationStatus.messages);  // eslint-disable-line no-param-reassign
     }
 
     const lengthMinMaxValidationStatus = lengthMinMaxValidation(value, validationSettings);
     if (!lengthMinMaxValidationStatus.status) {
-        result.status = false;
-        result.messages = result.messages.concat(lengthMinMaxValidationStatus.messages);
+        result.status = false;  // eslint-disable-line no-param-reassign
+        result.messages = result.messages.concat(lengthMinMaxValidationStatus.messages);  // eslint-disable-line no-param-reassign
     }
 
     return result;
@@ -179,18 +182,18 @@ class ModelValidation {
         if (!isObject(validationSettings)) {
             throw new TypeError('validationSettings should be of type object');
         }
-        const result = {status: true, messages: []};
+        const result = { status: true, messages: [] };
 
         // No value when not required is a valid value.
         if (validationSettings.required === false && !value) {
-            return {status: true, messages: []};
+            return { status: true, messages: [] };
         }
 
         if (!typeValidation(value, validationSettings.type)) {
             result.status = false;
             result.messages.push({
                 message: 'This is not a valid type',
-                value: value,
+                value,
             });
         }
 

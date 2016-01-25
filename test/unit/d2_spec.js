@@ -58,8 +58,8 @@ describe('D2', () => {
             .onCall(2).returns(Promise.resolve({}))
             .onCall(3).returns(Promise.resolve([]))
             .onCall(4).returns(Promise.resolve('en'))
-            .onCall(5).returns(Promise.resolve({version: '2.21'}))
-            .onCall(6).returns(Promise.resolve({apps: []}))
+            .onCall(5).returns(Promise.resolve({ version: '2.21' }))
+            .onCall(6).returns(Promise.resolve({ apps: [] }))
 
             // Second init round
             .onCall(7).returns(new Promise(resolve => resolve(schemasResponse)))
@@ -67,8 +67,8 @@ describe('D2', () => {
             .onCall(9).returns(Promise.resolve({}))
             .onCall(10).returns(Promise.resolve([]))
             .onCall(11).returns(Promise.resolve('en'))
-            .onCall(12).returns(Promise.resolve({version: '2.21'}))
-            .onCall(13).returns(Promise.resolve({apps: []}));
+            .onCall(12).returns(Promise.resolve({ version: '2.21' }))
+            .onCall(13).returns(Promise.resolve({ apps: [] }));
 
 
         function apiMocker() {
@@ -163,7 +163,7 @@ describe('D2', () => {
         it('should let the init() config override the pre-init config', (done) => {
             d2.config.baseUrl = '/dhis/api';
 
-            d2.init({baseUrl: '/demo/api'});
+            d2.init({ baseUrl: '/demo/api' });
             d2.getInstance()
                 .then(() => {
                     expect(apiMock.setBaseUrl).to.be.calledWith('/demo/api');
@@ -210,7 +210,7 @@ describe('D2', () => {
         });
 
         it('should return the d2 instance after init', (done) => {
-            Promise.all([d2.init({baseUrl: '/dhis/api'}), d2.getInstance()])
+            Promise.all([d2.init({ baseUrl: '/dhis/api' }), d2.getInstance()])
                 .then(([d2FromInit, d2FromFactory]) => {
                     expect(d2FromInit).to.equal(d2FromFactory);
                     done();
@@ -219,7 +219,7 @@ describe('D2', () => {
         });
 
         it('should return the same instance on getInstance calls', (done) => {
-            d2.init({baseUrl: '/dhis/api'});
+            d2.init({ baseUrl: '/dhis/api' });
 
             Promise.all([d2.getInstance(), d2.getInstance()])
                 .then(([firstCallResult, secondCallResult]) => {
@@ -236,7 +236,7 @@ describe('D2', () => {
             instanceAfterFirstInit.then((first) => {
                 resetCachedResponse(d2);
 
-                d2.init({baseUrl: '/dhis/api'});
+                d2.init({ baseUrl: '/dhis/api' });
                 const instanceAfterSecondInit = d2.getInstance();
 
                 return Promise.all([first, instanceAfterSecondInit]);
@@ -254,7 +254,7 @@ describe('D2', () => {
     });
 
     it('should set the base url onto the api', () => {
-        d2.init({baseUrl: '/dhis/api'});
+        d2.init({ baseUrl: '/dhis/api' });
 
         expect(apiMock.setBaseUrl).to.have.been.calledWith('/dhis/api');
     });
@@ -287,7 +287,7 @@ describe('D2', () => {
     });
 
     it('should call the api', (done) => {
-        d2.init({baseUrl: '/dhis/api'})
+        d2.init({ baseUrl: '/dhis/api' })
             .then(() => {
                 expect(apiMock.get).to.have.been.calledWith('schemas');
                 done();
@@ -298,7 +298,7 @@ describe('D2', () => {
     it('should log the error when schemas can not be requested', (done) => {
         apiMock.get.onFirstCall().returns(Promise.reject(new Error('Failed')));
 
-        d2.init({baseUrl: '/dhis/api'})
+        d2.init({ baseUrl: '/dhis/api' })
             .then(
                 () => {
                     done('No error occurred');
@@ -313,7 +313,7 @@ describe('D2', () => {
     });
 
     it('should return an object with the api object', (done) => {
-        d2.init({baseUrl: '/dhis/api'})
+        d2.init({ baseUrl: '/dhis/api' })
             .then(newD2 => {
                 expect(newD2.Api.getApi()).to.equal(apiMock);
                 done();
@@ -322,7 +322,7 @@ describe('D2', () => {
     });
 
     it('should call the api for all startup calls', (done) => {
-        d2.init({baseUrl: '/dhis/api'})
+        d2.init({ baseUrl: '/dhis/api' })
             .then(() => {
                 expect(apiMock.get).to.be.callCount(7);
                 done();
@@ -331,12 +331,12 @@ describe('D2', () => {
     });
 
     it('should query the api for all the attributes', (done) => {
-        d2.init({baseUrl: '/dhis/api'})
+        d2.init({ baseUrl: '/dhis/api' })
             .then(() => {
                 const attributeCall = apiMock.get.getCall(1);
                 /* 0: Url, 1: Data, 1: Query params, 2: Request options */
                 expect(attributeCall.args[0]).to.equal('attributes');
-                expect(attributeCall.args[1]).to.deep.equal({fields: ':all,optionSet[:all,options[:all]]', paging: false});
+                expect(attributeCall.args[1]).to.deep.equal({ fields: ':all,optionSet[:all,options[:all]]', paging: false });
                 done();
             })
             .catch(done);
@@ -422,7 +422,7 @@ describe('D2', () => {
         });
 
         it('should set the default locale if the call fails', (done) => {
-            apiMock.get.onFirstCall().returns(Promise.reject({message: 'Not found'}));
+            apiMock.get.onFirstCall().returns(Promise.reject({ message: 'Not found' }));
 
             d2.getUserSettings()
                 .then(settings => {

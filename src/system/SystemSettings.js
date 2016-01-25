@@ -5,7 +5,7 @@
  * @requires api/Api
  */
 
-import {isString} from '../lib/check';
+import { isString } from '../lib/check';
 import Api from '../api/Api';
 
 import settingsKeyMapping from './settingsKeyMapping';
@@ -71,7 +71,7 @@ class SystemSettings {
                 throw new TypeError('A "key" parameter should be specified when calling get() on systemSettings');
             }
 
-            this.api.get(['systemSettings', systemSettingsKey].join('/'), undefined, {dataType: 'text'})
+            this.api.get(['systemSettings', systemSettingsKey].join('/'), undefined, { dataType: 'text' })
                 .then(response => {
                     const systemSettingValue = processValue(response);
                     if (systemSettingValue) {
@@ -84,10 +84,10 @@ class SystemSettings {
 
     set(systemSettingsKey, value) {
         const settingUrl = ['systemSettings', systemSettingsKey].join('/');
-        if (value === null || (value + '').length === 0) {
-            return this.api.delete(settingUrl, {dataType: 'text'});
+        if (value === null || (`${value}`).length === 0) {
+            return this.api.delete(settingUrl, { dataType: 'text' });
         }
-        return this.api.post(settingUrl, value, {dataType: 'text', contentType: 'text/plain'});
+        return this.api.post(settingUrl, value, { dataType: 'text', contentType: 'text/plain' });
     }
 }
 

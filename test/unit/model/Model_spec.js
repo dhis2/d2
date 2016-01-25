@@ -11,7 +11,7 @@ describe('Model', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Model()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+        expect(() => Model()).to.throw('Cannot call a class as a function');
     });
 
     it('should throw when modelDefinition is not defined', () => {
@@ -51,14 +51,14 @@ describe('Model', () => {
     });
 
     it('should add properties based on the modelDefinition', () => {
-        //TODO: This fixture is outdated and we should update to a fixture with getters and setters.
+        // TODO: This fixture is outdated and we should update to a fixture with getters and setters.
         let dataElementModel = Model.create(fixtures.get('modelDefinitions/dataElement'));
 
         expect(Object.keys(dataElementModel).length).to.equal(34);
     });
 
     it('should keep a reference to its definition', () => {
-        let modelDefinition = {modelProperties: []};
+        let modelDefinition = { modelProperties: [] };
         let dataElementModel = Model.create(modelDefinition);
 
         expect(dataElementModel.modelDefinition).to.equal(modelDefinition);
@@ -71,7 +71,7 @@ describe('Model', () => {
     });
 
     it('should not allow the modelDefinition to be changed', () => {
-        let modelDefinition = {modelProperties: []};
+        let modelDefinition = { modelProperties: [] };
         let dataElementModel = Model.create(modelDefinition);
 
         function shouldThrow() {
@@ -193,13 +193,13 @@ describe('Model', () => {
 
             expect(dataElementModel.attributeValues.length).to.equal(1);
             expect(dataElementModel.attributeValues[0].value).to.equal('Mark');
-            expect(dataElementModel.attributeValues[0].attribute).to.deep.equal({id: 'S8a2OBRnqEc', name: 'name'});
+            expect(dataElementModel.attributeValues[0].attribute).to.deep.equal({ id: 'S8a2OBRnqEc', name: 'name' });
         });
 
         it('should get the correct value from the attributeValues property', () => {
             dataElementModel.dataValues.attributeValues = [{
                 value: 'Mark',
-                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+                attribute: { id: 'FpoWdhxCMwH', name: 'marktribute' }
             }];
 
             expect(dataElementModel.attributes.marktribute).to.equal('Mark');
@@ -208,7 +208,7 @@ describe('Model', () => {
         it('should not add a value for the same attribute twice', () => {
             dataElementModel.dataValues.attributeValues = [{
                 value: 'Mark',
-                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+                attribute: { id: 'FpoWdhxCMwH', name: 'marktribute' }
             }];
 
             dataElementModel.attributes.marktribute = 'John';
@@ -221,7 +221,7 @@ describe('Model', () => {
         it('should add a value for the attribute when it does not exist yet', () => {
             dataElementModel.dataValues.attributeValues = [{
                 value: 'Mark',
-                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+                attribute: { id: 'FpoWdhxCMwH', name: 'marktribute' }
             }];
 
             dataElementModel.attributes.name = 'John';
@@ -249,7 +249,7 @@ describe('Model', () => {
         it('should set the model to dirty when an attribute was changed', () => {
             dataElementModel.dataValues.attributeValues = [{
                 value: 'Mark',
-                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+                attribute: { id: 'FpoWdhxCMwH', name: 'marktribute' }
             }];
 
             expect(dataElementModel.dirty).to.be.false;
@@ -262,7 +262,7 @@ describe('Model', () => {
         it('should not set the model to be dirty when the attribute value is the same', () => {
             dataElementModel.dataValues.attributeValues = [{
                 value: 'Mark',
-                attribute: {id: 'FpoWdhxCMwH', name: 'marktribute'}
+                attribute: { id: 'FpoWdhxCMwH', name: 'marktribute' }
             }];
 
             dataElementModel.attributes.marktribute = 'Mark';

@@ -1,12 +1,12 @@
-import {checkType, isObject, checkDefined, isDefined} from '../lib/check';
-import {addLockedProperty, curry, copyOwnProperties} from '../lib/utils';
+import { checkType, isObject, checkDefined, isDefined } from '../lib/check';
+import { addLockedProperty, curry, copyOwnProperties } from '../lib/utils';
 import ModelDefinitions from './ModelDefinitions';
 import Model from './Model';
 import ModelCollection from './ModelCollection';
 import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
-import {DIRTY_PROPERTY_LIST} from './ModelBase';
+import { DIRTY_PROPERTY_LIST } from './ModelBase';
 import Logger from '../logger/Logger';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
@@ -33,7 +33,7 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     }
 
     if (propertyName) {
-        propertiesObject[propertyName] = propertyDetails;
+        propertiesObject[propertyName] = propertyDetails; // eslint-disable-line no-param-reassign
     }
 }
 
@@ -72,7 +72,7 @@ function createValidationSetting(validationObject, schemaProperty) {
     }
 
     if (propertyName) {
-        validationObject[propertyName] = validationDetails;
+        validationObject[propertyName] = validationDetails; // eslint-disable-line no-param-reassign
     }
 }
 
@@ -83,6 +83,18 @@ function createValidations(schemaProperties) {
     (schemaProperties || []).forEach(createModelPropertyOn);
 
     return validationsObject;
+}
+
+
+function shouldBeModelCollectionProperty(model, models) {
+    return function shouldBeModelCollectionPropertyIterator(modelProperty) {
+        return model &&
+            models && models.hasOwnProperty(modelProperty) &&
+            model.modelDefinition &&
+            model.modelDefinition.modelValidations &&
+            model.modelDefinition.modelValidations[modelProperty] &&
+            model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION';
+    };
 }
 
 /**
@@ -137,29 +149,28 @@ class ModelDefinition {
     create(data) {
         const model = Model.create(this);
         const models = ModelDefinitions.getModelDefinitions();
+        const dataValues = Object.assign({}, data);
 
         if (data) {
             // Set the datavalues onto the model directly
-            Object.keys(model).forEach((modelProperty) => {
-                // For collections of objects, create ModelCollectionProperties rather than plain arrays
-                if (models && models.hasOwnProperty(modelProperty) && data[modelProperty] && data[modelProperty] instanceof Array) {
-                    data[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], data[modelProperty].map(d => {
-                        return models[modelProperty].create(d);
-                    }));
-                }
-                model.dataValues[modelProperty] = data[modelProperty];
-            });
+            Object
+                .keys(model)
+                .forEach((modelProperty) => {
+                    // For collections of objects, create ModelCollectionProperties rather than plain arrays
+                    if (models && models.hasOwnProperty(modelProperty) && data[modelProperty] && data[modelProperty] instanceof Array) {
+                        dataValues[modelProperty] = ModelCollectionProperty
+                            .create(
+                                model,
+                                models[modelProperty],
+                                data[modelProperty].map(d => models[modelProperty].create(d))
+                            );
+                    }
+                    model.dataValues[modelProperty] = dataValues[modelProperty];
+                });
         } else {
             // Create empty ModelCollectionProperties for models without data.
             Object.keys(model)
-                .filter(modelProperty => {
-                    return model &&
-                        models && models.hasOwnProperty(modelProperty) &&
-                        model.modelDefinition &&
-                        model.modelDefinition.modelValidations &&
-                        model.modelDefinition.modelValidations[modelProperty] &&
-                        model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION';
-                })
+                .filter(shouldBeModelCollectionProperty(model, models))
                 .forEach((modelProperty) => {
                     model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], []);
                 });
@@ -198,11 +209,11 @@ class ModelDefinition {
      *   .then(model => console.log(model.name));
      * ```
      */
-    get(identifier, queryParams = {fields: ':all,attributeValues[:all,attribute[id,name,displayName]]'}) {
+    get(identifier, queryParams = { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' }) {
         checkDefined(identifier, 'Identifier');
 
         if (Array.isArray(identifier)) {
-            return this.list({filter: [`id:in:[${identifier.join(',')}]`]});
+            return this.list({ filter: [`id:in:[${identifier.join(',')}]`] });
         }
 
         // TODO: should throw error if API has not been defined
@@ -236,18 +247,17 @@ class ModelDefinition {
      */
     list(queryParams = {}) {
         const definedFilters = this.filters.getFilters();
+        // FIXME: Looks like when specific filters are defined the model.filter() filters are not applied (they should probably be merged)
         if (!isDefined(queryParams.filter) && definedFilters.length) {
-            queryParams.filter = definedFilters;
+            queryParams.filter = definedFilters; // eslint-disable-line no-param-reassign
         }
 
-        return this.api.get(this.apiEndpoint, Object.assign({fields: ':all'}, queryParams))
-            .then((responseData) => {
-                return ModelCollection.create(
-                    this,
-                    responseData[this.plural].map((data) => this.create(data)),
-                    responseData.pager
-                );
-            });
+        return this.api.get(this.apiEndpoint, Object.assign({ fields: ':all' }, queryParams))
+            .then((responseData) => ModelCollection.create(
+                this,
+                responseData[this.plural].map((data) => this.create(data)),
+                responseData.pager
+            ));
     }
 
     /**
@@ -298,9 +308,7 @@ class ModelDefinition {
                         objectToSave[propertyName] = Array
                             .from(model.dataValues[propertyName].values())
                             .filter(value => value.id)
-                            .map(({id}) => {
-                                return {id};
-                            });
+                            .map(({ id }) => ({ id }));
                     }
                 }
             }
@@ -385,7 +393,7 @@ class ModelDefinition {
             Object.freeze(createValidations(schema.properties)),
             attributes
                 .reduce((current, attributeDefinition) => {
-                    current[attributeDefinition.name] = attributeDefinition;
+                    current[attributeDefinition.name] = attributeDefinition; // eslint-disable-line no-param-reassign
                     return current;
                 }, {}),
             schema.authorities
@@ -394,7 +402,7 @@ class ModelDefinition {
 }
 
 class UserModelDefinition extends ModelDefinition {
-    get(identifier, queryParams = {fields: ':all,userCredentials[:owner]'}) {
+    get(identifier, queryParams = { fields: ':all,userCredentials[:owner]' }) {
         return super.get(identifier, queryParams);
     }
 }

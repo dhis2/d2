@@ -5,9 +5,9 @@
  * @requires model/ModelBase
  */
 
-import {checkType} from '../lib/check';
+import { checkType } from '../lib/check';
 import ModelBase from './ModelBase';
-import {DIRTY_PROPERTY_LIST} from './ModelBase';
+import { DIRTY_PROPERTY_LIST } from './ModelBase';
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
@@ -95,9 +95,7 @@ class Model {
 
                             return this.attributeValues
                                 .filter(value => value.attribute.name === attributeName)
-                                .reduce((current, value) => {
-                                    return value.value;
-                                }, undefined);
+                                .reduce((current, value) => value.value, undefined);
                         },
                         set: (value) => {
                             if (!this.attributeValues) { this.attributeValues = []; }
@@ -116,7 +114,7 @@ class Model {
                             } else {
                                 // Add the new attribute value to the attributeValues collection
                                 this.attributeValues.push({
-                                    value: value,
+                                    value,
                                     attribute: {
                                         id: attributeProperties[attributeName].id,
                                         name: attributeProperties[attributeName].name,

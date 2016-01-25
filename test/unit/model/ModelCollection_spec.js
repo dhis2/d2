@@ -124,7 +124,7 @@ describe('ModelCollection', () => {
             });
 
             it('should not be allowed to be called without new', () => {
-                expect(() => ModelCollection()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+                expect(() => ModelCollection()).to.throw('Cannot call a class as a function');
             });
         });
     });
@@ -160,7 +160,7 @@ describe('ModelCollection', () => {
 
             modelCollection = new ModelCollection(modelDefinition, [firstModel, new Model('q2egwkkrfc1')]);
 
-            //firstValue = modelCollection[Symbol.iterator]().next().value[1];
+            // firstValue = modelCollection[Symbol.iterator]().next().value[1];
             firstValue = modelCollection.get('q2egwkkrfc1');
 
             expect(firstValue).to.deep.equal(firstModel);
@@ -185,7 +185,7 @@ describe('ModelCollection', () => {
             });
 
             it('should not accept an object that was created based on a local class', () => {
-                class Model{
+                class Model {
                     constructor(id) {
                         this.id = id;
                     }
@@ -195,7 +195,7 @@ describe('ModelCollection', () => {
             });
 
             it('should accept an object that was create with Model as subclass', () => {
-                class MyModel extends Model{}
+                class MyModel extends Model {}
                 let myModel = new MyModel('q2egwkkrfco');
 
                 expect(() => modelCollection.add(myModel)).to.not.throw('Values of a ModelCollection must be instances of Model');

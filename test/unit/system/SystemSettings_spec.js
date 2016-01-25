@@ -20,7 +20,7 @@ describe('settings.System', () => {
 
     describe('all', () => {
         beforeEach(() => {
-            systemSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve({keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015'}));
+            systemSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve({ keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015' }));
         });
 
         it('should be a function', () => {
@@ -70,7 +70,7 @@ describe('settings.System', () => {
         it('should call the api to get the value', () => {
             systemSettings.get('keyLastSuccessfulResourceTablesUpdate');
 
-            expect(systemSettings.api.get).to.be.calledWith('systemSettings/keyLastSuccessfulResourceTablesUpdate', undefined, {dataType: 'text'});
+            expect(systemSettings.api.get).to.be.calledWith('systemSettings/keyLastSuccessfulResourceTablesUpdate', undefined, { dataType: 'text' });
         });
 
         it('should return the value from the promise', (done) => {
@@ -86,7 +86,7 @@ describe('settings.System', () => {
 
             systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
                 .then((value) => {
-                    expect(value).to.deep.equal({mydataKey: 'myDataValue'});
+                    expect(value).to.deep.equal({ mydataKey: 'myDataValue' });
                 })
                 .then(done);
         });
@@ -147,7 +147,7 @@ describe('settings.System', () => {
         });
 
         it('should use content-type text/plain', (done) => {
-            systemSettings.set('mySetting', {type: 'object', value: 'some value'})
+            systemSettings.set('mySetting', { type: 'object', value: 'some value' })
                 .then(() => {
                     expect(apiGet.callCount).to.equal(0);
                     expect(apiPost.callCount).to.equal(1);

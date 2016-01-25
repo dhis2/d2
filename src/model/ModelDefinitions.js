@@ -1,4 +1,4 @@
-import {checkType} from '../lib/check';
+import { checkType } from '../lib/check';
 
 /**
  * @class ModelDefinitions

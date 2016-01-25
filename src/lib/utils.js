@@ -17,7 +17,7 @@ export function addLockedProperty(object, name, value) {
         enumerable: true,
         configurable: false,
         writable: false,
-        value: value,
+        value,
     };
     Object.defineProperty(object, name, propertyDescriptor);
 }
@@ -27,7 +27,7 @@ export function copyOwnProperties(to, from) {
 
     for (key in from) {
         if (from.hasOwnProperty(key)) {
-            to[key] = from[key];
+            to[key] = from[key]; // eslint-disable-line no-param-reassign
         }
     }
 

@@ -173,7 +173,7 @@ describe('Api', () => {
         });
 
         it('should add the data to the call', () => {
-            api.get('dataElements', {fields: 'id,name'});
+            api.get('dataElements', { fields: 'id,name' });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
@@ -193,7 +193,7 @@ describe('Api', () => {
                 });
             })());
 
-            api.get('/api/dataElements', {fields: 'id,name'})
+            api.get('/api/dataElements', { fields: 'id,name' })
                 .catch(requestFailedHandler)
                 .then(() => {
                     expect(requestFailedHandler).to.be.called;
@@ -212,7 +212,7 @@ describe('Api', () => {
                 },
             }));
 
-            api.get('/api/dataElements', {fields: 'id,name'})
+            api.get('/api/dataElements', { fields: 'id,name' })
                 .catch(requestFailedHandler)
                 .then(() => {
                     expect(requestFailedHandler).to.be.called;
@@ -224,7 +224,7 @@ describe('Api', () => {
         it('should call the success resolve handler', (done) => {
             jqueryMock.ajax.returns(Promise.resolve('Success data'));
 
-            api.get('/api/dataElements', {fields: 'id,name'})
+            api.get('/api/dataElements', { fields: 'id,name' })
                 .then(requestSuccessHandler)
                 .then(() => {
                     expect(requestSuccessHandler).to.be.called;
@@ -234,7 +234,7 @@ describe('Api', () => {
         });
 
         it('should allow the options to be overridden', () => {
-            api.get('dataElements', undefined, {dataType: 'text'});
+            api.get('dataElements', undefined, { dataType: 'text' });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
@@ -246,7 +246,7 @@ describe('Api', () => {
         });
 
         it('should encode filters', () => {
-            api.get('filterTest', {filter: ['a:1', 'b:2']});
+            api.get('filterTest', { filter: ['a:1', 'b:2'] });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
@@ -276,7 +276,7 @@ describe('Api', () => {
         });
 
         it('should not stringify plain text data', () => {
-            api.post('systemSettings/mySettingsKey', 'string=test', {contentType: 'text/plain'});
+            api.post('systemSettings/mySettingsKey', 'string=test', { contentType: 'text/plain' });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'POST',
@@ -288,7 +288,7 @@ describe('Api', () => {
         });
 
         it('should post the number zero', () => {
-            api.post('systemSettings/numberZero', 0, {contentType: 'text/plain'});
+            api.post('systemSettings/numberZero', 0, { contentType: 'text/plain' });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'POST',
@@ -300,7 +300,7 @@ describe('Api', () => {
         });
 
         it('should send plain text boolean true values as "true"', () => {
-            api.post('systemSettings/keyTrue', true, {contentType: 'text/plain'});
+            api.post('systemSettings/keyTrue', true, { contentType: 'text/plain' });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'POST',
@@ -312,7 +312,7 @@ describe('Api', () => {
         });
 
         it('should send plain text boolean false values as "false"', () => {
-            api.post('systemSettings/keyFalse', false, {contentType: 'text/plain'});
+            api.post('systemSettings/keyFalse', false, { contentType: 'text/plain' });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'POST',
@@ -324,14 +324,14 @@ describe('Api', () => {
         });
 
         it('shouldn\'t stringify data if content-type is false', () => {
-            api.post('some/api/endpoint', {obj: 'yes'}, {contentType: false});
+            api.post('some/api/endpoint', { obj: 'yes' }, { contentType: false });
 
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'POST',
                 url: '/api/some/api/endpoint',
                 dataType: 'json',
                 contentType: false,
-                data: {obj: 'yes'},
+                data: { obj: 'yes' },
             });
         });
     });

@@ -22,7 +22,7 @@ const authTypes = {
 const propertySymbols = Array
     .from(propertiesToIgnore)
     .reduce((result, property) => {
-        result[property] = Symbol(property);
+        result[property] = Symbol(property); // eslint-disable-line no-param-reassign
         return result;
     }, {});
 
@@ -39,11 +39,11 @@ function getUserPropertiesToCopy(currentUserObject) {
         .reduce((result, property) => {
             if (propertiesToIgnore.has(property)) {
                 if (properties[property].map) {
-                    result[propertySymbols[property]] = properties[property]
+                    result[propertySymbols[property]] = properties[property] // eslint-disable-line no-param-reassign
                         .map(value => value.id);
                 }
             } else {
-                result[property] = properties[property];
+                result[property] = properties[property]; // eslint-disable-line no-param-reassign
             }
             return result;
         }, {});
@@ -60,25 +60,25 @@ export default class CurrentUser {
     getUserGroups() {
         const userGroupIds = this[propertySymbols.userGroups];
 
-        return this[models].userGroup.get({filter: [`id:in:[${userGroupIds.join(',')}]`]});
+        return this[models].userGroup.get({ filter: [`id:in:[${userGroupIds.join(',')}]`] });
     }
 
     getUserRoles() {
         const userRoleIds = this[propertySymbols.userRoles];
 
-        return this[models].userRole.get({filter: [`id:in:[${userRoleIds.join(',')}]`]});
+        return this[models].userRole.get({ filter: [`id:in:[${userRoleIds.join(',')}]`] });
     }
 
     getOrganisationUnits() {
         const organisationUnitsIds = this[propertySymbols.organisationUnits];
 
-        return this[models].organisationUnit.list({filter: [`id:in:[${organisationUnitsIds.join(',')}]`]});
+        return this[models].organisationUnit.list({ filter: [`id:in:[${organisationUnitsIds.join(',')}]`] });
     }
 
     getDataViewOrganisationUnits() {
         const organisationUnitsIds = this[propertySymbols.dataViewOrganisationUnits];
 
-        return this[models].organisationUnit.list({filter: [`id:in:[${organisationUnitsIds.join(',')}]`]});
+        return this[models].organisationUnit.list({ filter: [`id:in:[${organisationUnitsIds.join(',')}]`] });
     }
 
     checkAuthorityForType(authorityType, modelType) {
@@ -90,11 +90,9 @@ export default class CurrentUser {
             // Filter the correct authority to check for from the model
             .filter(authority => authorityType.some(authToHave => authToHave === authority.type))
             // Check the left over schema authority types
-            .some(schemaAuthority => {
-                // Check if one of the schema authorities are available in the users authorities
-                return schemaAuthority.authorities
-                    .some(authorityToCheckFor => this.authorities.has(authorityToCheckFor));
-            });
+            .some(schemaAuthority => schemaAuthority.authorities
+                .some(authorityToCheckFor => this.authorities.has(authorityToCheckFor)) // Check if one of the schema authorities are available in the users authorities
+            );
     }
 
     canCreate(modelType) {

@@ -16,7 +16,7 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: General                                                                                            */
     /* ============================================================================================================ */
-    'keyAnalyticsMaxLimit': {
+    keyAnalyticsMaxLimit: {
         label: 'analytics_max_limit',
         type: 'dropdown',
         options: {
@@ -26,35 +26,35 @@ const settingsKeyMapping = {
             0: 'unlimited',
         },
     },
-    'infrastructuralIndicators': {
+    infrastructuralIndicators: {
         label: 'infrastructural_indicators',
         configuration: 'infrastructuralIndicators',
         type: 'indicatorGroups',
     },
-    'infrastructuralDataElements': {
+    infrastructuralDataElements: {
         label: 'infrastructural_data_elements',
         configuration: 'infrastructuralDataElements',
         type: 'dataElementGroups',
     },
-    'infrastructuralPeriodType': {
+    infrastructuralPeriodType: {
         label: 'infrastructural_period_type',
         configuration: 'infrastructuralPeriodType',
         type: 'dropdown',
         options: {
-            'Daily': 'Daily',
-            'Weekly': 'Weekly',
-            'Monthly': 'Monthly',
-            'BiMonthly': 'BiMonthly',
-            'Quarterly': 'Quarterly',
-            'SixMonthly': 'SixMonthly',
-            'SixMonthlyApril': 'SixMonthlyApril',
-            'Yearly': 'yearly',
-            'FinancialApril': 'FinancialApril',
-            'FinancialJuly': 'FinancialJuly',
-            'FinancialOct': 'FinancialOct',
+            Daily: 'Daily',
+            Weekly: 'Weekly',
+            Monthly: 'Monthly',
+            BiMonthly: 'BiMonthly',
+            Quarterly: 'Quarterly',
+            SixMonthly: 'SixMonthly',
+            SixMonthlyApril: 'SixMonthlyApril',
+            Yearly: 'yearly',
+            FinancialApril: 'FinancialApril',
+            FinancialJuly: 'FinancialJuly',
+            FinancialOct: 'FinancialOct',
         },
     },
-    'keyAnalysisRelativePeriod': {
+    keyAnalysisRelativePeriod: {
         label: 'default_analysis_relative_period',
         type: 'dropdown',
         options: {
@@ -89,55 +89,55 @@ const settingsKeyMapping = {
             LAST_52_WEEKS: 'LAST_52_WEEKS',
         },
     },
-    'feedbackRecipients': {
+    feedbackRecipients: {
         label: 'feedback_recipients',
         configuration: 'feedbackRecipients',
         type: 'userGroups',
     },
-    'offlineOrganisationUnitLevel': {
+    offlineOrganisationUnitLevel: {
         label: 'max_levels_to_offline',
         description: 'relative_to_current_user',
         configuration: 'offlineOrganisationUnitLevel',
         type: 'organisationUnitLevels',
     },
-    'factorDeviation': {
+    factorDeviation: {
         label: 'data_analysis_factor',
         validators: ['number'],
     },
-    'phoneNumberAreaCode': {
+    phoneNumberAreaCode: {
         label: 'phone_number_area_code',
         validators: ['number'],
     },
-    'helpPageLink': {
+    helpPageLink: {
         label: 'help_page_link',
         validators: ['relative_url'],
     },
-    'multiOrganisationUnitForms': {
+    multiOrganisationUnitForms: {
         label: 'multi_organisation_unit_forms',
         type: 'checkbox',
     },
-    'omitIndicatorsZeroNumeratorDataMart': {
+    omitIndicatorsZeroNumeratorDataMart: {
         label: 'omit_indicators_zero_numerator_data_mart',
         type: 'checkbox',
     },
-    'keyAnalyticsMaintenanceMode': {
+    keyAnalyticsMaintenanceMode: {
         label: 'put_analytics_in_maintenance_mode',
         type: 'checkbox',
     },
     /* ============================================================================================================ */
     /* Category: Server                                                                                             */
     /* ============================================================================================================ */
-    'keyCacheStrategy': {
+    keyCacheStrategy: {
         label: 'cache_strategy',
         type: 'dropdown',
         options: {
-            'NO_CACHE': 'no_cache',
-            'CACHE_1_HOUR': 'cache_for_one_hour',
-            'CACHE_6AM_TOMORROW': 'cache_until_6am_tomorrow',
-            'CACHE_TWO_WEEKS': 'cache_for_two_weeks',
+            NO_CACHE: 'no_cache',
+            CACHE_1_HOUR: 'cache_for_one_hour',
+            CACHE_6AM_TOMORROW: 'cache_until_6am_tomorrow',
+            CACHE_TWO_WEEKS: 'cache_for_two_weeks',
         },
     },
-    'keyDatabaseServerCpus': {
+    keyDatabaseServerCpus: {
         label: 'no_of_database_server_cpus',
         type: 'dropdown',
         options: {
@@ -146,71 +146,71 @@ const settingsKeyMapping = {
             6: '6', 7: '7', 8: '8', 16: '16', 32: '32',
         },
     },
-    'keySystemNotificationsEmail': {
+    keySystemNotificationsEmail: {
         label: 'system_notifications_email_address',
         validators: ['email'],
     },
-    'keyInstanceBaseUrl': {
+    keyInstanceBaseUrl: {
         label: 'server_base_url',
         validators: ['url'],
     },
-    'googleAnalyticsUA': {
+    googleAnalyticsUA: {
         label: 'google_analytics_ua_key',
     },
     /* ============================================================================================================ */
     /* Category: Appearance                                                                                         */
     /* ============================================================================================================ */
-    'applicationTitle': {
+    applicationTitle: {
         label: 'application_title',
         appendLocale: true,
         multiLine: true,
     },
-    'keyApplicationIntro': {
+    keyApplicationIntro: {
         label: 'application_introduction',
         description: 'allows_html',
         appendLocale: true,
         multiLine: true,
     },
-    'keyApplicationNotification': {
+    keyApplicationNotification: {
         label: 'application_notification',
         description: 'allows_html',
         appendLocale: true,
         multiLine: true,
     },
-    'keyApplicationFooter': {
+    keyApplicationFooter: {
         label: 'application_left_footer',
         description: 'allows_html',
         appendLocale: true,
         multiLine: true,
     },
-    'keyApplicationRightFooter': {
+    keyApplicationRightFooter: {
         label: 'application_right_footer',
         description: 'allows_html',
         appendLocale: true,
         multiLine: true,
     },
-    'keyCurrentStyle': {
+    keyCurrentStyle: {
         label: 'style',
         type: 'styles',
     },
-    'startModule': {
+    startModule: {
         label: 'start_page',
         type: 'startModules',
     },
-    'keyFlag': {
+    keyFlag: {
         label: 'flag',
         type: 'flags',
     },
-    'keyRequireAddToView': {
+    keyRequireAddToView: {
         label: 'require_authority_to_add_to_view_object_lists',
         type: 'checkbox',
     },
-    'keyUseCustomLogoFront': {
+    keyUseCustomLogoFront: {
         label: 'custom_login_page_logo',
         type: 'staticContent',
         name: 'logo_front',
     },
-    'keyUseCustomLogoBanner': {
+    keyUseCustomLogoBanner: {
         label: 'custom_top_menu_logo',
         type: 'staticContent',
         name: 'logo_banner',
@@ -218,8 +218,8 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: Email                                                                                              */
     /* ============================================================================================================ */
-    'keyEmailHostName': {label: 'host_name'},
-    'keyEmailPort': {
+    keyEmailHostName: { label: 'host_name' },
+    keyEmailPort: {
         label: 'port',
         type: 'dropdown',
         options: {
@@ -228,22 +228,22 @@ const settingsKeyMapping = {
             25: 25,
         },
     },
-    'keyEmailUsername': {
+    keyEmailUsername: {
         label: 'username',
     },
-    'keyEmailPassword': {
+    keyEmailPassword: {
         label: 'password',
         type: 'password',
     },
-    'keyEmailTls': {
+    keyEmailTls: {
         label: 'tls',
         type: 'checkbox',
     },
-    'keyEmailSender': {
+    keyEmailSender: {
         label: 'email_sender',
         validators: ['email'],
     },
-    'emailTestButton': {
+    emailTestButton: {
         label: 'send_test_email',
         type: 'post_button',
         uri: '/email/test',
@@ -251,33 +251,33 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: Access                                                                                             */
     /* ============================================================================================================ */
-    'selfRegistrationRole': {
+    selfRegistrationRole: {
         label: 'self_registration_account_user_role',
         configuration: 'selfRegistrationRole',
         type: 'userRoles',
     },
-    'keySelfRegistrationNoRecaptcha': {
+    keySelfRegistrationNoRecaptcha: {
         label: 'do_not_require_recaptcha_for_self_registration',
         type: 'checkbox',
     },
-    'selfRegistrationOrgUnit': {
+    selfRegistrationOrgUnit: {
         label: 'self_registration_account_organisation_unit',
         configuration: 'selfRegistrationOrgUnit',
         type: 'organisationUnits',
     },
-    'keyAccountRecovery': {
+    keyAccountRecovery: {
         label: 'enable_user_account_recovery',
         type: 'checkbox',
     },
-    'keyCanGrantOwnUserAuthorityGroups': {
+    keyCanGrantOwnUserAuthorityGroups: {
         label: 'allow_users_to_grant_own_user_roles',
         type: 'checkbox',
     },
-    'keyAllowObjectAssignment': {
+    keyAllowObjectAssignment: {
         label: 'allow_assigning_object_to_related_objects_during_add_or_update',
         type: 'checkbox',
     },
-    'credentialsExpires': {
+    credentialsExpires: {
         label: 'user_credentials_expires',
         type: 'dropdown',
         options: {
@@ -287,9 +287,9 @@ const settingsKeyMapping = {
             12: '12_months',
         },
     },
-    'keyOpenIdProvider': {label: 'openid_provider'},
-    'keyOpenIdProviderLabel': {label: 'openid_provider_label'},
-    'corsWhitelist': {
+    keyOpenIdProvider: { label: 'openid_provider' },
+    keyOpenIdProviderLabel: { label: 'openid_provider_label' },
+    corsWhitelist: {
         label: 'cors_whitelist',
         configuration: 'corsWhitelist',
         type: 'editlist',
@@ -300,36 +300,36 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: Approval                                                                                           */
     /* ============================================================================================================ */
-    'keyHideUnapprovedDataInAnalytics': {
+    keyHideUnapprovedDataInAnalytics: {
         label: 'hide_unapproved_data_in_analytics',
         type: 'checkbox',
     },
-    'keyAcceptanceRequiredForApproval': {
+    keyAcceptanceRequiredForApproval: {
         label: 'acceptance_required_before_approval',
         type: 'checkbox',
     },
-    'dataApprovalLevels': {
+    dataApprovalLevels: {
         label: 'data_approval_levels',
         type: 'dataapproval',
     },
     /* ============================================================================================================ */
     /* Category: Calendar                                                                                           */
     /* ============================================================================================================ */
-    'keyCalendar': {
+    keyCalendar: {
         label: 'calendar',
         type: 'dropdown',
         options: {
-            'coptic': 'coptic',
-            'ethiopian': 'ethiopian',
-            'gregorian': 'gregorian',
-            'islamic': 'islamic',
-            'iso8601': 'iso8601',
-            'julian': 'julian',
-            'nepali': 'nepali',
-            'thai': 'thai',
+            coptic: 'coptic',
+            ethiopian: 'ethiopian',
+            gregorian: 'gregorian',
+            islamic: 'islamic',
+            iso8601: 'iso8601',
+            julian: 'julian',
+            nepali: 'nepali',
+            thai: 'thai',
         },
     },
-    'keyDateFormat': {
+    keyDateFormat: {
         label: 'date_format',
         type: 'dropdown',
         options: {
@@ -340,48 +340,48 @@ const settingsKeyMapping = {
     /* ============================================================================================================ */
     /* Category: Calendar                                                                                           */
     /* ============================================================================================================ */
-    'keyRemoteInstanceUrl': {
+    keyRemoteInstanceUrl: {
         label: 'remote_server_url',
         validators: ['url'],
     },
-    'keyRemoteInstanceUsername': {
+    keyRemoteInstanceUsername: {
         label: 'remote_server_username',
     },
-    'keyRemoteInstancePassword': {
+    keyRemoteInstancePassword: {
         label: 'remote_server_password',
         type: 'password',
     },
     /* ============================================================================================================ */
     /* Category: Data Import                                                                                        */
     /* ============================================================================================================ */
-    'keyDataImportStrictPeriods': {
+    keyDataImportStrictPeriods: {
         label: 'require_periods_to_match_period_type',
         type: 'checkbox',
     },
-    'keyDataImportStrictCategoryOptionCombos': {
+    keyDataImportStrictCategoryOptionCombos: {
         label: 'require_category_option_combos_to_match',
         type: 'checkbox',
     },
-    'keyDataImportStrictOrganisationUnits': {
+    keyDataImportStrictOrganisationUnits: {
         label: 'require_organisation_units_to_match_assignment',
         type: 'checkbox',
     },
-    'keyDataImportStrictAttributeOptionCombos': {
+    keyDataImportStrictAttributeOptionCombos: {
         label: 'require_attribute_option_combos_to_match',
         type: 'checkbox',
     },
-    'keyDataImportRequireCategoryOptionCombo': {
+    keyDataImportRequireCategoryOptionCombo: {
         label: 'require_category_option_combo_to_be_specified',
         type: 'checkbox',
     },
-    'keyDataImportRequireAttributeOptionCombo': {
+    keyDataImportRequireAttributeOptionCombo: {
         label: 'require_attribute_option_combo_to_be_specified',
         type: 'checkbox',
     },
     /* ============================================================================================================ */
     /* Category: oAuth2 clients                                                                                     */
     /* ============================================================================================================ */
-    'oauth2clients': {
+    oauth2clients: {
         label: 'oauth2clients',
         type: 'oauth2clients',
     },

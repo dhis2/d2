@@ -1,5 +1,5 @@
-import {throwError} from './utils';
-import {isString} from './check';
+import { throwError } from './utils';
+import { isString } from './check';
 
 class SchemaTypes {
     getTypes() {

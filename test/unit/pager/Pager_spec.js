@@ -5,7 +5,7 @@ describe('Pager', () => {
     let pageFixtureTwo;
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Pager()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+        expect(() => Pager()).to.throw('Cannot call a class as a function');
     });
 
     describe('instance without data', () => {
@@ -153,7 +153,7 @@ describe('Pager', () => {
             it('should call next page with the current page number + 1', () => {
                 pager.getNextPage();
 
-                expect(modelDefinition.list).to.be.calledWith({page: 2});
+                expect(modelDefinition.list).to.be.calledWith({ page: 2 });
             });
         });
 
@@ -195,7 +195,7 @@ describe('Pager', () => {
 
                 pager.getPreviousPage();
 
-                expect(modelDefinition.list).to.be.calledWith({page: 2});
+                expect(modelDefinition.list).to.be.calledWith({ page: 2 });
             });
         });
 
@@ -203,7 +203,7 @@ describe('Pager', () => {
             it('should call the list method with the passed page number', () => {
                 pager.goToPage(2);
 
-                expect(modelDefinition.list).to.be.calledWith({page: 2});
+                expect(modelDefinition.list).to.be.calledWith({ page: 2 });
             });
 
             it('should throw an error when the page is less than 1', function () {

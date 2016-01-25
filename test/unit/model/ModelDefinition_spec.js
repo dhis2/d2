@@ -7,7 +7,7 @@ proxyquire('../../../src/model/ModelDefinition', {
 });
 
 import fixtures from '../../fixtures/fixtures';
-import {DIRTY_PROPERTY_LIST} from '../../../src/model/ModelBase';
+import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('../../../src/model/ModelDefinition');
@@ -252,17 +252,17 @@ describe('ModelDefinition', () => {
                     expect(model.dirty).to.be.false;
                 });
 
-                //TODO: Look at a deep equals for this dirty check
-                //it('should not set the dirty property when an identical object is added', () => {
+                // TODO: Look at a deep equals for this dirty check
+                // it('should not set the dirty property when an identical object is added', () => {
                 //    model.dataValues.name = {name: 'James'};
                 //    modelProperties.name.set.call(model, {name: 'James'});
                 //
                 //    expect(model.dirty).to.be.false;
-                //});
+                // });
 
                 it('should set the dirty property when a different object is added', () => {
-                    model.dataValues.name = {name: 'James'};
-                    modelProperties.name.set.call(model, {name: 'James', last: 'Doe'});
+                    model.dataValues.name = { name: 'James' };
+                    modelProperties.name.set.call(model, { name: 'James', last: 'Doe' });
 
                     expect(model.dirty).to.be.true;
                 });
@@ -295,10 +295,10 @@ describe('ModelDefinition', () => {
                     expect(modelValidations.externalAccess.owner).to.be.false;
                 });
 
-                //TODO: This currently has some sort of max value
-                //it('should not have a maxLength property', () => {
+                // TODO: This currently has some sort of max value
+                // it('should not have a maxLength property', () => {
                 //    expect(modelValidations.externalAccess.maxLength).toBe(undefined);
-                //});
+                // });
             });
 
             describe('id', () => {
@@ -403,27 +403,27 @@ describe('ModelDefinition', () => {
         var Model;
         var dataElementModelDefinition;
 
-        //TODO: Figure out a way to mock a require
+        // TODO: Figure out a way to mock a require
         beforeEach(() => {
             Model = require('../../../src/model/Model');
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
-        //TODO: Look at these tests
-        //it('should call the model constructor', () => {
+        // TODO: Look at these tests
+        // it('should call the model constructor', () => {
         //    dataElementModelDefinition.create();
         //
         //    expect(tempD2.Model).toHaveBeenCalled();
-        //});
+        // });
         //
-        //it('should call the model constructor with the the modelDefinition', () => {
+        // it('should call the model constructor with the the modelDefinition', () => {
         //    dataElementModelDefinition.create();
         //
         //    expect(tempD2.Model).to.be.calledWith(dataElementModelDefinition);
-        //});
+        // });
 
-        //TODO: This is currently not a pure unit test as we haven't mocked out Model
+        // TODO: This is currently not a pure unit test as we haven't mocked out Model
         it('should return an instance of Model', () => {
             expect(dataElementModelDefinition.create()).to.be.instanceof(Model);
         });
@@ -432,10 +432,10 @@ describe('ModelDefinition', () => {
     describe('get', () => {
         var dataElementModelDefinition;
 
-        beforeEach (() => {
+        beforeEach(() => {
             ModelDefinition.prototype.api = {
                 get: stub().returns(new Promise((resolve) => {
-                    resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+                    resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
                 })),
             };
 
@@ -460,7 +460,7 @@ describe('ModelDefinition', () => {
         it('should call the api for the requested id', () => {
             dataElementModelDefinition.get('d4343fsss');
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements/d4343fsss', {fields: ':all,attributeValues[:all,attribute[id,name,displayName]]'});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements/d4343fsss', { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' });
         });
 
         it('should set the data onto the model when it is available', (done) => {
@@ -508,7 +508,7 @@ describe('ModelDefinition', () => {
 
                 dataElementModelDefinition.get(['id1', 'id2'])
                     .then((dataElementCollection) => {
-                        expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {filter: ['id:in:[id1,id2]'], fields: ':all'});
+                        expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { filter: ['id:in:[id1,id2]'], fields: ':all' });
                         done();
                     })
                     .catch(done);
@@ -520,7 +520,7 @@ describe('ModelDefinition', () => {
         let dataElementsResult = fixtures.get('/api/dataElements');
         let dataElementModelDefinition;
 
-        beforeEach (() => {
+        beforeEach(() => {
             ModelDefinition.prototype.api = {
                 get: stub().returns(new Promise((resolve) => {
                     resolve(dataElementsResult);
@@ -547,7 +547,7 @@ describe('ModelDefinition', () => {
         it('should call the get method on the api with the endpoint of the model', () => {
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all' });
         });
 
         it('should return a model collection object', (done) => {
@@ -587,7 +587,7 @@ describe('ModelDefinition', () => {
                 .filter().on('name').like('John')
                 .list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all', filter: ['name:like:John']});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all', filter: ['name:like:John'] });
         });
 
         it('should return a separate modelDefinition when filter is called', () => {
@@ -601,8 +601,8 @@ describe('ModelDefinition', () => {
 
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all', filter: ['name:like:John']});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all', filter: ['name:like:John'] });
         });
 
         it('should support multiple filters', () => {
@@ -611,7 +611,7 @@ describe('ModelDefinition', () => {
                 .filter().on('username').equals('admin')
                 .list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all', filter: ['name:like:John', 'username:eq:admin']});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
         });
     });
 
@@ -619,7 +619,7 @@ describe('ModelDefinition', () => {
         let dataElementsResult = fixtures.get('/api/dataElements');
         let dataElementModelDefinition;
 
-        beforeEach (() => {
+        beforeEach(() => {
             ModelDefinition.prototype.api = {
                 get: stub().returns(new Promise((resolve) => {
                     resolve(dataElementsResult);
@@ -658,7 +658,7 @@ describe('ModelDefinition', () => {
 
             clonedDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', {fields: ':all'});
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all' });
         });
     });
 
@@ -672,10 +672,10 @@ describe('ModelDefinition', () => {
             let singleUserAllFields = fixtures.get('singleUserAllFields');
 
             apiUpdateStub = stub().returns(new Promise((resolve) => {
-                resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+                resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
             }));
             apiPostStub = stub().returns(new Promise((resolve) => {
-                resolve({name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated'});
+                resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
             }));
 
             ModelDefinition.prototype.api = {
@@ -758,7 +758,7 @@ describe('ModelDefinition', () => {
         });
 
         it('should save a new object using a post', () => {
-            //Objects without id are concidered "new"
+            // Objects without id are concidered "new"
             delete model.id;
 
             userModelDefinition.save(model);
@@ -868,7 +868,7 @@ describe('ModelDefinition subsclasses', () => {
         it('should call the get function with the extra parameters', function () {
             userModelDefinition.get('myUserId');
 
-            expect(getOnApiStub).to.be.calledWith('/myUserId', {fields: ':all,userCredentials[:owner]'});
+            expect(getOnApiStub).to.be.calledWith('/myUserId', { fields: ':all,userCredentials[:owner]' });
         });
     });
 });

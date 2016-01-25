@@ -1,4 +1,4 @@
-import {checkType} from '../lib/check';
+import { checkType } from '../lib/check';
 import jQuery from '../external/jquery';
 
 function processSuccess(resolve) {
@@ -13,7 +13,7 @@ function processFailure(reject) {
             return reject(jqXHR.responseJSON);
         }
 
-        delete jqXHR.then;
+        delete jqXHR.then; // eslint-disable-line no-param-reassign
         reject(jqXHR);
     };
 }
@@ -79,9 +79,17 @@ class Api {
         let requestUrl = url;
 
         if (data && data.filter) {
-            const urlQueryParams = data.filter.reduce((str, filter) => { return str + (str.length ? '&' : '') + 'filter=' + filter;}, '');
-            delete data.filter;
-            requestUrl += '?' + urlQueryParams;
+            const urlQueryParams = data.filter
+                // `${str}${separator}${filter}`
+                .reduce((str, filter) => {
+                    const separator = str.length ? '&' : '';
+                    const filterQuery = `filter=${filter}`;
+
+                    return `${str}${separator}${filterQuery}`;
+                }, '');
+
+            delete data.filter; // eslint-disable-line no-param-reassign
+            requestUrl += `?${urlQueryParams}`;
         }
 
         const api = this;

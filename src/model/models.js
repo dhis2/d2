@@ -5,9 +5,9 @@ import ModelDefinitions from './ModelDefinitions';
 import ModelValidation from './ModelValidation';
 
 export default {
-    ModelBase: ModelBase,
-    Model: Model,
-    ModelDefinition: ModelDefinition,
-    ModelDefinitions: ModelDefinitions,
-    ModelValidations: ModelValidation,
+    ModelBase,
+    Model,
+    ModelDefinition,
+    ModelDefinitions,
+    ModelValidation,
 };

@@ -52,7 +52,7 @@ describe('Filters', () => {
         });
 
         it('should not add the filter if it is not an instance of Filter', () => {
-            let filter = {value: 'someValue', comparator: 'like'};
+            let filter = { value: 'someValue', comparator: 'like' };
 
             expect(() => filters.add(filter)).to.throw('filter should be an instance of Filter');
         });

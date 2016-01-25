@@ -1,4 +1,4 @@
-import {isType} from '../lib/check';
+import { isType } from '../lib/check';
 import Filter from '../model/Filter';
 
 class Filters {

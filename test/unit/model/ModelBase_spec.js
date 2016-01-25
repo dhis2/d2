@@ -56,7 +56,7 @@ describe('ModelBase', () => {
             class Model {
                 constructor(modelDef) {
                     this.modelDefinition = modelDef;
-                    this.validate = stub().returns(Promise.resolve({status: true}));
+                    this.validate = stub().returns(Promise.resolve({ status: true }));
                     this.dirty = true;
                     this[DIRTY_PROPERTY_LIST] = new Set(['name']);
                 }
@@ -84,7 +84,7 @@ describe('ModelBase', () => {
         });
 
         it('should not call save when validate fails', () => {
-            model.validate.returns({status: false});
+            model.validate.returns({ status: false });
 
             expect(modelDefinition.save).to.not.be.called;
         });
@@ -128,11 +128,11 @@ describe('ModelBase', () => {
         });
 
         it('should return rejected promise when the model is not valid', (done) => {
-            model.validate.returns(Promise.resolve({status: false}));
+            model.validate.returns(Promise.resolve({ status: false }));
 
             model.save()
                 .catch((message) => {
-                    expect(message).to.deep.equal({status: false});
+                    expect(message).to.deep.equal({ status: false });
                     done();
                 });
         });
@@ -172,9 +172,9 @@ describe('ModelBase', () => {
             Model.prototype = modelBase;
             model = new Model(modelValidations);
 
-            validateSpy.returns({status: true});
-            validateSpy.onFirstCall().returns({status: true});
-            validateSpy.onSecondCall().returns({status: true});
+            validateSpy.returns({ status: true });
+            validateSpy.onFirstCall().returns({ status: true });
+            validateSpy.onSecondCall().returns({ status: true });
 
             validateAgainstSchemaSpy.returns(Promise.resolve([]));
         });
@@ -310,7 +310,7 @@ describe('ModelBase', () => {
         });
 
         it('should return false when there are the asyncValidation against the schema failed', (done) => {
-            validateAgainstSchemaSpy.returns(Promise.resolve([{message: 'Required property missing.', property: 'name'}]));
+            validateAgainstSchemaSpy.returns(Promise.resolve([{ message: 'Required property missing.', property: 'name' }]));
             validateSpy.onFirstCall().returns({
                 status: true,
                 messages: [],
@@ -354,7 +354,7 @@ describe('ModelBase', () => {
             class Model {
                 constructor(modelDef) {
                     this.modelDefinition = modelDef;
-                    this.validate = stub().returns(Promise.resolve({status: true}));
+                    this.validate = stub().returns(Promise.resolve({ status: true }));
                     this.dirty = true;
                     this[DIRTY_PROPERTY_LIST] = new Set(['name']);
                 }
@@ -382,6 +382,63 @@ describe('ModelBase', () => {
 
         it('should return a promise', () => {
             expect(model.delete()).to.be.instanceof(Promise);
+        });
+    });
+
+    describe('getCollectionChildren', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        owner: true,
+                    },
+                },
+            };
+            model.dataElements = {
+                name: 'dataElements',
+                dirty: true,
+                size: 2,
+            };
+
+            model.userGroups = {
+                name: 'userGroups',
+            };
+        });
+
+        it('should return the collection children', () => {
+            expect(model.getCollectionChildren()).to.contain(model.dataElements);
+        });
+
+        it('should not return the children that are not collections', () => {
+            expect(model.getCollectionChildren()).not.to.contain(model.userGroups);
+        });
+    });
+
+    describe('getDirtyChildren', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        owner: true,
+                    },
+                },
+            };
+            model.dataElements = {
+                name: 'dataElements',
+                dirty: true,
+                size: 2,
+            };
+            // model.getCollectionChildren = sinon.stub().returns([model.dataElements]);
+        });
+
+        it('should return the dirty children properties', () => {
+            expect(model.getDirtyChildren()).to.deep.equal([model.dataElements]);
         });
     });
 });

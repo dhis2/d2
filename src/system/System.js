@@ -76,12 +76,15 @@ class System {
         const strings = new Set();
         Object.keys(this.settings.mapping).map(key => {
             const val = this.settings.mapping[key];
+
             if (val.hasOwnProperty('label')) {
                 strings.add(val.label);
             }
+
             if (val.hasOwnProperty('description')) {
                 strings.add(val.description);
             }
+
             if (val.hasOwnProperty('options')) {
                 for (const opt in val.options) {
                     if (val.options.hasOwnProperty(opt) && isNaN(val.options[opt])) {
@@ -90,6 +93,7 @@ class System {
                 }
             }
         });
+
         return strings;
     }
 
@@ -171,13 +175,16 @@ class System {
         return new Promise((resolve, reject) => {
             const api = Api.getApi();
             api.get('appStore').then(appStore => {
-                appStore.apps = appStore.apps.filter(app => {
+                const appStoreDetails = Object.assign({}, appStore);
+                appStoreDetails.apps = appStore.apps.filter(app => {
+                    const appDetails = Object.assign({}, app);
                     if (compatibleOnly) {
-                        app.versions = app.versions.filter(appVersion => System.isVersionCompatible(this.version, appVersion));
+                        appDetails.versions = app.versions.filter(appVersion => System.isVersionCompatible(this.version, appVersion));
                     }
-                    return app.versions.length > 0;
+                    return appDetails.versions.length > 0;
                 });
-                resolve(appStore);
+
+                resolve(appStoreDetails);
             }).catch(err => {
                 reject(err);
             });
@@ -194,7 +201,7 @@ class System {
     installAppVersion(uid) {
         const api = Api.getApi();
         return new Promise((resolve, reject) => {
-            api.post(['appStore', uid].join('/'), '', {dataType: 'text'}).then(() => {
+            api.post(['appStore', uid].join('/'), '', { dataType: 'text' }).then(() => {
                 resolve();
             }).catch((err) => {
                 reject(err);
@@ -226,7 +233,7 @@ class System {
      */
     reloadApps() {
         const api = Api.getApi();
-        return api.update('apps').then(() => { return this.loadInstalledApps(); });
+        return api.update('apps').then(() => this.loadInstalledApps());
     }
 
     // TODO: Document

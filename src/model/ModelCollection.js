@@ -1,5 +1,5 @@
-import {isValidUid, isArray, checkType} from '../lib/check';
-import {throwError} from '../lib/utils';
+import { isValidUid, isArray, checkType } from '../lib/check';
+import { throwError } from '../lib/utils';
 import Model from './Model';
 import ModelDefinition from './ModelDefinition';
 import Pager from '../pager/Pager';

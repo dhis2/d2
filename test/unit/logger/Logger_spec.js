@@ -18,7 +18,7 @@ describe('Logger', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Logger()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+        expect(() => Logger()).to.throw('Cannot call a class as a function');
     });
 
     it('should get the correct Logger instance from the namespace', () => {

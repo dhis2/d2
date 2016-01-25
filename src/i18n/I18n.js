@@ -30,7 +30,7 @@ class I18n {
             this.strings.add(strings.trim());
         } else {
             strings.forEach(string => {
-                if (('' + string).trim().length > 0) {
+                if (('${string}').trim().length > 0) {
                     this.strings.add(string);
                 }
             });
@@ -53,9 +53,8 @@ class I18n {
             return text.split('\n').reduce((props, line) => {
                 const [key, value] = line.split('=').map(out => out.trim());
                 if (key !== undefined && value !== undefined && !props.hasOwnProperty(key)) {
-                    props[key] = value.replace(/\\u([0-9a-f]{4})/gi, (match, grp) => {
-                        return String.fromCharCode(parseInt(grp, 16));
-                    });
+                    props[key] = value // eslint-disable-line no-param-reassign
+                        .replace(/\\u([0-9a-f]{4})/gi, (match, grp) => String.fromCharCode(parseInt(grp, 16)));
                 }
                 return props;
             }, {});
@@ -65,15 +64,12 @@ class I18n {
 
         this.sources.forEach(source => {
             propFiles.push(
-                i18n.api.request('GET', source, undefined, {dataType: 'text'}).then(
-                    (data) => {
-                        return Promise.resolve(parseProperties(data));
-                    },
-                    () => {
-                        // Resolve errors to an empty object, so that one missing file doesn't prevent
-                        // the rest from being loaded
-                        return Promise.resolve({});
-                    }
+                i18n.api.request('GET', source, undefined, { dataType: 'text' }).then(
+                    (data) => Promise.resolve(parseProperties(data)),
+
+                    // Resolve errors to an empty object, so that one missing file doesn't prevent
+                    // the rest from being loaded
+                    () => Promise.resolve({})
                 )
             );
         });
@@ -117,7 +113,7 @@ class I18n {
         if (this.translations === undefined) {
             throw new Error('Tried to translate before loading translations!');
         }
-        return this.translations.hasOwnProperty(string) ? this.translations[string] : '** ' + string + ' **';
+        return this.translations.hasOwnProperty(string) ? this.translations[string] : `** ${string} **`;
     }
 
     /**

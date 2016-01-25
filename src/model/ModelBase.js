@@ -1,15 +1,15 @@
 import ModelValidation from './ModelValidation';
-import {isValidUid} from '../lib/check';
+import { isValidUid } from '../lib/check';
 
 const modelValidator = ModelValidation.getModelValidation();
 
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
 function hasModelValidationForProperty(model, property) {
-    return model.modelDefinition &&
+    return Boolean(model.modelDefinition &&
         model.modelDefinition.modelValidations &&
         model.modelDefinition.modelValidations[property] &&
-        Object.prototype.hasOwnProperty.call(model.modelDefinition.modelValidations, property);
+        Object.prototype.hasOwnProperty.call(model.modelDefinition.modelValidations, property));
 }
 
 /**
@@ -51,7 +51,7 @@ class ModelBase {
                         }
                         this.dirty = false;
                         this.getDirtyChildren()
-                            .forEach(value => value.dirty = false);
+                            .forEach(value => value.dirty = false); // eslint-disable-line no-param-reassign
 
                         this[DIRTY_PROPERTY_LIST].clear();
                         return result;
@@ -99,7 +99,7 @@ class ModelBase {
                     const validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
                     if (!validationStatus.status) {
                         validationStatus.messages.forEach(message => {
-                            message.property = propertyName;
+                            message.property = propertyName; // eslint-disable-line no-param-reassign
                         });
                     }
                     modelValidationStatus = modelValidationStatus && validationStatus.status;

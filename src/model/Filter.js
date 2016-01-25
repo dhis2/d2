@@ -1,4 +1,4 @@
-import {checkDefined} from '../lib/check';
+import { checkDefined } from '../lib/check';
 
 const FILTER_COMPARATORS = {
     /**

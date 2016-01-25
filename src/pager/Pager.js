@@ -1,4 +1,4 @@
-import {isDefined} from '../lib/check';
+import { isDefined } from '../lib/check';
 
 /**
  * @class Pager
@@ -17,7 +17,7 @@ class Pager {
      * @description
      * Returns a newly created pager object with methods to navigate pages.
      */
-    constructor(pager = {page: 1, pageCount: 1}, pagingHandler = {list: () => Promise.reject('No handler available')}) {
+    constructor(pager = { page: 1, pageCount: 1 }, pagingHandler = { list: () => Promise.reject('No handler available') }) {
         /**
          * @property {number} page Current page number
          */
@@ -118,10 +118,10 @@ class Pager {
             throw new Error('PageNr can not be less than 1');
         }
         if (pageNr > this.pageCount) {
-            throw new Error('PageNr can not be larger than the total page count of ' + this.pageCount);
+            throw new Error(`PageNr can not be larger than the total page count of ${this.pageCount}`);
         }
 
-        return this.pagingHandler.list({page: pageNr});
+        return this.pagingHandler.list({ page: pageNr });
     }
 }
 

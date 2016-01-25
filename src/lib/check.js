@@ -14,12 +14,12 @@ export function checkType(value, type, name) {
         (typeof type === 'string' && typeof value === type)) {
         return true;
     }
-    throw new Error(['Expected', name || value,  'to have type', type].join(' '));
+    throw new Error(['Expected', name || value, 'to have type', type].join(' '));
 }
 
 // TODO: Log type error?
 export function isType(value, type) {
-    const noop = () => {};
+    function noop() {}
 
     try {
         checkType(value, type);
@@ -78,14 +78,14 @@ export function isValidUid(value) {
 }
 
 export default {
-    checkType: checkType,
-    checkDefined: checkDefined,
-    isArray: isArray,
-    isDefined: isDefined,
-    isInteger: isInteger,
-    isNumeric: isNumeric,
-    isString: isString,
-    isType: isType,
-    contains: contains,
-    isValidUid: isValidUid,
+    checkType,
+    checkDefined,
+    isArray,
+    isDefined,
+    isInteger,
+    isNumeric,
+    isString,
+    isType,
+    contains,
+    isValidUid,
 };
