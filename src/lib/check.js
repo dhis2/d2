@@ -57,6 +57,7 @@ export function isInteger(nVal) {
 
 // Polyfill for the isInteger function that will be added in ES6
 // http://wiki.ecmascript.org/doku.php?id=harmony:number.isinteger
+/* istanbul ignore if  */
 if (!Number.isInteger) {
     Number.isInteger = isInteger;
 }

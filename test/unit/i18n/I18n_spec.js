@@ -1,7 +1,7 @@
+import Api from '../../../src/api/Api';
+import I18n from '../../../src/i18n/I18n';
 
 describe('Internationalisation (I18n)', () => {
-    const Api = require('../../../src/api/Api');
-    const I18n = require('../../../src/i18n/I18n');
     let i18n;
 
     const mockTranslations = {
@@ -44,6 +44,22 @@ describe('Internationalisation (I18n)', () => {
         expect(i18n.load).to.be.instanceOf(Function);
     });
 
+    it('should set the passed sources onto the object', () => {
+        const sources = ['translation_18n'];
+
+        i18n = new I18n(sources);
+
+        expect(i18n.sources).to.equal(sources);
+    });
+
+    it('should use the passed Api object', () => {
+        const mockApi = sinon.mock();
+
+        i18n = new I18n([], mockApi);
+
+        expect(i18n.api).to.equal(mockApi);
+    });
+
     it('getTranslations() should throw an error is translations haven\'t been loaded yet', (done) => {
         try {
             i18n.getTranslation('some_string');
@@ -51,6 +67,16 @@ describe('Internationalisation (I18n)', () => {
         } catch (e) {
             done();
         }
+    });
+
+    describe('getI18n', () => {
+        it('should be a function on the I18n class', () => {
+            expect(I18n.getI18n).to.be.a('function');
+        });
+
+        it('should return a new instanceof I18n', () => {
+            expect(I18n.getI18n()).to.be.instanceof(I18n);
+        });
     });
 
     describe('addStrings()', () => {
@@ -92,6 +118,14 @@ describe('Internationalisation (I18n)', () => {
             expect(strings).to.contain('maybe');
             expect(strings).to.contain('probably');
             expect(strings.length).to.equal(4);
+        });
+
+        it('should not add empty strings', () => {
+            spy(i18n.strings, 'add');
+
+            i18n.addStrings(['yes', '']);
+
+            expect(i18n.strings.add).to.be.calledOnce;
         });
     });
 
@@ -198,6 +232,14 @@ describe('Internationalisation (I18n)', () => {
             }, (err) => {
                 done(err);
             });
+        });
+
+        it('should not add the strings if no responses were returned', () => {
+            i18n.addStrings(['string_that_has_no_translation']);
+            apiPost.onCall(0).returns(Promise.resolve({string_that_has_no_translation: 'string_that_has_no_translation'}));
+
+            return i18n.load()
+                .then(() => expect(i18n.translations.string_that_has_no_translation).to.be.undefined);
         });
     });
 

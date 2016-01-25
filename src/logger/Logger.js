@@ -51,6 +51,7 @@ class Logger {
             logger = global.console;
         } catch (e) {
             // Browser version fallback
+            /* istanbul ignore next */
             logger = window.console;
         }
 

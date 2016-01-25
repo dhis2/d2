@@ -29,11 +29,9 @@ class I18n {
         if (typeof strings === 'string' && strings.trim().length > 0) {
             this.strings.add(strings.trim());
         } else {
-            strings.forEach(string => {
-                if (('${string}').trim().length > 0) {
-                    this.strings.add(string);
-                }
-            });
+            strings
+                .filter(string => string && ('${string}').trim().length > 0)
+                .forEach(string => this.strings.add(string));
         }
     }
 
@@ -86,12 +84,13 @@ class I18n {
 
             if (this.strings.size > 0) {
                 return i18n.api.post('i18n', Array.from(i18n.strings)).then((res) => {
-                    Object.keys(res).forEach(str => {
-                        if (str !== res[str]) {
+                    Object.keys(res)
+                        .filter(str => str !== res[str])
+                        .forEach(str => {
                             i18n.translations[str] = res[str];
                             i18n.strings.delete(str);
-                        }
-                    });
+                        });
+
                     return Promise.resolve(i18n.translations);
                 });
             }

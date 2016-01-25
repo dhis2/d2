@@ -7,8 +7,9 @@ function resetCachedResponse(d2) {
     delete d2.getUserLocale.cachedResponse;
 }
 
+// TODO: The Config class should probably be mocked
 describe('D2', () => {
-    const proxyquire = require('proxyquire').noCallThru();
+    const proxyquire = require('proxyquire');
     let apiMock;
     let i18nStub;
     let I18n;
@@ -113,14 +114,18 @@ describe('D2', () => {
 
         I18n = require('../../src/i18n/I18n');
         i18nStub = {
-            addSource: stub(),
-            addStrings: stub(),
+            addSource: spy(),
+            addStrings: spy(),
             load: stub().returns(Promise.resolve()),
         };
-        I18n.getI18n = stub().returns(i18nStub);
+        stub(I18n, 'getI18n').returns(i18nStub);
 
         d2 = require('../../src/d2');
         resetCachedResponse(d2);
+    });
+
+    afterEach(() => {
+        I18n.getI18n.restore();
     });
 
     it('should have an init function', () => {

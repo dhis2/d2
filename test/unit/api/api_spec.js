@@ -1,11 +1,11 @@
-const proxyquire = require('proxyquire').noCallThru();
-proxyquire('../../../src/api/Api', {
-});
+const proxyquire = require('proxyquire');
+proxyquire('../../../src/api/Api', {});
 
 import fixtures from '../../fixtures/fixtures';
+import Api from '../../../src/api/Api';
 
 // TODO: Can not use import here as babel will not respect the override
-const Api = require('../../../src/api/Api');
+// const Api = require('../../../src/api/Api');
 
 describe('Api', () => {
     let jqueryMock;
