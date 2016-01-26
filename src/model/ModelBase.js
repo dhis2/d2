@@ -45,7 +45,11 @@ class ModelBase {
                 return this.modelDefinition
                     .save(this)
                     .then((result) => {
-                        if (result && result.response.importCount.imported === 1 && isValidUid(result.response.lastImported)) {
+                        if (
+                            result &&
+                            result.response.importCount.imported === 1 &&
+                            isValidUid(result.response.lastImported)
+                        ) {
                             this.dataValues.id = result.response.lastImported;
                             this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
                         }
@@ -96,7 +100,9 @@ class ModelBase {
                 let validationMessagesLocal = [];
 
                 Object.keys(modelValidations).forEach((propertyName) => {
-                    const validationStatus = modelValidator.validate(modelValidations[propertyName], dataValues[propertyName]);
+                    const validationStatus = modelValidator
+                        .validate(modelValidations[propertyName], dataValues[propertyName]);
+
                     if (!validationStatus.status) {
                         validationStatus.messages.forEach(message => {
                             message.property = propertyName; // eslint-disable-line no-param-reassign
@@ -147,7 +153,12 @@ class ModelBase {
     getCollectionChildren() {
         // TODO: Can't be sure that this has a `modelDefinition` property
         return Object.keys(this)
-            .filter(propertyName => this[propertyName] && hasModelValidationForProperty(this, propertyName) && this.modelDefinition.modelValidations[propertyName].owner && this[propertyName].size >= 0)
+            .filter(
+                propertyName => this[propertyName] &&
+                hasModelValidationForProperty(this, propertyName) &&
+                this.modelDefinition.modelValidations[propertyName].owner &&
+                this[propertyName].size >= 0
+            )
             .map(propertyName => this[propertyName]);
     }
 

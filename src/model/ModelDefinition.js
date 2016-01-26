@@ -67,7 +67,11 @@ function createValidationSetting(validationObject, schemaProperty) {
     }
 
     // Add a referenceType to be able to get a hold of the reference objects model.
-    if (validationDetails.type === 'REFERENCE' || (validationDetails.type === 'COLLECTION' && schemaProperty.itemPropertyType === 'REFERENCE')) {
+    if (
+        validationDetails.type === 'REFERENCE' ||
+        (validationDetails.type === 'COLLECTION' &&
+        schemaProperty.itemPropertyType === 'REFERENCE')
+    ) {
         validationDetails.referenceType = getReferenceTypeFrom(schemaProperty);
     }
 
@@ -157,7 +161,12 @@ class ModelDefinition {
                 .keys(model)
                 .forEach((modelProperty) => {
                     // For collections of objects, create ModelCollectionProperties rather than plain arrays
-                    if (models && models.hasOwnProperty(modelProperty) && data[modelProperty] && data[modelProperty] instanceof Array) {
+                    if (
+                        models &&
+                        models.hasOwnProperty(modelProperty) &&
+                        data[modelProperty] &&
+                        data[modelProperty] instanceof Array
+                    ) {
                         dataValues[modelProperty] = ModelCollectionProperty
                             .create(
                                 model,
@@ -280,7 +289,10 @@ class ModelDefinition {
         const isAnUpdate = (modelToCheck) => {
             if (modelToCheck instanceof ModelCollection) {
                 Logger.getLogger.error(modelToCheck.name, ' is a collection!');
-                return modelToCheck.added && modelToCheck.added.size > 0 || modelToCheck.removed && modelToCheck.removed.size > 0;
+                return (
+                    modelToCheck.added && modelToCheck.added.size > 0 ||
+                    modelToCheck.removed && modelToCheck.removed.size > 0
+                );
             }
             return Boolean(modelToCheck.id);
         };

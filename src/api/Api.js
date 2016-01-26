@@ -59,9 +59,11 @@ class Api {
     post(url, data, options) {
         // Pass data through JSON.stringify, unless options.contentType is 'text/plain' or false (meaning don't process)
         const
-            payload = (options && options.contentType !== undefined && (options.contentType === 'text/plain' || options.contentType === false))
-            ? data
-            : JSON.stringify(data);
+            payload = (
+                options &&
+                options.contentType !== undefined &&
+                (options.contentType === 'text/plain' || options.contentType === false)
+            ) ? data : JSON.stringify(data);
         return this.request('POST', getUrl(this.baseUrl, url), payload, options);
     }
 

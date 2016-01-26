@@ -68,37 +68,6 @@ class System {
 
 
     /**
-     * Retrieves the complete list of translatable strings relating to system settings and system configuration
-     *
-     * @returns {Set} A set of translatable strings
-     */
-    getI18nStrings() {
-        const strings = new Set();
-        Object.keys(this.settings.mapping).map(key => {
-            const val = this.settings.mapping[key];
-
-            if (val.hasOwnProperty('label')) {
-                strings.add(val.label);
-            }
-
-            if (val.hasOwnProperty('description')) {
-                strings.add(val.description);
-            }
-
-            if (val.hasOwnProperty('options')) {
-                for (const opt in val.options) {
-                    if (val.options.hasOwnProperty(opt) && isNaN(val.options[opt])) {
-                        strings.add(val.options[opt]);
-                    }
-                }
-            }
-        });
-
-        return strings;
-    }
-
-
-    /**
      * Sets the systemInfo and version properties
      *
      * @param systemInfo
@@ -179,7 +148,9 @@ class System {
                 appStoreDetails.apps = appStore.apps.filter(app => {
                     const appDetails = Object.assign({}, app);
                     if (compatibleOnly) {
-                        appDetails.versions = app.versions.filter(appVersion => System.isVersionCompatible(this.version, appVersion));
+                        appDetails.versions = app.versions.filter(
+                            appVersion => System.isVersionCompatible(this.version, appVersion)
+                        );
                     }
                     return appDetails.versions.length > 0;
                 });
@@ -263,8 +234,16 @@ class System {
 
 
     static isVersionCompatible(systemVersion, appVersion) {
-        const isNewEnough = appVersion.min_platform_version ? System.compareVersions(systemVersion, appVersion.min_platform_version) >= 0 : true;
-        const isNotTooOld = appVersion.max_platform_version ? System.compareVersions(systemVersion, appVersion.max_platform_version) <= 0 : true;
+        const isNewEnough = (
+            appVersion.min_platform_version ?
+            System.compareVersions(systemVersion, appVersion.min_platform_version) >= 0 :
+            true
+        );
+        const isNotTooOld = (
+            appVersion.max_platform_version ?
+            System.compareVersions(systemVersion, appVersion.max_platform_version) <= 0 :
+            true
+        );
 
         return isNewEnough && isNotTooOld;
     }

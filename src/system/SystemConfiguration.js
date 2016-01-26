@@ -5,7 +5,6 @@
  * @requires api/Api
  */
 import Api from '../api/Api';
-import settingsKeyMapping from './settingsKeyMapping';
 
 /**
  * Handles communication with the configuration endpoint. Can be used to get or set configuration options.
@@ -68,29 +67,29 @@ class SystemConfiguration {
         const that = this;
         let req;
 
-        if (key === 'feedbackRecipients' && value === 'null' || value === null) {
+        if (key === 'systemId') {
+            return Promise.reject('The system ID can\'t be changed');
+        } else if (key === 'feedbackRecipients' && value === 'null' || value === null) {
             // Only valid UIDs are accepted when POST'ing, so we have to use DELETE in stead of POST'ing a null value.
             req = this.api.delete(['configuration', key].join('/'), { dataType: 'text' });
         } else if (key === 'corsWhitelist') {
             // The corsWhitelist endpoint expects an array of URL's, while here value is expected to be a string.
             req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'), { dataType: 'text' });
         } else {
-            const postLoc = settingsKeyMapping.hasOwnProperty(key) &&
-                settingsKeyMapping[key].hasOwnProperty('configuration') &&
-                settingsKeyMapping[key].configuration;
-            if (postLoc) {
-                req = this.api.post(['configuration', postLoc].join('/'), value, { dataType: 'text', contentType: 'text/plain' });
-            } else {
-                return Promise.reject(`No configuration found for ${key}`);
-            }
+            req = this.api.post(['configuration', key].join('/'), value, {
+                dataType: 'text',
+                contentType: 'text/plain',
+            });
         }
 
-        return req.then(() => {
-            // Ideally we'd update the cache here, but doing so requires another trip to the server
-            // For now, just bust the cache to ensure it's not incorrect
-            that._configuration = undefined;
-            return Promise.resolve();
-        });
+        return req
+            .then(() => {
+                // Ideally we'd update the cache here, but doing so requires another trip to the server
+                // For now, just bust the cache to ensure it's not incorrect
+                that._configuration = undefined;
+                return Promise.resolve();
+            })
+            .catch(() => Promise.reject(`No configuration found for ${key}`));
     }
 }
 
