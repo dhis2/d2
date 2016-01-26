@@ -158,6 +158,9 @@ class ModelDefinition {
         addLockedProperty(this, 'authorities', authorities);
 
         this.filters = Filters.getFilters(this);
+
+        // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
+        this.getOwnedPropertyJSON = getOwnedPropertyJSON.bind(this);
     }
 
     filter() {

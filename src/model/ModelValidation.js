@@ -227,6 +227,8 @@ class ModelValidation {
         }
 
         const url = `schemas/${model.modelDefinition.name}`;
+
+        // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
         return Api.getApi().post(url, model.modelDefinition.getOwnedPropertyJSON(model))
             .then((webMessage) => {
                 if (webMessage.status === 'OK') {
