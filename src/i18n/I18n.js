@@ -29,7 +29,7 @@ class I18n {
         if (typeof strings === 'string' && strings.trim().length > 0) {
             this.strings.add(strings.trim());
         } else {
-            strings
+            Array.from(strings)
                 .filter(string => string && ('${string}').trim().length > 0)
                 .forEach(string => this.strings.add(string));
         }

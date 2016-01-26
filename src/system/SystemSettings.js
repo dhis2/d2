@@ -8,7 +8,6 @@
 import { isString } from '../lib/check';
 import Api from '../api/Api';
 
-import settingsKeyMapping from './settingsKeyMapping';
 
 /**
  * @class SystemSettings
@@ -20,8 +19,6 @@ import settingsKeyMapping from './settingsKeyMapping';
 class SystemSettings {
     constructor(api = Api.getApi()) {
         this.api = api;
-
-        this.mapping = settingsKeyMapping;
     }
 
     /**

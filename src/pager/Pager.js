@@ -17,7 +17,10 @@ class Pager {
      * @description
      * Returns a newly created pager object with methods to navigate pages.
      */
-    constructor(pager = { page: 1, pageCount: 1 }, pagingHandler = { list: () => Promise.reject('No handler available') }) {
+    constructor(
+        pager = { page: 1, pageCount: 1 },
+        pagingHandler = { list: () => Promise.reject('No handler available') }
+    ) {
         /**
          * @property {number} page Current page number
          */

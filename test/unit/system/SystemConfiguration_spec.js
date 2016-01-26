@@ -233,9 +233,9 @@ describe('System.configuration', () => {
             it('should not attempt to change unknown settings', (done) => {
                 configuration.set('completelyCrazyConfigurationOption', 'totally rediculous value')
                     .then(() => {
-                        done('Attempting to change settings that don\'t exist didn\'t result in an error');
-                    }).catch(() => {
                         done();
+                    }).catch(() => {
+                        done('Attempting to change a configuration setting that don\'t exist should not result in a client side error');
                     });
             });
 
