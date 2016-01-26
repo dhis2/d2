@@ -219,6 +219,8 @@ class System {
     }
 
     // TODO: Document
+    // Disable eslint complexity warning
+    /* eslint-disable */
     static compareVersions(a, b) {
         const from = (typeof a === 'string' || a instanceof String) ? System.parseVersionString(a) : a;
         const to = (typeof b === 'string' || b instanceof String) ? System.parseVersionString(b) : b;
@@ -231,6 +233,7 @@ class System {
 
         return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1);
     }
+    /* eslint-enable */
 
 
     static isVersionCompatible(systemVersion, appVersion) {
