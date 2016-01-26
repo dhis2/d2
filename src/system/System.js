@@ -144,19 +144,21 @@ class System {
     loadAppStore(compatibleOnly = true) {
         return new Promise((resolve, reject) => {
             const api = Api.getApi();
-            api.get('appStore').then(appStore => {
-                const appStoreDetails = Object.assign({}, appStore);
-                appStoreDetails.apps = appStore.apps.filter(app => {
-                    const appDetails = Object.assign({}, app);
-                    if (compatibleOnly) {
-                        appDetails.versions = app.versions.filter(
-                            appVersion => System.isVersionCompatible(this.version, appVersion)
-                        );
-                    }
-                    return appDetails.versions.length > 0;
-                });
+            api.get('appStore').then(appStoreData => {
+                const appStore = Object.assign({}, appStoreData);
 
-                resolve(appStoreDetails);
+                appStore.apps = appStore.apps
+                    .map(appData => {
+                        const app = Object.assign({}, appData);
+                        if (compatibleOnly) {
+                            app.versions = app.versions
+                                .filter(versionData => System.isVersionCompatible(this.version, versionData));
+                        }
+                        return app;
+                    })
+                    .filter(appData => appData.versions.length > 0);
+
+                resolve(appStore);
             }).catch(err => {
                 reject(err);
             });
