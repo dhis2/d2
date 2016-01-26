@@ -95,12 +95,13 @@ class System {
      */
     loadInstalledApps() {
         const api = Api.getApi();
-        return new Promise((resolve) => {
-            api.get('apps').then(apps => {
+
+        return api.get('apps')
+            .then(apps => {
                 this.setInstalledApps(apps);
-                resolve(apps);
+
+                return apps;
             });
-        });
     }
 
 
