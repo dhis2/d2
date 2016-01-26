@@ -25,9 +25,9 @@ function getFakeModelClass() {
 }
 
 describe('ModelCollection', () => {
+    const [Model, ModelDefinition, Pager] = getFakeModelClass();
     let pagerObject;
     let ModelCollection;
-    let [Model, ModelDefinition, Pager] = getFakeModelClass();
 
     beforeEach(() => {
         pagerObject = {
@@ -127,6 +127,30 @@ describe('ModelCollection', () => {
                 expect(() => ModelCollection()).to.throw('Cannot call a class as a function');
             });
         });
+
+        describe('throwIfContainsOtherThanModelObjects', () => {
+            it('should throw when one of the the passed values in the array is not a Model', () => {
+                expect(() => ModelCollection.throwIfContainsOtherThanModelObjects([{}])).to.throw('Values of a ModelCollection must be instances of Model');
+            });
+
+            it('should not throw when the passed value is a model', () => {
+                expect(() => ModelCollection.throwIfContainsOtherThanModelObjects([new Model()])).not.to.throw();
+            });
+        });
+
+        describe('throwIfContainsModelWithoutUid', () => {
+            it('should throw when the passed array contains a modelWithoutId', () => {
+                expect(() => ModelCollection.throwIfContainsModelWithoutUid([new Model()])).to.throw('Can not add a Model without id to a ModelCollection');
+            });
+
+            it('should accept models with valid UIDs', () => {
+                const model = new Model();
+
+                model.id = 'FQ2o8UBlcrS';
+
+                expect(() => ModelCollection.throwIfContainsModelWithoutUid([model])).not.to.throw();
+            });
+        });
     });
 
     describe('instance', () => {
@@ -196,7 +220,7 @@ describe('ModelCollection', () => {
 
             it('should accept an object that was create with Model as subclass', () => {
                 class MyModel extends Model {}
-                let myModel = new MyModel('q2egwkkrfco');
+                const myModel = new MyModel('q2egwkkrfco');
 
                 expect(() => modelCollection.add(myModel)).to.not.throw('Values of a ModelCollection must be instances of Model');
                 expect(modelCollection.size).to.equal(1);
@@ -209,7 +233,7 @@ describe('ModelCollection', () => {
 
         describe('toArray', () => {
             it('should return an array of the items', () => {
-                let modelArray = [new Model('someohterid'), new Model('q2egwkkrfc1')];
+                const modelArray = [new Model('someohterid'), new Model('q2egwkkrfc1')];
 
                 modelCollection = new ModelCollection(modelDefinition, modelArray);
 

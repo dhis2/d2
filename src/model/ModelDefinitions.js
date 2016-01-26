@@ -1,4 +1,4 @@
-import { checkType } from '../lib/check';
+import { checkType, isType } from '../lib/check';
 
 /**
  * @class ModelDefinitions
@@ -42,12 +42,8 @@ class ModelDefinitions {
         }
         this[modelDefinition.name] = modelDefinition;
 
-        try {
-            if (checkType(modelDefinition.plural, 'string')) {
-                this[modelDefinition.plural] = modelDefinition;
-            }
-        } catch (e) {
-            return;
+        if (isType(modelDefinition.plural, 'string')) {
+            this[modelDefinition.plural] = modelDefinition;
         }
     }
 

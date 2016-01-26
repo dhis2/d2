@@ -1,13 +1,20 @@
-/* jshint nonew:false */
 let proxyquire = require('proxyquire').noCallThru();
-let ModelCollection = function () {};
+
+function ModelCollection() {}
 ModelCollection.create = sinon.stub().returns(new ModelCollection());
+
+function ModelCollectionProperty() {}
+ModelCollectionProperty.create = sinon.stub().returns(new ModelCollectionProperty());
+
 proxyquire('../../../src/model/ModelDefinition', {
-    './ModelCollection': ModelCollection
+    './ModelCollection': ModelCollection,
+    './ModelCollectionProperty': ModelCollectionProperty,
 });
 
 import fixtures from '../../fixtures/fixtures';
 import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
+import Model from '../../../src/model/Model';
+import ModelDefinitions from '../../../src/model/ModelDefinitions';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('../../../src/model/ModelDefinition');
@@ -19,12 +26,13 @@ describe('ModelDefinition', () => {
 
     beforeEach(() => {
         ModelCollection.create.reset();
+        ModelCollectionProperty.create.reset();
 
         modelDefinition = new ModelDefinition('dataElement', 'dataElements');
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinition()).to.throw('Cannot call a class as a function'); //jshint ignore:line
+        expect(() => ModelDefinition()).to.throw('Cannot call a class as a function');
     });
 
     it('should create a ModelDefinition object', () => {
@@ -79,8 +87,8 @@ describe('ModelDefinition', () => {
         });
 
         it('should not be able to change the isMetaData', () => {
-            var isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').writable;
-            var isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').configurable;
+            const isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').writable;
+            const isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').configurable;
 
             expect(isWritable).to.be.false;
             expect(isConfigurable).to.be.false;
@@ -172,17 +180,70 @@ describe('ModelDefinition', () => {
             });
 
             it('should throw an error when a type is not found', () => {
-                var dataElementModelDefinition;
-                var schema = fixtures.get('/api/schemas/dataElement');
-                schema.properties.push({
-                    name: 'unknownProperty',
-                    propertyType: 'uio.some.unknown.type'
-                });
+                const schema = fixtures.get('/api/schemas/dataElement');
+                let dataElementModelDefinition;
+
                 function shouldThrow() {
                     dataElementModelDefinition = ModelDefinition.createFromSchema(schema);
                 }
 
+                schema.properties.push({
+                    name: 'unknownProperty',
+                    propertyType: 'uio.some.unknown.type',
+                });
+
                 expect(shouldThrow).to.throw('Type from schema "uio.some.unknown.type" not found available type list.');
+            });
+
+            it('should not add properties that do not have a name', () => {
+                const schema = fixtures.get('/api/schemas/dataElement');
+                const expectedProperties = [
+                    'aggregationLevels',
+                    'zeroIsSignificant',
+                    'displayDescription',
+                    'dimensionType',
+                    'type',
+                    'dataDimension',
+                    'optionSet',
+                    'id',
+                    'created',
+                    'description',
+                    'displayFormName',
+                    'commentOptionSet',
+                    'name',
+                    'externalAccess',
+                    'textType',
+                    'href',
+                    'dataElementGroups',
+                    'publicAccess',
+                    'aggregationOperator',
+                    'formName',
+                    'lastUpdated',
+                    'dataSets',
+                    'code',
+                    'access',
+                    'url',
+                    'numberType',
+                    'domainType',
+                    'legendSet',
+                    'categoryCombo',
+                    'dimension',
+                    'attributeValues',
+                    'items',
+                    'optionSetValue',
+                    'userGroupAccesses',
+                    'shortName',
+                    'displayName',
+                    'displayShortName',
+                    'user',
+                    'filter',
+                ];
+
+                schema.properties.push({propertyType: 'TEXT'});
+
+                const definition = ModelDefinition.createFromSchema(schema);
+
+                expect(Object.keys(definition.modelProperties)).to.deep.equal(expectedProperties);
             });
 
             it('should use the collection name for collections', () => {
@@ -203,20 +264,18 @@ describe('ModelDefinition', () => {
             });
 
             it('should create getter function on the propertyDescriptor', () => {
-                var model = {
+                const model = {
                     dataValues: {
-                        name: 'Mark'
-                    }
+                        name: 'Mark',
+                    },
                 };
 
                 expect(modelProperties.name.get.call(model)).to.equal('Mark');
             });
 
             it('should create setter function on the propertyDescriptor', () => {
-                let model = {
-                    dataValues: {
-
-                    }
+                const model = {
+                    dataValues: {},
                 };
                 model[DIRTY_PROPERTY_LIST] = new Set([]);
 
@@ -231,12 +290,10 @@ describe('ModelDefinition', () => {
                 beforeEach(() => {
                     model = {
                         dirty: false,
-                        dataValues: {
-
-                        }
+                        dataValues: {},
                     };
-                    model[DIRTY_PROPERTY_LIST] = new Set([]);
 
+                    model[DIRTY_PROPERTY_LIST] = new Set([]);
                 });
 
                 it('should set the dirty property to true when a value is set', () => {
@@ -251,14 +308,6 @@ describe('ModelDefinition', () => {
 
                     expect(model.dirty).to.be.false;
                 });
-
-                // TODO: Look at a deep equals for this dirty check
-                // it('should not set the dirty property when an identical object is added', () => {
-                //    model.dataValues.name = {name: 'James'};
-                //    modelProperties.name.set.call(model, {name: 'James'});
-                //
-                //    expect(model.dirty).to.be.false;
-                // });
 
                 it('should set the dirty property when a different object is added', () => {
                     model.dataValues.name = { name: 'James' };
@@ -399,38 +448,98 @@ describe('ModelDefinition', () => {
         });
     });
 
-    describe('create', () => {
-        var Model;
-        var dataElementModelDefinition;
+    describe('create()', () => {
+        let dataElementModelDefinition;
 
-        // TODO: Figure out a way to mock a require
         beforeEach(() => {
-            Model = require('../../../src/model/Model');
-
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
-
-        // TODO: Look at these tests
-        // it('should call the model constructor', () => {
-        //    dataElementModelDefinition.create();
-        //
-        //    expect(tempD2.Model).toHaveBeenCalled();
-        // });
-        //
-        // it('should call the model constructor with the the modelDefinition', () => {
-        //    dataElementModelDefinition.create();
-        //
-        //    expect(tempD2.Model).to.be.calledWith(dataElementModelDefinition);
-        // });
 
         // TODO: This is currently not a pure unit test as we haven't mocked out Model
         it('should return an instance of Model', () => {
             expect(dataElementModelDefinition.create()).to.be.instanceof(Model);
         });
+
+        describe('collection properties', () => {
+            let orgunitModelDefinition;
+            let userModelDefinition;
+            let model;
+
+            beforeEach(() => {
+                userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+                orgunitModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/organisationUnit'));
+
+                // TODO: Mock the ModelDefinitions singleton, so we can get rid of this logic
+                if (!ModelDefinitions.getModelDefinitions().user) {
+                    ModelDefinitions.getModelDefinitions().add(userModelDefinition);
+                }
+                if (!ModelDefinitions.getModelDefinitions().organisationUnit) {
+                    ModelDefinitions.getModelDefinitions().add(orgunitModelDefinition);
+                }
+            });
+
+            describe('with data', () => {
+                beforeEach(() => {
+                    model = userModelDefinition.create({
+                        organisationUnits: [
+                            {name: 'Kenya', id: 'FTRrcoaog83'},
+                            {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+                        ],
+                    });
+                });
+
+                it('should create a ModelCollectionProperty.create for a collection of objects', () => {
+                    expect(ModelCollectionProperty.create).to.have.callCount(1);
+                });
+
+                it('should create a ModelCollectionProperty with the correct values', () => {
+                    const modelDefinitionForCollection = ModelCollectionProperty.create.getCall(0).args[1];
+                    const modelCollectionData = ModelCollectionProperty.create.getCall(0).args[2];
+                    const passedModelInstance = ModelCollectionProperty.create.getCall(0).args[0];
+
+                    // First argument to ModelCollectionPrototype.create
+                    expect(passedModelInstance).to.equal(model);
+
+                    // Second argument to ModelCollectionProperty.create
+                    expect(modelDefinitionForCollection.name).to.equal(orgunitModelDefinition.name);
+                    expect(modelDefinitionForCollection.plural).to.equal(orgunitModelDefinition.plural);
+
+                    // Third argument to ModelCollectionProperty.create
+                    expect(modelCollectionData[0]).to.deep.equal(orgunitModelDefinition.create({name: 'Kenya', id: 'FTRrcoaog83'}));
+                    expect(modelCollectionData[1]).to.deep.equal(orgunitModelDefinition.create({name: 'Oslo', id: 'P3jJH5Tu5VC'}));
+                });
+            });
+
+            describe('without data', () => {
+                beforeEach(() => {
+                    model = userModelDefinition.create();
+                });
+
+                it('should create a ModelCollectionProperty.create for a collection of objects', () => {
+                    expect(ModelCollectionProperty.create).to.have.callCount(1);
+                });
+
+                it('should create a ModelCollectionProperty without data', () => {
+                    const passedModelInstance = ModelCollectionProperty.create.getCall(0).args[0];
+                    const modelDefinitionForCollection = ModelCollectionProperty.create.getCall(0).args[1];
+                    const modelCollectionData = ModelCollectionProperty.create.getCall(0).args[2];
+
+                    // First argument to ModelCollectionPrototype.create
+                    expect(passedModelInstance).to.equal(model);
+
+                    // Second argument to ModelCollectionProperty.create
+                    expect(modelDefinitionForCollection.name).to.equal(orgunitModelDefinition.name);
+                    expect(modelDefinitionForCollection.plural).to.equal(orgunitModelDefinition.plural);
+
+                    // Third argument to ModelCollectionProperty.create
+                    expect(modelCollectionData).to.deep.equal([]);
+                });
+            });
+        });
     });
 
     describe('get', () => {
-        var dataElementModelDefinition;
+        let dataElementModelDefinition;
 
         beforeEach(() => {
             ModelDefinition.prototype.api = {
@@ -451,7 +560,7 @@ describe('ModelDefinition', () => {
         });
 
         it('should return a promise', () => {
-            var modelPromise = dataElementModelDefinition
+            const modelPromise = dataElementModelDefinition
                 .get('d4343fsss');
 
             expect(modelPromise.then).to.be.instanceof(Function);
@@ -472,20 +581,30 @@ describe('ModelDefinition', () => {
         });
 
         it('should reject the promise with the message when the request fails', (done) => {
-            ModelDefinition.prototype.api.get = stub().returns(new Promise((resolve, reject) => {
-                reject({
+            ModelDefinition.prototype.api.get = stub().returns(Promise.reject({
                     httpStatus: 'Not Found',
                     httpStatusCode: 404,
                     status: 'ERROR',
-                    message: 'DataElementCategory with id sdfsf could not be found.'
-                });
-            }));
+                    message: 'DataElementCategory with id sdfsf could not be found.',
+                })
+            );
 
             dataElementModelDefinition.get('d4343fsss')
                 .then(done)
                 .catch((dataElementError) => {
                     expect(dataElementError).to.equal('DataElementCategory with id sdfsf could not be found.');
                     done();
+                });
+        });
+
+        it('should reject with the promise payload when no message was returned', () => {
+            const responsePayload = '500 error string';
+
+            ModelDefinition.prototype.api.get = stub().returns(Promise.reject(responsePayload));
+
+            return dataElementModelDefinition.get('d4343fsss')
+                .catch((dataElementError) => {
+                    expect(dataElementError).to.equal(responsePayload);
                 });
         });
 
@@ -662,7 +781,7 @@ describe('ModelDefinition', () => {
         });
     });
 
-    describe('save', () => {
+    describe('save()', () => {
         let apiUpdateStub;
         let apiPostStub;
         let model;
@@ -689,10 +808,7 @@ describe('ModelDefinition', () => {
                 constructor() {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
-                }
-
-                getCollectionChildren() {
-                    return [];
+                    this.getCollectionChildren = stub().returns([]);
                 }
             }
             model = new Model();
@@ -765,6 +881,38 @@ describe('ModelDefinition', () => {
 
             expect(apiPostStub).to.be.called;
         });
+
+        it('should translate a collection property to an array of ids', () => {
+            model.getCollectionChildren.returns([{
+                modelDefinition: {
+                    plural: 'organisationUnits',
+                },
+            }]);
+            model.dataValues.organisationUnits = new Set([
+                {name: 'Kenya', id: 'FTRrcoaog83'},
+                {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+            ]);
+
+            userModelDefinition.save(model);
+
+            expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'FTRrcoaog83'}, {id: 'P3jJH5Tu5VC'}]);
+        });
+
+        it('should not add invalid objects that do not have an id', () => {
+            model.getCollectionChildren.returns([{
+                modelDefinition: {
+                    plural: 'organisationUnits',
+                },
+            }]);
+            model.dataValues.organisationUnits = new Set([
+                {name: 'Kenya'},
+                {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+            ]);
+
+            userModelDefinition.save(model);
+
+            expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'P3jJH5Tu5VC'}]);
+        });
     });
 
     describe('delete', () => {
@@ -773,14 +921,14 @@ describe('ModelDefinition', () => {
         let userModelDefinition;
 
         beforeEach(() => {
-            let singleUserAllFields = fixtures.get('singleUserAllFields');
+            const singleUserAllFields = fixtures.get('singleUserAllFields');
 
             apiDeleteStub = stub().returns(new Promise((resolve) => {
                 resolve();
             }));
 
             ModelDefinition.prototype.api = {
-                delete: apiDeleteStub
+                delete: apiDeleteStub,
             };
 
             userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
@@ -788,15 +936,18 @@ describe('ModelDefinition', () => {
             class Model {
                 constructor() {
                     this.dataValues = {};
+                    this.modelDefinition = userModelDefinition;
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
                 }
             }
             model = new Model();
 
-            Object.keys(singleUserAllFields).forEach((key) => {
-                model.dataValues[key] = singleUserAllFields[key];
-                model[key] = singleUserAllFields[key];
-            });
+            Object
+                .keys(singleUserAllFields)
+                .forEach((key) => {
+                    model.dataValues[key] = singleUserAllFields[key];
+                    model[key] = singleUserAllFields[key];
+                });
         });
 
         it('should call the delete method on the api', () => {
@@ -814,6 +965,14 @@ describe('ModelDefinition', () => {
         it('should return a promise', () => {
             expect(userModelDefinition.delete(model)).to.be.instanceof(Promise);
         });
+
+        it('should create the url from the endpoint and model.id when the href is not available', () => {
+            model.dataValues.href = undefined;
+
+            userModelDefinition.delete(model);
+
+            expect(apiDeleteStub).to.be.calledWith('/users/aUplAx3DOWy');
+        });
     });
 
     describe('getOwnedPropertyNames', () => {
@@ -824,14 +983,14 @@ describe('ModelDefinition', () => {
         });
 
         it('should return only the owned properties', () => {
-            let expectedDataElementProperties = [
+            const expectedDataElementProperties = [
                 'lastUpdated', 'code', 'id', 'created', 'name', 'formName', 'legendSet',
                 'shortName', 'zeroIsSignificant', 'publicAccess', 'commentOptionSet',
                 'aggregationOperator', 'type', 'url', 'numberType', 'optionSet',
                 'domainType', 'description', 'categoryCombo', 'user', 'textType',
-                'aggregationLevels', 'attributeValues', 'userGroupAccesses'
+                'aggregationLevels', 'attributeValues', 'userGroupAccesses',
             ].sort();
-            let ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
+            const ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
 
             expect(ownProperties.sort()).to.deep.equal(expectedDataElementProperties);
         });
@@ -843,11 +1002,11 @@ describe('ModelDefinition subsclasses', () => {
     let getOnApiStub;
 
     beforeEach(() => {
-        getOnApiStub = stub().returns(new Promise(function () {}));
+        getOnApiStub = stub().returns(Promise.resolve());
         ModelDefinition = require('../../../src/model/ModelDefinition');
 
         ModelDefinition.prototype.api = {
-            get: getOnApiStub
+            get: getOnApiStub,
         };
     });
 
@@ -872,4 +1031,3 @@ describe('ModelDefinition subsclasses', () => {
         });
     });
 });
-/* jshint nonew:true */

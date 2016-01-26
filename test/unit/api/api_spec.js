@@ -356,6 +356,18 @@ describe('Api', () => {
                 data: {},
             });
         });
+
+        it('should call the correct api endpoint when the url starts with a /', () => {
+            api.delete('/users/aUplAx3DOWy');
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'DELETE',
+                url: '/api/users/aUplAx3DOWy',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: {},
+            });
+        });
     });
 
     describe('update', () => {

@@ -7,7 +7,6 @@ import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
 import { DIRTY_PROPERTY_LIST } from './ModelBase';
-import Logger from '../logger/Logger';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
@@ -95,6 +94,36 @@ function shouldBeModelCollectionProperty(model, models) {
             model.modelDefinition.modelValidations[modelProperty] &&
             model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION';
     };
+}
+
+function getOwnedPropertyJSON(model) {
+    const objectToSave = {};
+    const ownedProperties = this.getOwnedPropertyNames();
+
+    Object.keys(this.modelValidations).forEach((propertyName) => {
+        const collectionProperties = model.getCollectionChildren().map(v => v.modelDefinition.plural);
+
+        if (ownedProperties.indexOf(propertyName) >= 0) {
+            if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
+                // Handle collections and plain values different
+                if (collectionProperties.indexOf(propertyName) === -1) {
+                    objectToSave[propertyName] = model.dataValues[propertyName];
+                } else {
+                    // Transform an object collection to an array of objects with id properties
+                    objectToSave[propertyName] = Array
+                        .from(model.dataValues[propertyName].values())
+                        .filter(value => value.id)
+                        .map(({ id }) => ({ id }));
+                }
+            }
+        }
+    });
+
+    return objectToSave;
+}
+
+function isAnUpdate(modelToCheck) {
+    return Boolean(modelToCheck.id);
 }
 
 /**
@@ -275,46 +304,14 @@ class ModelDefinition {
      */
     // TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
-        // TODO: Check for dirty ModelCollectionProperties
-        // TODO: Add parameter to enable property saving
-        const isAnUpdate = (modelToCheck) => {
-            if (modelToCheck instanceof ModelCollection) {
-                Logger.getLogger.error(modelToCheck.name, ' is a collection!');
-                return modelToCheck.added && modelToCheck.added.size > 0 || modelToCheck.removed && modelToCheck.removed.size > 0;
-            }
-            return Boolean(modelToCheck.id);
-        };
+        const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
+
         if (isAnUpdate(model)) {
-            return this.api.update(model.dataValues.href, this.getOwnedPropertyJSON(model));
+            // Save the existing model
+            return this.api.update(model.dataValues.href, jsonPayload);
         }
         // Its a new object
-        return this.api.post(this.apiEndpoint, this.getOwnedPropertyJSON(model));
-    }
-
-    getOwnedPropertyJSON(model) {
-        const objectToSave = {};
-        const ownedProperties = this.getOwnedPropertyNames();
-
-        Object.keys(this.modelValidations).forEach((propertyName) => {
-            const collectionProperties = model.getCollectionChildren().map(v => v.modelDefinition.plural);
-
-            if (ownedProperties.indexOf(propertyName) >= 0) {
-                if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
-                    // Handle collections and plain values different
-                    if (collectionProperties.indexOf(propertyName) === -1) {
-                        objectToSave[propertyName] = model.dataValues[propertyName];
-                    } else {
-                        // Transform an object collection to an array of objects with id properties
-                        objectToSave[propertyName] = Array
-                            .from(model.dataValues[propertyName].values())
-                            .filter(value => value.id)
-                            .map(({ id }) => ({ id }));
-                    }
-                }
-            }
-        });
-
-        return objectToSave;
+        return this.api.post(this.apiEndpoint, jsonPayload);
     }
 
     /**
@@ -402,6 +399,7 @@ class ModelDefinition {
 }
 
 class UserModelDefinition extends ModelDefinition {
+    // TODO: userCredentials should always be included, no matter what the query params, that is currently not the case
     get(identifier, queryParams = { fields: ':all,userCredentials[:owner]' }) {
         return super.get(identifier, queryParams);
     }

@@ -329,15 +329,15 @@ describe('ModelValidations', () => {
                 'httpStatusCode': 200,
                 'status': 'OK',
                 'response': {
-                    'responseType': 'ValidationViolations'
-                }
+                    'responseType': 'ValidationViolations',
+                },
             }));
             modelMock = {
                 modelDefinition: {
                     name: 'dataElement',
                     getOwnedPropertyJSON: sinon.stub()
-                        .returns({ id: 'R4dd3wwdwdw', name: 'ANC' })
-                }
+                        .returns({ id: 'R4dd3wwdwdw', name: 'ANC' }),
+                },
             };
         });
 
@@ -389,7 +389,7 @@ describe('ModelValidations', () => {
             Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
 
             modelValidation.validateAgainstSchema(modelMock)
-                .then(function (validationMessages) {
+                .then((validationMessages) => {
                     expect(validationMessages).to.equal(schemaValidationResult.response.validationViolations);
                     done();
                 })
@@ -398,11 +398,35 @@ describe('ModelValidations', () => {
 
         it('should return an empty array when the validation passed', (done) => {
             modelValidation.validateAgainstSchema(modelMock)
-                .then(function (validationMessages) {
+                .then((validationMessages) => {
                     expect(validationMessages).to.deep.equal([]);
                     done();
                 })
                 .catch(done);
+        });
+
+        it('should throw an error when the server does not return the correct WebMessage format', () => {
+            const schemaValidationResult = {
+                httpStatus: 'Bad Request',
+                httpStatusCode: 400,
+                status: 'ERROR',
+                response: {},
+            };
+            Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
+
+            return modelValidation.validateAgainstSchema(modelMock)
+                .catch((errorMessage) => {
+                    expect(errorMessage.message).to.equal('Response was not a WebMessage with the expected format');
+                });
+        });
+
+        it('should reject the promise if the server gives a successful statuscode but the webmessage status is not the `OK` string', () => {
+            Api.getApi().post = sinon.stub().returns(Promise.resolve({data: 'someData'}));
+
+            return modelValidation.validateAgainstSchema(modelMock)
+                .catch((errorMessage) => {
+                    expect(errorMessage.message).to.equal('Response was not a WebMessage with the expected format')
+                });
         });
     });
 });

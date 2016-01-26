@@ -6,8 +6,9 @@ describe('D2 models', () => {
     var models;
 
     class ModelDefinition {
-        constructor(schema) {
-            this.name = schema.name;
+        constructor(name, plural) {
+            this.name = name;
+            this.plural = plural;
         }
     }
 
@@ -27,7 +28,7 @@ describe('D2 models', () => {
         var dataElementModelDefinition;
 
         beforeEach(() => {
-            dataElementModelDefinition = new ModelDefinition({ name: 'dataElement' });
+            dataElementModelDefinition = new ModelDefinition('dataElement');
         });
 
         it('should be a function', () => {
@@ -57,6 +58,15 @@ describe('D2 models', () => {
 
             expect(shouldThrow).to.throw('Name should be set on the passed ModelDefinition to add one');
         });
+
+        it('should add the plural version to the object', () => {
+            const indicatorDefinition = new ModelDefinition('indicator', 'indicators');
+
+            models.add(indicatorDefinition);
+
+            expect(models.indicator).to.be.instanceof(ModelDefinition);
+            expect(models.indicator).to.equal(models.indicators);
+        });
     });
 
     describe('mapThroughDefinitions method', () => {
@@ -83,6 +93,16 @@ describe('D2 models', () => {
         it('should throw if the transformer passed is not a function', () => {
             expect(() => models.mapThroughDefinitions('')).to.throw('Expected transformer to have type function');
             expect(() => models.mapThroughDefinitions({})).to.throw('Expected transformer to have type function');
+        });
+
+        it('should not map through properties that are the plural versions', () => {
+            const iterator = spy();
+
+            models.add({ name: 'indicator', plural: 'indicators' });
+
+            models.mapThroughDefinitions(iterator);
+
+            expect(iterator).to.have.callCount(5);
         });
     });
 });

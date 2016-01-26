@@ -223,7 +223,7 @@ class ModelValidation {
             if (webmessage.response && webmessage.response.validationViolations) {
                 return webmessage.response.validationViolations;
             }
-            throw new Error('Response was not a WebMessage with the exprected format');
+            throw new Error('Response was not a WebMessage with the expected format');
         }
 
         const url = `schemas/${model.modelDefinition.name}`;

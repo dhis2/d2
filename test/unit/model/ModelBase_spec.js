@@ -44,13 +44,14 @@ describe('ModelBase', () => {
         expect(modelBase.validate).to.be.instanceof(Function);
     });
 
-    describe('save', () => {
+    describe('save()', () => {
         let modelDefinition;
         let model;
 
         beforeEach(() => {
             modelDefinition = {
-                save: stub().returns(new Promise((resolve) => {resolve();})),
+                apiEndpoint: '/dataElements',
+                save: stub().returns(Promise.resolve()),
             };
 
             class Model {
@@ -59,11 +60,17 @@ describe('ModelBase', () => {
                     this.validate = stub().returns(Promise.resolve({ status: true }));
                     this.dirty = true;
                     this[DIRTY_PROPERTY_LIST] = new Set(['name']);
+                    this.dataValues = {};
                 }
             }
 
             Model.prototype = modelBase;
             model = new Model(modelDefinition);
+            Object.defineProperty(model, 'id', {
+                get() {
+                    return this.dataValues.id;
+                },
+            });
         });
 
         it('should call the save on the model modelDefinition with itself as a parameter', (done) => {
@@ -139,6 +146,55 @@ describe('ModelBase', () => {
 
         it('should return a promise', () => {
             expect(model.save()).to.be.instanceof(Promise);
+        });
+
+        it('should set the newly created id onto the model', () => {
+            modelDefinition.save.returns(Promise.resolve({
+                response: {
+                    importCount: {
+                        imported: 1,
+                    },
+                    lastImported: 'DXyJmlo9rge',
+                },
+            }));
+
+            return model.save()
+                .then(() => {
+                    expect(model.id).to.equal('DXyJmlo9rge');
+                });
+        });
+
+        it('should set the correct href property onto the object', () => {
+            modelDefinition.save.returns(Promise.resolve({
+                response: {
+                    importCount: {
+                        imported: 1,
+                    },
+                    lastImported: 'DXyJmlo9rge',
+                },
+            }));
+
+            return model.save()
+                .then(() => {
+                    expect(model.dataValues.href).to.equal('/dataElements/DXyJmlo9rge');
+                });
+        });
+
+        it('should set the dirty children\'s dirty flag back to false', () => {
+            model.modelDefinition.modelValidations = {
+                organisationUnits: {
+                    owner: true,
+                },
+            };
+            model.organisationUnits = {
+                size: 1,
+                dirty: true,
+            };
+
+            return model.save()
+                .then(() => {
+                    expect(model.organisationUnits.dirty).to.be.false;
+                });
         });
     });
 
@@ -324,21 +380,19 @@ describe('ModelBase', () => {
                 .catch(done);
         });
 
-        it('should return the valid status when asyncValidation against the schema passed', () => {
-            it('should return false when there are the asyncValidation against the schema failed', (done) => {
-                validateAgainstSchemaSpy.returns(Promise.resolve([]));
-                validateSpy.onFirstCall().returns({
-                    status: true,
-                    messages: [],
-                });
-
-                model.validate()
-                    .then(validationState => {
-                        expect(validationState.status).to.be.true;
-                        done();
-                    })
-                    .catch(done);
+        it('should return false when there are the asyncValidation against the schema failed', (done) => {
+            validateAgainstSchemaSpy.returns(Promise.resolve([]));
+            validateSpy.onFirstCall().returns({
+                status: true,
+                messages: [],
             });
+
+            model.validate()
+                .then(validationState => {
+                    expect(validationState.status).to.be.true;
+                    done();
+                })
+                .catch(done);
         });
     });
 
