@@ -81,6 +81,7 @@ function typeSpecificValidation(result, value, valueType) {
 }
 
 // TODO: See if we can reduce the complexity of this function
+/* eslint-disable */
 function typeValidation(value, type) {
     switch (type) {
     case 'INTEGER':
@@ -111,6 +112,7 @@ function typeValidation(value, type) {
     }
     return false;
 }
+/* eslint-enable */
 
 // TODO: Remove client side validation on models
 function numberMinMaxValidation(value, validationSettings) {
