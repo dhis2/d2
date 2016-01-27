@@ -16,24 +16,6 @@ describe('System', () => {
     const SystemSettings = require('../../../src/system/SystemSettings');
     let system;
 
-    const mockSettingsMapping = {
-        'keyLabelOnly': {label: 'label_1'},
-        'keyDescOnly': {description: 'desc_1'},
-        'keyDescLabel': {label: 'label_2', description: 'desc_2'},
-        'keyDuplicate1': {label: 'label_1'},
-        'keyDuplicate2': {label: 'label_2', description: 'desc_1'},
-        'keyWithOptions': {
-            label: 'label_3',
-            options: {
-                1: 'first_option_label',
-                2: 'second_option_label',
-                3: 3,
-                4: 4,
-                5: 'fifth_option_label',
-            },
-        },
-    };
-
     beforeEach(() => {
         system = System.getSystem();
     });
@@ -254,34 +236,58 @@ describe('System', () => {
             expect(apiMock.get).to.be.calledWith('appStore');
         });
 
-        it('should return all apps from the api', () => {
+        it('should return the compatible apps from the api', () => {
+            const expectedApps = fixtures.get('appStore');
+
+            // Only the second app is compatible
+            expectedApps.apps[0].versions = [expectedApps.apps[0].versions[1]];
+
             return system.loadAppStore()
                 .then((apps) => {
-                    expect(apps).to.deep.equal(fixtures.get('appStore'));
+                    expect(apps).to.deep.equal(expectedApps);
                 });
         });
 
-        it('should return the first app', () => {
-            stub(System, 'isVersionCompatible');
-            System.isVersionCompatible.returns(false);
-            System.isVersionCompatible.onFirstCall().returns(true);
+        it('should return the compatible apps', () => {
+            const returnedApps = fixtures.get('appStore');
 
-            const firstAppFromApi = fixtures.get('appStore').apps[0];
+            returnedApps.apps = [
+                {
+                    versions: [
+                        {min_platform_version: '2.13', max_platform_version: '2.20'},
+                        {min_platform_version: '2.20'},
+                    ],
+                },
+                {
+                    versions: [
+                        {min_platform_version: '2.25', max_platform_version: '2.26'},
+                        {min_platform_version: '2.26'},
+                    ],
+                },
+                {
+                    versions: [
+                        {min_platform_version: '2.21'},
+                    ],
+                },
+                {
+                    versions: [
+                        {max_platform_version: '2.19'},
+                    ],
+                },
+            ];
+
+            apiMock.get.returns(Promise.resolve(returnedApps));
 
             return system.loadAppStore()
                 .then((apps) => {
-                    expect(apps.apps).to.deep.equal([firstAppFromApi]);
+                    expect(apps.apps.length).to.equal(2);
                 });
         });
 
         it('should return all the apps when compatibility flag is set to false', () => {
-            stub(System, 'isVersionCompatible');
-            System.isVersionCompatible.returns(false);
-            System.isVersionCompatible.onFirstCall().returns(true);
-
             return system.loadAppStore(false)
                 .then((apps) => {
-                    expect(apps).to.deep.equal(fixtures.get('appStore'));
+                    expect(apps.apps.length).to.equal(fixtures.get('appStore').apps.length);
                 });
         });
 
@@ -480,6 +486,10 @@ describe('System', () => {
             systemVersion = '2.23';
         });
 
+        afterEach(() => {
+            System.compareVersions.restore();
+        });
+
         it('should return false when the app is not new enough', () => {
             expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.false;
         });
@@ -499,6 +509,13 @@ describe('System', () => {
             appVersion = {};
 
             expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.true;
+        });
+
+        it('should return false when the version is not compatible', () => {
+            expect(System.isVersionCompatible('2.22', {
+                min_platform_version: '2.17',
+                max_platform_version: '2.20',
+            })).to.be.false;
         });
     });
 });

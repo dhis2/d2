@@ -142,28 +142,29 @@ class System {
      * @returns {Promise}
      */
     loadAppStore(compatibleOnly = true) {
-        const api = Api.getApi();
+        return new Promise((resolve, reject) => {
+            const api = Api.getApi();
+            api.get('appStore').then(appStoreData => {
+                const appStore = Object.assign({}, appStoreData);
 
-        return api.get('appStore')
-            .then(appStore => {
-                const appStoreDetails = Object.assign({}, appStore);
-
-                appStoreDetails.apps = appStore.apps
-                    .filter(app => {
-                        const appDetails = Object.assign({}, app);
+                appStore.apps = appStore.apps
+                    .map(appData => {
+                        const app = Object.assign({}, appData);
 
                         if (compatibleOnly) {
-                            appDetails.versions = app.versions.filter(
-                                // FIXME: Throws error when the `version` has not been set on `this` object
-                                appVersion => System.isVersionCompatible(this.version, appVersion)
-                            );
+                            app.versions = app.versions
+                                .filter(versionData => System.isVersionCompatible(this.version, versionData));
                         }
 
-                        return appDetails.versions.length > 0;
-                    });
+                        return app;
+                    })
+                    .filter(appData => appData.versions.length > 0);
 
-                return appStoreDetails;
+                resolve(appStore);
+            }).catch(err => {
+                reject(err);
             });
+        });
     }
 
 
@@ -173,12 +174,15 @@ class System {
      * @param uid The uid of the app version to install
      * @returns {Promise}
      */
-    // TODO: Perhaps check if this is a valid UID?
     installAppVersion(uid) {
         const api = Api.getApi();
-
-        return api.post(['appStore', uid].join('/'), '', { dataType: 'text' })
-            .then(() => undefined);
+        return new Promise((resolve, reject) => {
+            api.post(['appStore', uid].join('/'), '', { dataType: 'text' }).then(() => {
+                resolve();
+            }).catch((err) => {
+                reject(err);
+            });
+        });
     }
 
 
@@ -219,19 +223,11 @@ class System {
     }
 
     // TODO: Document
+    // Disable eslint complexity warning
+    /* eslint-disable */
     static compareVersions(a, b) {
-        function isString(val) {
-            return (typeof val === 'string' || val instanceof String);
-        }
-
-        function getVersionBounds(left, right) {
-            const from = isString(left) ? System.parseVersionString(left) : left;
-            const to = isString(right) ? System.parseVersionString(right) : right;
-
-            return [from, to];
-        }
-
-        const [from, to] = getVersionBounds(a, b);
+        const from = (typeof a === 'string' || a instanceof String) ? System.parseVersionString(a) : a;
+        const to = (typeof b === 'string' || b instanceof String) ? System.parseVersionString(b) : b;
 
         if (from.major !== to.major) {
             return from.major - to.major;
@@ -241,6 +237,7 @@ class System {
 
         return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1);
     }
+    /* eslint-enable */
 
 
     static isVersionCompatible(systemVersion, appVersion) {
