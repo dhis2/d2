@@ -98,6 +98,14 @@ describe('System.configuration', () => {
         expect(configuration.get).to.be.instanceOf(Function);
     });
 
+    it('should use the api object when it is passed', () => {
+        const apiMockObject = {};
+
+        configuration = new SystemConfiguration(apiMockObject);
+
+        expect(configuration.api).to.equal(apiMockObject);
+    });
+
     describe('API call', () => {
         beforeEach(() => {
             configuration.api.get = apiGet = sinon.stub();
@@ -270,6 +278,16 @@ describe('System.configuration', () => {
                     })
                     .catch((err) => {
                         done(err);
+                    });
+            });
+
+            it('should reject a promise when no configuration can be found for the key', () => {
+                apiPost.returns(Promise.reject('StackTrace!'));
+
+                return configuration.set('thisKeyDoesNotExist', 'Some value')
+                    .catch(message => message)
+                    .then(message => {
+                        expect(message).to.equal('No configuration found for thisKeyDoesNotExist');
                     });
             });
         });

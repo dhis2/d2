@@ -1,3 +1,5 @@
+import fixtures from '../../fixtures/fixtures';
+
 const proxyquire = require('proxyquire').noCallThru();
 
 const apiMock = {};
@@ -119,7 +121,8 @@ describe('System', () => {
             apiMock.get = stub().returns(Promise.reject('Apps can not be loaded'));
 
             return system.loadInstalledApps()
-                .catch((message) => {
+                .catch(error => error)
+                .then((message) => {
                     expect(message).to.equal('Apps can not be loaded');
                 });
         });
@@ -228,8 +231,274 @@ describe('System', () => {
     });
 
     describe('loadAppStore()', () => {
+        beforeEach(() => {
+            system.setSystemInfo({
+                version: '2.22',
+            });
+
+            apiMock.get = stub()
+                .returns(Promise.resolve(fixtures.get('appStore')));
+        });
+
         it('should be a function on the system object', () => {
             expect(system.loadAppStore).to.be.a('function');
+        });
+
+        it('should return a promise', () => {
+            expect(system.loadAppStore()).to.be.instanceof(Promise);
+        });
+
+        it('should request the api for the appStore', () => {
+            system.loadAppStore();
+
+            expect(apiMock.get).to.be.calledWith('appStore');
+        });
+
+        it('should return all apps from the api', () => {
+            return system.loadAppStore()
+                .then((apps) => {
+                    expect(apps).to.deep.equal(fixtures.get('appStore'));
+                });
+        });
+
+        it('should return the first app', () => {
+            stub(System, 'isVersionCompatible');
+            System.isVersionCompatible.returns(false);
+            System.isVersionCompatible.onFirstCall().returns(true);
+
+            const firstAppFromApi = fixtures.get('appStore').apps[0];
+
+            return system.loadAppStore()
+                .then((apps) => {
+                    expect(apps.apps).to.deep.equal([firstAppFromApi]);
+                });
+        });
+
+        it('should return all the apps when compatibility flag is set to false', () => {
+            stub(System, 'isVersionCompatible');
+            System.isVersionCompatible.returns(false);
+            System.isVersionCompatible.onFirstCall().returns(true);
+
+            return system.loadAppStore(false)
+                .then((apps) => {
+                    expect(apps).to.deep.equal(fixtures.get('appStore'));
+                });
+        });
+
+        it('should reject the promise when the request fails', () => {
+            apiMock.get.returns(Promise.reject('Request for appStore failed'));
+
+            return system.loadAppStore()
+                .catch(error => error)
+                .then(error => {
+                    expect(error).to.equal('Request for appStore failed');
+                });
+        });
+
+        it('should reject the promise when system.version is not set', () => {
+            system.version = undefined;
+
+            return system.loadAppStore()
+                .catch(error => error)
+                .then(error => {
+                    expect(error.message).to.equal('Cannot read property \'major\' of undefined');
+                });
+        });
+    });
+
+    describe('installAppVersion()', () => {
+        beforeEach(() => {
+            apiMock.post.returns(Promise.resolve(''));
+        });
+
+        it('should be a function on the system object', () => {
+            expect(system.installAppVersion).to.be.a('function');
+        });
+
+        it('should reject the promise when the request fails', () => {
+            apiMock.post.returns(Promise.reject('Request for installation failed'));
+
+            return system.installAppVersion('PyYnjVl5iGt')
+                .catch(error => error)
+                .then(errorMessage => {
+                    expect(errorMessage).to.equal('Request for installation failed');
+                });
+        });
+
+        it('should call the api with the correct url', () => {
+            return system.installAppVersion('PyYnjVl5iGt')
+                .then(() => {
+                    expect(apiMock.post).to.be.calledWith('appStore/PyYnjVl5iGt');
+                });
+        });
+
+        it('should resolve the promise without a value', () => {
+            return system.installAppVersion('PyYnjVl5iGt')
+                .then((response) => {
+                    expect(response).to.be.undefined;
+                });
+        });
+    });
+
+    describe('uninstallApp()', () => {
+        beforeEach(() => {
+            apiMock.delete = stub().returns(Promise.resolve({}));
+        });
+
+        it('should be a function on the system object', () => {
+            expect(system.uninstallApp).to.be.a('function');
+        });
+
+        it('should call the api.delete method with the correct url', () => {
+            return system.uninstallApp('PyYnjVl5iGt')
+                .then(() => {
+                    expect(apiMock.delete).to.be.calledWith('apps/PyYnjVl5iGt');
+                });
+        });
+
+        it('should resolve the request even when the api request fails', () => {
+            apiMock.delete = stub().returns(Promise.reject({}));
+
+            return system.uninstallApp('PyYnjVl5iGt');
+        });
+    });
+
+    describe('reloadApps()', () => {
+        beforeEach(() => {
+            apiMock.update = stub().returns(Promise.resolve());
+        });
+
+        it('should be a function on the system object', () => {
+            expect(system.reloadApps).to.be.a('function');
+        });
+
+        it('should call the update method on the api', () => {
+            return system.reloadApps()
+                .then(() => {
+                   expect(apiMock.update).to.be.calledWith('apps');
+                });
+        });
+
+        it('should call system.loadInstalledApps on success ', () => {
+            spy(system, 'loadInstalledApps');
+
+            return system.reloadApps()
+                .then(() => {
+                    expect(system.loadInstalledApps).to.be.called;
+                });
+        });
+
+        it('should chain the promise from loadInstalledApps', () => {
+            const loadInstalledAppsPromise = Promise.resolve('Apps loaded');
+
+            stub(system, 'loadInstalledApps').returns(loadInstalledAppsPromise);
+
+            return system.reloadApps()
+                .then((message) => expect(message).to.equal('Apps loaded'));
+        });
+
+        it('should not call loadInstalledApps when the update request fails', () => {
+            apiMock.update.returns(Promise.reject());
+            spy(system, 'loadInstalledApps');
+
+            return system.reloadApps()
+                .catch(message => message)
+                .then(() => {
+                    expect(system.loadInstalledApps).not.to.be.called;
+                });
+        });
+    });
+
+    describe('compareVersions()', () => {
+        let systemVersion;
+        let appVersion;
+
+        beforeEach(() => {
+            systemVersion = {
+                major: 2,
+                minor: 23,
+                snapshot: true,
+            };
+            appVersion = {
+                major: 2,
+                minor: 23,
+                snapshot: true,
+            };
+        });
+
+        it('should be a function on the system class', () => {
+            expect(System.compareVersions).to.be.a('function');
+        });
+
+        it('should return 0 for equal versions', () => {
+            expect(System.compareVersions(systemVersion, appVersion)).to.equal(0);
+        });
+
+        it('should return 1 for a larger major system version', () => {
+            systemVersion.major = 3;
+
+            expect(System.compareVersions(systemVersion, appVersion)).to.equal(1);
+        });
+
+        it('should return 1 for a larger minor version', () => {
+            systemVersion.minor = 24;
+
+            expect(System.compareVersions(systemVersion, appVersion)).to.equal(1);
+        });
+
+        it('should return 1 when the app is a snapshot version', () => {
+            systemVersion.snapshot = false;
+            appVersion.snapshot = true;
+
+            expect(System.compareVersions(systemVersion, appVersion)).to.equal(1);
+        });
+
+        it('should return -1 when the app is not a snapshot', () => {
+            systemVersion.snapshot = true;
+            appVersion.snapshot = false;
+
+            expect(System.compareVersions(systemVersion, appVersion)).to.equal(-1);
+        });
+
+        it('should do correct comparison when a string is passed as a version', () => {
+            expect(System.compareVersions('2.15', '2.16')).to.equal(-1);
+            expect(System.compareVersions('2.20-SNAPSHOT', '2.16')).to.equal(4);
+        });
+    });
+
+    describe('isVersionCompatible()', () => {
+        let appVersion;
+        let systemVersion;
+
+        beforeEach(() => {
+            stub(System, 'compareVersions');
+
+            appVersion = {
+                min_platform_version: '2.22',
+                max_platform_version: '2.23-SNAPSHOT',
+            };
+            systemVersion = '2.23';
+        });
+
+        it('should return false when the app is not new enough', () => {
+            expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.false;
+        });
+
+        it('should return false when the app is too old', () => {
+            expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.false;
+        });
+
+        it('should return true when the system version is within the app version range', () => {
+            appVersion.min_platform_version = '2.20';
+            appVersion.max_platform_version = '2.25';
+
+            expect(System.isVersionCompatible(systemVersion, appVersion));
+        });
+
+        it('should return true when no version bounds are given', () => {
+            appVersion = {};
+
+            expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.true;
         });
     });
 });
