@@ -5,8 +5,7 @@ node_js:
 script:
 - npm run travis
 - npm run e2e
-- cd src
-- cat ../coverage/lcov.info | ../node_modules/coveralls/bin/coveralls.js
+
 notifications:
   slack:
     secure: MPEurDUvYfcl3b5Hji/42sKF6TQLRcrkqMfKINy6buFePKdbkwDjQd+r0GYAC153lLpbJeiFy7p8TAVp2QP3wmC02ea9n3CG8juKpCBabyaZq3RBvhJ7kKUd/BdTLPNWU1ttSrQlzOoAs3HcuEAaeUzhW3d0LPH+bVvYx4aG8UM=
