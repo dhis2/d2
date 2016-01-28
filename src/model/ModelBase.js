@@ -87,7 +87,6 @@ class ModelBase {
         return new Promise((resolve, reject) => {
             let validationMessages = [];
             let validationState;
-            let modelValidationStatus = true;
 
             function unique(current, property) {
                 if (property && current.indexOf(property) === -1) {
@@ -96,33 +95,9 @@ class ModelBase {
                 return current;
             }
 
-            function localValidation(modelValidations, dataValues) {
-                let validationMessagesLocal = [];
-
-                Object.keys(modelValidations).forEach((propertyName) => {
-                    const validationStatus = modelValidator
-                        .validate(modelValidations[propertyName], dataValues[propertyName]);
-
-                    if (!validationStatus.status) {
-                        validationStatus.messages.forEach(message => {
-                            message.property = propertyName; // eslint-disable-line no-param-reassign
-                        });
-                    }
-                    modelValidationStatus = modelValidationStatus && validationStatus.status;
-                    validationMessagesLocal = validationMessagesLocal.concat(validationStatus.messages || []);
-                });
-
-                return validationMessagesLocal;
-            }
-
             function asyncRemoteValidation(model) {
                 return modelValidator.validateAgainstSchema(model);
             }
-
-            // Run local validation on the models data values
-            validationMessages = validationMessages.concat(
-                localValidation(this.modelDefinition.modelValidations, this.dataValues)
-            );
 
             // Run async validation against the api
             asyncRemoteValidation(this)
@@ -130,7 +105,7 @@ class ModelBase {
                     validationMessages = validationMessages.concat(remoteMessages);
 
                     validationState = {
-                        status: modelValidationStatus && remoteMessages.length === 0,
+                        status: remoteMessages.length === 0,
                         fields: validationMessages
                             .map(validationMessage => validationMessage.property)
                             .reduce(unique, []),

@@ -1,11 +1,9 @@
 function setupFakeModelValidation() {
-    const validateSpy = sinon.stub();
     const validateAgainstSchemaSpy = sinon.stub();
     const proxyquire = require('proxyquire').noCallThru();
 
     class ModelValidation {
         constructor() {
-            this.validate = validateSpy;
             this.validateAgainstSchema = validateAgainstSchemaSpy;
         }
     }
@@ -17,18 +15,17 @@ function setupFakeModelValidation() {
         './ModelValidation': ModelValidation,
     });
 
-    return [validateSpy, validateAgainstSchemaSpy];
+    return validateAgainstSchemaSpy;
 }
 
 describe('ModelBase', () => {
     // TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
-    const [validateSpy, validateAgainstSchemaSpy] = setupFakeModelValidation();
+    const validateAgainstSchemaSpy = setupFakeModelValidation();
     let modelBaseModule;
     let modelBase;
     let DIRTY_PROPERTY_LIST;
 
     beforeEach(() => {
-        validateSpy.reset();
         validateAgainstSchemaSpy.reset();
 
         modelBaseModule = require('../../../src/model/ModelBase');
@@ -228,102 +225,7 @@ describe('ModelBase', () => {
             Model.prototype = modelBase;
             model = new Model(modelValidations);
 
-            validateSpy.returns({ status: true });
-            validateSpy.onFirstCall().returns({ status: true });
-            validateSpy.onSecondCall().returns({ status: true });
-
             validateAgainstSchemaSpy.returns(Promise.resolve([]));
-        });
-
-        it('should call validate on the model validator for each of the validations', () => {
-            modelValidations.name = {};
-            modelValidations.firstName = {};
-            modelValidations.lastName = {};
-
-            model.validate()
-                .then(() => {});
-
-            expect(validateSpy).to.have.callCount(4);
-        });
-
-        it('should call validate on the ModelValidation with the correct data', () => {
-            model.validate();
-
-            expect(validateSpy).to.have.been.calledWith(modelValidations.age, 4);
-        });
-
-        it('should return true when the value is correct', (done) => {
-            model.validate()
-                .then(validationState => {
-                    expect(validationState.status).to.be.true;
-                    done();
-                });
-        });
-
-        it('should return false when the validation fails', (done) => {
-            validateSpy.onFirstCall().returns({
-                status: false,
-                messages: [{
-                    message: 'Required property missing',
-                    property: 'name',
-                    value: '',
-                }],
-            });
-
-            model.validate()
-                .then(validationState => {
-                    expect(validationState.status).to.be.false;
-                    done();
-                });
-        });
-
-        it('should return false when one of the validations returns false', (done) => {
-            // Some fake validator that does nothing but triggers a validation call
-            modelValidations.name = {};
-
-            validateSpy.onSecondCall().returns({
-                status: false,
-                messages: [{
-                    message: 'Required property missing',
-                    property: 'name',
-                    value: '',
-                }],
-            });
-
-            model.validate()
-                .then(validationState => {
-                    expect(validationState.status).to.be.false;
-                    done();
-                });
-        });
-
-        it('should return true when all validations return true', (done) => {
-            modelValidations.name = {};
-
-            model.validate()
-                .then(validationState => {
-                    expect(validationState.status).to.be.true;
-                    done();
-                });
-        });
-
-        it('should return a list of invalid fields', (done) => {
-            validateSpy.onFirstCall().returns({
-                status: false,
-                messages: [{
-                    message: 'Required property missing',
-                    property: 'age',
-                    value: '',
-                }],
-            });
-
-            model.dataValues.age = -1;
-
-            model.validate()
-                .then(validationState => {
-                    expect(validationState.fields).to.deep.equal(['age']);
-                    done();
-                });
         });
 
         it('should fail when the async validate fails', (done) => {
@@ -352,25 +254,8 @@ describe('ModelBase', () => {
                 });
         });
 
-        it('should not return a false positive when there are no messages', (done) => {
-            validateSpy.onFirstCall().returns({
-                status: false,
-                messages: [],
-            });
-
-            model.validate()
-                .then(validationState => {
-                    expect(validationState.status).to.be.false;
-                    done();
-                });
-        });
-
         it('should return false when there are the asyncValidation against the schema failed', (done) => {
             validateAgainstSchemaSpy.returns(Promise.resolve([{ message: 'Required property missing.', property: 'name' }]));
-            validateSpy.onFirstCall().returns({
-                status: true,
-                messages: [],
-            });
 
             model.validate()
                 .then(validationState => {
@@ -382,10 +267,6 @@ describe('ModelBase', () => {
 
         it('should return false when there are the asyncValidation against the schema failed', (done) => {
             validateAgainstSchemaSpy.returns(Promise.resolve([]));
-            validateSpy.onFirstCall().returns({
-                status: true,
-                messages: [],
-            });
 
             model.validate()
                 .then(validationState => {
