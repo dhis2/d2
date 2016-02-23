@@ -126,12 +126,12 @@ class ModelCollectionProperty extends ModelCollection {
         const queries = [];
 
         if (this.added.size) {
-            Array.from(this.added).map(id => {
+            Array.from(this.added).forEach(id => {
                 queries.push(api.post([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
             });
         }
         if (this.removed.size) {
-            Array.from(this.removed).map(id => {
+            Array.from(this.removed).forEach(id => {
                 queries.push(api.delete([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
             });
         }

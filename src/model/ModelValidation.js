@@ -78,6 +78,8 @@ function typeSpecificValidation(result, value, valueType) {
             }
             return currentValidationStatus;
         }, true);
+
+    return result;
 }
 
 // TODO: See if we can reduce the complexity of this function

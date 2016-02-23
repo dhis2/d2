@@ -28,7 +28,8 @@ class SchemaTypes {
         if (this.getTypes().indexOf(propertyType) >= 0 && isString(propertyType)) {
             return propertyType;
         }
-        throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
+
+        return throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
     }
 }
 

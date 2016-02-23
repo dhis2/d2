@@ -55,7 +55,10 @@ class ModelBase {
                         }
                         this.dirty = false;
                         this.getDirtyChildren()
-                            .forEach(value => value.dirty = false); // eslint-disable-line no-param-reassign
+                            .forEach(value => {
+                                value.dirty = false; // eslint-disable-line no-param-reassign
+                                return value;
+                            });
 
                         this[DIRTY_PROPERTY_LIST].clear();
                         return result;
@@ -86,7 +89,6 @@ class ModelBase {
     validate() {
         return new Promise((resolve, reject) => {
             let validationMessages = [];
-            let validationState;
             let modelValidationStatus = true;
 
             function unique(current, property) {
@@ -129,7 +131,7 @@ class ModelBase {
                 .then(remoteMessages => {
                     validationMessages = validationMessages.concat(remoteMessages);
 
-                    validationState = {
+                    const validationState = {
                         status: modelValidationStatus && remoteMessages.length === 0,
                         fields: validationMessages
                             .map(validationMessage => validationMessage.property)

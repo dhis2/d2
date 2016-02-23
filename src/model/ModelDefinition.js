@@ -63,6 +63,8 @@ function createValidationSetting(validationObject, schemaProperty) {
         if (property.href) {
             return property.href.split('/').pop();
         }
+
+        return undefined;
     }
 
     // Add a referenceType to be able to get a hold of the reference objects model.

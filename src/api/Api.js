@@ -14,7 +14,7 @@ function processFailure(reject) {
         }
 
         delete jqXHR.then; // eslint-disable-line no-param-reassign
-        reject(jqXHR);
+        return reject(jqXHR);
     };
 }
 

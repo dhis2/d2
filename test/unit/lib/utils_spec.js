@@ -1,7 +1,5 @@
 describe('Utils', () => {
-    'use strict';
-
-    var utils;
+    let utils;
 
     beforeEach(() => {
         utils = require('../../../src/lib/utils');
@@ -21,7 +19,7 @@ describe('Utils', () => {
         var object = {
             name: 'Mark',
             users: [
-                'mark', 'this', 'color'
+                'mark', 'this', 'color',
             ]
         };
 

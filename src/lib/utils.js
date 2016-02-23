@@ -1,15 +1,14 @@
+// TODO: Most of these functions should be moved out to d2-utilizr
+
 export function throwError(message) {
     throw new Error(message);
 }
 
+// TODO: Throw an error when `toCurry` is not a function
 export function curry(toCurry, parameter) {
-    if (typeof toCurry === 'function') {
-        return function curried() {
-            const args = Array.prototype.slice.call(arguments, 0);
-
-            return toCurry.apply(this, [parameter].concat(args));
-        };
-    }
+    return function curried(...args) {
+        return toCurry.apply(this, [parameter].concat(args));
+    };
 }
 
 export function addLockedProperty(object, name, value) {
