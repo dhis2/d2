@@ -127,19 +127,57 @@ describe('D2.models', function () {
                     200,
                     {'Content-Type': 'application/json'},
                     JSON.stringify({
-                        "httpStatus": "OK",
-                        "httpStatusCode": 200,
-                        "status": "OK",
-                        "response": {
-                            "responseType": "ValidationViolations"
-                        }
-                    })
+                        'httpStatus': 'OK',
+                        'httpStatusCode': 200,
+                        'status': 'OK',
+                        'response': {
+                            'responseType': 'ValidationViolations',
+                        },
+                    }),
                 ]
             );
         });
 
         it('should return false for an empty model', (done) => {
             var dataElementModel = d2.models.dataElement.create();
+            server.respondWith(
+                'POST',
+                '/dhis/api/schemas/dataElement',
+                [
+                    200,
+                    {'Content-Type': 'application/json'},
+                    JSON.stringify({
+                        'httpStatus': 'Bad Request',
+                        'httpStatusCode': 400,
+                        'status': 'ERROR',
+                        'response': {
+                            'responseType': 'ValidationViolations',
+                            'validationViolations': [
+                                {
+                                    'message': 'Required property missing.',
+                                    'property': 'aggregationType',
+                                },
+                                {
+                                    'message': 'Required property missing.',
+                                    'property': 'domainType',
+                                },
+                                {
+                                    'message': 'Required property missing.',
+                                    'property': 'valueType',
+                                },
+                                {
+                                    'message': 'Required property missing.',
+                                    'property': 'name',
+                                },
+                                {
+                                    'message': 'Required property missing.',
+                                    'property': 'shortName',
+                                },
+                            ],
+                        },
+                    }),
+                ]
+            );
 
             dataElementModel.validate()
                 .then((validationStatus) => {
@@ -180,18 +218,6 @@ describe('D2.models', function () {
                     })
                     .then(done);
 
-                server.respond();
-            });
-
-            it('should return false when a value is changed to an invalid value', function (done) {
-                loadedDataElementModel.name = '';
-
-                loadedDataElementModel.validate()
-                    .then((validationStatus) => {
-                        expect(validationStatus.status).to.be.false;
-                        expect(validationStatus.fields).to.deep.equal(['name']);
-                    })
-                    .then(done);
                 server.respond();
             });
         });
