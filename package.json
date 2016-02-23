@@ -14,7 +14,7 @@
     "build": "npm run build-only",
     "lint": "eslint src --fix",
     "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
-    "travis": "npm run coverage && npm run lint",
+    "travis": "npm run coverage && npm run e2e && npm run lint",
     "posttravis": "codeclimate-test-reporter < ./coverage/lcov.info"
   },
   "repository": {
