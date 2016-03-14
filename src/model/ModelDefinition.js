@@ -153,7 +153,7 @@ class ModelDefinition {
         addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
         addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
         addLockedProperty(this, 'javaClass', modelOptions && modelOptions.klass);
-        addLockedProperty(this, 'translated', modelOptions && modelOptions.translated);
+        addLockedProperty(this, 'identifiableObject', modelOptions && modelOptions.identifiableObject);
         addLockedProperty(this, 'modelProperties', properties);
         addLockedProperty(this, 'modelValidations', validations);
         addLockedProperty(this, 'attributeProperties', attributes);
