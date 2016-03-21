@@ -186,6 +186,7 @@ class ModelDefinition {
      */
     create(data) {
         const model = Model.create(this);
+        const validations = model.modelDefinition.modelValidations;
         const models = ModelDefinitions.getModelDefinitions();
         const dataValues = Object.assign({}, data);
 
@@ -194,18 +195,23 @@ class ModelDefinition {
             Object
                 .keys(model)
                 .forEach((modelProperty) => {
+                    const referenceType =
+                        validations[modelProperty].hasOwnProperty('referenceType') &&
+                        validations[modelProperty].referenceType ||
+                        models.hasOwnProperty(modelProperty) && modelProperty;
+
                     // For collections of objects, create ModelCollectionProperties rather than plain arrays
                     if (
-                        models &&
-                        models.hasOwnProperty(modelProperty) &&
-                        data[modelProperty] &&
-                        data[modelProperty] instanceof Array
+                        referenceType &&
+                        models.hasOwnProperty(referenceType) &&
+                        Array.isArray(data[modelProperty]) &&
+                        data[modelProperty].length
                     ) {
                         dataValues[modelProperty] = ModelCollectionProperty
                             .create(
                                 model,
-                                models[modelProperty],
-                                data[modelProperty].map(d => models[modelProperty].create(d))
+                                models[referenceType],
+                                data[modelProperty].map(d => models[referenceType].create(d))
                             );
                     }
                     model.dataValues[modelProperty] = dataValues[modelProperty];
