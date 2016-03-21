@@ -123,7 +123,7 @@ describe('Internationalisation (I18n)', () => {
         it('should not add empty strings', () => {
             spy(i18n.strings, 'add');
 
-            i18n.addStrings(['yes', '']);
+            i18n.addStrings(['yes', '', '  ']);
 
             expect(i18n.strings.add).to.be.calledOnce;
         });
