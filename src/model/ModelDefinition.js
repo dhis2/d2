@@ -204,8 +204,7 @@ class ModelDefinition {
                     if (
                         referenceType &&
                         models.hasOwnProperty(referenceType) &&
-                        Array.isArray(data[modelProperty]) &&
-                        data[modelProperty].length
+                        Array.isArray(data[modelProperty])
                     ) {
                         dataValues[modelProperty] = ModelCollectionProperty
                             .create(
