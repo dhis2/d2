@@ -148,4 +148,10 @@ describe('ModelValidations', () => {
                 });
         });
     });
+
+    describe('client side validation', () => {
+       it('is deprecated and should throw an error', () => {
+           expect(modelValidation.validate).to.throw(Error);
+       });
+    });
 });
