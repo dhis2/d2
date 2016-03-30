@@ -870,7 +870,7 @@ describe('ModelDefinition', () => {
         it('should save to the url set on the model', () => {
             userModelDefinition.save(model);
 
-            expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+            expect(apiUpdateStub.getCall(0).args[0]).to.equal(`${fixtures.get('singleUserAllFields').href}?mergeMode=REPLACE`);
         });
 
         it('should save a new object using a post', () => {

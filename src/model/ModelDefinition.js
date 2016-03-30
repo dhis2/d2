@@ -327,8 +327,12 @@ class ModelDefinition {
         const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
 
         if (isAnUpdate(model)) {
+            // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
+            // to clear out existing values
+            const updateUrl = `${model.dataValues.href}?mergeMode=REPLACE`;
+
             // Save the existing model
-            return this.api.update(model.dataValues.href, jsonPayload);
+            return this.api.update(updateUrl, jsonPayload);
         }
         // Its a new object
         return this.api.post(this.apiEndpoint, jsonPayload);
