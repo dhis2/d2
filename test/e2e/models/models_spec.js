@@ -310,7 +310,7 @@ describe('D2.models', function () {
 
                 server.respondWith(
                     'PUT',
-                    'http://localhost:8080/dhis/api/users/VWgvyibrAq0',
+                    'http://localhost:8080/dhis/api/users/VWgvyibrAq0?mergeMode=REPLACE',
                     [
                         200,
                         {'Content-Type': 'application/json'},
