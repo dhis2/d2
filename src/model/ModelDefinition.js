@@ -57,6 +57,7 @@ function createValidationSetting(validationObject, schemaProperty) {
         unique: schemaProperty.unique,
         writable: schemaProperty.writable,
         constants: schemaProperty.constants,
+        ordered: Boolean(schemaProperty.ordered),
     };
 
     function getReferenceTypeFrom(property) {

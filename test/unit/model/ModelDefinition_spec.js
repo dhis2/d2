@@ -397,6 +397,34 @@ describe('ModelDefinition', () => {
                 expect(modelValidations.name.referenceType).to.be.undefined;
             });
 
+            describe('ordered', () => {
+                it('should set ordered to false when the property is not available', () => {
+                    expect(modelValidations.name.ordered).to.be.false;
+                });
+
+                it('should set ordered to false when the ordered property is available and is false', () => {
+                    const dataElementSchemaFixture = fixtures.get('/api/schemas/dataElement');
+                    dataElementSchemaFixture.properties[0].ordered = false;
+
+                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, fixtures.get('/api/attributes').attributes);
+
+                    modelValidations = dataElementModelDefinition.modelValidations;
+
+                    expect(modelValidations.aggregationLevels.ordered).to.be.false;
+                });
+
+                it('should set ordered to true when the ordered property is available and is true', () => {
+                    const dataElementSchemaFixture = fixtures.get('/api/schemas/dataElement');
+                    dataElementSchemaFixture.properties[0].ordered = true;
+
+                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, fixtures.get('/api/attributes').attributes);
+
+                    modelValidations = dataElementModelDefinition.modelValidations;
+
+                    expect(modelValidations.aggregationLevels.ordered).to.be.true;
+                });
+            });
+
             describe('collection reference', () => {
                 let indicatorGroupModelDefinition;
                 let modelValidations;
