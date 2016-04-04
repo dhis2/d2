@@ -95,7 +95,7 @@ describe('ModelValidations', () => {
                 });
         });
 
-        it('should return the validationViolations array from the webmessage', (done) => {
+        it('should return the validationViolations array from the webmessage', () => {
             const schemaValidationResult = {
                 httpStatus: 'Bad Request',
                 httpStatusCode: 400,
@@ -107,12 +107,27 @@ describe('ModelValidations', () => {
             };
             Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
 
-            modelValidation.validateAgainstSchema(modelMock)
+            return modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
                     expect(validationMessages).to.equal(schemaValidationResult.response.validationViolations);
-                    done();
-                })
-                .catch(done);
+                });
+        });
+
+        it('should return the errorReports array from the webmessage', () => {
+            const schemaValidationResult = {
+                httpStatus: 'Bad Request',
+                httpStatusCode: 400,
+                status: 'ERROR',
+                response: {
+                    errorReports: [{ message: 'Required property missing.', property: 'name' }],
+                },
+            };
+            Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
+
+            return modelValidation.validateAgainstSchema(modelMock)
+                .then((validationMessages) => {
+                    expect(validationMessages).to.deep.equal([{ message: 'Required property missing.', property: 'name' }]);
+                });
         });
 
         it('should return an empty array when the validation passed', (done) => {
