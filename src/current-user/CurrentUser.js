@@ -69,22 +69,20 @@ export default class CurrentUser {
         return this[models].userRole.get({ filter: [`id:in:[${userRoleIds.join(',')}]`] });
     }
 
-    getOrganisationUnits() {
+    getOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName]' }) {
         const organisationUnitsIds = this[propertySymbols.organisationUnits];
 
-        return this[models].organisationUnit.list({
-            fields: ':owner,displayName,children[id,displayName]',
-            filter: [`id:in:[${organisationUnitsIds.join(',')}]`],
-        });
+        return this[models].organisationUnit.list(
+            Object.assign({}, listOptions, { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] })
+        );
     }
 
-    getDataViewOrganisationUnits() {
+    getDataViewOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName]' }) {
         const organisationUnitsIds = this[propertySymbols.dataViewOrganisationUnits];
 
-        return this[models].organisationUnit.list({
-            fields: ':owner,displayName,children[id,displayName]',
-            filter: [`id:in:[${organisationUnitsIds.join(',')}]`],
-        });
+        return this[models].organisationUnit.list(
+            Object.assign({}, listOptions, { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] })
+        );
     }
 
     checkAuthorityForType(authorityType, modelType) {
