@@ -154,8 +154,7 @@ export function init(initConfig) {
             });
 
             d2.currentUser = CurrentUser.create(responses.currentUser, responses.authorities, d2.models);
-            d2.currentUser.userSettings = responses.userSettings;
-
+            d2.currentUser.userSettings = Object.assign(d2.currentUser.userSettings, responses.userSettings);
             d2.system.setSystemInfo(responses.systemInfo);
             d2.system.setInstalledApps(responses.apps);
 

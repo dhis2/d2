@@ -1,4 +1,5 @@
 import UserAuthorities from './UserAuthorities';
+import UserSettings from './UserSettings';
 
 const models = Symbol('models');
 const propertiesToIgnore = new Set([
@@ -50,11 +51,25 @@ function getUserPropertiesToCopy(currentUserObject) {
 }
 
 export default class CurrentUser {
-    constructor(userData, userAuthorities, modelDefinitions) {
+    constructor(userData, userAuthorities, modelDefinitions, settings) {
         Object.assign(this, getUserPropertiesToCopy(userData));
 
         this.authorities = userAuthorities;
         this[models] = modelDefinitions;
+
+        /**
+         * @property {UserSettings} settings Contains a reference to a `UserSettings` instance that can be used
+         * to retrieve and save system settings.
+         *
+         * @description
+         * ```js
+         * d2.currentUser.userSettings.get('keyUiLocale')
+         *  .then(userSettingsValue => {
+         *    console.log('UI Locale: ' + userSettingsValue);
+         *  });
+         * ```
+         */
+        this.userSettings = settings;
     }
 
     getUserGroups() {
@@ -132,6 +147,6 @@ export default class CurrentUser {
     }
 
     static create(userData, authorities, modelDefinitions) {
-        return new CurrentUser(userData, UserAuthorities.create(authorities), modelDefinitions);
+        return new CurrentUser(userData, UserAuthorities.create(authorities), modelDefinitions, new UserSettings());
     }
 }
