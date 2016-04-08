@@ -124,6 +124,7 @@ export function init(initConfig) {
         getUserLocale(),
         api.get('system/info'),
         api.get('apps'),
+        api.get('userSettings'),
         d2.i18n.load(),
     ])
         .then(res => {
@@ -135,6 +136,7 @@ export function init(initConfig) {
                 uiLocale: res[4],
                 systemInfo: res[5],
                 apps: res[6],
+                userSettings: res[7],
             };
 
             responses.schemas.forEach((schema) => {
@@ -152,9 +154,7 @@ export function init(initConfig) {
             });
 
             d2.currentUser = CurrentUser.create(responses.currentUser, responses.authorities, d2.models);
-            d2.currentUser.userSettings = {
-                keyUiLocale: responses.uiLocale,
-            };
+            d2.currentUser.userSettings = responses.userSettings;
 
             d2.system.setSystemInfo(responses.systemInfo);
             d2.system.setInstalledApps(responses.apps);
