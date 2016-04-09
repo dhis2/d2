@@ -27,44 +27,6 @@ export function getManifest(url) {
         .then(manifest => Object.assign({}, manifest, manifestUtilities));
 }
 
-export function getUserLocale() {
-    const api = Api.getApi();
-
-    if (getUserLocale.cachedResponse) {
-        return getUserLocale.cachedResponse;
-    }
-
-    // Cache the Locale response so we don't request it again.
-    getUserLocale.cachedResponse = api.get('userSettings/keyUiLocale', {}, { dataType: 'text' })
-        // Set the default language to english when a 404 is returned
-        .catch(() => 'en');
-
-    return getUserLocale.cachedResponse;
-}
-
-/**
- * @function getUserSettings
- *
- * @returns {Promise} A promise to the current user settings
- *
- * @description
- * The object that is the result of the promise will have the following properties
- * ```js
- * {
- *   "uiLocale": "en" // The users locale, that can be used for translations)
- * }
- * ```
- */
-export function getUserSettings() {
-    const api = Api.getApi();
-
-    if (preInitConfig.baseUrl) {
-        api.setBaseUrl(preInitConfig.baseUrl);
-    }
-
-    return Promise.all([getUserLocale()])
-        .then(([uiLocale]) => ({ uiLocale }));
-}
 
 /**
  * @function init
@@ -221,6 +183,5 @@ export default {
     init,
     config,
     getInstance,
-    getUserSettings,
     getManifest,
 };

@@ -3,10 +3,6 @@ import '../setup/setup.js';
 
 import fixtures from '../fixtures/fixtures';
 
-function resetCachedResponse(d2) {
-    delete d2.getUserLocale.cachedResponse;
-}
-
 // TODO: The Config class should probably be mocked
 describe('D2', () => {
     const proxyquire = require('proxyquire');
@@ -121,7 +117,6 @@ describe('D2', () => {
         stub(I18n, 'getI18n').returns(i18nStub);
 
         d2 = require('../../src/d2');
-        resetCachedResponse(d2);
     });
 
     afterEach(() => {
@@ -239,7 +234,6 @@ describe('D2', () => {
             const instanceAfterFirstInit = d2.getInstance();
 
             instanceAfterFirstInit.then((first) => {
-                resetCachedResponse(d2);
 
                 d2.init({ baseUrl: '/dhis/api' });
                 const instanceAfterSecondInit = d2.getInstance();
@@ -397,88 +391,6 @@ describe('D2', () => {
                     done();
                 })
                 .catch(done);
-        });
-    });
-
-    describe('getUserSettings', () => {
-        beforeEach(() => {
-            resetCachedResponse(d2);
-        });
-
-        it('should be a function', () => {
-            expect(d2.getUserSettings).to.be.a('function');
-        });
-
-        it('should return an object with the uiLocale', (done) => {
-            apiMock.get.onFirstCall().returns(Promise.resolve('fr'));
-
-            d2.getUserSettings()
-                .then(settings => {
-                    expect(settings.uiLocale).to.equal('fr');
-                    done();
-                })
-                .catch(done);
-        });
-
-        it('should call the api for keyUiLocale', () => {
-            d2.getUserSettings();
-
-            expect(apiMock.get).to.be.called;
-        });
-
-        it('should set the default locale if the call fails', (done) => {
-            apiMock.get.onFirstCall().returns(Promise.reject({ message: 'Not found' }));
-
-            d2.getUserSettings()
-                .then(settings => {
-                    expect(settings.uiLocale).to.equal('en');
-                    done();
-                })
-                .catch(done);
-        });
-
-        it('should preset the baseUrl from the config', (done) => {
-            d2.config.baseUrl = '/dhis/api';
-
-            d2.getUserSettings()
-                .then(() => {
-                    expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
-                    done();
-                })
-                .catch(done);
-        });
-
-        it('should use the default base url when the set baseUrl is not valid', (done) => {
-            d2.config.baseUrl = undefined;
-
-            d2.getUserSettings()
-                .then(() => {
-                    expect(apiMock.setBaseUrl).not.to.be.called;
-                    expect(apiMock.get).to.be.calledWith('userSettings/keyUiLocale');
-                    done();
-                })
-                .catch(done);
-        });
-    });
-
-    describe('getUserLocale', () => {
-        beforeEach(() => resetCachedResponse(d2));
-
-        it('should get the userlocale from the server', (done) => {
-            d2.getUserLocale()
-                .then(() => {
-                    expect(apiMock.get).to.be.calledWith('userSettings/keyUiLocale');
-                    done();
-                })
-                .catch(done);
-        });
-
-        it('should just request the locale once from the server when called multiple times', () => {
-            return Promise.all([d2.getUserLocale(), d2.getUserLocale()])
-                .then(() => {
-                    expect(apiMock.get).to.be.calledWith('userSettings/keyUiLocale');
-                    expect(apiMock.get).to.have.callCount(1);
-                });
         });
     });
 
