@@ -1,6 +1,7 @@
 import fixtures from '../../fixtures/fixtures';
 import CurrentUser from '../../../src/current-user/CurrentUser';
 import UserAuthorities from '../../../src/current-user/UserAuthorities';
+const UserSettings = require('../../../src/current-user/UserSettings');
 
 describe('CurrentUser', () => {
     let currentUser;
@@ -51,6 +52,10 @@ describe('CurrentUser', () => {
 
     it('should be an instance of CurrentUser', () => {
         expect(currentUser).to.be.instanceof(CurrentUser);
+    });
+
+    it('should contain an instance of UserSettings', () => {
+        expect(currentUser.userSettings).to.be.instanceOf(UserSettings);
     });
 
     it('should have an authorities property', () => {
