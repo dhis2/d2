@@ -121,10 +121,9 @@ export function init(initConfig) {
         api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }),
         api.get('me', { fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]' }),
         api.get('me/authorization'),
-        getUserLocale(),
+        api.get('userSettings'),
         api.get('system/info'),
         api.get('apps'),
-        api.get('userSettings'),
         d2.i18n.load(),
     ])
         .then(res => {
@@ -133,10 +132,9 @@ export function init(initConfig) {
                 attributes: pick('attributes')(res[1]),
                 currentUser: res[2],
                 authorities: res[3],
-                uiLocale: res[4],
+                userSettings: res[4],
                 systemInfo: res[5],
                 apps: res[6],
-                userSettings: res[7],
             };
 
             responses.schemas.forEach((schema) => {

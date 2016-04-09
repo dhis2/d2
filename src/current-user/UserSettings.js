@@ -58,7 +58,7 @@ class UserSettings {
 
         return new Promise((resolve, reject) => {
             if (!isString(userSettingsKey)) {
-                throw new TypeError('A "key" parameter should be specified when calling get() on systemSettings');
+                throw new TypeError('A "key" parameter should be specified when calling get() on userSettings');
             }
 
             this.api.get(['userSettings', userSettingsKey].join('/'), undefined, { dataType: 'text' })
