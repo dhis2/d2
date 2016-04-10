@@ -59,7 +59,7 @@ describe('D2', function () {
             /^\/dhis\/api\/userSettings$/,
             [
                 200,
-                {'Content-Type': 'text/plain'},
+                {'Content-Type': 'application/json'},
                 JSON.stringify({keyUiLocale:'en'})
             ]
         );

@@ -56,6 +56,16 @@ describe('D2.models', function () {
 
         server.respondWith(
             'GET',
+            /^\/dhis\/api\/userSettings$/,
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify({keyUiLocale:'en'})
+            ]
+        );
+
+        server.respondWith(
+            'GET',
             /^\/dhis\/api\/system\/info$/,
             [
                 200,
