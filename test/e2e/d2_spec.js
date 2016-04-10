@@ -56,11 +56,11 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/userSettings\/keyUiLocale$/,
+            /^\/dhis\/api\/userSettings$/,
             [
                 200,
                 {'Content-Type': 'text/plain'},
-                'en'
+                JSON.stringify({keyUiLocale:'en'})
             ]
         );
 
