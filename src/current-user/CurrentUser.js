@@ -69,7 +69,7 @@ export default class CurrentUser {
         return this[models].userRole.get({ filter: [`id:in:[${userRoleIds.join(',')}]`] });
     }
 
-    getOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName]' }) {
+    getOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName,path]' }) {
         const organisationUnitsIds = this[propertySymbols.organisationUnits];
 
         return this[models].organisationUnit.list(
@@ -77,7 +77,7 @@ export default class CurrentUser {
         );
     }
 
-    getDataViewOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName]' }) {
+    getDataViewOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName,path]' }) {
         const organisationUnitsIds = this[propertySymbols.dataViewOrganisationUnits];
 
         return this[models].organisationUnit.list(

@@ -108,11 +108,18 @@ class I18n {
      * @param string
      * @returns {String}
      */
-    getTranslation(string) {
+    getTranslation(string, variables = {}) {
         if (this.translations === undefined) {
             throw new Error('Tried to translate before loading translations!');
         }
-        return this.translations.hasOwnProperty(string) ? this.translations[string] : `** ${string} **`;
+        const translatedString = this.translations.hasOwnProperty(string) ? this.translations[string] : `** ${string} **`;
+
+        if (Object.keys(variables).length) {
+            return translatedString
+                .replace(/\$\$(.+?)\$\$/gi, (match, partial) => variables[partial] || '');
+        }
+
+        return translatedString;
     }
 
     /**
