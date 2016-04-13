@@ -898,7 +898,13 @@ describe('ModelDefinition', () => {
         it('should save to the url set on the model', () => {
             userModelDefinition.save(model);
 
-            expect(apiUpdateStub.getCall(0).args[0]).to.equal(`${fixtures.get('singleUserAllFields').href}?mergeMode=REPLACE`);
+            expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+        });
+
+        it('should call the update method on the api with the replace strategy option set to true', () => {
+            userModelDefinition.save(model);
+
+            expect(apiUpdateStub.getCall(0).args[2]).to.be.true;
         });
 
         it('should save a new object using a post', () => {

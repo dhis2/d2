@@ -3,7 +3,6 @@
  *
  * @requires d2/system/SystemSettings
  */
-
 import Api from '../api/Api';
 import SystemSettings from './SystemSettings';
 import SystemConfiguration from './SystemConfiguration';
@@ -32,7 +31,6 @@ class System {
          */
         this.settings = settings;
 
-
         /**
          * @property {SystemConfiguration} configuration
          *
@@ -41,14 +39,12 @@ class System {
          */
         this.configuration = configuration;
 
-
         /**
          * @property {Object} systemInfo
          *
          * @description An object containing system information about the DHIS2 instance
          */
         this.systemInfo = undefined;
-
 
         /**
          * @property {Object} version
@@ -57,7 +53,6 @@ class System {
          */
         this.version = undefined;
 
-
         /**
          * @property {Array} installedApps
          *
@@ -65,7 +60,6 @@ class System {
          */
         this.installedApps = undefined;
     }
-
 
     /**
      * Sets the systemInfo and version properties
@@ -77,7 +71,6 @@ class System {
         this.systemInfo = systemInfo;
     }
 
-
     /**
      * Sets the list of currently installed webapps
      *
@@ -86,7 +79,6 @@ class System {
     setInstalledApps(apps) {
         this.installedApps = apps;
     }
-
 
     /**
      * Refreshes the list of currently installed webapps
@@ -103,7 +95,6 @@ class System {
                 return apps;
             });
     }
-
 
     /**
      * Upload and install a zip file containing a new webapp
@@ -133,7 +124,6 @@ class System {
             xhr: xhr !== undefined ? () => xhr : undefined,
         });
     }
-
 
     /**
      * Load the list of apps available in the DHIS 2 app store
@@ -167,7 +157,6 @@ class System {
         });
     }
 
-
     /**
      * Install the specified app version from the DHIS 2 app store
      *
@@ -185,7 +174,6 @@ class System {
         });
     }
 
-
     /**
      * Remove the specified app from the system
      *
@@ -199,7 +187,6 @@ class System {
             // TODO: Stop jQuery from rejecting successful promises
             .catch(() => undefined);
     }
-
 
     /**
      * Refresh the list of apps that are installed on the server
@@ -239,7 +226,6 @@ class System {
     }
     /* eslint-enable */
 
-
     static isVersionCompatible(systemVersion, appVersion) {
         const isNewEnough = (
             appVersion.min_platform_version ?
@@ -255,7 +241,6 @@ class System {
         return isNewEnough && isNotTooOld;
     }
 
-
     /**
      * @method getSystem
      * @static
@@ -263,10 +248,15 @@ class System {
      * @returns {System} Object with the system interaction properties
      *
      * @description
-     * Get a new instance of the system object.
+     * Get a new instance of the system object. This will function as a singleton, when a System object has been created
+     * when requesting getSystem again the original version will be returned.
      */
     static getSystem() {
-        return new System(new SystemSettings(), new SystemConfiguration());
+        if (!System.getSystem.system) {
+            System.getSystem.system = new System(new SystemSettings(), new SystemConfiguration());
+        }
+
+        return System.getSystem.system;
     }
 }
 
