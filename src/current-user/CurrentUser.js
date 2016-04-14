@@ -1,4 +1,5 @@
 import UserAuthorities from './UserAuthorities';
+import { noCreateAllowedFor } from '../defaultConfig';
 
 const models = Symbol('models');
 const propertiesToIgnore = new Set([
@@ -47,6 +48,10 @@ function getUserPropertiesToCopy(currentUserObject) {
             }
             return result;
         }, {});
+}
+
+function isInNoCreateAllowedForList(modelDefinition) {
+    return modelDefinition && noCreateAllowedFor.has(modelDefinition.name);
 }
 
 export default class CurrentUser {
@@ -99,16 +104,27 @@ export default class CurrentUser {
             );
     }
 
+    checkCreateAuthorityForType(authType, modelType) {
+        // When the modelType is mentioned in the the list of modelTypes that are not
+        // allowed to be created we return false
+        if (isInNoCreateAllowedForList(modelType)) {
+            return false;
+        }
+
+        // Otherwise we check using the normal procedure for checking authorities
+        return this.checkAuthorityForType(authType, modelType);
+    }
+
     canCreate(modelType) {
-        return this.checkAuthorityForType(authTypes.CREATE, modelType);
+        return this.checkCreateAuthorityForType(authTypes.CREATE, modelType);
     }
 
     canCreatePublic(modelType) {
-        return this.checkAuthorityForType(authTypes.CREATE_PUBLIC, modelType);
+        return this.checkCreateAuthorityForType(authTypes.CREATE_PUBLIC, modelType);
     }
 
     canCreatePrivate(modelType) {
-        return this.checkAuthorityForType(authTypes.CREATE_PRIVATE, modelType);
+        return this.checkCreateAuthorityForType(authTypes.CREATE_PRIVATE, modelType);
     }
 
     canDelete(modelType) {

@@ -1,3 +1,7 @@
+export const noCreateAllowedFor = new Set([
+    'categoryOptionCombo',
+]);
+
 export default {
     baseUrl: '/api',
     i18n: {
