@@ -7,7 +7,7 @@ import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
 import { DIRTY_PROPERTY_LIST } from './ModelBase';
-import {getDefaultValuesForModelType} from './config';
+import { getDefaultValuesForModelType } from './config';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
