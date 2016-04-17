@@ -7,6 +7,7 @@ import ModelCollectionProperty from './ModelCollectionProperty';
 import schemaTypes from '../lib/SchemaTypes';
 import Filters from './Filters';
 import { DIRTY_PROPERTY_LIST } from './ModelBase';
+import {getDefaultValuesForModelType} from './config';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
@@ -222,6 +223,20 @@ class ModelDefinition {
                 .filter(shouldBeModelCollectionProperty(model, models))
                 .forEach((modelProperty) => {
                     model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], []);
+                });
+
+            // When no initial values are provided we are dealing with a new Model. For some properties there are
+            // implicit default values that should be set. DHIS2 has some default values for models that would implicitly
+            // be set when omitting sending a value on POST, we'll set these properties to their default values so they
+            // are reflected in read operations on the model and to make them more transparent.
+            const defaultValues = getDefaultValuesForModelType(model.modelDefinition.name);
+            const checkForModelProperty = shouldBeModelCollectionProperty(model, models);
+
+            Object
+                .keys(model)
+                .filter((modelProperty) => !checkForModelProperty(modelProperty))
+                .forEach((modelProperty) => {
+                    model.dataValues[modelProperty] = defaultValues[modelProperty];
                 });
         }
 

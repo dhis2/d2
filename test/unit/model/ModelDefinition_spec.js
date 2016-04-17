@@ -488,6 +488,19 @@ describe('ModelDefinition', () => {
             expect(dataElementModelDefinition.create()).to.be.instanceof(Model);
         });
 
+        describe('with default values', () => {
+            const organisationUnitGroupSetModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/organisationUnitGroupSet'));
+            let model;
+
+            beforeEach(() => {
+                model = organisationUnitGroupSetModelDefinition.create();
+            });
+
+            it('should set the default data dimension', () => {
+                expect(model.dataDimension).to.be.true;
+            });
+        });
+
         describe('collection properties', () => {
             let orgunitModelDefinition;
             let userModelDefinition;
