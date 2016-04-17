@@ -192,7 +192,7 @@ class ModelDefinition {
         const dataValues = Object.assign({}, data);
 
         if (data) {
-            // Set the datavalues onto the model directly
+            // Set the data values onto the model directly
             Object
                 .keys(model)
                 .forEach((modelProperty) => {
