@@ -259,6 +259,30 @@ describe('System.configuration', () => {
                     });
             });
 
+            it('should call DELETE to remove self registration role', (done) => {
+                configuration.set('selfRegistrationRole', null)
+                    .then(() => {
+                        expect(apiPost.callCount).to.equal(0);
+                        expect(apiDelete.withArgs('configuration/selfRegistrationRole').callCount).to.equal(1);
+                        done();
+                    })
+                    .catch((err) => {
+                        done(err);
+                    });
+            });
+
+            it('should call DELETE to remove self registration organisation unit', (done) => {
+                configuration.set('selfRegistrationOrgUnit', 'null')
+                    .then(() => {
+                        expect(apiPost.callCount).to.equal(0);
+                        expect(apiDelete.withArgs('configuration/selfRegistrationOrgUnit').callCount).to.equal(1);
+                        done();
+                    })
+                    .catch((err) => {
+                        done(err);
+                    });
+            });
+
             it('should convert CORS string to an array', (done) => {
                 configuration.set('corsWhitelist', mockCorsWhitelistText)
                     .then(() => {
