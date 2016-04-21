@@ -170,7 +170,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,children[id,displayName,path]', filter: ['id:in:[ImspTQPwCqd]'] });
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[ImspTQPwCqd]'] });
         });
     });
 
@@ -182,7 +182,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getDataViewOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,children[id,displayName,path]', filter: ['id:in:[]'] });
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[]'] });
         });
     });
 
