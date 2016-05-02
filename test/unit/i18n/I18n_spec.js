@@ -137,8 +137,7 @@ describe('Internationalisation (I18n)', () => {
         beforeEach(() => {
             i18n.api.get = apiGet = sinon.stub().returns(Promise.resolve(mockTranslations));
 
-            apiPost = sinon.stub(i18n.api, 'post');
-            apiPost.returns(Promise.resolve(mockTranslations));
+            i18n.api.post = apiPost = sinon.stub().returns(Promise.resolve(mockTranslations));
 
             apiReq = sinon.stub(i18n.api, 'request');
             apiReq.returns(Promise.resolve(mockPropsFile));
@@ -148,7 +147,7 @@ describe('Internationalisation (I18n)', () => {
 
         afterEach(() => {
             //apiGet.restore();
-            apiPost.restore();
+            //apiPost.restore();
             apiReq.restore();
         });
 
@@ -250,8 +249,7 @@ describe('Internationalisation (I18n)', () => {
         beforeEach(() => {
             i18n.api.get = apiGet = sinon.stub().returns(Promise.resolve(mockTranslations));
 
-            apiPost = sinon.stub(i18n.api, 'post');
-            apiPost.returns(Promise.resolve(mockTranslations));
+            i18n.api.post = apiPost = sinon.stub().returns(Promise.resolve(mockTranslations));
 
             apiReq = sinon.stub(i18n.api, 'request');
             apiReq.returns(Promise.resolve(mockPropsFile));
@@ -262,7 +260,7 @@ describe('Internationalisation (I18n)', () => {
 
         afterEach(() => {
             //apiGet.restore();
-            apiPost.restore();
+            //apiPost.restore();
             apiReq.restore();
         });
 

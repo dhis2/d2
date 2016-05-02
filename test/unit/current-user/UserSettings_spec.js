@@ -104,4 +104,62 @@ describe('userSettings.CurrentUser', () => {
                 });
         });
     });
+
+    describe('set', () => {
+        beforeEach(() => {
+            userSettings.api.get = apiGet = sinon.stub();
+            userSettings.api.post = apiPost = sinon.stub();
+            userSettings.api.delete = apiDelete = sinon.stub();
+
+            apiGet.withArgs('configuration').returns(Promise.resolve());
+            apiPost.returns(Promise.resolve());
+            apiDelete.returns(Promise.resolve());
+        });
+
+        afterEach(() => {
+            userSettings = new UserSettings();
+        });
+
+        it('should POST to the API', (done) => {
+            userSettings.set('mySetting', 'my value')
+                .then(() => {
+                    expect(apiGet.callCount).to.equal(0);
+                    expect(apiPost.callCount).to.equal(1);
+                    expect(apiDelete.callCount).to.equal(0);
+                    done();
+                })
+                .catch(err => {
+                    done(new Error(err));
+                });
+        });
+
+        it('should DELETE if the value is null or an empty string', (done) => {
+            userSettings.set('mySetting', '')
+                .then(() => {
+                    expect(apiGet.callCount).to.equal(0);
+                    expect(apiPost.callCount).to.equal(0);
+                    expect(apiDelete.callCount).to.equal(1);
+                    done();
+                })
+                .catch(err => {
+                    done(new Error(err));
+                });
+        });
+
+        it('should use content-type text/plain', (done) => {
+            userSettings.set('mySetting', { type: 'object', value: 'some value' })
+                .then(() => {
+                    expect(apiGet.callCount).to.equal(0);
+                    expect(apiPost.callCount).to.equal(1);
+                    expect(apiDelete.callCount).to.equal(0);
+                    expect(apiPost.args[0].length).to.equal(3);
+                    expect(apiPost.args[0][2].contentType).to.be.a('string');
+                    expect(apiPost.args[0][2].contentType).to.equal('text/plain');
+                    done();
+                })
+                .catch(err => {
+                    done(new Error(err));
+                });
+        });
+    });
 });

@@ -71,6 +71,14 @@ class UserSettings {
                 });
         });
     }
+
+    set(userSettingsKey, value) {
+        const settingUrl = ['userSettings', userSettingsKey].join('/');
+        if (value === null || (`${value}`).length === 0) {
+            return this.api.delete(settingUrl, { dataType: 'text' });
+        }
+        return this.api.post(settingUrl, value, { dataType: 'text', contentType: 'text/plain' });
+    }
 }
 
 export default UserSettings;
