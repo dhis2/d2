@@ -69,7 +69,10 @@ class SystemConfiguration {
 
         if (key === 'systemId') {
             return Promise.reject('The system ID can\'t be changed');
-        } else if (key === 'feedbackRecipients' && value === 'null' || value === null) {
+        } else if (
+            (key === 'feedbackRecipients' || key === 'selfRegistrationOrgUnit' || key === 'selfRegistrationRole') &&
+            (value === 'null' || value === null)
+        ) {
             // Only valid UIDs are accepted when POST'ing, so we have to use DELETE in stead of POST'ing a null value.
             req = this.api.delete(['configuration', key].join('/'), { dataType: 'text' });
         } else if (key === 'corsWhitelist') {

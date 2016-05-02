@@ -1,5 +1,16 @@
 import { checkType } from '../lib/check';
 import jQuery from '../external/jquery';
+import System from '../system/System';
+
+function getMergeStrategyParam(mergeType = 'REPLACE') {
+    const system = System.getSystem();
+
+    if (system.version && (Number(system.version.minor) <= 22)) {
+        return `mergeStrategy=${mergeType}`;
+    }
+
+    return `mergeMode=${mergeType}`;
+}
 
 function processSuccess(resolve) {
     return (data/* , textStatus, jqXHR */) => {
@@ -71,8 +82,12 @@ class Api {
         return this.request('DELETE', getUrl(this.baseUrl, url), undefined, options);
     }
 
-    update(url, data) {
-        return this.request('PUT', getUrl(this.baseUrl, url), JSON.stringify(data));
+    update(url, data, useMergeStrategy = false) {
+        // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
+        // to clear out existing values
+        const urlForUpdate = useMergeStrategy === true ? `${url}?${getMergeStrategyParam()}` : url;
+
+        return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), JSON.stringify(data));
     }
 
     request(type, url, data, options = {}) {

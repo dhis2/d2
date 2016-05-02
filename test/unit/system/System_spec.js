@@ -1,14 +1,13 @@
 import fixtures from '../../fixtures/fixtures';
+import Api from '../../../src/api/Api';
 
 const proxyquire = require('proxyquire').noCallThru();
 
-const apiMock = {};
-
-proxyquire('../../../src/system/System', {
-    '../api/Api': {
-        getApi: sinon.stub().returns(apiMock),
+const apiMock = {
+    jquery: {
+        ajax: sinon.stub(),
     },
-});
+};
 
 describe('System', () => {
     const System = require('../../../src/system/System');
@@ -17,7 +16,13 @@ describe('System', () => {
     let system;
 
     beforeEach(() => {
-        system = System.getSystem();
+        sinon.stub(Api, 'getApi').returns(apiMock);
+
+        system = new System(new SystemSettings(), new SystemConfiguration());
+    });
+
+    afterEach(() => {
+        Api.getApi.restore();
     });
 
     it('should be an instance of System', () => {
@@ -516,6 +521,12 @@ describe('System', () => {
                 min_platform_version: '2.17',
                 max_platform_version: '2.20',
             })).to.be.false;
+        });
+    });
+
+    describe('getSystem', () => {
+        it('should return the same instance on consecutive requests', () => {
+            expect(System.getSystem()).to.equal(System.getSystem());
         });
     });
 });

@@ -32,6 +32,7 @@ export default (function () {
     addFixture('/api/schemas/indicatorGroup', require('./json/api/schemas/indicatorGroup.json'));
     addFixture('/api/attributes', require('./json/api/schemas/attributes.json'));
     addFixture('dataElementAttributes', require('./json/dataElementAttributes.json'));
+    addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
 
     return {
         get: getFixture,

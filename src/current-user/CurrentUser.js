@@ -1,5 +1,6 @@
 import UserAuthorities from './UserAuthorities';
 import UserSettings from './UserSettings';
+import { noCreateAllowedFor } from '../defaultConfig';
 
 const models = Symbol('models');
 const propertiesToIgnore = new Set([
@@ -50,6 +51,10 @@ function getUserPropertiesToCopy(currentUserObject) {
         }, {});
 }
 
+function isInNoCreateAllowedForList(modelDefinition) {
+    return modelDefinition && noCreateAllowedFor.has(modelDefinition.name);
+}
+
 export default class CurrentUser {
     constructor(userData, userAuthorities, modelDefinitions, settings) {
         Object.assign(this, getUserPropertiesToCopy(userData));
@@ -84,22 +89,20 @@ export default class CurrentUser {
         return this[models].userRole.get({ filter: [`id:in:[${userRoleIds.join(',')}]`] });
     }
 
-    getOrganisationUnits() {
+    getOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]' }) {
         const organisationUnitsIds = this[propertySymbols.organisationUnits];
 
-        return this[models].organisationUnit.list({
-            fields: ':owner,displayName,children[id,displayName]',
-            filter: [`id:in:[${organisationUnitsIds.join(',')}]`],
-        });
+        return this[models].organisationUnit.list(
+            Object.assign({}, listOptions, { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] })
+        );
     }
 
-    getDataViewOrganisationUnits() {
+    getDataViewOrganisationUnits(listOptions = { fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]' }) {
         const organisationUnitsIds = this[propertySymbols.dataViewOrganisationUnits];
 
-        return this[models].organisationUnit.list({
-            fields: ':owner,displayName,children[id,displayName]',
-            filter: [`id:in:[${organisationUnitsIds.join(',')}]`],
-        });
+        return this[models].organisationUnit.list(
+            Object.assign({}, listOptions, { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] })
+        );
     }
 
     checkAuthorityForType(authorityType, modelType) {
@@ -116,16 +119,27 @@ export default class CurrentUser {
             );
     }
 
+    checkCreateAuthorityForType(authType, modelType) {
+        // When the modelType is mentioned in the the list of modelTypes that are not
+        // allowed to be created we return false
+        if (isInNoCreateAllowedForList(modelType)) {
+            return false;
+        }
+
+        // Otherwise we check using the normal procedure for checking authorities
+        return this.checkAuthorityForType(authType, modelType);
+    }
+
     canCreate(modelType) {
-        return this.checkAuthorityForType(authTypes.CREATE, modelType);
+        return this.checkCreateAuthorityForType(authTypes.CREATE, modelType);
     }
 
     canCreatePublic(modelType) {
-        return this.checkAuthorityForType(authTypes.CREATE_PUBLIC, modelType);
+        return this.checkCreateAuthorityForType(authTypes.CREATE_PUBLIC, modelType);
     }
 
     canCreatePrivate(modelType) {
-        return this.checkAuthorityForType(authTypes.CREATE_PRIVATE, modelType);
+        return this.checkCreateAuthorityForType(authTypes.CREATE_PRIVATE, modelType);
     }
 
     canDelete(modelType) {

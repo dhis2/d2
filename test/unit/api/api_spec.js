@@ -1,3 +1,5 @@
+import System from '../../../src/system/System';
+
 const proxyquire = require('proxyquire');
 proxyquire('../../../src/api/Api', {});
 
@@ -17,6 +19,17 @@ describe('Api', () => {
         };
 
         api = new Api(jqueryMock);
+
+        sinon.stub(System, 'getSystem').returns({
+            version: {
+                major: 2,
+                minor: 23,
+            },
+        });
+    });
+
+    afterEach(() => {
+        System.getSystem.restore();
     });
 
     it('should be an function', () => {
@@ -397,6 +410,37 @@ describe('Api', () => {
                 dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify(theData),
+            });
+        });
+
+        it('should add the mergeMode param to the url when useMergeStrategy is passed', () => {
+            api.update('some/fake/api/endpoint', {}, true);
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'PUT',
+                url: '/api/some/fake/api/endpoint?mergeMode=REPLACE',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({}),
+            });
+        });
+
+        it('should add the mergeStrategy param to the url when useMergeStrategy is passed and the version is 2.22', () => {
+            System.getSystem.returns({
+                version: {
+                    major: 2,
+                    minor: 22,
+                },
+            });
+
+            api.update('some/fake/api/endpoint', {}, true);
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'PUT',
+                url: '/api/some/fake/api/endpoint?mergeStrategy=REPLACE',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({}),
             });
         });
     });

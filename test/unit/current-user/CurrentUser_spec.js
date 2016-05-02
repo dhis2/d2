@@ -2,6 +2,7 @@ import fixtures from '../../fixtures/fixtures';
 import CurrentUser from '../../../src/current-user/CurrentUser';
 import UserAuthorities from '../../../src/current-user/UserAuthorities';
 const UserSettings = require('../../../src/current-user/UserSettings');
+import {noCreateAllowedFor} from '../../../src/defaultConfig';
 
 describe('CurrentUser', () => {
     let currentUser;
@@ -13,7 +14,12 @@ describe('CurrentUser', () => {
         modelDefinitions = {
             userGroup: {
                 get: stub().returns(Promise.resolve([])),
-                authorities: [{ type: 'CREATE_PUBLIC', authorities: ['F_USERGROUP_PUBLIC_ADD'] }]
+                authorities: [
+                    {
+                        type: 'CREATE_PUBLIC',
+                        authorities: ['F_USERGROUP_PUBLIC_ADD'],
+                    },
+                ],
             },
             userRole: {
                 get: stub().returns(Promise.resolve([])),
@@ -35,9 +41,29 @@ describe('CurrentUser', () => {
                 ],
             },
             organisationUnitLevel: {
-                authorities: [{ type: 'UPDATE', authorities: ['F_ORGANISATIONUNITLEVEL_UPDATE'] }]
+                authorities: [{ type: 'UPDATE', authorities: ['F_ORGANISATIONUNITLEVEL_UPDATE'] }],
+            },
+            categoryOptionCombo: {
+                name: 'categoryOptionCombo',
+                authorities: [
+                    {
+                        type: 'CREATE',
+                        authorities: [
+                            'F_CATEGORY_COMBO_PUBLIC_ADD',
+                            'F_CATEGORY_COMBO_PRIVATE_ADD',
+                        ],
+                    }, {
+                        type: 'DELETE',
+                        authorities: [
+                            'F_CATEGORY_COMBO_DELETE',
+                        ],
+                    },
+                ],
             },
         };
+
+        noCreateAllowedFor.clear();
+        noCreateAllowedFor.add('categoryOptionCombo');
 
         userData = fixtures.get('me');
         spy(UserAuthorities, 'create');
@@ -46,6 +72,7 @@ describe('CurrentUser', () => {
             'F_ORGANISATIONUNIT_DELETE',
             'F_ORGANISATIONUNITLEVEL_UPDATE',
             'F_USERGROUP_PUBLIC_ADD',
+            'F_CATEGORY_COMBO_PRIVATE_ADD',
         ];
         currentUser = CurrentUser.create(userData, mockUserAuthorities, modelDefinitions);
     });
@@ -148,7 +175,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':owner,displayName,children[id,displayName]', filter: ['id:in:[ImspTQPwCqd]'] });
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[ImspTQPwCqd]'] });
         });
     });
 
@@ -160,7 +187,7 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getDataViewOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':owner,displayName,children[id,displayName]', filter: ['id:in:[]'] });
+            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[]'] });
         });
     });
 
@@ -179,6 +206,10 @@ describe('CurrentUser', () => {
 
         it('should return for userGroup', () => {
             expect(currentUser.canCreate(modelDefinitions.userGroup)).to.be.true;
+        });
+
+        it('should return false when the modelDefinition is in the noCreateAllowedFor list', () => {
+            expect(currentUser.canCreate(modelDefinitions.categoryOptionCombo)).to.be.false;
         });
     });
 
@@ -221,6 +252,12 @@ describe('CurrentUser', () => {
 
         it('should return false for userGroup', () => {
             expect(currentUser.canCreatePublic(modelDefinitions.userGroup)).to.be.true;
+        });
+
+        it('should return false for userGroup even when the user has the authority due to the presence in the ignore list', () => {
+            noCreateAllowedFor.add('userGroup');
+
+            expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).to.be.false;
         });
     });
 
