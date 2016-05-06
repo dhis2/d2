@@ -33,6 +33,7 @@ export default (function () {
     addFixture('/api/attributes', require('./json/api/schemas/attributes.json'));
     addFixture('dataElementAttributes', require('./json/dataElementAttributes.json'));
     addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
+    addFixture('/api/userSettings', require('./json/api/userSettings'));
 
     return {
         get: getFixture,

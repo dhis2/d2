@@ -54,7 +54,7 @@ describe('D2', () => {
             .onCall(1).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
             .onCall(2).returns(Promise.resolve({}))
             .onCall(3).returns(Promise.resolve([]))
-            .onCall(4).returns(Promise.resolve('en'))
+            .onCall(4).returns(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))))
             .onCall(5).returns(Promise.resolve({ version: '2.21' }))
             .onCall(6).returns(Promise.resolve({ apps: [] }))
 
@@ -63,7 +63,7 @@ describe('D2', () => {
             .onCall(8).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
             .onCall(9).returns(Promise.resolve({}))
             .onCall(10).returns(Promise.resolve([]))
-            .onCall(11).returns(Promise.resolve('en'))
+            .onCall(11).returns(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))))
             .onCall(12).returns(Promise.resolve({ version: '2.21' }))
             .onCall(13).returns(Promise.resolve({ apps: [] }));
 
@@ -234,7 +234,6 @@ describe('D2', () => {
             const instanceAfterFirstInit = d2.getInstance();
 
             instanceAfterFirstInit.then((first) => {
-
                 d2.init({ baseUrl: '/dhis/api' });
                 const instanceAfterSecondInit = d2.getInstance();
 
@@ -388,6 +387,63 @@ describe('D2', () => {
             d2.getInstance()
                 .then(newD2 => {
                     expect(newD2.currentUser).to.not.be.undefined;
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe('getUserSettings', () => {
+        it('should be a function', () => {
+            expect(d2.getUserSettings).to.be.a('function');
+        });
+
+        it('should return an object with the uiLocale', (done) => {
+            apiMock.get.onFirstCall().returns(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))));
+
+            d2.getUserSettings()
+                .then(settings => {
+                    expect(settings.keyUiLocale).to.equal('fr');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should call the api for keyUiLocale', () => {
+            d2.getUserSettings();
+
+            expect(apiMock.get).to.be.called;
+        });
+
+        xit('should set the default locale if the call fails', (done) => {
+            apiMock.get.onFirstCall().returns(Promise.reject({ message: 'Not found' }));
+
+            d2.getUserSettings()
+                .then(settings => {
+                    expect(settings.keyUiLocale).to.equal('en');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should preset the baseUrl from the config', (done) => {
+            d2.config.baseUrl = '/dhis/api';
+
+            d2.getUserSettings()
+                .then(() => {
+                    expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should use the default base url when the set baseUrl is not valid', (done) => {
+            d2.config.baseUrl = undefined;
+
+            d2.getUserSettings()
+                .then(() => {
+                    expect(apiMock.setBaseUrl).not.to.be.called;
+                    expect(apiMock.get).to.be.calledWith('userSettings');
                     done();
                 })
                 .catch(done);
