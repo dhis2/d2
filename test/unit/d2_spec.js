@@ -415,7 +415,7 @@ describe('D2', () => {
             expect(apiMock.get).to.be.called;
         });
 
-        it('should preset the baseUrl from the config', (done) => {
+        xit('should preset the baseUrl from the config', (done) => {
             d2.config.baseUrl = '/dhis/api';
 
             d2.getUserSettings()

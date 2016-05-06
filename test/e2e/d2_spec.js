@@ -60,7 +60,18 @@ describe('D2', function () {
             [
                 200,
                 {'Content-Type': 'application/json'},
-                JSON.stringify({keyUiLocale:'en'})
+                JSON.stringify({
+                    "keyDbLocale": "en",
+                    "keyMessageSmsNotification": true,
+                    "keyTrackerDashboardLayout": null,
+                    "keyStyle": "light_blue/light_blue.css",
+                    "keyAutoSaveDataEntryForm": false,
+                    "keyUiLocale": "fr",
+                    "keyAutoSavetTrackedEntityForm": false,
+                    "keyAnalysisDisplayProperty": "name",
+                    "keyAutoSaveCaseEntryForm": false,
+                    "keyMessageEmailNotification": true
+                })
             ]
         );
 

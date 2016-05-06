@@ -44,7 +44,7 @@ export function getManifest(url) {
 export function getUserSettings() {
     const api = Api.getApi();
 
-    if (preInitConfig.baseUrl) {
+    if (preInitConfig.baseUrl && firstRun) {
         api.setBaseUrl(preInitConfig.baseUrl);
     }
 
