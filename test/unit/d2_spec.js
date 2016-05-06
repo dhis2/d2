@@ -415,17 +415,6 @@ describe('D2', () => {
             expect(apiMock.get).to.be.called;
         });
 
-        xit('should set the default locale if the call fails', (done) => {
-            apiMock.get.onFirstCall().returns(Promise.reject({ message: 'Not found' }));
-
-            d2.getUserSettings()
-                .then(settings => {
-                    expect(settings.keyUiLocale).to.equal('en');
-                    done();
-                })
-                .catch(done);
-        });
-
         it('should preset the baseUrl from the config', (done) => {
             d2.config.baseUrl = '/dhis/api';
 
