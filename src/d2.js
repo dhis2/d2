@@ -29,6 +29,29 @@ export function getManifest(url) {
 
 
 /**
+ * @function getUserSettings
+ *
+ * @returns {Promise} A promise to the current user settings
+ *
+ * @description
+ * The object that is the result of the promise will have the following properties
+ * ```js
+ * {
+ *   "uiLocale": "en" // The users locale, that can be used for translations)
+ * }
+ * ```
+ */
+export function getUserSettings() {
+    const api = Api.getApi();
+
+    if (preInitConfig.baseUrl) {
+        api.setBaseUrl(preInitConfig.baseUrl);
+    }
+
+    return api.get('userSettings');
+}
+
+/**
  * @function init
  *
  * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.
@@ -83,7 +106,7 @@ export function init(initConfig) {
         api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }),
         api.get('me', { fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]' }),
         api.get('me/authorization'),
-        api.get('userSettings'),
+        getUserSettings(),
         api.get('system/info'),
         api.get('apps'),
         d2.i18n.load(),
@@ -113,8 +136,12 @@ export function init(initConfig) {
                 }
             });
 
-            d2.currentUser = CurrentUser.create(responses.currentUser, responses.authorities, d2.models);
-            d2.currentUser.userSettings = Object.assign(d2.currentUser.userSettings, responses.userSettings);
+            d2.currentUser = CurrentUser.create(
+                responses.currentUser,
+                responses.authorities,
+                d2.models,
+                responses.userSettings
+            );
             d2.system.setSystemInfo(responses.systemInfo);
             d2.system.setInstalledApps(responses.apps);
 
@@ -183,5 +210,6 @@ export default {
     init,
     config,
     getInstance,
+    getUserSettings,
     getManifest,
 };

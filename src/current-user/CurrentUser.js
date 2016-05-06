@@ -160,7 +160,12 @@ export default class CurrentUser {
         return 'en';
     }
 
-    static create(userData, authorities, modelDefinitions) {
-        return new CurrentUser(userData, UserAuthorities.create(authorities), modelDefinitions, new UserSettings());
+    static create(userData, authorities, modelDefinitions, userSettings) {
+        return new CurrentUser(
+            userData,
+            UserAuthorities.create(authorities),
+            modelDefinitions,
+            new UserSettings(userSettings)
+        );
     }
 }
