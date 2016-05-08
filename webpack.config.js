@@ -1,25 +1,31 @@
 var webpack = require('webpack');
+var path = require('path');
 
 module.exports = {
-    entry: "./src/d2.js",
+    entry: './src/d2.js',
     output: {
         path: __dirname + '/lib',
-        filename: "d2-browser.js",
-        libraryTarget: 'var'
+        filename: 'd2-browser.js',
+        libraryTarget: 'var',
     },
     plugins: [
-        new webpack.optimize.DedupePlugin()
+        new webpack.optimize.DedupePlugin(),
     ],
     module: {
         loaders: [
             {
+                test: /\.json$/,
+                include: path.resolve(__dirname + '/src/model/config'),
+                loader: 'json',
+            },
+            {
                 test: /\.js?$/,
-                exclude: function (path) {
+                exclude: function excludeTestBabelLoader(path) {
                     return !/(d2\/src)/.test(path);
                 },
-                loader: 'babel'
-            }
-        ]
+                loader: 'babel',
+            },
+        ],
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
 };

@@ -51,6 +51,12 @@ module.exports = function karmaConfigHandler(config) {
                             stage: 2,
                         },
                     },
+                    // Load json config files using the json-loader
+                    {
+                        test: /\.json$/,
+                        include: path.resolve('src/model/config'),
+                        loader: 'json',
+                    },
                     // transpile and instrument only testing sources with isparta
                     {
                         test: /\.js$/,
