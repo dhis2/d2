@@ -149,7 +149,7 @@ export function init(initConfig) {
             return deferredD2Init.promise;
         })
         .catch((error) => {
-            logger.error('Unable to get schemas from the api', JSON.stringify(error));
+            logger.error('Unable to get schemas from the api', JSON.stringify(error), error);
 
             deferredD2Init.reject('Unable to get schemas from the DHIS2 API');
             return deferredD2Init.promise;

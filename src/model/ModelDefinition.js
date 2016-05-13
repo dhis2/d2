@@ -442,8 +442,32 @@ class UserModelDefinition extends ModelDefinition {
     }
 }
 
+class DataSetModelDefinition extends ModelDefinition {
+    create(data) {
+        // Filter out the compulsoryDataElementOperands structure from the retrieved data
+        // This structure does not follow the convention of a typical reference. We can not create a proper
+        // ModelCollection for this collection.
+        const dataClone = Object
+            .keys(data)
+            .filter(key => key !== 'compulsoryDataElementOperands')
+            .reduce((obj, key) => {
+                obj[key] = data[key]; // eslint-disable-line no-param-reassign
+                return obj;
+            }, {});
+
+        // Create the model using the usual way of creating a model
+        const model = super.create(dataClone);
+
+        // Set the compulsoryDataElementOperands onto the dataValues so it will be included during the save operations
+        model.dataValues.compulsoryDataElementOperands = data.compulsoryDataElementOperands;
+
+        return model;
+    }
+}
+
 ModelDefinition.specialClasses = {
     user: UserModelDefinition,
+    dataSet: DataSetModelDefinition,
 };
 
 export default ModelDefinition;
