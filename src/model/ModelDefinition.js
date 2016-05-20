@@ -96,21 +96,21 @@ function createValidations(schemaProperties) {
 function shouldBeModelCollectionProperty(model, models) {
     return function shouldBeModelCollectionPropertyIterator(modelProperty) {
         return model &&
-            models && models.hasOwnProperty(modelProperty) &&
+            models &&
             model.modelDefinition &&
             model.modelDefinition.modelValidations &&
             model.modelDefinition.modelValidations[modelProperty] &&
-            model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION';
+            model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION' &&
+            models.hasOwnProperty(model.modelDefinition.modelValidations[modelProperty].referenceType);
     };
 }
 
 function getOwnedPropertyJSON(model) {
     const objectToSave = {};
     const ownedProperties = this.getOwnedPropertyNames();
+    const collectionProperties = model.getCollectionChildrenPropertyNames();
 
     Object.keys(this.modelValidations).forEach((propertyName) => {
-        const collectionProperties = model.getCollectionChildren().map(v => v.modelDefinition.plural);
-
         if (ownedProperties.indexOf(propertyName) >= 0) {
             if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
                 // Handle collections and plain values different
@@ -222,7 +222,9 @@ class ModelDefinition {
             Object.keys(model)
                 .filter(shouldBeModelCollectionProperty(model, models))
                 .forEach((modelProperty) => {
-                    model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[modelProperty], []);
+                    const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
+
+                    model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[referenceType], []);
                 });
 
             // When no initial values are provided we are dealing with a new Model. For some properties there are

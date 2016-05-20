@@ -138,6 +138,17 @@ class ModelBase {
             .map(propertyName => this[propertyName]);
     }
 
+    getCollectionChildrenPropertyNames() {
+        return Object
+            .keys(this)
+            .filter((propertyName) =>
+                this.modelDefinition &&
+                this.modelDefinition.modelValidations &&
+                this.modelDefinition.modelValidations[propertyName] &&
+                this.modelDefinition.modelValidations[propertyName].type === 'COLLECTION'
+            );
+    }
+
     getDirtyChildren() {
         return this.getCollectionChildren()
             .filter(property => property && (property.dirty === true));

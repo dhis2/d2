@@ -557,7 +557,7 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should create a ModelCollectionProperty.create for a collection of objects', () => {
-                    expect(ModelCollectionProperty.create).to.have.callCount(1);
+                    expect(ModelCollectionProperty.create).to.have.callCount(3);
                 });
 
                 it('should create a ModelCollectionProperty without data', () => {
@@ -849,7 +849,7 @@ describe('ModelDefinition', () => {
                 constructor() {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
-                    this.getCollectionChildren = stub().returns([]);
+                    this.getCollectionChildrenPropertyNames = stub().returns([]);
                 }
             }
             model = new Model();
@@ -930,11 +930,7 @@ describe('ModelDefinition', () => {
         });
 
         it('should translate a collection property to an array of ids', () => {
-            model.getCollectionChildren.returns([{
-                modelDefinition: {
-                    plural: 'organisationUnits',
-                },
-            }]);
+            model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
             model.dataValues.organisationUnits = new Set([
                 {name: 'Kenya', id: 'FTRrcoaog83'},
                 {name: 'Oslo', id: 'P3jJH5Tu5VC'},
@@ -946,11 +942,7 @@ describe('ModelDefinition', () => {
         });
 
         it('should not add invalid objects that do not have an id', () => {
-            model.getCollectionChildren.returns([{
-                modelDefinition: {
-                    plural: 'organisationUnits',
-                },
-            }]);
+            model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
             model.dataValues.organisationUnits = new Set([
                 {name: 'Kenya'},
                 {name: 'Oslo', id: 'P3jJH5Tu5VC'},
@@ -1018,7 +1010,7 @@ describe('ModelDefinition', () => {
 
             userModelDefinition.delete(model);
 
-            expect(apiDeleteStub).to.be.calledWith('/users/aUplAx3DOWy');
+            expect(apiDeleteStub).to.be.calledWith('http://localhost:8080/dhis/api/users/aUplAx3DOWy');
         });
     });
 
