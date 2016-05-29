@@ -445,7 +445,7 @@ class UserModelDefinition extends ModelDefinition {
 }
 
 class DataSetModelDefinition extends ModelDefinition {
-    create(data) {
+    create(data = {}) {
         // Filter out the compulsoryDataElementOperands structure from the retrieved data
         // This structure does not follow the convention of a typical reference. We can not create a proper
         // ModelCollection for this collection.
