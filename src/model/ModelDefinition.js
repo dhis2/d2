@@ -208,6 +208,15 @@ class ModelDefinition {
                         models.hasOwnProperty(referenceType) &&
                         Array.isArray(data[modelProperty])
                     ) {
+                        // Translations are not proper Model objects and can therefore no be added to a ModelCollection.
+                        // We keep these values in a separate array.
+                        // TODO: This should probably be reworked in a more generic handling of the translations
+                        // especially when these translations become the new standard way of getting translations.
+                        if (modelProperty === 'translations') {
+                            dataValues[modelProperty] = data[modelProperty];
+                            return;
+                        }
+
                         dataValues[modelProperty] = ModelCollectionProperty
                             .create(
                                 model,
