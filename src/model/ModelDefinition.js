@@ -121,7 +121,17 @@ function getOwnedPropertyJSON(model) {
                     objectToSave[propertyName] = Array
                         .from(model.dataValues[propertyName].values())
                         .filter(value => value.id)
-                        .map(({ id }) => ({ id }));
+                        .map((childModel) => {
+                            // Legends can be saved as part of the LegendSet object.
+                            // To make this work properly we will return all of the properties for the items in the collection
+                            // instead of just the `id` fields
+                            if (model.modelDefinition.name === 'legendSet') {
+                                return getOwnedPropertyJSON.call(childModel.modelDefinition, childModel);
+                            }
+
+                            // For any other types we return an object with just an id
+                            return { id: childModel.id };
+                        });
                 }
             }
         }
