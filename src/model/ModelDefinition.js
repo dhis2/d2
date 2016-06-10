@@ -125,7 +125,7 @@ function getOwnedPropertyJSON(model) {
                             // Legends can be saved as part of the LegendSet object.
                             // To make this work properly we will return all of the properties for the items in the collection
                             // instead of just the `id` fields
-                            if (model.modelDefinition.name === 'legendSet') {
+                            if (model.modelDefinition && model.modelDefinition.name === 'legendSet') {
                                 return getOwnedPropertyJSON.call(childModel.modelDefinition, childModel);
                             }
 
