@@ -465,6 +465,8 @@ class UserModelDefinition extends ModelDefinition {
 
 class DataSetModelDefinition extends ModelDefinition {
     create(data = {}) {
+        const hasData = Boolean(Object.keys(data).length);
+
         // Filter out the compulsoryDataElementOperands structure from the retrieved data
         // This structure does not follow the convention of a typical reference. We can not create a proper
         // ModelCollection for this collection.
@@ -477,7 +479,9 @@ class DataSetModelDefinition extends ModelDefinition {
             }, {});
 
         // Create the model using the usual way of creating a model
-        const model = super.create(dataClone);
+        // Only pass data when there is data in the object passed to the constructor. This will guarantee
+        // that the empty ModelCollections are created properly.
+        const model = super.create(hasData ? dataClone : undefined);
 
         // Set the compulsoryDataElementOperands onto the dataValues so it will be included during the save operations
         model.dataValues.compulsoryDataElementOperands = data.compulsoryDataElementOperands;
