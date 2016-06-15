@@ -218,21 +218,19 @@ class ModelDefinition {
                         models.hasOwnProperty(referenceType) &&
                         Array.isArray(data[modelProperty])
                     ) {
-                        // Translations are not proper Model objects and can therefore no be added to a ModelCollection.
-                        // We keep these values in a separate array.
-                        // TODO: This should probably be reworked in a more generic handling of the translations
-                        // especially when these translations become the new standard way of getting translations.
-                        if (modelProperty === 'translations') {
+                        // Object properties that are not themselves instances of models need special handling because
+                        // we can't turn them into ModelCollectionProperties
+                        // TODO: Proper generic handling of translations
+                        if (modelProperty === 'translations' || modelProperty === 'greyedFields') {
                             dataValues[modelProperty] = data[modelProperty];
-                            return;
+                        } else {
+                            dataValues[modelProperty] = ModelCollectionProperty
+                                .create(
+                                    model,
+                                    models[referenceType],
+                                    data[modelProperty].map(d => models[referenceType].create(d))
+                                );
                         }
-
-                        dataValues[modelProperty] = ModelCollectionProperty
-                            .create(
-                                model,
-                                models[referenceType],
-                                data[modelProperty].map(d => models[referenceType].create(d))
-                            );
                     }
                     model.dataValues[modelProperty] = dataValues[modelProperty];
                 });

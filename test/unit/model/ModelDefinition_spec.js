@@ -448,15 +448,24 @@ describe('ModelDefinition', () => {
             let UserModelDefinition;
             let userModelDefinition;
 
+            let DataSetModelDefinition;
+            let dataSetModelDefinition;
+
             beforeEach(() => {
                 UserModelDefinition = require('../../../src/model/ModelDefinition').specialClasses.user;
-
                 userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+
+                DataSetModelDefinition = require('../../../src/model/ModelDefinition').specialClasses.dataSet;
+                dataSetModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataSet'));
             });
 
             it('should return a UserModelDefinition for the user schema', () => {
                 expect(userModelDefinition).to.be.instanceof(UserModelDefinition);
             });
+
+            it('should return a DataSetModelDefinition for the data set schema', () => {
+                expect(dataSetModelDefinition).to.be.instanceof(DataSetModelDefinition);
+            })
         });
 
         describe('attribute properties', () => {
