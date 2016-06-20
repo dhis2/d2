@@ -108,7 +108,11 @@ function shouldBeModelCollectionProperty(model, models) {
 function getOwnedPropertyJSON(model) {
     const objectToSave = {};
     const ownedProperties = this.getOwnedPropertyNames();
-    const collectionProperties = model.getCollectionChildrenPropertyNames();
+    const collectionProperties = model
+        .getCollectionChildrenPropertyNames()
+        // Even though attributeValues are considered collections, they are handled separately due to their
+        // difference in structure.
+        .filter(propertyName => propertyName !== 'attributeValues');
 
     Object.keys(this.modelValidations).forEach((propertyName) => {
         if (ownedProperties.indexOf(propertyName) >= 0) {
