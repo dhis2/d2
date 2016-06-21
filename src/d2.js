@@ -122,19 +122,36 @@ export function init(initConfig) {
                 apps: res[6],
             };
 
-            responses.schemas.forEach((schema) => {
-                // Attributes that do not have values do not by default get returned with the data.
-                // Therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
-                const schemaAttributes = responses.attributes
-                    .filter(attributeDescriptor => {
-                        const attributeNameFilter = [schema.name, 'Attribute'].join('');
-                        return attributeDescriptor[attributeNameFilter] === true;
-                    });
+            responses.schemas
+                // TODO: Remove this when the schemas endpoint is versioned or shows the correct urls for the requested version
+                // The schemas endpoint is not versioned which will result into the modelDefinitions always using the
+                // "default" endpoint, we therefore modify the endpoint url based on the given baseUrl.
+                .map(schema => {
+                    const apiVersionMatch = config.baseUrl.match(/api\/(2[3-9])/);
 
-                if (!Object.prototype.hasOwnProperty.call(d2.models, schema.name)) {
-                    d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
-                }
-            });
+                    // Not all schemas have an apiEndpoint
+                    if (apiVersionMatch && apiVersionMatch[1] && schema.apiEndpoint) {
+                        const version = apiVersionMatch[1];
+
+                        // Inject the current api version number into the endPoint urls
+                        schema.apiEndpoint = schema.apiEndpoint.replace(/api/, `api/${version}`); // eslint-disable-line no-param-reassign
+                    }
+
+                    return schema;
+                })
+                .forEach((schema) => {
+                    // Attributes that do not have values do not by default get returned with the data.
+                    // Therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
+                    const schemaAttributes = responses.attributes
+                        .filter(attributeDescriptor => {
+                            const attributeNameFilter = [schema.name, 'Attribute'].join('');
+                            return attributeDescriptor[attributeNameFilter] === true;
+                        });
+
+                    if (!Object.prototype.hasOwnProperty.call(d2.models, schema.name)) {
+                        d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
+                    }
+                });
 
             d2.currentUser = CurrentUser.create(
                 responses.currentUser,
