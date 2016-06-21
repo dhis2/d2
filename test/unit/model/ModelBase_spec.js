@@ -147,11 +147,9 @@ describe('ModelBase', () => {
 
         it('should set the newly created id onto the model', () => {
             modelDefinition.save.returns(Promise.resolve({
+                httpStatus: 'Created',
                 response: {
-                    importCount: {
-                        imported: 1,
-                    },
-                    lastImported: 'DXyJmlo9rge',
+                    uid: 'DXyJmlo9rge',
                 },
             }));
 
@@ -163,11 +161,9 @@ describe('ModelBase', () => {
 
         it('should set the correct href property onto the object', () => {
             modelDefinition.save.returns(Promise.resolve({
+                httpStatus: 'Created',
                 response: {
-                    importCount: {
-                        imported: 1,
-                    },
-                    lastImported: 'DXyJmlo9rge',
+                    uid: 'DXyJmlo9rge',
                 },
             }));
 

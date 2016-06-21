@@ -54,3 +54,21 @@ export class Deferred {
         return new Deferred();
     }
 }
+
+export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
+    if (!baseUrl || !apiUrl) {
+        return apiUrl;
+    }
+
+    const apiVersionMatch = baseUrl.match(/api\/(2[3-9])/);
+
+    // Not all schemas have an apiEndpoint
+    if (apiVersionMatch && apiVersionMatch[1] && apiUrl) {
+        const version = apiVersionMatch[1];
+
+        // Inject the current api version number into the endPoint urls
+        return apiUrl.replace(/api/, `api/${version}`);
+    }
+
+    return apiUrl;
+}

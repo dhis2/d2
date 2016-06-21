@@ -1,4 +1,4 @@
-import { pick, Deferred } from './lib/utils';
+import { pick, Deferred, updateAPIUrlWithBaseUrlVersionNumber } from './lib/utils';
 import Logger from './logger/Logger';
 import model from './model/models';
 import Api from './api/Api';
@@ -127,15 +127,7 @@ export function init(initConfig) {
                 // The schemas endpoint is not versioned which will result into the modelDefinitions always using the
                 // "default" endpoint, we therefore modify the endpoint url based on the given baseUrl.
                 .map(schema => {
-                    const apiVersionMatch = config.baseUrl.match(/api\/(2[3-9])/);
-
-                    // Not all schemas have an apiEndpoint
-                    if (apiVersionMatch && apiVersionMatch[1] && schema.apiEndpoint) {
-                        const version = apiVersionMatch[1];
-
-                        // Inject the current api version number into the endPoint urls
-                        schema.apiEndpoint = schema.apiEndpoint.replace(/api/, `api/${version}`); // eslint-disable-line no-param-reassign
-                    }
+                    schema.apiEndpoint = updateAPIUrlWithBaseUrlVersionNumber(schema.apiEndpoint, config.baseUrl); // eslint-disable-line no-param-reassign
 
                     return schema;
                 })

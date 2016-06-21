@@ -1,5 +1,5 @@
 import { checkType, isObject, checkDefined, isDefined } from '../lib/check';
-import { addLockedProperty, curry, copyOwnProperties } from '../lib/utils';
+import { addLockedProperty, curry, copyOwnProperties, updateAPIUrlWithBaseUrlVersionNumber } from '../lib/utils';
 import ModelDefinitions from './ModelDefinitions';
 import Model from './Model';
 import ModelCollection from './ModelCollection';
@@ -372,7 +372,7 @@ class ModelDefinition {
         const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
 
         if (isAnUpdate(model)) {
-            const updateUrl = model.dataValues.href;
+            const updateUrl = updateAPIUrlWithBaseUrlVersionNumber(model.dataValues.href, this.api.baseUrl);
 
             // Save the existing model
             return this.api.update(updateUrl, jsonPayload, true);

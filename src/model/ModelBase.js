@@ -45,12 +45,8 @@ class ModelBase {
                 return this.modelDefinition
                     .save(this)
                     .then((result) => {
-                        if (
-                            result &&
-                            result.response.importCount.imported === 1 &&
-                            isValidUid(result.response.lastImported)
-                        ) {
-                            this.dataValues.id = result.response.lastImported;
+                        if (result && result.httpStatus === 'Created' && result && isValidUid(result.response.uid)) {
+                            this.dataValues.id = result.response.uid;
                             this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
                         }
                         this.dirty = false;
@@ -102,6 +98,13 @@ class ModelBase {
 
             // Run async validation against the api
             asyncRemoteValidation(this)
+                .catch(remoteMessages => {
+                    // Errors are ok in this case
+                    if (Array.isArray(remoteMessages)) {
+                        return remoteMessages;
+                    }
+                    return Promise.reject(remoteMessages);
+                })
                 .then(remoteMessages => {
                     validationMessages = validationMessages.concat(remoteMessages);
 
