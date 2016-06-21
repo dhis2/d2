@@ -37,7 +37,7 @@ describe('Config', () => {
         it('should call setBaseUrl with the default api location', () => {
             Config.processConfigForD2({}, mockD2);
 
-            expect(mockApi.setBaseUrl).to.be.calledWith('/api');
+            expect(mockApi.setBaseUrl).to.be.calledWith('/api/24');
         });
     });
 });
