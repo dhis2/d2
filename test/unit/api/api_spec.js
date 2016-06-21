@@ -116,7 +116,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -128,7 +128,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/path/of/sorts/dataElements',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -140,7 +140,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements.json',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -154,7 +154,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: 'http://localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -168,7 +168,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '//localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -180,7 +180,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -192,7 +192,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {
                     fields: 'id,name',
                 },
@@ -253,7 +253,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'text',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -265,7 +265,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/filterTest?filter=a:1&filter=b:2',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -365,7 +365,7 @@ describe('Api', () => {
                 type: 'DELETE',
                 url: fixtures.get('singleUserAllFields').href,
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });
@@ -377,7 +377,7 @@ describe('Api', () => {
                 type: 'DELETE',
                 url: '/api/users/aUplAx3DOWy',
                 dataType: 'json',
-                contentType: 'application/json',
+                contentType: undefined,
                 data: {},
             });
         });

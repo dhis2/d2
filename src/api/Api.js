@@ -111,7 +111,14 @@ class Api {
 
         const api = this;
 
-        function getOptions(mergeOptions, payload) {
+        function getOptions(mergeOptions, requestData) {
+            let payload = requestData;
+            if (payload === undefined) {
+                payload = {};
+            } else if (payload === true || payload === false) {
+                payload = payload.toString();
+            }
+
             const resultOptions = Object.assign({}, api.defaultRequestSettings, mergeOptions);
 
             resultOptions.type = type;
@@ -120,18 +127,19 @@ class Api {
             resultOptions.dataType = options.dataType !== undefined ? options.dataType : 'json';
             resultOptions.contentType = options.contentType !== undefined ? options.contentType : 'application/json';
 
+            // Only set content type when there is data to send
+            // GET requests and requests without data do not need a Content-Type header
+            // 0 and false are valid requestData values and therefore should have a content type
+            if (type === 'GET' || (!requestData && requestData !== 0 && requestData !== false)) {
+                resultOptions.contentType = undefined;
+            }
+
             return resultOptions;
         }
 
         return new Promise((resolve, reject) => {
-            let payload = data;
-            if (payload === undefined) {
-                payload = {};
-            } else if (payload === true || payload === false) {
-                payload = payload.toString();
-            }
             api.jquery
-                .ajax(getOptions(options, payload))
+                .ajax(getOptions(options, data))
                 .then(processSuccess(resolve), processFailure(reject));
         });
     }
