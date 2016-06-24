@@ -60,10 +60,13 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
-    const apiVersionMatch = baseUrl.match(/api\/(2[3-9])/);
+    const apiUrlWithVersionRexExp = /api\/(2[3-9])/;
+    const apiVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
 
-    // Not all schemas have an apiEndpoint
-    if (apiVersionMatch && apiVersionMatch[1] && apiUrl) {
+    const baseUrlHasVersion = apiVersionMatch && apiVersionMatch[1];
+    const apiUrlHasVersion = apiUrl && !apiUrlWithVersionRexExp.test(apiUrl);
+
+    if (baseUrlHasVersion && apiUrlHasVersion) {
         const version = apiVersionMatch[1];
 
         // Inject the current api version number into the endPoint urls
