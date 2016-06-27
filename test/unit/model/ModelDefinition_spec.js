@@ -831,7 +831,7 @@ describe('ModelDefinition', () => {
         });
     });
 
-    describe('save()', () => {
+    describe('saving', () => {
         let apiUpdateStub;
         let apiPostStub;
         let model;
@@ -869,97 +869,119 @@ describe('ModelDefinition', () => {
             });
         });
 
-        it('should be a method that returns a promise', () => {
-            expect(userModelDefinition.save(model)).to.be.instanceof(Promise);
+        describe('save()', () => {
+            it('should be a method that returns a promise', () => {
+                expect(userModelDefinition.save(model)).to.be.instanceof(Promise);
+            });
+
+            it('should call the update method on the api', () => {
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub).to.be.called;
+            });
+
+            it('should pass only the properties that are owned to the api', () => {
+                let expectedPayload = fixtures.get('singleUserOwnerFields');
+
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
+            });
+
+            it('should let a falsy value pass as an owned property', () => {
+                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                expectedPayload.surname = '';
+
+                model.dataValues.surname = '';
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+            });
+
+            it('should not let undefined pass as a value', () => {
+                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                delete expectedPayload.surname;
+
+                model.dataValues.surname = undefined;
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+            });
+
+            it('should not let null pass as a value', () => {
+                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                delete expectedPayload.surname;
+
+                model.dataValues.surname = null;
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+            });
+
+            it('should save to the url set on the model', () => {
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+            });
+
+            it('should call the update method on the api with the replace strategy option set to true', () => {
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[2]).to.be.true;
+            });
+
+            it('should save a new object using a post', () => {
+                // Objects without id are concidered "new"
+                delete model.id;
+
+                userModelDefinition.save(model);
+
+                expect(apiPostStub).to.be.called;
+            });
+
+            it('should translate a collection property to an array of ids', () => {
+                model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
+                model.dataValues.organisationUnits = new Set([
+                    {name: 'Kenya', id: 'FTRrcoaog83'},
+                    {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+                ]);
+
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'FTRrcoaog83'}, {id: 'P3jJH5Tu5VC'}]);
+            });
+
+            it('should not add invalid objects that do not have an id', () => {
+                model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
+                model.dataValues.organisationUnits = new Set([
+                    {name: 'Kenya'},
+                    {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+                ]);
+
+                userModelDefinition.save(model);
+
+                expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'P3jJH5Tu5VC'}]);
+            });
         });
 
-        it('should call the update method on the api', () => {
-            userModelDefinition.save(model);
+        describe('saveNew()', () => {
+            it('should be a method that returns a promise', () => {
+                expect(userModelDefinition.saveNew(model)).to.be.instanceof(Promise);
+            });
 
-            expect(apiUpdateStub).to.be.called;
-        });
+            it('should call the update method on the api', () => {
+                userModelDefinition.saveNew(model);
 
-        it('should pass only the properties that are owned to the api', () => {
-            let expectedPayload = fixtures.get('singleUserOwnerFields');
+                expect(apiPostStub).to.be.called;
+            });
 
-            userModelDefinition.save(model);
+            it('should pass only the properties that are owned to the api', () => {
+                let expectedPayload = fixtures.get('singleUserOwnerFields');
 
-            expect(apiUpdateStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
-        });
+                userModelDefinition.saveNew(model);
 
-        it('should let a falsy value pass as an owned property', () => {
-            let expectedPayload = fixtures.get('singleUserOwnerFields');
-            expectedPayload.surname = '';
-
-            model.dataValues.surname = '';
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
-        });
-
-        it('should not let undefined pass as a value', () => {
-            let expectedPayload = fixtures.get('singleUserOwnerFields');
-            delete expectedPayload.surname;
-
-            model.dataValues.surname = undefined;
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
-        });
-
-        it('should not let null pass as a value', () => {
-            let expectedPayload = fixtures.get('singleUserOwnerFields');
-            delete expectedPayload.surname;
-
-            model.dataValues.surname = null;
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
-        });
-
-        it('should save to the url set on the model', () => {
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
-        });
-
-        it('should call the update method on the api with the replace strategy option set to true', () => {
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[2]).to.be.true;
-        });
-
-        it('should save a new object using a post', () => {
-            // Objects without id are concidered "new"
-            delete model.id;
-
-            userModelDefinition.save(model);
-
-            expect(apiPostStub).to.be.called;
-        });
-
-        it('should translate a collection property to an array of ids', () => {
-            model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
-            model.dataValues.organisationUnits = new Set([
-                {name: 'Kenya', id: 'FTRrcoaog83'},
-                {name: 'Oslo', id: 'P3jJH5Tu5VC'},
-            ]);
-
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'FTRrcoaog83'}, {id: 'P3jJH5Tu5VC'}]);
-        });
-
-        it('should not add invalid objects that do not have an id', () => {
-            model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
-            model.dataValues.organisationUnits = new Set([
-                {name: 'Kenya'},
-                {name: 'Oslo', id: 'P3jJH5Tu5VC'},
-            ]);
-
-            userModelDefinition.save(model);
-
-            expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'P3jJH5Tu5VC'}]);
+                expect(apiPostStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
+            });
         });
     });
 

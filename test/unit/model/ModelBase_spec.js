@@ -41,7 +41,7 @@ describe('ModelBase', () => {
         expect(modelBase.validate).to.be.instanceof(Function);
     });
 
-    describe('save()', () => {
+    describe('saving', () => {
         let modelDefinition;
         let model;
 
@@ -49,6 +49,7 @@ describe('ModelBase', () => {
             modelDefinition = {
                 apiEndpoint: '/dataElements',
                 save: stub().returns(Promise.resolve()),
+                saveNew: stub().returns(Promise.resolve()),
             };
 
             class Model {
@@ -70,124 +71,155 @@ describe('ModelBase', () => {
             });
         });
 
-        it('should call the save on the model modelDefinition with itself as a parameter', (done) => {
-            model.save()
-                .then(() => {
-                    expect(modelDefinition.save).to.have.been.calledWith(model);
-                    done();
-                })
-                .catch((err) => {
+        describe('create()', () => {
+            it('should call validate before calling save', () => {
+                model.create();
+
+                expect(model.validate).to.have.been.calledBefore(model.save);
+            });
+
+            it('should call saveNew on the model', () => {
+                return model.create()
+                    .then(() => {
+                        expect(modelDefinition.saveNew).to.have.been.calledWith(model);
+                    });
+            });
+
+            it('should not call saveNew when validate fails', () => {
+                model.validate.returns(Promise.resolve({ status: false }));
+
+                return model.create()
+                    .catch((e) => e)
+                    .then(() => {
+                        expect(modelDefinition.save).to.not.be.called;
+                    });
+            });
+        });
+
+        describe('save()', () => {
+            it('should call the save on the model modelDefinition with itself as a parameter', (done) => {
+                model.save()
+                    .then(() => {
+                        expect(modelDefinition.save).to.have.been.calledWith(model);
+                        done();
+                    })
+                    .catch((err) => {
+                        done(err);
+                    });
+            });
+
+            it('should call validate before calling save', () => {
+                model.save();
+
+                expect(model.validate).to.have.been.calledBefore(model.save);
+            });
+
+            it('should not call save when validate fails', () => {
+                model.validate.returns(Promise.resolve({ status: false }));
+
+                return model.save()
+                    .catch((e) => e)
+                    .then(() => {
+                        expect(modelDefinition.save).to.not.be.called;
+                    });
+            });
+
+            it('should not call save when the model is not dirty', () => {
+                model.dirty = false;
+
+                model.save();
+
+                expect(modelDefinition.save).to.not.be.called;
+            });
+
+            it('should reset dirty to false after save', (done) => {
+                model.save()
+                    .then(() => {
+                        expect(model.dirty).to.be.false;
+                        done();
+                    }).catch((err) => {
                     done(err);
                 });
-        });
+            });
 
-        it('should call validate before calling save', () => {
-            model.save();
-
-            expect(model.validate).to.have.been.calledBefore(model.save);
-        });
-
-        it('should not call save when validate fails', () => {
-            model.validate.returns({ status: false });
-
-            expect(modelDefinition.save).to.not.be.called;
-        });
-
-        it('should not call save when the model is not dirty', () => {
-            model.dirty = false;
-
-            model.save();
-
-            expect(modelDefinition.save).to.not.be.called;
-        });
-
-        it('should reset dirty to false after save', (done) => {
-            model.save()
-                .then(() => {
-                    expect(model.dirty).to.be.false;
-                    done();
-                }).catch((err) => {
+            it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', (done) => {
+                model.save()
+                    .then(() => {
+                        expect(model[DIRTY_PROPERTY_LIST].size).to.equal(0);
+                        done();
+                    }).catch((err) => {
                     done(err);
                 });
-        });
+            });
 
-        it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', (done) => {
-            model.save()
-                .then(() => {
-                    expect(model[DIRTY_PROPERTY_LIST].size).to.equal(0);
-                    done();
-                }).catch((err) => {
-                    done(err);
-                });
-        });
+            it('should return rejected promise when the model is not dirty', (done) => {
+                model.dirty = false;
 
-        it('should return rejected promise when the model is not dirty', (done) => {
-            model.dirty = false;
+                model.save()
+                    .catch((message) => {
+                        expect(message).to.equal('No changes to be saved');
+                        done();
+                    });
+            });
 
-            model.save()
-                .catch((message) => {
-                    expect(message).to.equal('No changes to be saved');
-                    done();
-                });
-        });
+            it('should return rejected promise when the model is not valid', (done) => {
+                model.validate.returns(Promise.resolve({status: false}));
 
-        it('should return rejected promise when the model is not valid', (done) => {
-            model.validate.returns(Promise.resolve({ status: false }));
+                model.save()
+                    .catch((message) => {
+                        expect(message).to.deep.equal({status: false});
+                        done();
+                    });
+            });
 
-            model.save()
-                .catch((message) => {
-                    expect(message).to.deep.equal({ status: false });
-                    done();
-                });
-        });
+            it('should return a promise', () => {
+                expect(model.save()).to.be.instanceof(Promise);
+            });
 
-        it('should return a promise', () => {
-            expect(model.save()).to.be.instanceof(Promise);
-        });
+            it('should set the newly created id onto the model', () => {
+                modelDefinition.save.returns(Promise.resolve({
+                    httpStatus: 'Created',
+                    response: {
+                        uid: 'DXyJmlo9rge',
+                    },
+                }));
 
-        it('should set the newly created id onto the model', () => {
-            modelDefinition.save.returns(Promise.resolve({
-                httpStatus: 'Created',
-                response: {
-                    uid: 'DXyJmlo9rge',
-                },
-            }));
+                return model.save()
+                    .then(() => {
+                        expect(model.id).to.equal('DXyJmlo9rge');
+                    });
+            });
 
-            return model.save()
-                .then(() => {
-                    expect(model.id).to.equal('DXyJmlo9rge');
-                });
-        });
+            it('should set the correct href property onto the object', () => {
+                modelDefinition.save.returns(Promise.resolve({
+                    httpStatus: 'Created',
+                    response: {
+                        uid: 'DXyJmlo9rge',
+                    },
+                }));
 
-        it('should set the correct href property onto the object', () => {
-            modelDefinition.save.returns(Promise.resolve({
-                httpStatus: 'Created',
-                response: {
-                    uid: 'DXyJmlo9rge',
-                },
-            }));
+                return model.save()
+                    .then(() => {
+                        expect(model.dataValues.href).to.equal('/dataElements/DXyJmlo9rge');
+                    });
+            });
 
-            return model.save()
-                .then(() => {
-                    expect(model.dataValues.href).to.equal('/dataElements/DXyJmlo9rge');
-                });
-        });
+            it('should set the dirty children\'s dirty flag back to false', () => {
+                model.modelDefinition.modelValidations = {
+                    organisationUnits: {
+                        owner: true,
+                    },
+                };
+                model.organisationUnits = {
+                    size: 1,
+                    dirty: true,
+                };
 
-        it('should set the dirty children\'s dirty flag back to false', () => {
-            model.modelDefinition.modelValidations = {
-                organisationUnits: {
-                    owner: true,
-                },
-            };
-            model.organisationUnits = {
-                size: 1,
-                dirty: true,
-            };
-
-            return model.save()
-                .then(() => {
-                    expect(model.organisationUnits.dirty).to.be.false;
-                });
+                return model.save()
+                    .then(() => {
+                        expect(model.organisationUnits.dirty).to.be.false;
+                    });
+            });
         });
     });
 
