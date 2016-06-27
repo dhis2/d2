@@ -369,14 +369,20 @@ class ModelDefinition {
      */
     // TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
-        const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
-
         if (isAnUpdate(model)) {
             const updateUrl = model.dataValues.href;
+            const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
 
             // Save the existing model
             return this.api.update(updateUrl, jsonPayload, true);
         }
+
+        return this.saveNew(model);
+    }
+
+    saveNew(model) {
+        const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
+
         // Its a new object
         return this.api.post(this.apiEndpoint, jsonPayload);
     }

@@ -12,10 +12,52 @@ function hasModelValidationForProperty(model, property) {
         Object.prototype.hasOwnProperty.call(model.modelDefinition.modelValidations, property));
 }
 
+function updateModelFromResponseStatus(result) {
+    if (
+        result &&
+        result.response.importCount.imported === 1 &&
+        isValidUid(result.response.lastImported)
+    ) {
+        this.dataValues.id = result.response.lastImported;
+        this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
+    }
+    this.dirty = false;
+    this.getDirtyChildren()
+        .forEach(value => {
+            value.dirty = false; // eslint-disable-line no-param-reassign
+        });
+
+    this[DIRTY_PROPERTY_LIST].clear();
+    return result;
+}
+
 /**
  * @class ModelBase
  */
 class ModelBase {
+    /**
+     * @method create
+     *
+     * @returns {Promise} Returns a promise that resolves when the model has been saved or rejected with the result from
+     * the `validate()` call.
+     *
+     * @definition
+     * Will save model as a new object to the server using a POST request. This method would generally be used if
+     * you're creating models with pre-specified IDs. Note that this does not check if the model is marked as dirty.
+     */
+    create() {
+        return this.validate()
+            .then(validationState => {
+                if (!validationState.status) {
+                    return Promise.reject(validationState);
+                }
+
+                return this.modelDefinition
+                    .saveNew(this)
+                    .then(updateModelFromResponseStatus.bind(this));
+            });
+    }
+
     /**
      * @method save
      *
@@ -31,8 +73,8 @@ class ModelBase {
      *   .then((message) => console.log(message));
      * ```
      */
-    save(includeChildren = true) {
-        if (!(this.dirty || includeChildren === true && this.hasDirtyChildren())) {
+    save(includeChildren) {
+        if (!this.isDirty(includeChildren)) {
             return Promise.reject('No changes to be saved');
         }
 
@@ -44,24 +86,7 @@ class ModelBase {
 
                 return this.modelDefinition
                     .save(this)
-                    .then((result) => {
-                        if (
-                            result &&
-                            result.response.importCount.imported === 1 &&
-                            isValidUid(result.response.lastImported)
-                        ) {
-                            this.dataValues.id = result.response.lastImported;
-                            this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
-                        }
-                        this.dirty = false;
-                        this.getDirtyChildren()
-                            .forEach(value => {
-                                value.dirty = false; // eslint-disable-line no-param-reassign
-                            });
-
-                        this[DIRTY_PROPERTY_LIST].clear();
-                        return result;
-                    });
+                    .then(updateModelFromResponseStatus.bind(this));
             });
     }
 
@@ -120,6 +145,13 @@ class ModelBase {
 
     delete() {
         return this.modelDefinition.delete(this);
+    }
+
+    isDirty(includeChildren = true) {
+        if (!(this.dirty || includeChildren === true && this.hasDirtyChildren())) {
+            return false;
+        }
+        return true;
     }
 
     getDirtyPropertyNames() {
