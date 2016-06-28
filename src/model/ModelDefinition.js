@@ -124,7 +124,7 @@ function getOwnedPropertyJSON(model) {
                     // compulsoryDataElementOperands and greyedFields are not arrays of models.
                     // TODO: This is not the proper way to do this. We should check if the array contains Models
                     if (propertyName === 'compulsoryDataElementOperands' || propertyName === 'greyedFields') {
-                        objectToSave[propertyName] = model.dataValues[propertyName];
+                        objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                         return;
                     }
 
