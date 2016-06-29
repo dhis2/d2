@@ -1,4 +1,4 @@
 export default {
-    aggregationType: 'NONE',
-    valueType: 'TEXT',
+    aggregationType: 'SUM',
+    valueType: 'NUMBER',
 };
