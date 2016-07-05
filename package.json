@@ -70,7 +70,8 @@
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
     "webpack": "1.12.12",
-    "whatwg-fetch": "0.10.0"
+    "whatwg-fetch": "0.10.0",
+    "wrapper-webpack-plugin": "^0.1.7"
   },
   "engines": {
     "npm": ">=3.5.1",
