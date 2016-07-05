@@ -1,14 +1,25 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const WrapperPlugin = require('wrapper-webpack-plugin');
 
 module.exports = {
-    entry: "./src/d2.js",
+    entry: './src/d2.js',
     output: {
         path: __dirname + '/lib',
-        filename: "d2-browser.js",
-        libraryTarget: 'var'
+        filename: 'd2-browser.js',
+        library: 'd2',
+        libraryTarget: 'var',
     },
     plugins: [
-        new webpack.optimize.DedupePlugin()
+        // Export the default part of the d2 module.
+        new WrapperPlugin({
+            header: `var d2 = (function () {`,
+            footer: `
+                    return d2.default;
+                })();
+            `,
+        }),
+
+        new webpack.optimize.DedupePlugin(),
     ],
     module: {
         loaders: [
@@ -17,9 +28,9 @@ module.exports = {
                 exclude: function (path) {
                     return !/(d2\/src)/.test(path);
                 },
-                loader: 'babel'
-            }
-        ]
+                loader: 'babel',
+            },
+        ],
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
 };
