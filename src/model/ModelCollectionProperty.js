@@ -106,6 +106,18 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
+     * @method resetDirtyState
+     *
+     * @description
+     * Sets dirty=false and resets the added and removed sets used for dirty state tracking.
+     */
+    resetDirtyState() {
+        this.dirty = false;
+        this.added = new Set();
+        this.removed = new Set();
+    }
+
+    /**
      * @method save
      *
      * @returns {Promise} A `Promise`

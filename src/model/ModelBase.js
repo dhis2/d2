@@ -20,7 +20,11 @@ function updateModelFromResponseStatus(result) {
     this.dirty = false;
     this.getDirtyChildren()
         .forEach(value => {
-            value.dirty = false; // eslint-disable-line no-param-reassign
+            if (value.resetDirtyState) {
+                value.resetDirtyState();
+            } else {
+                value.dirty = false; // eslint-disable-line no-param-reassign
+            }
         });
 
     this[DIRTY_PROPERTY_LIST].clear();
