@@ -167,8 +167,7 @@ class ModelBase {
             .filter(
                 propertyName => this[propertyName] &&
                 hasModelValidationForProperty(this, propertyName) &&
-                this.modelDefinition.modelValidations[propertyName].owner &&
-                this[propertyName].size >= 0
+                this.modelDefinition.modelValidations[propertyName].owner
             )
             .map(propertyName => this[propertyName]);
     }
