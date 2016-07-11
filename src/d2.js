@@ -102,7 +102,7 @@ export function init(initConfig) {
     }
 
     return Promise.all([
-        api.get('schemas', { fields: 'apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]' }),
+        api.get('schemas', { fields: 'apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]' }),
         api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }),
         api.get('me', { fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]' }),
         api.get('me/authorization'),
