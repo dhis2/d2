@@ -9,14 +9,14 @@ describe('D2', function () {
         server.xhr.useFilters = true;
 
         // Show the requests made to the fake server.
-        //server.xhr.addFilter(function (method, url) {
+        // server.xhr.addFilter(function (method, url) {
         //    console.log(method, url);
         //    return false;
-        //});
+        // });
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas',
+            '/dhis/api/schemas?fields=apiEndpoint%2Cname%2Cauthorities%2Cplural%2Csharable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bwritable%2CreferenceType%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},

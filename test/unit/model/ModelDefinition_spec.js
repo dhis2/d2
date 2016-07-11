@@ -137,7 +137,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should set the epiEndpoint', () => {
-                expect(dataElementModelDefinition.apiEndpoint).to.equal('/dataElements');
+                expect(dataElementModelDefinition.apiEndpoint).to.equal('https://play.dhis2.org/demo/api/dataElements');
             });
 
             it('should set metadata to false if it is not a metadata model', () => {
@@ -150,7 +150,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should a properties property for each of the schema properties', () => {
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(39);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(35);
             });
 
             it('should not be able to modify the modelProperties array', () => {
@@ -158,13 +158,13 @@ describe('ModelDefinition', () => {
                     dataElementModelDefinition.modelProperties.anotherKey = {};
 
                     //TODO: There is an implementation bug in PhantomJS that does not properly freeze the array
-                    if (Object.keys(dataElementModelDefinition.modelProperties).length === 39) {
+                    if (Object.keys(dataElementModelDefinition.modelProperties).length === 35) {
                         throw new Error();
                     }
                 }
 
                 expect(shouldThrow).to.throw();
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(39);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(35);
             });
         });
 
@@ -201,9 +201,6 @@ describe('ModelDefinition', () => {
                     'aggregationLevels',
                     'zeroIsSignificant',
                     'displayDescription',
-                    'dimensionType',
-                    'type',
-                    'dataDimension',
                     'optionSet',
                     'id',
                     'created',
@@ -212,38 +209,37 @@ describe('ModelDefinition', () => {
                     'commentOptionSet',
                     'name',
                     'externalAccess',
-                    'textType',
+                    'valueType',
                     'href',
                     'dataElementGroups',
                     'publicAccess',
-                    'aggregationOperator',
+                    'aggregationType',
                     'formName',
                     'lastUpdated',
                     'dataSets',
                     'code',
                     'access',
                     'url',
-                    'numberType',
                     'domainType',
                     'legendSet',
                     'categoryCombo',
-                    'dimension',
                     'attributeValues',
-                    'items',
                     'optionSetValue',
                     'userGroupAccesses',
                     'shortName',
                     'displayName',
                     'displayShortName',
                     'user',
-                    'filter',
+                    'translations',
+                    'dimensionItem',
+                    'dimensionItemType',
                 ];
 
                 schema.properties.push({propertyType: 'TEXT'});
 
                 const definition = ModelDefinition.createFromSchema(schema);
 
-                expect(Object.keys(definition.modelProperties)).to.deep.equal(expectedProperties);
+                expect(Object.keys(definition.modelProperties).sort()).to.deep.equal(expectedProperties.sort());
             });
 
             it('should use the collection name for collections', () => {
@@ -259,8 +255,8 @@ describe('ModelDefinition', () => {
                 expect(modelProperties.name.set).to.be.instanceof(Function);
             });
 
-            it('should not have a set method for dimensionType', () => {
-                expect(modelProperties.dimensionType.set).not.to.be.instanceof(Function);
+            it('should not have a set method for dimensionItem', () => {
+                expect(modelProperties.dimensionItem.set).not.to.be.instanceof(Function);
             });
 
             it('should create getter function on the propertyDescriptor', () => {
@@ -410,7 +406,7 @@ describe('ModelDefinition', () => {
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 
-                    expect(modelValidations.aggregationLevels.ordered).to.be.false;
+                    expect(modelValidations.aggregationType.ordered).to.be.false;
                 });
 
                 it('should set ordered to true when the ordered property is available and is true', () => {
@@ -619,7 +615,7 @@ describe('ModelDefinition', () => {
         it('should call the api for the requested id', () => {
             dataElementModelDefinition.get('d4343fsss');
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements/d4343fsss', { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements/d4343fsss', { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' });
         });
 
         it('should set the data onto the model when it is available', (done) => {
@@ -677,7 +673,7 @@ describe('ModelDefinition', () => {
 
                 dataElementModelDefinition.get(['id1', 'id2'])
                     .then((dataElementCollection) => {
-                        expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { filter: ['id:in:[id1,id2]'], fields: ':all' });
+                        expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { filter: ['id:in:[id1,id2]'], fields: ':all' });
                         done();
                     })
                     .catch(done);
@@ -716,7 +712,7 @@ describe('ModelDefinition', () => {
         it('should call the get method on the api with the endpoint of the model', () => {
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
         });
 
         it('should return a model collection object', (done) => {
@@ -756,7 +752,7 @@ describe('ModelDefinition', () => {
                 .filter().on('name').like('John')
                 .list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all', filter: ['name:like:John'] });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
         });
 
         it('should return a separate modelDefinition when filter is called', () => {
@@ -770,8 +766,8 @@ describe('ModelDefinition', () => {
 
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all' });
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all', filter: ['name:like:John'] });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
         });
 
         it('should support multiple filters', () => {
@@ -780,7 +776,7 @@ describe('ModelDefinition', () => {
                 .filter().on('username').equals('admin')
                 .list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
         });
     });
 
@@ -827,7 +823,7 @@ describe('ModelDefinition', () => {
 
             clonedDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
         });
     });
 
@@ -1056,9 +1052,9 @@ describe('ModelDefinition', () => {
             const expectedDataElementProperties = [
                 'lastUpdated', 'code', 'id', 'created', 'name', 'formName', 'legendSet',
                 'shortName', 'zeroIsSignificant', 'publicAccess', 'commentOptionSet',
-                'aggregationOperator', 'type', 'url', 'numberType', 'optionSet',
-                'domainType', 'description', 'categoryCombo', 'user', 'textType',
-                'aggregationLevels', 'attributeValues', 'userGroupAccesses',
+                'aggregationType', 'valueType', 'url', 'optionSet',
+                'domainType', 'description', 'categoryCombo', 'user',
+                'aggregationLevels', 'attributeValues', 'userGroupAccesses', 'translations'
             ].sort();
             const ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
 
