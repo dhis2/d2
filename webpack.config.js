@@ -1,6 +1,13 @@
 const webpack = require('webpack');
 const WrapperPlugin = require('wrapper-webpack-plugin');
 
+/**
+ * Check if the current file is in the src folder
+ */
+const isFileInSrcFolder = (path) => {
+    return (new RegExp(`${__dirname}\/src`)).test(path);
+}
+
 module.exports = {
     entry: './src/d2.js',
     output: {
@@ -25,9 +32,8 @@ module.exports = {
         loaders: [
             {
                 test: /\.js?$/,
-                exclude: function (path) {
-                    return !/(d2\/src)/.test(path);
-                },
+                // We only want to babelify files in the source folder
+                include: isFileInSrcFolder,
                 loader: 'babel',
             },
         ],
