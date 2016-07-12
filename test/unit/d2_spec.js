@@ -1,6 +1,4 @@
-// Import for global beforeEach / afterEach
-import '../setup/setup.js';
-
+import '../setup/setup.js'; // Import for global beforeEach / afterEach
 import fixtures from '../fixtures/fixtures';
 
 // TODO: The Config class should probably be mocked
@@ -382,14 +380,32 @@ describe('D2', () => {
     });
 
     describe('currentUser', () => {
-        it('should be available on the d2 object', (done) => {
+        it('should be available on the d2 object', () => {
             d2.init();
-            d2.getInstance()
+
+            return d2.getInstance()
                 .then(newD2 => {
                     expect(newD2.currentUser).to.not.be.undefined;
-                    done();
-                })
-                .catch(done);
+                });
+        });
+    });
+
+    describe('with specific schema loading', () => {
+        it('should have only loaded a single schema', () => {
+            apiMock.get
+                // First init round
+                .onCall(0).returns(Promise.resolve(fixtures.get('/api/schemas/user')));
+
+            d2.init({
+                schemas: ['user']
+            });
+
+            return d2.getInstance()
+                .then(newD2 => {
+                    expect(apiMock.get).to.have.been.calledWith('schemas/user', {
+                        fields: "apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]"
+                    });
+                });
         });
     });
 
@@ -415,6 +431,7 @@ describe('D2', () => {
             expect(apiMock.get).to.be.called;
         });
 
+        // FIXME: Impossible to test due to the global firstRun flag
         xit('should preset the baseUrl from the config', (done) => {
             d2.config.baseUrl = '/dhis/api';
 

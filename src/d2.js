@@ -51,6 +51,30 @@ export function getUserSettings() {
     return api.get('userSettings');
 }
 
+function getModelRequests(api, schemaNames = []) {
+    const fieldsForSchemas = 'apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]';
+    const modelRequests = [];
+    const loadSchemaForName = (schemaName) => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
+
+    if (schemaNames.length > 0) {
+        const individualSchemaRequests = schemaNames.map(loadSchemaForName);
+
+        const schemasPromise = Promise
+            .all(individualSchemaRequests)
+            .then(schemas => ({ schemas }));
+
+        modelRequests.push(schemasPromise);
+    } else {
+        // Used as a source to generate the models.
+        modelRequests.push(api.get('schemas', { fields: fieldsForSchemas }));
+    }
+
+    // Used to add the dynamic attributes to the models that should have them.
+    modelRequests.push(api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }));
+
+    return modelRequests;
+}
+
 /**
  * @function init
  *
@@ -101,14 +125,23 @@ export function init(initConfig) {
         deferredD2Init = Deferred.create();
     }
 
-    return Promise.all([
-        api.get('schemas', { fields: 'apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]' }),
-        api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }),
+    const modelRequests = getModelRequests(api, config.schemas);
+
+    const userRequests = [
         api.get('me', { fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]' }),
         api.get('me/authorization'),
         getUserSettings(),
+    ];
+
+    const systemRequests = [
         api.get('system/info'),
         api.get('apps'),
+    ];
+
+    return Promise.all([
+        ...modelRequests,
+        ...userRequests,
+        ...systemRequests,
         d2.i18n.load(),
     ])
         .then(res => {
@@ -132,8 +165,8 @@ export function init(initConfig) {
                     return schema;
                 })
                 .forEach((schema) => {
-                    // Attributes that do not have values do not by default get returned with the data.
-                    // Therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
+                    // Attributes that do not have values do not by default get returned with the data,
+                    // therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
                     const schemaAttributes = responses.attributes
                         .filter(attributeDescriptor => {
                             const attributeNameFilter = [schema.name, 'Attribute'].join('');
