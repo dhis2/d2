@@ -13,8 +13,9 @@
     "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "lint": "eslint src --fix",
-    "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
-    "travis": "npm run coverage && npm run e2e && npm run lint"
+    "__lint_tests__": "eslint --env node,mocha --global expect,sinon test/unit --fix",
+    "travis": "npm run coverage && npm run e2e && npm run lint",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -61,12 +62,14 @@
     "karma-sinon": "1.0.4",
     "karma-spec-reporter": "0.0.23",
     "karma-webpack": "1.7.0",
-    "lodash": "3.10.1",
+    "lodash": "^4.13.1",
     "mocha": "2.3.4",
+    "node-fetch": "^1.5.3",
     "phantomjs": "1.9.19",
     "phantomjs-polyfill": "0.0.1",
     "precommit-hook": "3.0.0",
     "proxyquire": "1.7.1",
+    "shelljs": "^0.7.0",
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
     "webpack": "1.12.12",
