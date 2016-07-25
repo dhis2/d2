@@ -56,6 +56,12 @@ class Api {
         this.jquery = jquery;
         this.baseUrl = '/api';
         this.defaultRequestSettings = {
+            headers: {
+                // FIXME: Remove the 'Cache-Control: no-store' header when we figure out how to solve this xhr/jquery bug
+                // does not process consecutive requests for the same url properly due to the 304 response.
+                // It makes no sense to set a 'Cache-Control: no-store' on a request...
+                'Cache-Control': 'no-store',
+            },
             data: {},
             contentType: 'application/json',
             type: undefined,
