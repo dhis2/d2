@@ -3,24 +3,34 @@ import d2 from '../../src/d2';
 describe('D2', function () {
     var server;
 
-    beforeEach(function (done) {
+    beforeEach(function () {
         server = sinon.fakeServer.create();
         server.autoRespond = true;
         server.xhr.useFilters = true;
 
         // Show the requests made to the fake server.
-        //server.xhr.addFilter(function (method, url) {
+        // server.xhr.addFilter(function (method, url) {
         //    console.log(method, url);
         //    return false;
-        //});
+        // });
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas',
+            '/dhis/api/schemas?fields=apiEndpoint%2Cname%2Cauthorities%2Cplural%2Csharable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2CreferenceType%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},
                 JSON.stringify(window.fixtures.schemas)
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            '/dhis/api/schemas/dataElement?fields=apiEndpoint%2Cname%2Cauthorities%2Cplural%2Csharable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2CreferenceType%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%5D',
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify(window.fixtures.dataElementSchema)
             ]
         );
 
@@ -94,20 +104,33 @@ describe('D2', function () {
                 JSON.stringify({apps: []})
             ]
         );
+    });
 
+    it('should be available on the window', function (done) {
         d2.init({baseUrl: '/dhis/api'})
             .then(function (initialisedD2) {
-                window.d2 = initialisedD2;
+                expect(initialisedD2).to.not.be.undefined;
                 done();
             })
             .catch(done);
     });
 
-    it('should be available on the window', function () {
-        expect(d2).to.not.be.undefined;
+    it('should return jquery on the api object', function (done) {
+        d2.init({baseUrl: '/dhis/api'})
+            .then(function (initialisedD2) {
+                expect(initialisedD2.Api.getApi().jquery).to.equal(window.$);
+                done();
+            })
+            .catch(done);
     });
 
-    it('should return jquery on the api object', function () {
-        expect(new window.d2.Api.getApi().jquery).to.equal(window.$);
+    it('should only load the requested schemas', function (done) {
+        d2.init({baseUrl: '/dhis/api', schemas: ['dataElement']})
+            .then(function (initialisedD2) {
+                expect(initialisedD2.models.dataElement).to.not.be.undefined;
+                expect(initialisedD2.models.indicator).to.be.undefined;
+                done();
+            })
+            .catch(done);
     });
 });
