@@ -116,6 +116,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -128,6 +129,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/path/of/sorts/dataElements',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -140,6 +142,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements.json',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -154,6 +157,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: 'http://localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -168,6 +172,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '//localhost:8090/dhis/api/dataElements.json',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -179,6 +184,7 @@ describe('Api', () => {
             expect(jqueryMock.ajax).to.be.calledWith({
                 type: 'GET',
                 url: '/api/dataElements',
+                headers: { 'Cache-Control': 'no-store' },
                 dataType: 'json',
                 contentType: undefined,
                 data: {},
@@ -192,6 +198,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {
                     fields: 'id,name',
@@ -253,6 +260,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/dataElements',
                 dataType: 'text',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -265,6 +273,7 @@ describe('Api', () => {
                 type: 'GET',
                 url: '/api/filterTest?filter=a:1&filter=b:2',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -283,6 +292,7 @@ describe('Api', () => {
                 type: 'POST',
                 url: fixtures.get('singleUserAllFields').href,
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'application/json',
                 data: JSON.stringify(fixtures.get('singleUserOwnerFields')),
             });
@@ -295,6 +305,7 @@ describe('Api', () => {
                 type: 'POST',
                 url: '/api/systemSettings/mySettingsKey',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'text/plain',
                 data: 'string=test',
             });
@@ -307,6 +318,7 @@ describe('Api', () => {
                 type: 'POST',
                 url: '/api/systemSettings/numberZero',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'text/plain',
                 data: 0,
             });
@@ -319,6 +331,7 @@ describe('Api', () => {
                 type: 'POST',
                 url: '/api/systemSettings/keyTrue',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'text/plain',
                 data: 'true',
             });
@@ -331,6 +344,7 @@ describe('Api', () => {
                 type: 'POST',
                 url: '/api/systemSettings/keyFalse',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'text/plain',
                 data: 'false',
             });
@@ -343,6 +357,7 @@ describe('Api', () => {
                 type: 'POST',
                 url: '/api/some/api/endpoint',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: false,
                 data: { obj: 'yes' },
             });
@@ -365,6 +380,7 @@ describe('Api', () => {
                 type: 'DELETE',
                 url: fixtures.get('singleUserAllFields').href,
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -377,6 +393,7 @@ describe('Api', () => {
                 type: 'DELETE',
                 url: '/api/users/aUplAx3DOWy',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -408,6 +425,7 @@ describe('Api', () => {
                 type: 'PUT',
                 url: '/api/some/fake/api/endpoint',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'application/json',
                 data: JSON.stringify(theData),
             });
@@ -420,6 +438,7 @@ describe('Api', () => {
                 type: 'PUT',
                 url: '/api/some/fake/api/endpoint?mergeMode=REPLACE',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'application/json',
                 data: JSON.stringify({}),
             });
@@ -439,6 +458,7 @@ describe('Api', () => {
                 type: 'PUT',
                 url: '/api/some/fake/api/endpoint?mergeStrategy=REPLACE',
                 dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'application/json',
                 data: JSON.stringify({}),
             });
