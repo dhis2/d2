@@ -61,7 +61,7 @@ export function getJSONForProperties(model, properties) {
 }
 
 export function getOwnedPropertyJSON(model) {
-    const ownedProperties = this.getOwnedPropertyNames();
+    const ownedProperties = model.modelDefinition.getOwnedPropertyNames();
 
     return getJSONForProperties(model, ownedProperties);
 }

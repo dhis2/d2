@@ -1,14 +1,12 @@
 let proxyquire = require('proxyquire').noCallThru();
 proxyquire('../../../src/api/Api', {
-    '../../../src/external/jquery': {}
+    '../../../src/external/jquery': {},
 });
 
 describe('ModelValidations', () => {
-    'use strict';
-
-    let ModelValidation = require('../../../src/model/ModelValidation');
-    let Logger = require('../../../src/logger/Logger');
-    let Api = require('../../../src/api/Api');
+    const ModelValidation = require('../../../src/model/ModelValidation');
+    const Logger = require('../../../src/logger/Logger');
+    const Api = require('../../../src/api/Api');
 
     let api;
     let modelValidation;
@@ -56,7 +54,15 @@ describe('ModelValidations', () => {
                     name: 'dataElement',
                     getOwnedPropertyJSON: sinon.stub()
                         .returns({ id: 'R4dd3wwdwdw', name: 'ANC' }),
+                    getOwnedPropertyNames: sinon.stub()
+                        .returns(['id', 'name']),
+                    modelValidations: {
+                        id: {},
+                        name: {},
+                    },
                 },
+                dataValues: { id: 'R4dd3wwdwdw', name: 'ANC' },
+                getCollectionChildrenPropertyNames: stub().returns([]),
             };
         });
 
@@ -84,14 +90,13 @@ describe('ModelValidations', () => {
                 });
         });
 
-        it('should call the post method on the api with the modeldata', (done) => {
-            modelValidation.validateAgainstSchema(modelMock)
+        it('should call the post method on the api with the modeldata', () => {
+            return modelValidation.validateAgainstSchema(modelMock)
                 .then(() => {
                     expect(api.post).to.be.calledWith(
                         'schemas/dataElement',
                         { id: 'R4dd3wwdwdw', name: 'ANC' }
                     );
-                    done();
                 });
         });
 
