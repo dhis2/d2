@@ -24,7 +24,7 @@ deploy:
   api_key:
     secure: VPyATOy4THntMa7rhUqsL5aAGZfEyiHBETBDIbUQjIrGp447P+olpAOWUNZuKjjQhnKQg0OODiV+51+MY9EQBEa8w6crpiQR+m0NTxj/gMkVMXxfIqH1LaLbFYfH+85mF4Ik4cK5VfOlxTdRY89jDm7vGJavnQhLg9auT7sFWKM=
   on:
-    branch: v24
+    branch: v25
   skip_cleanup: true
 after_deploy:
   - git push "https://${GITHUB_TOKEN}@${GH_REF}" $TRAVIS_BRANCH --quiet
