@@ -27,5 +27,6 @@ deploy:
     branch: v25
   skip_cleanup: true
 after_deploy:
-  - git push "https://${GITHUB_TOKEN}@${GH_REF}" $TRAVIS_BRANCH --quiet
-  - git push "https://${GITHUB_TOKEN}@${GH_REF}" --tags --quiet
+  - git remote add origin https://${GITHUB_TOKEN}@${GH_REF} --quiet
+  - git push origin $TRAVIS_BRANCH --quiet
+  - git push origin --tags --quiet
