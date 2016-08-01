@@ -30,5 +30,6 @@ deploy:
 after_deploy:
   - git remote remove origin
   - git remote add origin https://${GITHUB_TOKEN}@${GH_REF}
-  - git push origin $TRAVIS_BRANCH --quiet
+  - echo $TRAVIS_BRANCH
+  - git push origin $TRAVIS_BRANCH
   - git push origin --tags --quiet
