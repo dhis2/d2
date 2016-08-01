@@ -1,7 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-- 5.1.1
+- 6.1.0
 script:
 - npm run travis
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && codeclimate-test-reporter < ./coverage/lcov.info || true'
