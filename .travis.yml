@@ -13,12 +13,11 @@ env:
   global:
   - GH_REF: github.com/dhis2/d2.git
   - secure: dczgNmycwYw9E7aAQN+/Ad/l93SIWTPDCnJ39eLWb0Wwp4CdvNAfdt9EV9ysQSba5ylaD7I1dD6nmFkZla1m8UtxdrPbTm/gf0v40ZXgSErxkFpRt+cj442j6v/IqFi9Ok78KwVpeyUjraWD5HToCwBI9BxtpoqrCVh84DfplSo=
-  - secure: d0W371ABiCdbN0RJHm8HfDnzd8P/TTRxOj770+1xcZNW67EAHQsJL6L8mT8H6T3nCP/PhW2+r2jr/OWiukIknQ6bK+DXzZMHI45klzRtoyLjkZl8qiwvxsx6maSd5/koy8zKhgltGW7gtb8jec68ZUNUrrnKxyaLWiqEb6OUn/8=
+  - secure: CtubqGDIhhEzJ0ag+alz8XI3PyHAP/ExztvZqgeDYpjdQb3IYPJxnmHTC2IZsHeytZ0LB9/H3EnU51NpTvIO6tP5hDwdzlLmuRFXRwiV5kxuLznCZpmYanz9B7wJck85PujIbf1KpfVbGtvayToLjsJfE5wsIR3K8aOtwLV/SpQ=
 before_deploy:
-  - git config user.name "Travis CI"
-  - git config user.email "mark@dhis2.org"
-  - npm version patch && npm run build
-  - git log -10 --oneline
+- git config user.name "Travis CI"
+- git config user.email "mark@dhis2.org"
+- npm version patch && npm run build
 deploy:
   provider: npm
   email: mark@dhis2.org
@@ -28,6 +27,5 @@ deploy:
     branch: v25
   skip_cleanup: true
 after_deploy:
-  - git log -10 --oneline
-  - git push https://${GITHUB_TOKEN}@${GH_REF} HEAD:v25 --quiet
-  - git push https://${GITHUB_TOKEN}@${GH_REF} --tags --quiet
+- git push https://${GITHUB_TOKEN}@${GH_REF} HEAD:v25 --quiet
+- git push https://${GITHUB_TOKEN}@${GH_REF} --tags --quiet
