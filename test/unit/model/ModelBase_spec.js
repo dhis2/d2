@@ -34,11 +34,11 @@ describe('ModelBase', () => {
     });
 
     it('should have a save method', () => {
-        expect(modelBase.save).to.be.instanceof(Function);
+        expect(modelBase.save).to.be.a('function');
     });
 
     it('should have a validate method', () => {
-        expect(modelBase.validate).to.be.instanceof(Function);
+        expect(modelBase.validate).to.be.a('function');
     });
 
     describe('saving', () => {

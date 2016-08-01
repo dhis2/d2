@@ -29,15 +29,15 @@ describe('Model', () => {
     });
 
     it('should have a create method on the class', () => {
-        expect(Model.create).to.be.instanceof(Function);
+        expect(Model.create).to.be.a('function');
     });
 
     it('should have a save method', () => {
-        expect(model.save).to.be.instanceof(Function);
+        expect(model.save).to.be.a('function');
     });
 
     it('should have a validate method', () => {
-        expect(model.validate).to.be.instanceof(Function);
+        expect(model.validate).to.be.a('function');
     });
 
     it('should have a dirty property that is set to false', () => {
