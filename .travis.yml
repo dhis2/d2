@@ -19,3 +19,4 @@ deploy:
     secure: VPyATOy4THntMa7rhUqsL5aAGZfEyiHBETBDIbUQjIrGp447P+olpAOWUNZuKjjQhnKQg0OODiV+51+MY9EQBEa8w6crpiQR+m0NTxj/gMkVMXxfIqH1LaLbFYfH+85mF4Ik4cK5VfOlxTdRY89jDm7vGJavnQhLg9auT7sFWKM=
   on:
     branch: v24
+  skip_cleanup: true
