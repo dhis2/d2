@@ -27,5 +27,5 @@ deploy:
     branch: v24
   skip_cleanup: true
 after_deploy:
-  - git push "https://${GITHUB_TOKEN}@${GH_REF}" --quiet
+  - git push "https://${GITHUB_TOKEN}@${GH_REF}" $TRAVIS_BRANCH --quiet
   - git push "https://${GITHUB_TOKEN}@${GH_REF}" --tags --quiet
