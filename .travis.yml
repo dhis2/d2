@@ -18,6 +18,7 @@ before_deploy:
   - git config user.name "Travis CI"
   - git config user.email "mark@dhis2.org"
   - npm version patch && npm run build
+  - git log -10 --oneline
 deploy:
   provider: npm
   email: mark@dhis2.org
