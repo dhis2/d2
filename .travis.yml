@@ -11,3 +11,11 @@ notifications:
 env:
   global:
     secure: dczgNmycwYw9E7aAQN+/Ad/l93SIWTPDCnJ39eLWb0Wwp4CdvNAfdt9EV9ysQSba5ylaD7I1dD6nmFkZla1m8UtxdrPbTm/gf0v40ZXgSErxkFpRt+cj442j6v/IqFi9Ok78KwVpeyUjraWD5HToCwBI9BxtpoqrCVh84DfplSo=
+before_deploy: "npm run build"
+deploy:
+  provider: npm
+  email: mark@dhis2.org
+  api_key:
+    secure: VPyATOy4THntMa7rhUqsL5aAGZfEyiHBETBDIbUQjIrGp447P+olpAOWUNZuKjjQhnKQg0OODiV+51+MY9EQBEa8w6crpiQR+m0NTxj/gMkVMXxfIqH1LaLbFYfH+85mF4Ik4cK5VfOlxTdRY89jDm7vGJavnQhLg9auT7sFWKM=
+  on:
+    branch: v24
