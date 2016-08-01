@@ -28,8 +28,6 @@ deploy:
     branch: v25
   skip_cleanup: true
 after_deploy:
-  - git remote remove origin
-  - git remote add origin https://${GITHUB_TOKEN}@${GH_REF}
   - git log -10 --oneline
-  - git push origin v25 --quiet
-  - git push origin --tags --quiet
+  - git push https://${GITHUB_TOKEN}@${GH_REF} v25
+  - git push https://${GITHUB_TOKEN}@${GH_REF} --tags --quiet
