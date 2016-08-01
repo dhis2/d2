@@ -29,5 +29,5 @@ deploy:
   skip_cleanup: true
 after_deploy:
   - git log -10 --oneline
-  - git push https://${GITHUB_TOKEN}@${GH_REF} v25
+  - git push https://${GITHUB_TOKEN}@${GH_REF} HEAD:v25 --quiet
   - git push https://${GITHUB_TOKEN}@${GH_REF} --tags --quiet
