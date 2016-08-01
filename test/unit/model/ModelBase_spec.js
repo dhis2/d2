@@ -34,11 +34,15 @@ describe('ModelBase', () => {
     });
 
     it('should have a save method', () => {
-        expect(modelBase.save).to.be.instanceof(Function);
+        expect(modelBase.save).to.be.a('function');
     });
 
     it('should have a validate method', () => {
-        expect(modelBase.validate).to.be.instanceof(Function);
+        expect(modelBase.validate).to.be.a('function');
+    });
+
+    it('should have a clone method', () => {
+        expect(modelBase.clone).to.be.a('function');
     });
 
     describe('saving', () => {
@@ -302,6 +306,117 @@ describe('ModelBase', () => {
                     done();
                 })
                 .catch(done);
+        });
+    });
+
+
+    describe('clone', () => {
+        let modelDefinition;
+        let model;
+
+        class Model {
+            constructor(modelDef) {
+                this.modelDefinition = modelDef;
+                this.validate = stub().returns(Promise.resolve({ status: true }));
+                this.dirty = true;
+                this[DIRTY_PROPERTY_LIST] = new Set(['name']);
+                this.dataValues = {
+                    id: 'DXyJmlo9rge',
+                    name: 'My metadata object',
+                };
+            }
+
+            static create(modelDefinition) {
+                const model = new Model(modelDefinition);
+
+                Object.defineProperty(model, 'id', {
+                    get() {
+                        return this.dataValues.id;
+                    },
+                    enumerable: true,
+                });
+                Object.defineProperty(model, 'name', {
+                    get() {
+                        return this.dataValues.name;
+                    },
+                    set(newValue) {
+                        this.dataValues.name = newValue;
+                    },
+                    enumerable: true,
+                });
+                Object.defineProperty(model, 'userGroups', {
+                    get() {
+                        return this.dataValues.userGroups;
+                    },
+                    enumerable: true,
+                });
+
+                return model;
+            }
+        }
+
+        beforeEach(() => {
+            modelDefinition = {
+                apiEndpoint: '/dataElements',
+                save: stub().returns(Promise.resolve()),
+                saveNew: stub().returns(Promise.resolve()),
+                create: stub().returns(Model.create(modelDefinition)),
+                modelValidations: {
+                    id: {},
+                    name: {},
+                    userGroups: {
+                        type: 'COLLECTION',
+                    },
+                },
+            };
+
+            Model.prototype = modelBase;
+            model = Model.create(modelDefinition);
+        });
+
+        it('should call create on the modelDefinition', () => {
+            model.clone();
+
+            expect(modelDefinition.create).to.be.called;
+        });
+
+        it('should pass all the dataValues to the create function', () => {
+            model.clone();
+
+            expect(modelDefinition.create).to.be.calledWith({
+                id: 'DXyJmlo9rge',
+                name: 'My metadata object',
+            });
+        });
+
+        it('should pass collections arrays of ids', () => {
+            // Would generally be a ModelCollection, but it extends Map so for simplicity we use Map directly.
+            model.dataValues.userGroups = new Map([
+                ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC' }],
+                ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS' }],
+            ]);
+
+            model.clone();
+
+            expect(modelDefinition.create).to.be.calledWith({
+                id: 'DXyJmlo9rge',
+                name: 'My metadata object',
+                userGroups: [
+                    { id: 'P3jJH5Tu5VC' },
+                    { id: 'FQ2o8UBlcrS' },
+                ],
+            });
+        });
+
+        it('should return an independent clone', () => {
+            const modelClone = model.clone();
+
+            expect(model).not.to.equal(modelClone);
+
+            modelClone.name = 'NewName';
+
+            expect(modelClone.dataValues.name).to.equal('NewName');
+            expect(model.dataValues.name).to.equal('My metadata object');
         });
     });
 

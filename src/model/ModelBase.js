@@ -1,5 +1,6 @@
 import ModelValidation from './ModelValidation';
 import { isValidUid } from '../lib/check';
+import { getJSONForProperties } from './helpers/json';
 
 const modelValidator = ModelValidation.getModelValidation();
 
@@ -148,6 +149,10 @@ class ModelBase {
                 })
                 .catch(message => reject(message));
         });
+    }
+
+    clone() {
+        return this.modelDefinition.create(getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations)));
     }
 
     delete() {

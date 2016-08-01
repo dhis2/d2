@@ -1,7 +1,7 @@
 import { checkType } from '../lib/check';
 import Logger from '../logger/Logger';
 import Api from '../api/Api';
-
+import { getOwnedPropertyJSON } from './helpers/json';
 
 /**
  * @class ModelValidation
@@ -52,7 +52,7 @@ class ModelValidation {
         const url = `schemas/${model.modelDefinition.name}`;
 
         // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
-        return Api.getApi().post(url, model.modelDefinition.getOwnedPropertyJSON(model))
+        return Api.getApi().post(url, getOwnedPropertyJSON(model))
             .then((webMessage) => {
                 if (webMessage.status === 'OK') {
                     return [];

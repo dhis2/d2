@@ -863,6 +863,8 @@ describe('ModelDefinition', () => {
                 model.dataValues[key] = singleUserAllFields[key];
                 model[key] = singleUserAllFields[key];
             });
+
+            Object.defineProperty(model, 'modelDefinition', { value: userModelDefinition });
         });
 
         describe('save()', () => {
