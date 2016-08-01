@@ -12,7 +12,7 @@
     "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
     "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
-    "lint": "eslint src --fix",
+    "lint": "eslint src",
     "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
     "travis": "npm run coverage && npm run e2e && npm run lint"
   },
