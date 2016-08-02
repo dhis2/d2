@@ -6,7 +6,7 @@ script:
 - 'npm run travis'
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] || travis_terminate 0'
 - 'codeclimate-test-reporter < ./coverage/lcov.info'
-- '[ -z "${TRAVIS_TAG}" ] && ./create-tag.sh || true'
+- '[ -n $TRAVIS_COMMIT_RANGE ] && git --no-pager diff $TRAVIS_COMMIT_RANGE --name-only | ./create-tag.sh'
 notifications:
   slack:
     secure: MPEurDUvYfcl3b5Hji/42sKF6TQLRcrkqMfKINy6buFePKdbkwDjQd+r0GYAC153lLpbJeiFy7p8TAVp2QP3wmC02ea9n3CG8juKpCBabyaZq3RBvhJ7kKUd/BdTLPNWU1ttSrQlzOoAs3HcuEAaeUzhW3d0LPH+bVvYx4aG8UM=
