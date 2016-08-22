@@ -2,10 +2,10 @@
 
 ## Automagic builds and deployments
 
-Builds are automagically published to npm when a pull request is merged into a release branch or when pushed to directly.
-
-The release branches that are build by travis are currently the following:
+Tags are deployed to npm automatically. A tag is created by travis when the src folder has changed on one
+of the following branches:
 - v24
+- v25
 
 ## What happens exactly?
 - When pushed to v24 or a pull request is merged

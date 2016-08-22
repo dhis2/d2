@@ -9,7 +9,7 @@ describe('D2.system', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas?fields=apiEndpoint%2Cname%2Cauthorities%2Cplural%2Cshareable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2CreferenceType%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%2CitemPropertyType%5D',
+            '/dhis/api/schemas?fields=apiEndpoint%2Cname%2Cauthorities%2Cplural%2Cshareable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%2CitemPropertyType%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},

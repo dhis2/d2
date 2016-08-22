@@ -397,13 +397,13 @@ describe('D2', () => {
                 .onCall(0).returns(Promise.resolve(fixtures.get('/api/schemas/user')));
 
             d2.init({
-                schemas: ['user']
+                schemas: ['user'],
             });
 
             return d2.getInstance()
                 .then(newD2 => {
                     expect(apiMock.get).to.have.been.calledWith('schemas/user', {
-                        fields: 'apiEndpoint,name,authorities,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]'
+                        fields: 'apiEndpoint,name,authorities,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]',
                     });
                 });
         });
