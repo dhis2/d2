@@ -52,7 +52,7 @@ export function getUserSettings() {
 }
 
 function getModelRequests(api, schemaNames = []) {
-    const fieldsForSchemas = 'apiEndpoint,name,authorities,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]';
+    const fieldsForSchemas = 'apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]';
     const modelRequests = [];
     const loadSchemaForName = (schemaName) => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
 
@@ -169,11 +169,11 @@ export function init(initConfig) {
                     // therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
                     const schemaAttributes = responses.attributes
                         .filter(attributeDescriptor => {
-                            const attributeNameFilter = [schema.name, 'Attribute'].join('');
+                            const attributeNameFilter = [schema.singular, 'Attribute'].join('');
                             return attributeDescriptor[attributeNameFilter] === true;
                         });
 
-                    if (!Object.prototype.hasOwnProperty.call(d2.models, schema.name)) {
+                    if (!Object.prototype.hasOwnProperty.call(d2.models, schema.singular)) {
                         d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
                     }
                 });

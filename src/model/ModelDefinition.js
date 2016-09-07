@@ -402,14 +402,14 @@ class ModelDefinition {
         let ModelDefinitionClass;
         checkType(schema, Object, 'Schema');
 
-        if (typeof ModelDefinition.specialClasses[schema.name] === 'function') {
-            ModelDefinitionClass = ModelDefinition.specialClasses[schema.name];
+        if (typeof ModelDefinition.specialClasses[schema.singular] === 'function') {
+            ModelDefinitionClass = ModelDefinition.specialClasses[schema.singular];
         } else {
             ModelDefinitionClass = ModelDefinition;
         }
 
         return Object.freeze(new ModelDefinitionClass(
-            schema.name,
+            schema.singular,
             schema.plural,
             schema,
             Object.freeze(createPropertiesObject(schema.properties)),
