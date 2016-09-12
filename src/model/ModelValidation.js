@@ -40,11 +40,8 @@ class ModelValidation {
         }
 
         function extractValidationViolations(webmessage) {
-            // Support both the 2.23+ version using `errorReports` and the 2.22 and lower using `validationViolations`
-            // for errorMessages from the schemas endpoint.
-            // TODO: Remove support for the older `validationViolations` when supporting 2.22 is no longer required
-            if (webmessage.response && (webmessage.response.validationViolations || webmessage.response.errorReports)) {
-                return (webmessage.response.validationViolations || webmessage.response.errorReports);
+            if (webmessage.response && webmessage.response.errorReports) {
+                return webmessage.response.errorReports;
             }
             throw new Error('Response was not a WebMessage with the expected format');
         }
