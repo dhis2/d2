@@ -62,7 +62,7 @@ describe('Api', () => {
 
     describe('setBaseUrl', () => {
         beforeEach(() => {
-            api = new Api({});
+            api = new Api(() => {});
         });
 
         it('should be a method', () => {
@@ -181,6 +181,28 @@ describe('Api', () => {
                 .catch(err => {
                     expect(err).to.be.an('object');
                     expect(err).to.deep.equal(JSON.parse(errorText));
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should properly encode URIs', done => {
+            api.get('some/endpoint?a=b&c=d|e', { f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}', u : '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:' })
+                .then(() => {
+                    expect(fetchMock).to.have.been.calledWith(
+                        '/api/some/endpoint?a=b&c=d%7Ce&f=g%7Ch%5Bi,j%5D,k%5Bl%7Cm%5D,n%7Bo~p%60q%60$r%40s!t%7D&u=-._~:/%3F%23%5B%5D%40!$&()*%2B,;===,~$!%40*()_-=%2B/;:'
+                    );
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should not break URIs when encoding', done => {
+            api.get('test?a=b=c&df,gh')
+                .then(() => {
+                    expect(fetchMock).to.have.been.calledWith(
+                        '/api/test?a=b=c&df,gh'
+                    );
                     done();
                 })
                 .catch(done);

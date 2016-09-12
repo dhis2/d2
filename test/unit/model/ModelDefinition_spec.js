@@ -778,6 +778,13 @@ describe('ModelDefinition', () => {
 
             expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
         });
+
+        it('should not try to filter by "undefined"', () => {
+            dataElementModelDefinition
+                .list({ filter: undefined });
+
+            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+        })
     });
 
     describe('clone', () => {

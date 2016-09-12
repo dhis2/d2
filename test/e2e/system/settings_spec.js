@@ -8,12 +8,12 @@ describe('D2.system', function () {
         server = sinon.fakeServer.create();
 
         server.respondWith(/(.*)/, (rq) => {
-            console.error(`404: '${rq.method}', '${rq.url}'`);
+            console.error(`D2.system 404: '${rq.method}', '${rq.url}'`);
         });
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]',
+            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -23,7 +23,7 @@ describe('D2.system', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/attributes?fields=:all,optionSet[:all,options[:all]]&paging=false',
+            '/dhis/api/attributes?fields=:all,optionSet%5B:all,options%5B:all%5D%5D&paging=false',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -43,7 +43,7 @@ describe('D2.system', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/me?fields=:all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]',
+            '/dhis/api/me?fields=:all,organisationUnits%5Bid%5D,userGroups%5Bid%5D,userCredentials%5B:all,!user,userRoles%5Bid%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},

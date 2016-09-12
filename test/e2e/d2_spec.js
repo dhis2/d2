@@ -15,12 +15,12 @@ describe('D2', function () {
         // });
 
         server.respondWith(/(.*)/, (rq) => {
-            console.error(`404: '${rq.method}', '${rq.url}'`);
+            console.error(`D2 404: '${rq.method}', '${rq.url}'`);
         });
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]',
+            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -30,7 +30,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]',
+            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -40,7 +40,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/attributes?fields=:all,optionSet[:all,options[:all]]&paging=false',
+            '/dhis/api/attributes?fields=:all,optionSet%5B:all,options%5B:all%5D%5D&paging=false',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -60,7 +60,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/me\?fields=%3Aall%2CorganisationUnits%5Bid%5D%2CuserGroups%5Bid%5D%2CuserCredentials%5B%3Aall%2C!user%2CuserRoles%5Bid%5D$/,
+            '/dhis/api/me?fields=:all,organisationUnits%5Bid%5D,userGroups%5Bid%5D,userCredentials%5B:all,!user,userRoles%5Bid%5D',
             [
                 200,
                 {'Content-Type': 'application/json'},
