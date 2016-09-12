@@ -52,7 +52,11 @@ export function getUserSettings() {
 }
 
 function getModelRequests(api, schemaNames = []) {
-    const fieldsForSchemas = 'apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]';
+    const fieldsForSchemas = [
+        'apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href',
+        'writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants',
+        'owner,itemPropertyType]',
+    ].join(',');
     const modelRequests = [];
     const loadSchemaForName = (schemaName) => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
 

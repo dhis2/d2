@@ -5,9 +5,7 @@ function isPlainValue(collection) {
 }
 
 function isCollectionProperty(collection) {
-    return function (property) {
-        return !isPlainValue(collection)(property);
-    };
+    return (property) => !isPlainValue(collection)(property);
 }
 
 export function getJSONForProperties(model, properties) {
@@ -20,7 +18,10 @@ export function getJSONForProperties(model, properties) {
 
     const propertyNames = Object.keys(model.modelDefinition.modelValidations)
         .filter(propertyName => properties.indexOf(propertyName) >= 0)
-        .filter(propertyName => model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null);
+        .filter(propertyName => (
+            model.dataValues[propertyName] !== undefined &&
+            model.dataValues[propertyName] !== null)
+        );
 
     // Handle plain values
     propertyNames
@@ -35,7 +36,9 @@ export function getJSONForProperties(model, properties) {
         .forEach((propertyName) => {
             // compulsoryDataElementOperands and greyedFields are not arrays of models.
             // TODO: This is not the proper way to do this. We should check if the array contains Models
-            if (propertyName === 'compulsoryDataElementOperands' || propertyName === 'greyedFields' || propertyName === 'aggregationLevels') {
+            if (propertyName === 'compulsoryDataElementOperands' ||
+                propertyName === 'greyedFields' ||
+                propertyName === 'aggregationLevels') {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
             }

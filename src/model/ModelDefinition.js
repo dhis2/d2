@@ -106,54 +106,6 @@ function shouldBeModelCollectionProperty(model, models) {
     };
 }
 
-function getOwnedPropertyJSON(model) {
-    const objectToSave = {};
-    const ownedProperties = this.getOwnedPropertyNames();
-    const collectionProperties = model
-        .getCollectionChildrenPropertyNames()
-        // Even though attributeValues are considered collections, they are handled separately due to their
-        // difference in structure.
-        .filter(propertyName => propertyName !== 'attributeValues');
-
-    /* eslint-disable complexity */
-    Object.keys(this.modelValidations).forEach((propertyName) => {
-        if (ownedProperties.indexOf(propertyName) >= 0) {
-            if (model.dataValues[propertyName] !== undefined && model.dataValues[propertyName] !== null) {
-                // Handle collections and plain values different
-                if (collectionProperties.indexOf(propertyName) === -1) {
-                    objectToSave[propertyName] = model.dataValues[propertyName];
-                } else {
-                    // compulsoryDataElementOperands and greyedFields are not arrays of models.
-                    // TODO: This is not the proper way to do this. We should check if the array contains Models
-                    if (propertyName === 'compulsoryDataElementOperands' || propertyName === 'greyedFields') {
-                        objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
-                        return;
-                    }
-
-                    // Transform an object collection to an array of objects with id properties
-                    objectToSave[propertyName] = Array
-                        .from(model.dataValues[propertyName].values())
-                        .filter(value => value.id)
-                        .map((childModel) => {
-                            // Legends can be saved as part of the LegendSet object.
-                            // To make this work properly we will return all of the properties for the items in the collection
-                            // instead of just the `id` fields
-                            if (model.modelDefinition && model.modelDefinition.name === 'legendSet') {
-                                return getOwnedPropertyJSON.call(childModel.modelDefinition, childModel);
-                            }
-
-                            // For any other types we return an object with just an id
-                            return { id: childModel.id };
-                        });
-                }
-            }
-        }
-    });
-    /* eslint-enable complexity */
-
-    return objectToSave;
-}
-
 function isAnUpdate(modelToCheck) {
     return Boolean(modelToCheck.id);
 }

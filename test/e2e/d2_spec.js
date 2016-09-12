@@ -20,7 +20,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
+            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -30,7 +30,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
+            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType]',
             [
                 200,
                 {'Content-Type': 'application/json'},

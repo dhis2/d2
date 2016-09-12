@@ -25,7 +25,7 @@ describe('Api', () => {
         sinon.stub(System, 'getSystem').returns({
             version: {
                 major: 2,
-                minor: 23,
+                minor: 25,
             },
         });
     });
@@ -432,13 +432,7 @@ describe('Api', () => {
         it('should call the correct api endpoint when the url starts with a /', () => {
             api.delete('/users/aUplAx3DOWy');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'DELETE',
-                url: '/api/users/aUplAx3DOWy',
-                dataType: 'json',
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('/api/users/aUplAx3DOWy');
         });
     });
 
@@ -472,13 +466,7 @@ describe('Api', () => {
         it('should add the mergeMode param to the url when useMergeStrategy is passed', () => {
             api.update('some/fake/api/endpoint', {}, true);
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'PUT',
-                url: '/api/some/fake/api/endpoint?mergeMode=REPLACE',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify({}),
-            });
+            expect(fetchMock).to.be.calledWith('/api/some/fake/api/endpoint?mergeMode=REPLACE');
         });
 
         it('should add the mergeStrategy param to the url when useMergeStrategy is passed and the version is 2.22', () => {
@@ -491,13 +479,7 @@ describe('Api', () => {
 
             api.update('some/fake/api/endpoint', {}, true);
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'PUT',
-                url: '/api/some/fake/api/endpoint?mergeStrategy=REPLACE',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify({}),
-            });
+            expect(fetchMock).to.be.calledWith('/api/some/fake/api/endpoint?mergeStrategy=REPLACE');
         });
     });
 });

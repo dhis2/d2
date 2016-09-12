@@ -152,7 +152,9 @@ class ModelBase {
     }
 
     clone() {
-        return this.modelDefinition.create(getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations)));
+        return this.modelDefinition.create(
+            getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations))
+        );
     }
 
     delete() {
