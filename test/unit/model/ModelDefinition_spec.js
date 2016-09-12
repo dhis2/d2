@@ -834,7 +834,7 @@ describe('ModelDefinition', () => {
         let userModelDefinition;
 
         beforeEach(() => {
-            let singleUserAllFields = fixtures.get('singleUserAllFields');
+            let singleUserAllFields = fixtures.get('/singleUserAllFields');
 
             apiUpdateStub = stub().returns(new Promise((resolve) => {
                 resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
@@ -879,7 +879,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should pass only the properties that are owned to the api', () => {
-                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                let expectedPayload = fixtures.get('/singleUserOwnerFields');
 
                 userModelDefinition.save(model);
 
@@ -887,7 +887,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should let a falsy value pass as an owned property', () => {
-                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                let expectedPayload = fixtures.get('/singleUserOwnerFields');
                 expectedPayload.surname = '';
 
                 model.dataValues.surname = '';
@@ -897,7 +897,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should not let undefined pass as a value', () => {
-                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                let expectedPayload = fixtures.get('/singleUserOwnerFields');
                 delete expectedPayload.surname;
 
                 model.dataValues.surname = undefined;
@@ -907,7 +907,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should not let null pass as a value', () => {
-                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                let expectedPayload = fixtures.get('/singleUserOwnerFields');
                 delete expectedPayload.surname;
 
                 model.dataValues.surname = null;
@@ -919,7 +919,7 @@ describe('ModelDefinition', () => {
             it('should save to the url set on the model', () => {
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('singleUserAllFields').href);
+                expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('/singleUserAllFields').href);
             });
 
             it('should call the update method on the api with the replace strategy option set to true', () => {
@@ -974,7 +974,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should pass only the properties that are owned to the api', () => {
-                let expectedPayload = fixtures.get('singleUserOwnerFields');
+                let expectedPayload = fixtures.get('/singleUserOwnerFields');
 
                 userModelDefinition.saveNew(model);
 
@@ -989,7 +989,7 @@ describe('ModelDefinition', () => {
         let userModelDefinition;
 
         beforeEach(() => {
-            const singleUserAllFields = fixtures.get('singleUserAllFields');
+            const singleUserAllFields = fixtures.get('/singleUserAllFields');
 
             apiDeleteStub = stub().returns(new Promise((resolve) => {
                 resolve();

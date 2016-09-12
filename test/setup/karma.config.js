@@ -13,8 +13,8 @@ module.exports = function karmaConfigHandler(config) {
         files: [
             '../../node_modules/phantomjs-polyfill/bind-polyfill.js', // Adds Function.prototype.bind that is missing from phantomjs
             '../../node_modules/babel-core/browser-polyfill.js',
+            '../../node_modules/whatwg-fetch/fetch.js',
             '../fixtures/e2efixtures.js',
-            '../../node_modules/jquery/dist/jquery.js',
             './tests.webpack.js', // just load this file as entry for webpack
         ],
         preprocessors: {

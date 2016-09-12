@@ -70,7 +70,7 @@ describe('userSettings.CurrentUser', () => {
         it('should call the api to get the value', () => {
             userSettings.get('keyUiLocale');
 
-            expect(userSettings.api.get).to.be.calledWith('userSettings/keyUiLocale', undefined, { dataType: 'text' });
+            expect(userSettings.api.get).to.be.calledWith('userSettings/keyUiLocale');
         });
 
         it('should return the value from the promise', (done) => {
@@ -139,22 +139,6 @@ describe('userSettings.CurrentUser', () => {
                     expect(apiGet.callCount).to.equal(0);
                     expect(apiPost.callCount).to.equal(0);
                     expect(apiDelete.callCount).to.equal(1);
-                    done();
-                })
-                .catch(err => {
-                    done(new Error(err));
-                });
-        });
-
-        it('should use content-type text/plain', (done) => {
-            userSettings.set('mySetting', { type: 'object', value: 'some value' })
-                .then(() => {
-                    expect(apiGet.callCount).to.equal(0);
-                    expect(apiPost.callCount).to.equal(1);
-                    expect(apiDelete.callCount).to.equal(0);
-                    expect(apiPost.args[0].length).to.equal(3);
-                    expect(apiPost.args[0][2].contentType).to.be.a('string');
-                    expect(apiPost.args[0][2].contentType).to.equal('text/plain');
                     done();
                 })
                 .catch(err => {

@@ -6,7 +6,7 @@ describe('UserAuthorities', () => {
     let userAuthorities;
 
     beforeEach(() => {
-        authorities = fixtures.get('me/authorities');
+        authorities = fixtures.get('/me/authorities');
 
         userAuthorities = UserAuthorities.create(authorities);
     });

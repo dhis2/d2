@@ -102,19 +102,44 @@ describe('ModelValidations', () => {
 
         it('should return the validationViolations array from the webmessage', () => {
             const schemaValidationResult = {
-                httpStatus: 'Bad Request',
-                httpStatusCode: 400,
-                status: 'ERROR',
-                response: {
-                    responseType: 'ValidationViolations',
-                    validationViolations: [{ message: 'Required property missing.', property: 'name' }],
-                },
+                'httpStatus': 'Bad Request',
+                'httpStatusCode': 400,
+                'status': 'ERROR',
+                'response': {
+                    'responseType': 'ErrorReports',
+                    'errorReports': [
+                        {
+                            'message': 'Missing required property `domainType`.',
+                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
+                            'errorKlass': 'org.hisp.dhis.dataelement.DataElementDomain',
+                            'errorCode': 'E4000'
+                        },
+                        {
+                            'message': 'Missing required property `categoryCombo`.',
+                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
+                            'errorKlass': 'org.hisp.dhis.dataelement.DataElementCategoryCombo',
+                            'errorCode': 'E4000'
+                        },
+                        {
+                            'message': 'Missing required property `name`.',
+                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
+                            'errorKlass': 'java.lang.String',
+                            'errorCode': 'E4000'
+                        },
+                        {
+                            'message': 'Missing required property `shortName`.',
+                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
+                            'errorKlass': 'java.lang.String',
+                            'errorCode': 'E4000'
+                        }
+                    ]
+                }
             };
             Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
 
             return modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
-                    expect(validationMessages).to.equal(schemaValidationResult.response.validationViolations);
+                    expect(validationMessages).to.equal(schemaValidationResult.response.errorReports);
                 });
         });
 

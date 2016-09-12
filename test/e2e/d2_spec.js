@@ -14,9 +14,13 @@ describe('D2', function () {
         //    return false;
         // });
 
+        server.respondWith(/(.*)/, (rq) => {
+            console.error(`404: '${rq.method}', '${rq.url}'`);
+        });
+
         server.respondWith(
             'GET',
-            '/dhis/api/schemas?fields=apiEndpoint%2Cname%2Cauthorities%2Csingular%2Cplural%2Cshareable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%2CitemPropertyType%5D',
+            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -26,7 +30,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas/dataElement?fields=apiEndpoint%2Cname%2Cauthorities%2Csingular%2Cplural%2Cshareable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%2CitemPropertyType%5D',
+            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -36,7 +40,7 @@ describe('D2', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%2Coptions%5B%3Aall%5D%5D&paging=false$/,
+            '/dhis/api/attributes?fields=:all,optionSet[:all,options[:all]]&paging=false',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -104,10 +108,28 @@ describe('D2', function () {
                 JSON.stringify({apps: []})
             ]
         );
+
+        server.respondWith(
+            'GET',
+            '/dhis/api/me?fields=:all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]',
+            [
+                200,
+                {'Content-Type': 'text/plain'},
+                '{}'
+            ]
+        );
+
+        server.respondWith(() => {
+            [
+                404,
+                {'Content-Type': 'text/plain'},
+                'Resource not found'
+            ]
+        });
     });
 
     it('should be available on the window', function (done) {
-        d2.init({baseUrl: '/dhis/api'})
+        d2.init({ baseUrl: '/dhis/api' })
             .then(function (initialisedD2) {
                 expect(initialisedD2).to.not.be.undefined;
                 done();
@@ -115,17 +137,8 @@ describe('D2', function () {
             .catch(done);
     });
 
-    it('should return jquery on the api object', function (done) {
-        d2.init({baseUrl: '/dhis/api'})
-            .then(function (initialisedD2) {
-                expect(initialisedD2.Api.getApi().jquery).to.equal(window.$);
-                done();
-            })
-            .catch(done);
-    });
-
     it('should only load the requested schemas', function (done) {
-        d2.init({baseUrl: '/dhis/api', schemas: ['dataElement']})
+        d2.init({ baseUrl: '/dhis/api', schemas: ['dataElement'] })
             .then(function (initialisedD2) {
                 expect(initialisedD2.models.dataElement).to.not.be.undefined;
                 expect(initialisedD2.models.indicator).to.be.undefined;

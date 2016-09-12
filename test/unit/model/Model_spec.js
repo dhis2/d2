@@ -52,7 +52,7 @@ describe('Model', () => {
 
     it('should add properties based on the modelDefinition', () => {
         // TODO: This fixture is outdated and we should update to a fixture with getters and setters.
-        let dataElementModel = Model.create(fixtures.get('modelDefinitions/dataElement'));
+        let dataElementModel = Model.create(fixtures.get('/modelDefinitions/dataElement'));
 
         expect(Object.keys(dataElementModel).length).to.equal(34);
     });
@@ -166,7 +166,7 @@ describe('Model', () => {
 
         beforeEach(() => {
             const ModelDefinition = require('../../../src/model/ModelDefinition');
-            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('dataElementAttributes'));
+            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
 
             dataElementModel = Model.create(dataElementModelDefinition);
         });

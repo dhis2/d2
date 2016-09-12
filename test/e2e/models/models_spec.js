@@ -1,22 +1,27 @@
 import {init, getInstance} from '../../../src/d2';
 
-describe('D2.models', function () {
+describe('D2.models', () => {
     var server;
     let d2;
 
-    beforeEach(function (done) {
+    beforeEach(done => {
         server = sinon.fakeServer.create();
+        server.autoRespond = true;
         server.xhr.useFilters = true;
 
         // Show the requests made to the fake server.
         // server.xhr.addFilter(function (method, url) {
-        //     console.log(method, url);
-        //     return false;
+        //    console.log(method, url);
+        //    return false;
         // });
+
+        server.respondWith(/(.*)/, (rq) => {
+            console.error(`404: '${rq.method}', '${rq.url}'`);
+        });
 
         server.respondWith(
             'GET',
-            '/dhis/api/schemas?fields=apiEndpoint%2Cname%2Cauthorities%2Csingular%2Cplural%2Cshareable%2Cmetadata%2Cklass%2CidentifiableObject%2Cproperties%5Bhref%2Cwritable%2Ccollection%2CcollectionName%2Cname%2CpropertyType%2Cpersisted%2Crequired%2Cmin%2Cmax%2Cordered%2Cunique%2Cconstants%2Cowner%2CitemPropertyType%5D',
+            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -26,7 +31,17 @@ describe('D2.models', function () {
 
         server.respondWith(
             'GET',
-            /^\/dhis\/api\/attributes\?fields=%3Aall%2CoptionSet%5B%3Aall%2Coptions%5B%3Aall%5D%5D&paging=false$/,
+            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
+            [
+                200,
+                {'Content-Type': 'application/json'},
+                JSON.stringify(window.fixtures.dataElementSchema)
+            ]
+        );
+
+        server.respondWith(
+            'GET',
+            '/dhis/api/attributes?fields=:all,optionSet[:all,options[:all]]&paging=false',
             [
                 200,
                 {'Content-Type': 'application/json'},
@@ -60,7 +75,18 @@ describe('D2.models', function () {
             [
                 200,
                 {'Content-Type': 'application/json'},
-                JSON.stringify({keyUiLocale:'en'})
+                JSON.stringify({
+                    "keyDbLocale": "en",
+                    "keyMessageSmsNotification": true,
+                    "keyTrackerDashboardLayout": null,
+                    "keyStyle": "light_blue/light_blue.css",
+                    "keyAutoSaveDataEntryForm": false,
+                    "keyUiLocale": "fr",
+                    "keyAutoSavetTrackedEntityForm": false,
+                    "keyAnalysisDisplayProperty": "name",
+                    "keyAutoSaveCaseEntryForm": false,
+                    "keyMessageEmailNotification": true
+                })
             ]
         );
 
@@ -84,42 +110,57 @@ describe('D2.models', function () {
             ]
         );
 
-        init({baseUrl: '/dhis/api'});
-        getInstance()
-            .then(function (initialisedD2) {
-                d2 = initialisedD2;
+        server.respondWith(
+            'GET',
+            '/dhis/api/me?fields=:all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]',
+            [
+                200,
+                {'Content-Type': 'text/plain'},
+                '{}'
+            ]
+        );
+
+        server.respondWith(() => {
+            [
+                404,
+                {'Content-Type': 'text/plain'},
+                'Resource not found'
+            ]
+        });
+
+        init({ baseUrl: '/dhis/api' })
+            .then(d2instance => {
+                d2 = d2instance;
                 done();
             })
             .catch(done);
-
-        server.respond();
     });
 
     afterEach(() => {
         server.restore();
     });
 
-    it('should be available on the d2 object', function () {
+    it('should be available on the d2 object', () => {
         expect(d2.models).to.not.be.undefined;
     });
 
-    it('should have all the models', function () {
+    it('should have all the models', () => {
         var returnValue = function (item) { return item; };
 
         expect(d2.models.mapThroughDefinitions(returnValue).length).to.equal(window.fixtures.schemas.schemas.length);
     });
 
-    it('should be able to call create on a model definition', function () {
+    it('should be able to call create on a model definition', () => {
         expect(d2.models.dataElement.create()).to.be.instanceof(Object);
     });
 
-    it('should have the correct properties', function () {
+    it('should have the correct properties', () => {
         var dataElementModel = d2.models.dataElement.create();
 
         expect(dataElementModel).to.be.instanceof(d2.model.Model);
     });
 
-    it('should be able to set properties defined by the schema', function () {
+    it('should be able to set properties defined by the schema', () => {
         var dataElementModel = d2.models.dataElement.create();
 
         dataElementModel.name = 'myDataElement';
@@ -148,6 +189,10 @@ describe('D2.models', function () {
             );
         });
 
+        afterEach(() => {
+            server.restore();
+        });
+
         it('should return false for an empty model', (done) => {
             var dataElementModel = d2.models.dataElement.create();
             server.respondWith(
@@ -157,34 +202,53 @@ describe('D2.models', function () {
                     200,
                     {'Content-Type': 'application/json'},
                     JSON.stringify({
-                        'httpStatus': 'Bad Request',
-                        'httpStatusCode': 400,
-                        'status': 'ERROR',
-                        'response': {
-                            'responseType': 'ValidationViolations',
-                            'validationViolations': [
+                        "httpStatus": "Conflict",
+                        "httpStatusCode": 409,
+                        "status": "WARNING",
+                        "message": "One more more errors occurred, please see full details in import report.",
+                        "response": {
+                            "responseType": "ObjectReport",
+                            "uid": "m9jMnTWsTD5",
+                            "klass": "org.hisp.dhis.dataelement.DataElement",
+                            "errorReports": [
                                 {
-                                    'message': 'Required property missing.',
-                                    'property': 'aggregationType',
+                                    "message": "Missing required property `aggregationType`.",
+                                    "mainKlass": "org.hisp.dhis.dataelement.DataElement",
+                                    "errorKlass": "org.hisp.dhis.analytics.AggregationType",
+                                    "errorCode": "E4000"
                                 },
                                 {
-                                    'message': 'Required property missing.',
-                                    'property': 'domainType',
+                                    "message": "Missing required property `domainType`.",
+                                    "mainKlass": "org.hisp.dhis.dataelement.DataElement",
+                                    "errorKlass": "org.hisp.dhis.dataelement.DataElementDomain",
+                                    "errorCode": "E4000"
                                 },
                                 {
-                                    'message': 'Required property missing.',
-                                    'property': 'valueType',
+                                    "message": "Missing required property `categoryCombo`.",
+                                    "mainKlass": "org.hisp.dhis.dataelement.DataElement",
+                                    "errorKlass": "org.hisp.dhis.dataelement.DataElementCategoryCombo",
+                                    "errorCode": "E4000"
                                 },
                                 {
-                                    'message': 'Required property missing.',
-                                    'property': 'name',
+                                    "message": "Missing required property `valueType`.",
+                                    "mainKlass": "org.hisp.dhis.dataelement.DataElement",
+                                    "errorKlass": "org.hisp.dhis.common.ValueType",
+                                    "errorCode": "E4000"
                                 },
                                 {
-                                    'message': 'Required property missing.',
-                                    'property': 'shortName',
+                                    "message": "Missing required property `name`.",
+                                    "mainKlass": "org.hisp.dhis.dataelement.DataElement",
+                                    "errorKlass": "java.lang.String",
+                                    "errorCode": "E4000"
                                 },
-                            ],
-                        },
+                                {
+                                    "message": "Missing required property `shortName`.",
+                                    "mainKlass": "org.hisp.dhis.dataelement.DataElement",
+                                    "errorKlass": "java.lang.String",
+                                    "errorCode": "E4000"
+                                }
+                            ]
+                        }
                     }),
                 ]
             );
@@ -193,18 +257,19 @@ describe('D2.models', function () {
                 .then((validationStatus) => {
                     expect(validationStatus.status).to.be.false;
                     done();
-                });
+                })
+                .catch(done);
 
             server.respond();
         });
 
-        describe('model with data', function () {
+        describe('model with data', () => {
             var loadedDataElementModel;
 
             beforeEach(function (done) {
                 server.respondWith(
                     'GET',
-                    'http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=%3Aall%2CattributeValues%5B%3Aall%2Cattribute%5Bid%2Cname%2CdisplayName%5D%5D',
+                    'http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=:all,attributeValues[:all,attribute[id,name,displayName]]',
                     [
                         200,
                         {'Content-Type': 'application/json'},
@@ -216,9 +281,13 @@ describe('D2.models', function () {
                     .then(function (model) {
                         loadedDataElementModel = model;
                     })
-                    .then(done);
+                    .then(done, done);
 
                 server.respond();
+            });
+
+            afterEach(() => {
+                server.restore();
             });
 
             it('should return true for an object from the api', function (done) {
@@ -238,7 +307,7 @@ describe('D2.models', function () {
         beforeEach(() => {
             server.respondWith(
                 'GET',
-                'http://localhost:8080/dhis/api/dataElements?fields=%3Aall',
+                'http://localhost:8080/dhis/api/dataElements?fields=:all',
                 [
                     200,
                     {'Content-Type': 'application/json'},
@@ -248,13 +317,17 @@ describe('D2.models', function () {
 
             server.respondWith(
                 'GET',
-                'http://localhost:8080/dhis/api/dataElements?filter=id:eq:umC9U5YGDq4&fields=%3Aall',
+                'http://localhost:8080/dhis/api/dataElements?filter=id:eq:umC9U5YGDq4&fields=:all',
                 [
                     200,
                     {'Content-Type': 'application/json'},
                     '{"dataElements": []}'
                 ]
             );
+        });
+
+        afterEach(() => {
+            server.restore();
         });
 
         it('should load a list of dataElements from the server', (done) => {
@@ -276,10 +349,10 @@ describe('D2.models', function () {
                 .list()
                 .then((list) => {
                     expect(list.size).to.equal(0);
+                    done();
                 })
-                .then(done)
                 .catch((err) => {
-                    done(err);
+                    done('Error:' + err);
                 })
             ;
 
@@ -287,14 +360,14 @@ describe('D2.models', function () {
         });
     });
 
-    describe('save', function () {
-        describe('existing model', function () {
+    describe('save', () => {
+        describe('existing model', () => {
             var loadedModel;
 
             beforeEach(function (done) {
                 server.respondWith(
                     'GET',
-                    'http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=%3Aall%2CuserCredentials%5B%3Aowner%5D',
+                    'http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=:all,userCredentials[:owner]',
                     [
                         200,
                         {'Content-Type': 'application/json'},
@@ -356,7 +429,7 @@ describe('D2.models', function () {
                 loadedModel.firstName = 'Mark';
 
                 loadedModel.save()
-                    .then(function () {
+                    .then(() => {
                         done();
                     })
                     .catch(done);
@@ -375,7 +448,7 @@ describe('D2.models', function () {
         beforeEach(function (done) {
             server.respondWith(
                 'GET',
-                'http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=%3Aall%2CuserCredentials%5B%3Aowner%5D',
+                'http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=:all,userCredentials[:owner]',
                 [
                     200,
                     {'Content-Type': 'application/json'},

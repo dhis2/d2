@@ -1,3 +1,4 @@
+import '../../setup/setup';
 import System from '../../../src/system/System';
 
 const proxyquire = require('proxyquire');
@@ -6,19 +7,20 @@ proxyquire('../../../src/api/Api', {});
 import fixtures from '../../fixtures/fixtures';
 import Api from '../../../src/api/Api';
 
-// TODO: Can not use import here as babel will not respect the override
-// const Api = require('../../../src/api/Api');
 
 describe('Api', () => {
-    let jqueryMock;
+    let fetchMock;
     let api;
+    let baseFetchOptions;
 
     beforeEach(() => {
-        jqueryMock = {
-            ajax: stub().returns(Promise.resolve([fixtures.get('/api/schemas/dataElement')])),
-        };
+        fetchMock = stub().returns(Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(fixtures.get('/api/schemas/dataElement')),
+        }));
 
-        api = new Api(jqueryMock);
+        api = new Api(fetchMock);
+        baseFetchOptions = Object.assign({ method: 'GET' }, api.defaultFetchOptions);
 
         sinon.stub(System, 'getSystem').returns({
             version: {
@@ -36,26 +38,16 @@ describe('Api', () => {
         expect(Api).to.be.instanceof(Function);
     });
 
-    it('should throw an error if jQuery isn\'t available', (done) => {
-        try {
-            const a = new Api();
-            done('No error thrown:' + a);
-        } catch (e) {
-            expect(e).to.be.instanceof(Error);
-            done();
-        }
-    });
-
     it('should create a new instance of Api', () => {
-        expect(new Api(jqueryMock)).to.be.instanceof(Api);
+        expect(new Api(fetchMock)).to.be.instanceof(Api);
     });
 
     it('should have a baseUrl property that is set to /api', () => {
-        expect(new Api(jqueryMock).baseUrl).to.equal('/api');
+        expect(new Api(fetchMock).baseUrl).to.equal('/api');
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Api(jqueryMock)).to.throw('Cannot call a class as a function'); // eslint-disable-line
+        expect(() => Api(fetchMock)).to.throw('Cannot call a class as a function'); // eslint-disable-line
     });
 
     describe('getApi', () => {
@@ -92,6 +84,109 @@ describe('Api', () => {
         });
     });
 
+    describe('request()', () => {
+        it('should handle responses in plain text format', done => {
+            fetchMock.returns(Promise.resolve({
+                ok: true,
+                text: () => Promise.resolve('this is not valid json'),
+            }));
+
+            api.get('text')
+                .then(result => {
+                    expect(result).to.equal('this is not valid json');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should handle responses in JSON format', done => {
+            fetchMock.returns(Promise.resolve({
+                ok: true,
+                text: () => Promise.resolve('"this is a JSON string"'),
+            }));
+
+            api.get('json')
+                .then(result => {
+                    expect(result).to.equal('this is a JSON string');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should handle complex JSON objects', done => {
+            const data = {
+                id: '12345',
+                name: 'bla bla',
+                isEmpty: false,
+                subObj: {
+                    a: true,
+                    b: false,
+                },
+            };
+            fetchMock.returns(Promise.resolve({
+                ok: true,
+                text: () => Promise.resolve(JSON.stringify(data)),
+            }));
+
+            api.get('json')
+                .then(result => {
+                    expect(result).to.deep.equal(data);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should report network errors', done => {
+            fetchMock.returns(Promise.reject(new TypeError('Failed to fetch')));
+
+            api.get('http://not.a.real.server/hi')
+                .then(done)
+                .catch(err => {
+                    expect(err).to.be.a('string');
+                    expect(err).to.have.string('failed');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should report 404 errors', done => {
+            const errorText = '{"httpStatus":"Not Found","httpStatusCode":404,"status":"ERROR","message":"DataElement with id 404 could not be found."}';
+            fetchMock.returns(Promise.resolve({
+                ok: false,
+                status: 404,
+                text: () => Promise.resolve(errorText),
+            }));
+
+            api.get('dataElements/404')
+                .then(() => { done(new Error('The request succeeded')); })
+                .catch(err => {
+                    expect(err).to.be.an('object');
+                    expect(err).to.deep.equal(JSON.parse(errorText));
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should report 500 errors', done => {
+            const errorText = '{"httpStatus":"Internal Server Error","httpStatusCode":500,"status":"ERROR","message":"object references an unsaved transient instance - save the transient instance before flushing: org.hisp.dhis.dataelement.CategoryOptionGroupSet"}';
+            const data = '{"name":"District Funding Agency","orgUnitLevel":2,"categoryOptionGroupSet":{"id":"SooXFOUnciJ"}}';
+            fetchMock.returns(Promise.resolve({
+                ok: false,
+                status: 500,
+                text: () => Promise.resolve(errorText),
+            }));
+
+            api.post('dataApprovalLevels', data)
+                .then(() => { done(new Error('The request succeeded')); })
+                .catch(err => {
+                    expect(err).to.be.an('object');
+                    expect(err).to.deep.equal(JSON.parse(errorText));
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
     describe('get', () => {
         let requestFailedHandler;
         let requestSuccessHandler;
@@ -112,55 +207,26 @@ describe('Api', () => {
         it('should use the baseUrl when requesting', () => {
             api.get('dataElements');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/dataElements',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('/api/dataElements');
         });
 
         it('should not add a double slash to the url', () => {
             api.get('path/of/sorts//dataElements');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/path/of/sorts/dataElements',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('/api/path/of/sorts/dataElements');
         });
 
         it('should strip the trailing slash', () => {
             api.get('/dataElements.json/');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/dataElements.json',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('/api/dataElements.json');
         });
 
         it('should keep a full url if it is given as a base', () => {
             api.baseUrl = 'http://localhost:8090/dhis/api';
-
             api.get('/dataElements.json');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: 'http://localhost:8090/dhis/api/dataElements.json',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('http://localhost:8090/dhis/api/dataElements.json');
         });
 
         it('should keep the the slashes if they are the first two characters', () => {
@@ -168,115 +234,81 @@ describe('Api', () => {
 
             api.get('/dataElements.json');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '//localhost:8090/dhis/api/dataElements.json',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('//localhost:8090/dhis/api/dataElements.json');
         });
 
         it('should call the get method on the http object', () => {
             api.get('dataElements');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/dataElements',
-                headers: { 'Cache-Control': 'no-store' },
-                dataType: 'json',
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('/api/dataElements', baseFetchOptions);
         });
 
-        it('should add the data to the call', () => {
+        it('should transfer data to the query string', () => {
             api.get('dataElements', { fields: 'id,name' });
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/dataElements',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {
-                    fields: 'id,name',
-                },
-            });
+            expect(fetchMock).to.be.calledWith('/api/dataElements?fields=id,name', baseFetchOptions);
         });
 
-        it('should call the failed reject handler', (done) => {
-            jqueryMock.ajax.returns((() => {
-                return new Promise((resolve, reject) => {
-                    reject(new Error('Request failed'));
-                });
-            })());
+        it('should call the failure handler when the server can\'t be reached', (done) => {
+            fetchMock.returns(Promise.reject());
 
             api.get('/api/dataElements', { fields: 'id,name' })
-                .catch(requestFailedHandler)
-                .then(() => {
-                    expect(requestFailedHandler).to.be.called;
-                    expect(requestFailedHandler).to.be.calledWith(new Error('Request failed'));
-                    done();
-                });
+                .then(() => { throw new Error('Request did not fail') })
+                .catch(() => done())
+                .catch(done);
         });
 
-        it('should call the failure handler with the message if a webmessage was returned', () => {
-            jqueryMock.ajax.returns(Promise.reject({
-                responseJSON: {
-                    httpStatus: 'Not Found',
-                    httpStatusCode: 404,
-                    status: 'ERROR',
-                    message: 'DataElementCategory with id sdfsf could not be found.',
-                },
+        it('should call the failure handler with the message if a webmessage was returned', (done) => {
+            const errorJson = {
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                status: 'ERROR',
+                message: 'DataElementCategory with id sdfsf could not be found.',
+            };
+            fetchMock.returns(Promise.resolve({
+                ok: false,
+                text: () => Promise.resolve(JSON.stringify(errorJson)),
             }));
 
-            api.get('/api/dataElements', { fields: 'id,name' })
-                .catch(requestFailedHandler)
-                .then(() => {
-                    expect(requestFailedHandler).to.be.called;
-                    expect(requestFailedHandler).to.be.calledWith('DataElementCategory with id sdfsf could not be found.');
-                    done();
-                });
+            api.get('/api/dataElements/sdfsf', { fields: 'id,name' })
+                .then(() => { done('The request did not fail'); })
+                .catch((err) => { expect(err).to.deep.equal(errorJson); done() });
         });
 
         it('should call the success resolve handler', (done) => {
-            jqueryMock.ajax.returns(Promise.resolve('Success data'));
+            fetchMock.returns(Promise.resolve({
+                ok: true,
+                text: () => Promise.resolve('"Success!"'),
+            }));
 
             api.get('/api/dataElements', { fields: 'id,name' })
-                .then(requestSuccessHandler)
-                .then(() => {
-                    expect(requestSuccessHandler).to.be.called;
-                    expect(requestSuccessHandler).to.be.calledWith('Success data');
+                .then((res) => {
+                    expect(res).to.equal('Success!');
                     done();
-                });
+                }, done);
         });
 
         it('should allow the options to be overridden', () => {
-            api.get('dataElements', undefined, { dataType: 'text' });
+            api.get('dataElements', undefined, { mode: 'no-cors', credentials: 'omit', cache: 'no-cache' });
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/dataElements',
-                dataType: 'text',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith(
+                '/api/dataElements',
+                Object.assign(baseFetchOptions, { mode: 'no-cors', credentials: 'omit', cache: 'no-cache' }),
+            );
         });
 
         it('should encode filters', () => {
             api.get('filterTest', { filter: ['a:1', 'b:2'] });
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'GET',
-                url: '/api/filterTest?filter=a:1&filter=b:2',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith('/api/filterTest?filter=a:1&filter=b:2');
+        });
+
+        it('should transfer complex filters to the query parameters', done => {
+            api.get('complexQueryTest', { fields: ':all', filter: ['id:eq:a0123456789', 'name:ilike:Test'] });
+
+            expect(fetchMock.args[0][0]).to.have.string('/api/complexQueryTest?');
+            expect(fetchMock.args[0][0]).to.have.string('filter=id:eq:a0123456789&filter=name:ilike:Test');
+            done();
         });
     });
 
@@ -286,104 +318,115 @@ describe('Api', () => {
         });
 
         it('should call the api the with the correct data', () => {
-            api.post(fixtures.get('singleUserAllFields').href, fixtures.get('singleUserOwnerFields'));
+            api.post(fixtures.get('/singleUserAllFields').href, fixtures.get('/singleUserOwnerFields'));
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'POST',
-                url: fixtures.get('singleUserAllFields').href,
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: 'application/json',
-                data: JSON.stringify(fixtures.get('singleUserOwnerFields')),
-            });
+            expect(fetchMock).to.be.calledWith(
+                fixtures.get('/singleUserAllFields').href,
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify(fixtures.get('/singleUserOwnerFields')),
+                })
+            );
         });
 
         it('should not stringify plain text data', () => {
-            api.post('systemSettings/mySettingsKey', 'string=test', { contentType: 'text/plain' });
+            api.post('systemSettings/mySettingsKey', 'string=test', { headers: { 'content-type': 'text/plain' } });
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'POST',
-                url: '/api/systemSettings/mySettingsKey',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: 'text/plain',
-                data: 'string=test',
-            });
+            expect(fetchMock).to.be.calledWith(
+                '/api/systemSettings/mySettingsKey',
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ 'content-type': 'text/plain' }),
+                    body: JSON.stringify('string=test'),
+                })
+            );
         });
 
         it('should post the number zero', () => {
-            api.post('systemSettings/numberZero', 0, { contentType: 'text/plain' });
+            api.post('systemSettings/numberZero', 0, { headers: { 'content-type': 'text/plain' } });
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'POST',
-                url: '/api/systemSettings/numberZero',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: 'text/plain',
-                data: 0,
-            });
+            expect(fetchMock).to.be.calledWith(
+                '/api/systemSettings/numberZero',
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ 'content-type': 'text/plain' }),
+                    body: JSON.stringify(0),
+                })
+            );
+        });
+
+        it('should post the number zero with the deprecated dataType option', () => {
+            api.post('systemSettings/numberZero', 0, { dataType: 'text' });
+
+            expect(fetchMock).to.be.calledWith(
+                '/api/systemSettings/numberZero',
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ accept: 'text/plain', 'content-type': 'application/json' }),
+                    body: JSON.stringify(0),
+                })
+            );
         });
 
         it('should send plain text boolean true values as "true"', () => {
-            api.post('systemSettings/keyTrue', true, { contentType: 'text/plain' });
+            api.post('systemSettings/keyTrue', true);
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'POST',
-                url: '/api/systemSettings/keyTrue',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: 'text/plain',
-                data: 'true',
-            });
+            expect(fetchMock).to.be.calledWith(
+                '/api/systemSettings/keyTrue',
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ 'content-type': 'application/json' }),
+                    body: 'true',
+                }),
+            );
         });
 
         it('should send plain text boolean false values as "false"', () => {
-            api.post('systemSettings/keyFalse', false, { contentType: 'text/plain' });
+            api.post('systemSettings/keyTrue', false);
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'POST',
-                url: '/api/systemSettings/keyFalse',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: 'text/plain',
-                data: 'false',
-            });
+            expect(fetchMock).to.be.calledWith(
+                '/api/systemSettings/keyTrue',
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ 'content-type': 'application/json' }),
+                    body: 'false',
+                }),
+            );
         });
 
-        it('shouldn\'t stringify data if content-type is false', () => {
-            api.post('some/api/endpoint', { obj: 'yes' }, { contentType: false });
+        it('should set the correct Content-Type for form data', () => {
+            const data = new FormData();
+            data.append('field_1', 'value_1');
+            data.append('field_2', 'value_2');
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'POST',
-                url: '/api/some/api/endpoint',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: false,
-                data: { obj: 'yes' },
-            });
+            api.post('form/data', data);
+
+            expect(fetchMock).to.be.calledWith(
+                '/api/form/data',
+                Object.assign(baseFetchOptions, {
+                    method: 'POST',
+                    headers: new Headers({ 'content-type': 'multipart/form-data' }),
+                    body: data,
+                }),
+            );
         });
     });
 
     describe('delete', () => {
-        beforeEach(() => {
-            jqueryMock.ajax = spy();
-        });
-
         it('should be a method', () => {
             expect(api.delete).to.be.instanceof(Function);
         });
 
-        it('should call the ajax method with the correct DELETE request', () => {
-            api.delete(fixtures.get('singleUserAllFields').href);
+        it('should call fetch with the correct DELETE request', () => {
+            api.delete(fixtures.get('/singleUserAllFields').href);
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'DELETE',
-                url: fixtures.get('singleUserAllFields').href,
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: undefined,
-                data: {},
-            });
+            expect(fetchMock).to.be.calledWith(
+                fixtures.get('/singleUserAllFields').href,
+                Object.assign(baseFetchOptions, {
+                    method: 'DELETE',
+                }),
+            );
         });
 
         it('should call the correct api endpoint when the url starts with a /', () => {
@@ -393,7 +436,6 @@ describe('Api', () => {
                 type: 'DELETE',
                 url: '/api/users/aUplAx3DOWy',
                 dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
                 contentType: undefined,
                 data: {},
             });
@@ -401,16 +443,12 @@ describe('Api', () => {
     });
 
     describe('update', () => {
-        beforeEach(() => {
-            jqueryMock.ajax = spy();
-        });
-
         it('should be a method', () => {
             expect(api.update).to.be.instanceof(Function);
         });
 
         it('should call the ajax method with the correct UPDATE request', () => {
-            const theData = {
+            const data = {
                 a: 'A',
                 b: 'B!',
                 obj: {
@@ -419,16 +457,16 @@ describe('Api', () => {
                 },
                 arr: [1, 2, 3],
             };
-            api.update('some/fake/api/endpoint', theData);
+            api.update('some/fake/api/endpoint', data);
 
-            expect(jqueryMock.ajax).to.be.calledWith({
-                type: 'PUT',
-                url: '/api/some/fake/api/endpoint',
-                dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
-                contentType: 'application/json',
-                data: JSON.stringify(theData),
-            });
+            expect(fetchMock).to.be.calledWith(
+                '/api/some/fake/api/endpoint',
+                Object.assign(baseFetchOptions, {
+                    method: 'PUT',
+                    headers: new Headers({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify(data),
+                }),
+            );
         });
 
         it('should add the mergeMode param to the url when useMergeStrategy is passed', () => {
@@ -438,7 +476,6 @@ describe('Api', () => {
                 type: 'PUT',
                 url: '/api/some/fake/api/endpoint?mergeMode=REPLACE',
                 dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'application/json',
                 data: JSON.stringify({}),
             });
@@ -458,7 +495,6 @@ describe('Api', () => {
                 type: 'PUT',
                 url: '/api/some/fake/api/endpoint?mergeStrategy=REPLACE',
                 dataType: 'json',
-                headers: { 'Cache-Control': 'no-store' },
                 contentType: 'application/json',
                 data: JSON.stringify({}),
             });

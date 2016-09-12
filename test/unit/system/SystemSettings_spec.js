@@ -1,4 +1,4 @@
-describe('settings.System', () => {
+describe('SystemSettings', () => {
     const Api = require('../../../src/api/Api');
     const SystemSettings = require('../../../src/system/SystemSettings');
     let systemSettings;
@@ -70,7 +70,7 @@ describe('settings.System', () => {
         it('should call the api to get the value', () => {
             systemSettings.get('keyLastSuccessfulResourceTablesUpdate');
 
-            expect(systemSettings.api.get).to.be.calledWith('systemSettings/keyLastSuccessfulResourceTablesUpdate', undefined, { dataType: 'text' });
+            expect(systemSettings.api.get).to.be.calledWith('systemSettings/keyLastSuccessfulResourceTablesUpdate');
         });
 
         it('should return the value from the promise', (done) => {
@@ -105,7 +105,7 @@ describe('settings.System', () => {
         });
     });
 
-    describe('set', () => {
+    describe('.set', () => {
         beforeEach(() => {
             systemSettings.api.get = apiGet = sinon.stub();
             systemSettings.api.post = apiPost = sinon.stub();
@@ -146,15 +146,15 @@ describe('settings.System', () => {
                 });
         });
 
-        it('should use content-type text/plain', (done) => {
-            systemSettings.set('mySetting', { type: 'object', value: 'some value' })
+        it('should not alter the value', (done) => {
+            const value = { type: 'object', value: 'some value' };
+            systemSettings.set('mySetting', value)
                 .then(() => {
                     expect(apiGet.callCount).to.equal(0);
                     expect(apiPost.callCount).to.equal(1);
                     expect(apiDelete.callCount).to.equal(0);
-                    expect(apiPost.args[0].length).to.equal(3);
-                    expect(apiPost.args[0][2].contentType).to.be.a('string');
-                    expect(apiPost.args[0][2].contentType).to.equal('text/plain');
+
+                    expect(apiPost).to.be.calledWith('systemSettings/mySetting', value);
                     done();
                 })
                 .catch(err => {

@@ -224,7 +224,7 @@ describe('System', () => {
             });
 
             apiMock.get = stub()
-                .returns(Promise.resolve(fixtures.get('appStore')));
+                .returns(Promise.resolve(fixtures.get('/appStore')));
         });
 
         it('should be a function on the system object', () => {
@@ -242,7 +242,7 @@ describe('System', () => {
         });
 
         it('should return the compatible apps from the api', () => {
-            const expectedApps = fixtures.get('appStore');
+            const expectedApps = fixtures.get('/appStore');
 
             // Only the second app is compatible
             expectedApps.apps[0].versions = [expectedApps.apps[0].versions[1]];
@@ -254,7 +254,7 @@ describe('System', () => {
         });
 
         it('should return the compatible apps', () => {
-            const returnedApps = fixtures.get('appStore');
+            const returnedApps = fixtures.get('/appStore');
 
             returnedApps.apps = [
                 {
@@ -292,7 +292,7 @@ describe('System', () => {
         it('should return all the apps when compatibility flag is set to false', () => {
             return system.loadAppStore(false)
                 .then((apps) => {
-                    expect(apps.apps.length).to.equal(fixtures.get('appStore').apps.length);
+                    expect(apps.apps.length).to.equal(fixtures.get('/appStore').apps.length);
                 });
         });
 

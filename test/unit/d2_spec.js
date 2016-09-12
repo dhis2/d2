@@ -363,7 +363,7 @@ describe('D2', () => {
         it('should call the ModelDefinition.createFromSchema with the schema', (done) => {
             d2.init()
                 .then(() => {
-                    expect(ModelDefinitionMock.createFromSchema).to.have.been.calledWith(fixtures.get('/api/schemas/dataElement'), fixtures.get('dataElementAttributes'));
+                    expect(ModelDefinitionMock.createFromSchema).to.have.been.calledWith(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
                     done();
                 })
                 .catch(done);

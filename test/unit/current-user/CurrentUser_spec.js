@@ -65,7 +65,7 @@ describe('CurrentUser', () => {
         noCreateAllowedFor.clear();
         noCreateAllowedFor.add('categoryOptionCombo');
 
-        userData = fixtures.get('me');
+        userData = fixtures.get('/me');
         spy(UserAuthorities, 'create');
         mockUserAuthorities = [
             'F_ORGANISATIONUNIT_ADD',

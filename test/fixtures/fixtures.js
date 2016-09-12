@@ -17,24 +17,24 @@ export default (function () {
         }
     }
 
-    addFixture('me/authorities', require('./json/api/me/authorities.json'));
-    addFixture('me', require('./json/api/me.json'));
-    addFixture('modelDefinitions/dataElement', require('./json/modelDefinitions/dataElement.json'));
-    addFixture('/api/schemas', require('./json/api/schemas.json'));
-    addFixture('/api/schemas/user', require('./json/api/schemas/user.json'));
-    addFixture('appStore', require('./json/api/appStore.json'));
-    addFixture('/api/schemas/organisationUnit', require('./json/api/schemas/organisationUnit.json'));
-    addFixture('/api/organisationUnits', require('./json/api/organisationUnits.json'));
-    addFixture('/api/dataElements', require('./json/api/dataElements.json'));
-    addFixture('singleUserAllFields', require('./json/singleUserAllFields.json'));
-    addFixture('singleUserOwnerFields', require('./json/singleUserOwnerFields.json'));
-    addFixture('/api/schemas/dataElement', require('./json/api/schemas/dataElement.json'));
-    addFixture('/api/schemas/indicatorGroup', require('./json/api/schemas/indicatorGroup.json'));
     addFixture('/api/attributes', require('./json/api/schemas/attributes.json'));
-    addFixture('dataElementAttributes', require('./json/dataElementAttributes.json'));
-    addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
-    addFixture('/api/userSettings', require('./json/api/userSettings'));
+    addFixture('/api/dataElements', require('./json/api/dataElements.json'));
+    addFixture('/api/organisationUnits', require('./json/api/organisationUnits.json'));
+    addFixture('/api/schemas', require('./json/api/schemas.json'));
+    addFixture('/api/schemas/dataElement', require('./json/api/schemas/dataElement.json'));
     addFixture('/api/schemas/dataSet', require('./json/api/schemas/dataSet'));
+    addFixture('/api/schemas/indicatorGroup', require('./json/api/schemas/indicatorGroup.json'));
+    addFixture('/api/schemas/organisationUnit', require('./json/api/schemas/organisationUnit.json'));
+    addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
+    addFixture('/api/schemas/user', require('./json/api/schemas/user.json'));
+    addFixture('/api/userSettings', require('./json/api/userSettings'));
+    addFixture('/appStore', require('./json/api/appStore.json'));
+    addFixture('/dataElementAttributes', require('./json/dataElementAttributes.json'));
+    addFixture('/me', require('./json/api/me.json'));
+    addFixture('/me/authorities', require('./json/api/me/authorities.json'));
+    addFixture('/modelDefinitions/dataElement', require('./json/modelDefinitions/dataElement.json'));
+    addFixture('/singleUserAllFields', require('./json/singleUserAllFields.json'));
+    addFixture('/singleUserOwnerFields', require('./json/singleUserOwnerFields.json'));
 
     return {
         get: getFixture,
