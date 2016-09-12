@@ -35,14 +35,13 @@ function getUrl(baseUrl, url) {
 class Api {
     constructor(fetchImpl) {
         // Optionally provide fetch to the constructor so it can be mocked during testing
-        if (fetchImpl) {
-            this.fetch = fetchImpl;
+        if (typeof fetchImpl === 'function') {
+            this.fetch = fetchImpl.bind(typeof window !== 'undefined' ? window : global);
         } else if (typeof fetch !== 'undefined') {
-            this.fetch = fetch;
+            this.fetch = fetch.bind(typeof window !== 'undefined' ? window : global);
         } else {
             throw new Error('Failed to initialise D2 Api: No fetch implementation is available');
         }
-        // this.fetch = fetchImpl || typeof window !== undefined && window.fetch;
 
         this.baseUrl = '/api';
         this.defaultFetchOptions = {

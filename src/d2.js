@@ -14,7 +14,7 @@ let deferredD2Init = Deferred.create();
 const preInitConfig = Config.create();
 
 export function getManifest(url) {
-    const api = new Api(typeof window !== 'undefined' && window.fetch.bind(window) || undefined);
+    const api = new Api();
     api.setBaseUrl('');
 
     const manifestUtilities = {
