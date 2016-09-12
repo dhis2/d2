@@ -62,7 +62,7 @@ class I18n {
 
         this.sources.forEach(source => {
             propFiles.push(
-                i18n.api.request('GET', source, undefined, { dataType: 'text' }).then(
+                i18n.api.request('GET', source).then(
                     (data) => Promise.resolve(parseProperties(data)),
 
                     // Resolve errors to an empty object, so that one missing file doesn't prevent

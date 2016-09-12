@@ -68,7 +68,9 @@ class SystemSettings {
                 throw new TypeError('A "key" parameter should be specified when calling get() on systemSettings');
             }
 
-            this.api.get(['systemSettings', systemSettingsKey].join('/'), undefined, { dataType: 'text' })
+            const options = { headers: { accept: 'text/plain' } };
+            this.api.get(
+                ['systemSettings', systemSettingsKey].join('/'), undefined, options)
                 .then(response => {
                     const systemSettingValue = processValue(response);
                     if (systemSettingValue) {
@@ -82,9 +84,9 @@ class SystemSettings {
     set(systemSettingsKey, value) {
         const settingUrl = ['systemSettings', systemSettingsKey].join('/');
         if (value === null || (`${value}`).length === 0) {
-            return this.api.delete(settingUrl, { dataType: 'text' });
+            return this.api.delete(settingUrl);
         }
-        return this.api.post(settingUrl, value, { dataType: 'text', contentType: 'text/plain' });
+        return this.api.post(settingUrl, value);
     }
 }
 

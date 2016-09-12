@@ -65,7 +65,7 @@ class UserSettings {
                 throw new TypeError('A "key" parameter should be specified when calling get() on userSettings');
             }
 
-            this.api.get(['userSettings', key].join('/'), undefined, { dataType: 'text' })
+            this.api.get(['userSettings', key].join('/'))
                 .then(response => {
                     const value = processValue(response);
                     // Store the value on the user settings object
@@ -96,10 +96,10 @@ class UserSettings {
     set(key, value) {
         const settingUrl = ['userSettings', key].join('/');
         if (value === null || (`${value}`).length === 0) {
-            return this.api.delete(settingUrl, { dataType: 'text' })
+            return this.api.delete(settingUrl)
                 .then(this[key] = undefined);
         }
-        return this.api.post(settingUrl, value, { dataType: 'text', contentType: 'text/plain' })
+        return this.api.post(settingUrl, value)
             .then(this[key] = value);
     }
 }

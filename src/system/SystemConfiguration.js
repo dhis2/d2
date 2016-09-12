@@ -63,6 +63,7 @@ class SystemConfiguration {
      * @param value {String|null}
      * @returns {Promise}
      */
+    /* eslint-disable complexity */
     set(key, value) {
         const that = this;
         let req;
@@ -74,10 +75,10 @@ class SystemConfiguration {
             (value === 'null' || value === null)
         ) {
             // Only valid UIDs are accepted when POST'ing, so we have to use DELETE in stead of POST'ing a null value.
-            req = this.api.delete(['configuration', key].join('/'), { dataType: 'text' });
+            req = this.api.delete(['configuration', key].join('/'));
         } else if (key === 'corsWhitelist') {
-            // The corsWhitelist endpoint expects an array of URL's, while here value is expected to be a string.
-            req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'), { dataType: 'text' });
+            // The corsWhitelist endpoint expects a JSON array (of URLs), while here value is expected to be a string.
+            req = this.api.post(['configuration', key].join('/'), value.trim().split('\n'));
         } else {
             req = this.api.post(['configuration', key].join('/'), value, {
                 dataType: 'text',
@@ -94,6 +95,7 @@ class SystemConfiguration {
             })
             .catch(() => Promise.reject(`No configuration found for ${key}`));
     }
+    /* eslint-enable complexity */
 }
 
 export default SystemConfiguration;
