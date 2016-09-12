@@ -112,7 +112,9 @@ class I18n {
         if (this.translations === undefined) {
             throw new Error('Tried to translate before loading translations!');
         }
-        const translatedString = this.translations.hasOwnProperty(string) ? this.translations[string] : `** ${string} **`;
+        const translatedString = this.translations.hasOwnProperty(string)
+            ? this.translations[string]
+            : `** ${string} **`;
 
         if (Object.keys(variables).length) {
             return translatedString
