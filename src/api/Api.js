@@ -1,4 +1,5 @@
 import { checkType } from '../lib/check';
+import { customEncodeURIComponent } from '../lib/utils';
 import System from '../system/System';
 import 'whatwg-fetch';
 
@@ -174,7 +175,7 @@ class Api {
         }
 
         if (query.length) {
-            requestUrl = `${requestUrl}?${query}`;
+            requestUrl = `${requestUrl}?${customEncodeURIComponent(query)}`;
         }
         const requestOptions = getOptions(options, options.method === 'GET' ? undefined : data);
 

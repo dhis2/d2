@@ -75,3 +75,17 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
 
     return apiUrl;
 }
+
+// Define our very own special list of characters that we don't want to encode in the URI
+const whitelistURI = ',&$=/;:';
+const whitelistURICodes = whitelistURI.split('').map(c => encodeURIComponent(c));
+const whitelistRegExp = new RegExp(`(?:${whitelistURICodes.join('|')})`, 'g');
+
+/**
+ * Encode all invalid URI characters, except the ones we've decided we don't want to
+ */
+export function customEncodeURIComponent(uri) {
+    // return uri;
+    return encodeURIComponent(uri)
+        .replace(whitelistRegExp, decodeURIComponent);
+}
