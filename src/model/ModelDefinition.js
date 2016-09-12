@@ -280,7 +280,7 @@ class ModelDefinition {
     /**
      * @method list
      *
-     * @param {Object} [queryParams={fields: ':all'}] Query parameters that should be passed to the GET query.
+     * @param {Object} [extraParams={fields: ':all'}] Query parameters that should be passed to the GET query.
      * @returns {Promise} ModelCollection collection of models objects of the `ModelDefinition` type.
      *
      * @description
@@ -294,14 +294,19 @@ class ModelDefinition {
      *   });
      * ```
      */
-    list(queryParams = {}) {
+    list(extraParams = {}) {
+        const params = Object.assign({ fields: ':all' }, extraParams);
         const definedFilters = this.filters.getFilters();
-        // FIXME: Looks like when specific filters are defined the model.filter() filters are not applied (they should probably be merged)
-        if (!isDefined(queryParams.filter) && definedFilters.length) {
-            queryParams.filter = definedFilters; // eslint-disable-line no-param-reassign
+
+        // FIXME: If both params.filter and definedFilters are present, they should probably be merged
+        if (!isDefined(params.filter)) {
+            delete params.filter;
+            if (definedFilters.length) {
+                params.filter = definedFilters;
+            }
         }
 
-        return this.api.get(this.apiEndpoint, Object.assign({ fields: ':all' }, queryParams))
+        return this.api.get(this.apiEndpoint, params)
             .then((responseData) => ModelCollection.create(
                 this,
                 responseData[this.plural].map((data) => this.create(data)),
