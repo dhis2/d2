@@ -6,7 +6,7 @@ import System from './system/System';
 import I18n from './i18n/I18n';
 import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
-import jQuery from './external/jquery';
+import 'whatwg-fetch';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -14,7 +14,7 @@ let deferredD2Init = Deferred.create();
 const preInitConfig = Config.create();
 
 export function getManifest(url) {
-    const api = new Api(jQuery);
+    const api = new Api(typeof window !== 'undefined' && window.fetch.bind(window) || undefined);
     api.setBaseUrl('');
 
     const manifestUtilities = {

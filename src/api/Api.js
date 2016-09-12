@@ -1,6 +1,7 @@
 import { checkType } from '../lib/check';
-import jQuery from '../external/jquery';
 import System from '../system/System';
+import 'whatwg-fetch';
+
 
 function getMergeStrategyParam(mergeType = 'REPLACE') {
     const system = System.getSystem();
@@ -12,22 +13,6 @@ function getMergeStrategyParam(mergeType = 'REPLACE') {
     return `mergeMode=${mergeType}`;
 }
 
-function processSuccess(resolve) {
-    return (data/* , textStatus, jqXHR */) => {
-        resolve(data);
-    };
-}
-
-function processFailure(reject) {
-    return (jqXHR/* , textStatus, errorThrown */) => {
-        if (jqXHR.responseJSON) {
-            return reject(jqXHR.responseJSON);
-        }
-
-        delete jqXHR.then; // eslint-disable-line no-param-reassign
-        return reject(jqXHR);
-    };
-}
 
 function getUrl(baseUrl, url) {
     // If we are dealing with an absolute url use that instead
@@ -48,24 +33,23 @@ function getUrl(baseUrl, url) {
 }
 
 class Api {
-    constructor(jquery) {
-        if (!jquery) {
-            throw new Error('D2 requires jQuery');
+    constructor(fetchImpl) {
+        // Optionally provide fetch to the constructor so it can be mocked during testing
+        if (fetchImpl) {
+            this.fetch = fetchImpl;
+        } else if (typeof fetch !== 'undefined') {
+            this.fetch = fetch;
+        } else {
+            throw new Error('Failed to initialise D2 Api: No fetch implementation is available');
         }
+        // this.fetch = fetchImpl || typeof window !== undefined && window.fetch;
 
-        this.jquery = jquery;
         this.baseUrl = '/api';
-        this.defaultRequestSettings = {
-            headers: {
-                // FIXME: Remove the 'Cache-Control: no-store' header when we figure out how to solve this xhr/jquery bug
-                // does not process consecutive requests for the same url properly due to the 304 response.
-                // It makes no sense to set a 'Cache-Control: no-store' on a request...
-                'Cache-Control': 'no-store',
-            },
-            data: {},
-            contentType: 'application/json',
-            type: undefined,
-            url: undefined,
+        this.defaultFetchOptions = {
+            mode: 'cors', // requests to different origins fail
+            credentials: 'include', // include cookies with same-origin requests
+            cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode,
+            headers: new Headers(),
         };
     }
 
@@ -73,16 +57,40 @@ class Api {
         return this.request('GET', getUrl(this.baseUrl, url), data, options);
     }
 
-    post(url, data, options) {
+    /* eslint-disable complexity */
+    post(url, data, options = {}) {
+        const requestUrl = getUrl(this.baseUrl, url);
+        let payload = data;
+
+        // Ensure that headers are defined and are treated without case sensitivity
+        options.headers = new Headers(options.headers || {}); // eslint-disable-line
+
         // Pass data through JSON.stringify, unless options.contentType is 'text/plain' or false (meaning don't process)
-        const
-            payload = (
-                options &&
-                options.contentType !== undefined &&
-                (options.contentType === 'text/plain' || options.contentType === false)
-            ) ? data : JSON.stringify(data);
-        return this.request('POST', getUrl(this.baseUrl, url), payload, options);
+        // TODO: Deprecated - remove in v26
+        if (options.contentType) {
+            // Display a deprecation warning, except during test
+            if (!process.env || process.env.npm_lifecycle_event !== 'test') {
+                const e = new Error();
+                console.warn( // eslint-disable-line
+                    'Deprecation warning: Setting `contentType` for API POST requests is deprecated, and support may ' +
+                    'be removed in the next major release of D2. In stead you may set the  `Content-Type` header ' +
+                    'explicitly. If no `Content-Type` header is specified, the browser will try to determine one for ' +
+                    'you.\nRequest:', 'POST', requestUrl, e.stack
+                );
+            }
+
+            options.headers.set('Content-Type', 'text/plain');
+            delete options.contentType; // eslint-disable-line
+        } else if (data.constructor.name === 'FormData' && !options.headers.get('Content-Type')) {
+            options.headers.set('Content-Type', 'multipart/form-data');
+            payload = data;
+        } else {
+            payload = JSON.stringify(data);
+        }
+
+        return this.request('POST', requestUrl, payload, options);
     }
+    /* eslint-enable complexity */
 
     delete(url, options) {
         return this.request('DELETE', getUrl(this.baseUrl, url), undefined, options);
@@ -96,59 +104,121 @@ class Api {
         return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), JSON.stringify(data));
     }
 
-    request(type, url, data, options = {}) {
-        checkType(type, 'string', 'Request type');
+    /* eslint-disable complexity */
+    request(method, url, data, options = {}) {
+        checkType(method, 'string', 'Request type');
         checkType(url, 'string', 'Url');
+        const api = this;
         let requestUrl = url;
+        let query = '';
 
-        if (data && data.filter) {
-            const urlQueryParams = data.filter
-                // `${str}${separator}${filter}`
-                .reduce((str, filter) => {
-                    const separator = str.length ? '&' : '';
-                    const filterQuery = `filter=${filter}`;
-
-                    return `${str}${separator}${filterQuery}`;
-                }, '');
-
-            delete data.filter; // eslint-disable-line no-param-reassign
-            requestUrl += `?${urlQueryParams}`;
+        if (requestUrl.indexOf('?') !== -1) {
+            query = requestUrl.substr(requestUrl.indexOf('?') + 1);
+            requestUrl = requestUrl.substr(0, requestUrl.indexOf('?'));
         }
 
-        const api = this;
+        // Transfer filter properties from the data object to the query string
+        if (data && Array.isArray(data.filter)) {
+            query = `${query}${query.length ? '&' : ''}filter=${data.filter.join('&filter=')}`;
+            delete data.filter; // eslint-disable-line no-param-reassign
+        }
+
+        // When using the GET method, transform the data object to query parameters
+        if (data && method === 'GET') {
+            Object.keys(data)
+                .forEach(key => { query = `${query}${(query.length > 0 ? '&' : '')}${key}=${data[key]}`; });
+        }
 
         function getOptions(mergeOptions, requestData) {
-            let payload = requestData;
-            if (payload === undefined) {
-                payload = {};
-            } else if (payload === true || payload === false) {
-                payload = payload.toString();
-            }
+            const resultOptions = Object.assign({}, api.defaultFetchOptions, mergeOptions);
+            const headers = new Headers(mergeOptions.headers || {});
 
-            const resultOptions = Object.assign({}, api.defaultRequestSettings, mergeOptions);
-
-            resultOptions.type = type;
-            resultOptions.url = requestUrl;
-            resultOptions.data = payload;
-            resultOptions.dataType = options.dataType !== undefined ? options.dataType : 'json';
-            resultOptions.contentType = options.contentType !== undefined ? options.contentType : 'application/json';
+            resultOptions.method = method;
 
             // Only set content type when there is data to send
             // GET requests and requests without data do not need a Content-Type header
             // 0 and false are valid requestData values and therefore should have a content type
-            if (type === 'GET' || (!requestData && requestData !== 0 && requestData !== false)) {
-                resultOptions.contentType = undefined;
+            if (resultOptions.method === 'GET' || (!requestData && requestData !== 0 && requestData !== false)) {
+                headers.delete('Content-Type');
+            } else if (requestData) {
+                // resultOptions.dataType = options.dataType !== undefined ? options.dataType : 'json';
+                if (!headers.get('Content-Type')) {
+                    headers.set('Content-Type', data.constructor.name === 'FormData'
+                        ? 'multipart/form-data'
+                        : 'application/json'
+                    );
+                }
+                resultOptions.body = requestData;
             }
 
+            // Handle the dataType option used by jQuery.ajax, but throw a deprecation warning
+            // TODO: Remove in 2.26
+            if (mergeOptions.dataType) {
+                // Display a deprecation warning, except during test
+                if (!process.env || process.env.npm_lifecycle_event !== 'test') {
+                    const e = new Error();
+                    console.warn( // eslint-disable-line
+                        'Deprecation warning: Setting `dataType` for API requests is deprecated, and support may be ' +
+                        'removed in the next major release of D2. In stead you should set the  `Accept` header ' +
+                        'directly.\nRequest:', resultOptions.method, requestUrl, e.stack
+                    );
+                }
+
+                if (mergeOptions.dataType === 'text') {
+                    headers.set('Accept', 'text/plain');
+                    delete resultOptions.dataType;
+                }
+            }
+
+            resultOptions.headers = headers;
             return resultOptions;
         }
 
+        if (query.length) {
+            requestUrl = `${requestUrl}?${query}`;
+        }
+        const requestOptions = getOptions(options, options.method === 'GET' ? undefined : data);
+
+        // If the provided value is valid JSON, return the parsed JSON object. If not, return the raw value as is.
+        function parseResponseData(value) {
+            try {
+                return JSON.parse(value);
+            } catch (e) {
+                return value;
+            }
+        }
+
         return new Promise((resolve, reject) => {
-            api.jquery
-                .ajax(getOptions(options, data))
-                .then(processSuccess(resolve), processFailure(reject));
+            // fetch returns a promise that will resolve with any response received from the server
+            // It will be rejected ONLY if no response is received from the server, i.e. because there's no internet
+            this.fetch(requestUrl, requestOptions)
+                .then(response => {
+                    // If the request failed, response.ok will be false and response.status will be the status code
+                    if (response.ok) {
+                        response.text().then(text => resolve(parseResponseData(text)));
+                    } else {
+                        response.text().then(text => {
+                            if (!process.env || process.env.npm_lifecycle_event !== 'test') {
+                                console.warn( // eslint-disable-line
+                                    `API request failed with status ${response.status} ${response.statusText}\n`,
+                                    `Request: ${requestOptions.method} ${requestUrl}`
+                                );
+                            }
+                            reject(parseResponseData(text));
+                        });
+                    }
+                })
+                .catch((err) => {
+                    // It's not usually possible to get much info about the cause of the error programmatically, but
+                    // the user can check the browser console for more info
+                    if (!process.env || process.env.npm_lifecycle_event !== 'test') {
+                        console.error('Server connection error:', err); // eslint-disable-line
+                    }
+                    reject(`Server connection failed for API request: ${requestOptions.method} ${requestUrl}`);
+                });
         });
     }
+    /* eslint-enable complexity */
 
     setBaseUrl(baseUrl) {
         checkType(baseUrl, 'string', 'Base url');
@@ -163,7 +233,7 @@ function getApi() {
     if (getApi.api) {
         return getApi.api;
     }
-    return (getApi.api = new Api(jQuery));
+    return (getApi.api = new Api());
 }
 
 Api.getApi = getApi;
