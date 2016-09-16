@@ -161,5 +161,21 @@ describe('SystemSettings', () => {
                     done(new Error(err));
                 });
         });
+
+        it('should add a "Content-Type: text/plain" header to the request', done => {
+            const value = 'test';
+            systemSettings.set('mySetting', value)
+                .then(() => {
+                    expect(apiGet.callCount).to.equal(0);
+                    expect(apiPost.callCount).to.equal(1);
+                    expect(apiDelete.callCount).to.equal(0);
+
+                    expect(apiPost).to.be.calledWith('systemSettings/mySetting', value, { headers: { 'Content-Type': 'text/plain' }});
+                    done();
+                })
+                .catch(err => {
+                    done(new Error(err));
+                });
+        })
     });
 });

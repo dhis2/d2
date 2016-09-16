@@ -86,7 +86,7 @@ class SystemSettings {
         if (value === null || (`${value}`).length === 0) {
             return this.api.delete(settingUrl);
         }
-        return this.api.post(settingUrl, value);
+        return this.api.post(settingUrl, value, { headers: { 'Content-Type': 'text/plain' } });
     }
 }
 
