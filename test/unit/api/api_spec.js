@@ -20,7 +20,7 @@ describe('Api', () => {
         }));
 
         api = new Api(fetchMock);
-        baseFetchOptions = Object.assign({ method: 'GET' }, api.defaultFetchOptions);
+        baseFetchOptions = Object.assign({ method: 'GET' }, { headers: new Headers() }, api.defaultFetchOptions);
 
         sinon.stub(System, 'getSystem').returns({
             version: {
@@ -417,21 +417,18 @@ describe('Api', () => {
             );
         });
 
-        it('should set the correct Content-Type for form data', () => {
+        it('should set remove the Content-Type header for form data', (done) => {
             const data = new FormData();
             data.append('field_1', 'value_1');
             data.append('field_2', 'value_2');
 
-            api.post('form/data', data);
-
-            expect(fetchMock).to.be.calledWith(
-                '/api/form/data',
-                Object.assign(baseFetchOptions, {
-                    method: 'POST',
-                    headers: new Headers({ 'content-type': 'multipart/form-data' }),
-                    body: data,
-                }),
-            );
+            api.post('form/data', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+                .then(() => {
+                    expect(fetchMock.args[0][1].headers.constructor.name).to.equal('Headers');
+                    expect(fetchMock.args[0][1].headers.get('Content-Type')).to.be.null;
+                    done();
+                })
+                .catch(done);
         });
     });
 

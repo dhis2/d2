@@ -48,8 +48,7 @@ class Api {
         this.defaultFetchOptions = {
             mode: 'cors', // requests to different origins fail
             credentials: 'include', // include cookies with same-origin requests
-            cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode,
-            headers: new Headers(),
+            cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode
         };
     }
 
@@ -81,8 +80,8 @@ class Api {
 
             options.headers.set('Content-Type', 'text/plain');
             delete options.contentType; // eslint-disable-line
-        } else if (data.constructor.name === 'FormData' && !options.headers.get('Content-Type')) {
-            options.headers.set('Content-Type', 'multipart/form-data');
+        } else if (data.constructor.name === 'FormData') {
+            // Don't do any processing of FormData
             payload = data;
         } else {
             payload = JSON.stringify(data);
@@ -142,11 +141,10 @@ class Api {
                 headers.delete('Content-Type');
             } else if (requestData) {
                 // resultOptions.dataType = options.dataType !== undefined ? options.dataType : 'json';
-                if (!headers.get('Content-Type')) {
-                    headers.set('Content-Type', data.constructor.name === 'FormData'
-                        ? 'multipart/form-data'
-                        : 'application/json'
-                    );
+                if (data.constructor.name === 'FormData') {
+                    headers.delete('Content-Type');
+                } else if (!headers.get('Content-Type')) {
+                    headers.set('Content-Type', 'application/json');
                 }
                 resultOptions.body = requestData;
             }
@@ -177,7 +175,7 @@ class Api {
         if (query.length) {
             requestUrl = `${requestUrl}?${customEncodeURIComponent(query)}`;
         }
-        const requestOptions = getOptions(options, options.method === 'GET' ? undefined : data);
+        const requestOptions = getOptions(options, data);
 
         // If the provided value is valid JSON, return the parsed JSON object. If not, return the raw value as is.
         function parseResponseData(value) {
