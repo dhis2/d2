@@ -293,21 +293,6 @@ describe('Internationalisation (I18n)', () => {
                 });
             });
 
-            xit('handles escaped characters properly', (done) => {
-                i18n.load().then(() => {
-                    try {
-                        expect(apiGet.callCount).to.equal(0);
-                        expect(apiPost.callCount).to.equal(0);
-                        expect(apiReq.callCount).to.equal(1);
-                        expect(i18n.getTranslation('escapes')).to.eql(mockTranslations.escapes);
-                        expect(i18n.getTranslation('escapes')).to.not.eql(mockEscape);
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                });
-            });
-
             it('returns ** string ** for unknown strings', (done) => {
                 i18n.load().then(() => {
                     try {
