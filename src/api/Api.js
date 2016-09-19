@@ -64,27 +64,27 @@ class Api {
         // Ensure that headers are defined and are treated without case sensitivity
         options.headers = new Headers(options.headers || {}); // eslint-disable-line
 
-        // Pass data through JSON.stringify, unless options.contentType is 'text/plain' or false (meaning don't process)
-        // TODO: Deprecated - remove in v26
-        if (options.contentType) {
-            // Display a deprecation warning, except during test
-            if (!process.env || process.env.npm_lifecycle_event !== 'test') {
-                const e = new Error();
-                console.warn( // eslint-disable-line
-                    'Deprecation warning: Setting `contentType` for API POST requests is deprecated, and support may ' +
-                    'be removed in the next major release of D2. In stead you may set the  `Content-Type` header ' +
-                    'explicitly. If no `Content-Type` header is specified, the browser will try to determine one for ' +
-                    'you.\nRequest:', 'POST', requestUrl, e.stack
-                );
-            }
+        if (data !== undefined) {
+            // Pass data through JSON.stringify, unless options.contentType is 'text/plain' or false (meaning don't process)
+            // TODO: Deprecated - remove in v26
+            if (options.contentType) {
+                // Display a deprecation warning, except during test
+                if (!process.env || process.env.npm_lifecycle_event !== 'test') {
+                    const e = new Error();
+                    console.warn( // eslint-disable-line
+                        'Deprecation warning: Setting `contentType` for API POST requests is deprecated, and support ' +
+                        'may be removed in the next major release of D2. In stead you may set the  `Content-Type` ' +
+                        'header explicitly. If no `Content-Type` header is specified, the browser will try to ' +
+                        'determine one for you.\nRequest:', 'POST', requestUrl, e.stack
+                    );
+                }
 
-            options.headers.set('Content-Type', 'text/plain');
-            delete options.contentType; // eslint-disable-line
-        } else if (data.constructor.name === 'FormData') {
-            // Don't do any processing of FormData
-            payload = data;
-        } else {
-            payload = JSON.stringify(data);
+                options.headers.set('Content-Type', 'text/plain');
+                delete options.contentType; // eslint-disable-line
+            } else if (data.constructor.name !== 'FormData') {
+                // Don't do any processing of FormData
+                payload = JSON.stringify(data);
+            }
         }
 
         return this.request('POST', requestUrl, payload, options);

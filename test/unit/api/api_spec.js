@@ -430,6 +430,14 @@ describe('Api', () => {
                 })
                 .catch(done);
         });
+
+        it('should not try to determine the type of data if no data is provided', done => {
+            api.post('no/data')
+                .then(() => {
+                    done();
+                })
+                .catch(done);
+        });
     });
 
     describe('delete', () => {
