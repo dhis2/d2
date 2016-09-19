@@ -38,7 +38,8 @@ export function getJSONForProperties(model, properties) {
             // TODO: This is not the proper way to do this. We should check if the array contains Models
             if (propertyName === 'compulsoryDataElementOperands' ||
                 propertyName === 'greyedFields' ||
-                propertyName === 'aggregationLevels') {
+                propertyName === 'aggregationLevels' ||
+                propertyName === 'grantTypes') {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
             }
