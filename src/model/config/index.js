@@ -4,6 +4,7 @@ import categoryOptionGroupSetDefaults from './model-defaults/categoryOptionGroup
 import dataElementDefaults from './model-defaults/dataElement';
 import dataElementGroupSetDefaults from './model-defaults/dataElementGroupSet';
 import dataSetDefaults from './model-defaults/dataSet';
+import externalMapLayer from './model-defaults/externalMapLayer';
 
 export const defaultValues = new Map([
     ['organisationUnitGroupSet', organisationUnitGroupSetDefaults],
@@ -12,6 +13,7 @@ export const defaultValues = new Map([
     ['dataElement', dataElementDefaults],
     ['dataElementGroupSet', dataElementGroupSetDefaults],
     ['dataSet', dataSetDefaults],
+    ['externalMapLayer', externalMapLayer],
 ]);
 
 export function getDefaultValuesForModelType(modelDefinitionName) {
