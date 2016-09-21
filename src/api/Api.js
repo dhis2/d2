@@ -81,8 +81,15 @@ class Api {
 
                 options.headers.set('Content-Type', 'text/plain');
                 delete options.contentType; // eslint-disable-line
-            } else if (data.constructor.name !== 'FormData') {
-                // Don't do any processing of FormData
+            } else if (data.constructor.name === 'FormData') {
+                // Ensure that the browser will set the correct Content-Type header for FormData, including boundary
+                options.headers.delete('Content-Type');
+                payload = data;
+            } else if (options.headers.get('Content-Type') === 'text/plain') {
+                payload = String(data);
+            } else {
+                // Send JSON data by default
+                options.headers.set('Content-Type', 'application/json');
                 payload = JSON.stringify(data);
             }
         }
@@ -140,7 +147,6 @@ class Api {
             if (resultOptions.method === 'GET' || (!requestData && requestData !== 0 && requestData !== false)) {
                 headers.delete('Content-Type');
             } else if (requestData) {
-                // resultOptions.dataType = options.dataType !== undefined ? options.dataType : 'json';
                 if (data.constructor.name === 'FormData') {
                     headers.delete('Content-Type');
                 } else if (!headers.get('Content-Type')) {
