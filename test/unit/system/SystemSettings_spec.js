@@ -1,3 +1,5 @@
+import Api from '../../../src/api/Api';
+
 describe('SystemSettings', () => {
     const Api = require('../../../src/api/Api');
     const SystemSettings = require('../../../src/system/SystemSettings');
@@ -5,9 +7,10 @@ describe('SystemSettings', () => {
     let apiGet;
     let apiPost;
     let apiDelete;
+    let apiRequest;
 
     beforeEach(() => {
-        systemSettings = new SystemSettings();
+        systemSettings = new SystemSettings(new Api());
     });
 
     it('should not be allowed to be called without new', () => {
@@ -111,13 +114,12 @@ describe('SystemSettings', () => {
             systemSettings.api.post = apiPost = sinon.stub();
             systemSettings.api.delete = apiDelete = sinon.stub();
 
-            apiGet.withArgs('configuration').returns(Promise.resolve());
             apiPost.returns(Promise.resolve());
             apiDelete.returns(Promise.resolve());
         });
 
         afterEach(() => {
-            systemSettings = new SystemSettings();
+            systemSettings = new SystemSettings(new Api());
         });
 
         it('should POST to the API', (done) => {
@@ -176,6 +178,32 @@ describe('SystemSettings', () => {
                 .catch(err => {
                     done(new Error(err));
                 });
-        })
+        });
+    });
+
+    describe('.set API request', () => {
+        beforeEach(() => {
+            systemSettings.api.request = apiRequest = sinon.stub();
+
+            apiRequest.returns(Promise.resolve());
+        });
+
+        afterEach(() => {
+            systemSettings = new SystemSettings(new Api());
+        });
+
+        it('should not encode the value as JSON', done => {
+            const value = 'test';
+            systemSettings.set('mySetting', value)
+                .then(() => {
+                    expect(apiRequest.callCount).to.equal(1);
+                    expect(apiRequest).to.have.been.calledWith('POST', '/api/systemSettings/mySetting', value);
+
+                    done();
+                })
+                .catch(err => {
+                    done(new Error(err));
+                });
+        });
     });
 });

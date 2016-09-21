@@ -207,6 +207,26 @@ describe('Api', () => {
                 })
                 .catch(done);
         });
+
+        it('should encode data as JSON', done => {
+            const data = { name: 'Name', code: 'Code_01' };
+            api.post('jsonData', data)
+                .then(() => {
+                    expect(fetchMock.args[0][1].body).to.equal(JSON.stringify(data));
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should not encode text/plain data as JSON', done => {
+            const data = 'my data';
+            api.post('textData', data, { headers: { 'Content-Type': 'text/plain' } })
+                .then(() => {
+                    expect(fetchMock.args[0][1].body).to.equal(data);
+                    done();
+                })
+                .catch(done);
+        });
     });
 
     describe('get', () => {
@@ -360,7 +380,7 @@ describe('Api', () => {
                 Object.assign(baseFetchOptions, {
                     method: 'POST',
                     headers: new Headers({ 'content-type': 'text/plain' }),
-                    body: JSON.stringify('string=test'),
+                    body: 'string=test',
                 })
             );
         });
