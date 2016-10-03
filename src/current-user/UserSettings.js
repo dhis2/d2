@@ -99,7 +99,7 @@ class UserSettings {
             return this.api.delete(settingUrl)
                 .then(this[key] = undefined);
         }
-        return this.api.post(settingUrl, value)
+        return this.api.post(settingUrl, value, { headers: { 'Content-Type': 'text/plain' } })
             .then(this[key] = value);
     }
 }
