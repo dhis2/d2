@@ -51,7 +51,7 @@ export function getUserSettings() {
     return api.get('userSettings');
 }
 
-function getModelRequests(api, schemaNames = []) {
+function getModelRequests(api, schemaNames) {
     const fieldsForSchemas = [
         'apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href',
         'writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants',
@@ -60,21 +60,28 @@ function getModelRequests(api, schemaNames = []) {
     const modelRequests = [];
     const loadSchemaForName = (schemaName) => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
 
-    if (schemaNames.length > 0) {
-        const individualSchemaRequests = schemaNames.map(loadSchemaForName);
+    if (Array.isArray(schemaNames)) {
+        const individualSchemaRequests = schemaNames.map(loadSchemaForName).concat([]);
 
         const schemasPromise = Promise
             .all(individualSchemaRequests)
             .then(schemas => ({ schemas }));
 
         modelRequests.push(schemasPromise);
+
+        if (schemaNames.length > 0) {
+            // If schemas are loaded, attributes should be as well
+            modelRequests.push(api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }));
+        } else {
+            // Otherwise, just return an empty list of attributes
+            modelRequests.push({ attributes: [] });
+        }
     } else {
-        // Used as a source to generate the models.
+        // If no schemas are specified, load all schemas and attributes
         modelRequests.push(api.get('schemas', { fields: fieldsForSchemas }));
+        modelRequests.push(api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }));
     }
 
-    // Used to add the dynamic attributes to the models that should have them.
-    modelRequests.push(api.get('attributes', { fields: ':all,optionSet[:all,options[:all]]', paging: false }));
 
     return modelRequests;
 }
