@@ -104,10 +104,19 @@ class Model {
                                 .filter(av => av.attribute.name === attributeName)
                                 .reduce((current, av) => av, undefined);
 
+                            // Don't do anything if the value stayed the same
+                            if (attributeValue && attributeValue.value === value) {
+                                return;
+                            }
+
                             if (attributeValue) {
-                                // Don't do anything if the value stayed the same
-                                if (attributeValue.value === value) {
-                                    return;
+                                // Remove the attributeValue from the array of attributeValues on the object
+                                // This is done because the server can not handle them properly when empty strings
+                                // as values are sent. It will properly remove the attributeValue
+                                // on the server side when they are not being send to the server at all.
+                                if (value === undefined || value === null || value === '') {
+                                    this.attributeValues = this.attributeValues
+                                        .filter(av => av !== attributeValue);
                                 }
 
                                 attributeValue.value = value;
