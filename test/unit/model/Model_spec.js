@@ -233,6 +233,66 @@ describe('Model', () => {
             expect(dataElementModel.attributeValues.length).to.equal(2);
         });
 
+        it('should remove the attributeValue from the attributeValue array when the value is cleared out', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: { id: 'FpoWdhxCMwH', name: 'name' }
+            }];
+
+            dataElementModel.attributes.name = '';
+
+            expect(dataElementModel.attributes.name).to.equal(undefined);
+            expect(dataElementModel.attributeValues.length).to.equal(0);
+        });
+
+        it('should not remove the attributeValue when the attribute is set to false', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: { id: 'FpoWdhxCMwH', name: 'name' }
+            }];
+
+            dataElementModel.attributes.name = false;
+
+            expect(dataElementModel.attributes.name).to.equal(false);
+            expect(dataElementModel.attributeValues.length).to.equal(1);
+        });
+
+        it('should not remove the attributeValue when the attribute is set 0', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: { id: 'FpoWdhxCMwH', name: 'name' }
+            }];
+
+            dataElementModel.attributes.name = 0;
+
+            expect(dataElementModel.attributes.name).to.equal(0);
+            expect(dataElementModel.attributeValues.length).to.equal(1);
+        });
+
+        it('should remove the attributeValue when the attribute is set to undefined', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: { id: 'FpoWdhxCMwH', name: 'name' }
+            }];
+
+            dataElementModel.attributes.name = undefined;
+
+            expect(dataElementModel.attributes.name).to.equal(undefined);
+            expect(dataElementModel.attributeValues.length).to.equal(0);
+        });
+
+        it('should remove the attributeValue when the attribute is set to null', () => {
+            dataElementModel.dataValues.attributeValues = [{
+                value: 'Mark',
+                attribute: { id: 'FpoWdhxCMwH', name: 'name' }
+            }];
+
+            dataElementModel.attributes.name = null;
+
+            expect(dataElementModel.attributes.name).to.equal(undefined);
+            expect(dataElementModel.attributeValues.length).to.equal(0);
+        });
+
         it('should not show up in the list of model keys', () => {
             const modelKeys = Object.keys(dataElementModel);
 
