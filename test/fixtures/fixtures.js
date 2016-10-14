@@ -17,7 +17,7 @@ export default (function () {
         }
     }
 
-    addFixture('/api/attributes', require('./json/api/schemas/attributes.json'));
+    addFixture('/api/attributes', require('./json/api/attributes.json'));
     addFixture('/api/dataElements', require('./json/api/dataElements.json'));
     addFixture('/api/organisationUnits', require('./json/api/organisationUnits.json'));
     addFixture('/api/schemas', require('./json/api/schemas.json'));

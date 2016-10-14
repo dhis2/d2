@@ -7,6 +7,9 @@ proxyquire('../../../src/api/Api', {});
 import fixtures from '../../fixtures/fixtures';
 import Api from '../../../src/api/Api';
 
+// Mock FormData as it is not available in NodeJs
+global.FormData = function FormData() {}
+global.FormData.prototype.append = function () {};
 
 describe('Api', () => {
     let fetchMock;

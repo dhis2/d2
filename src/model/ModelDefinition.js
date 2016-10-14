@@ -9,6 +9,7 @@ import Filters from './Filters';
 import { DIRTY_PROPERTY_LIST } from './ModelBase';
 import { getDefaultValuesForModelType } from './config';
 import { getOwnedPropertyJSON } from './helpers/json';
+import { getAttributes } from './attributes/Attributes';
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
@@ -405,7 +406,7 @@ class ModelDefinition {
      * @note {info} An example of a schema definition can be found on
      * https://apps.dhis2.org/demo/api/schemas/dataElement
      */
-    static createFromSchema(schema, attributes = []) {
+    static createFromSchema(schema, attributes = getAttributes()) {
         let ModelDefinitionClass;
         checkType(schema, Object, 'Schema');
 
@@ -421,7 +422,7 @@ class ModelDefinition {
             schema,
             Object.freeze(createPropertiesObject(schema.properties)),
             Object.freeze(createValidations(schema.properties)),
-            attributes
+            attributes.getAttributesForSchema(schema)
                 .reduce((current, attributeDefinition) => {
                     current[attributeDefinition.name] = attributeDefinition; // eslint-disable-line no-param-reassign
                     return current;

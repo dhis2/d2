@@ -15,6 +15,7 @@ import fixtures from '../../fixtures/fixtures';
 import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
 import Model from '../../../src/model/Model';
 import ModelDefinitions from '../../../src/model/ModelDefinitions';
+import Attributes from '../../../src/model/attributes/Attributes';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('../../../src/model/ModelDefinition');
@@ -112,7 +113,9 @@ describe('ModelDefinition', () => {
         var dataElementModelDefinition;
 
         beforeEach(() => {
-            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/api/attributes').attributes);
+            const attributes = new Attributes(fixtures.get('/api/attributes'));
+
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), attributes);
         });
 
         it('should be a method on ModelDefinition', () => {
@@ -399,10 +402,11 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should set ordered to false when the ordered property is available and is false', () => {
+                    const attributes = new Attributes(fixtures.get('/api/attributes'));
                     const dataElementSchemaFixture = fixtures.get('/api/schemas/dataElement');
                     dataElementSchemaFixture.properties[0].ordered = false;
 
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, fixtures.get('/api/attributes').attributes);
+                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, attributes);
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 
@@ -410,10 +414,11 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should set ordered to true when the ordered property is available and is true', () => {
+                    const attributes = new Attributes(fixtures.get('/api/attributes'));
                     const dataElementSchemaFixture = fixtures.get('/api/schemas/dataElement');
                     dataElementSchemaFixture.properties[0].ordered = true;
 
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, fixtures.get('/api/attributes').attributes);
+                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, attributes);
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 

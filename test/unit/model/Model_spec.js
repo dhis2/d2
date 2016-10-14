@@ -1,4 +1,5 @@
 import fixtures from '../../fixtures/fixtures.js';
+import Attributes from '../../../src/model/attributes/Attributes';
 
 describe('Model', () => {
     let Model = require('../../../src/model/Model');
@@ -166,7 +167,8 @@ describe('Model', () => {
 
         beforeEach(() => {
             const ModelDefinition = require('../../../src/model/ModelDefinition');
-            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
+            const attributes = new Attributes(fixtures.get('/dataElementAttributes'));
+            let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), attributes);
 
             dataElementModel = Model.create(dataElementModelDefinition);
         });

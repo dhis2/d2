@@ -7,6 +7,7 @@ import I18n from './i18n/I18n';
 import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
 import 'whatwg-fetch';
+import { getAttributes } from './model/attributes/Attributes';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -178,14 +179,10 @@ export function init(initConfig) {
                 .forEach((schema) => {
                     // Attributes that do not have values do not by default get returned with the data,
                     // therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
-                    const schemaAttributes = responses.attributes
-                        .filter(attributeDescriptor => {
-                            const attributeNameFilter = [schema.singular, 'Attribute'].join('');
-                            return attributeDescriptor[attributeNameFilter] === true;
-                        });
+                    getAttributes(res[1]);
 
                     if (!Object.prototype.hasOwnProperty.call(d2.models, schema.singular)) {
-                        d2.models.add(model.ModelDefinition.createFromSchema(schema, schemaAttributes));
+                        d2.models.add(model.ModelDefinition.createFromSchema(schema));
                     }
                 });
 
