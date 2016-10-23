@@ -179,6 +179,8 @@ export function init(initConfig) {
                 .forEach((schema) => {
                     // Attributes that do not have values do not by default get returned with the data,
                     // therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
+                    // TODO(mark): The following call sets the attributes, the function name is misleading.
+                    // Should be switched out for something else.
                     getAttributes(res[1]);
 
                     if (!Object.prototype.hasOwnProperty.call(d2.models, schema.singular)) {
