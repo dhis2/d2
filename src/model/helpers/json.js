@@ -39,7 +39,8 @@ export function getJSONForProperties(model, properties) {
             if (propertyName === 'compulsoryDataElementOperands' ||
                 propertyName === 'greyedFields' ||
                 propertyName === 'aggregationLevels' ||
-                propertyName === 'grantTypes') {
+                propertyName === 'grantTypes' ||
+                propertyName === 'translations') {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
             }
