@@ -2,6 +2,15 @@ import { checkType } from '../lib/check';
 import jQuery from '../external/jquery';
 import System from '../system/System';
 
+function isIE11() {
+    try {
+        return /Trident.*rv[ :]*11\./.test(navigator.userAgent);
+    } catch (e) {
+        // If this throws it is probably not a browser so we can assume it is not IE11
+    }
+    return false;
+}
+
 function getMergeStrategyParam(mergeType = 'REPLACE') {
     const system = System.getSystem();
 
@@ -41,6 +50,13 @@ function getUrl(baseUrl, url) {
         urlParts.push(baseUrl);
     }
     urlParts.push(url);
+
+    if (isIE11()) {
+        const cacheBreaker = `_=${(new Date).getTime()}`;
+        const cacheBreakerQueryParam = /\?/.test(url) ? `&${cacheBreaker}` : `?${cacheBreaker}`;
+
+        urlParts.push(cacheBreakerQueryParam);
+    }
 
     return urlParts.join('/')
         .replace(new RegExp('(.(?:[^:]))\/\/+', 'g'), '$1/')
