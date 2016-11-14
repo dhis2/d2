@@ -470,9 +470,10 @@ class OrganisationUnitModelDefinition extends ModelDefinition {
     // If a 'root' is specified when listing organisation units the results will be limited to the root and its
     // descendants. This is special behavior for the organisation unit API endpoint, which is documented here:
     // https://dhis2.github.io/dhis2-docs/master/en/developer/html/webapi_organisation_units.html
-    list(extraParams = {}) {
-        if (extraParams.hasOwnProperty('root')) {
-            extraParams.apiEndpoint = [this.apiEndpoint, extraParams.root].join('/');
+    list(params = {}) {
+        const extraParams = Object.assign({}, params);
+        if (params.hasOwnProperty('root')) {
+            extraParams.apiEndpoint = [this.apiEndpoint, params.root].join('/');
             delete extraParams.root;
         }
 

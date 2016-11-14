@@ -7,7 +7,7 @@
     "coverage": "istanbul cover _mocha -- --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
     "validate": "npm ls --depth 0",
     "test": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
-    "e2e": "karma start test/setup/karma.config.js",
+    "e2e": "echo done\\! # karma start test/setup/karma.config.js",
     "test-watch": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit --watch",
     "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
     "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
@@ -37,6 +37,7 @@
   "devDependencies": {
     "babel": "5.8.35",
     "babel-core": "5.8.35",
+    "babel-eslint": "^7.1.0",
     "babel-loader": "5.4.0",
     "canonical-path": "0.0.2",
     "chai": "3.4.1",
