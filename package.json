@@ -65,6 +65,7 @@
     "lodash": "3.10.1",
     "mocha": "2.3.4",
     "node-fetch": "^1.5.3",
+    "node-pre-gyp": "^0.6.31",
     "phantomjs": "1.9.19",
     "phantomjs-polyfill": "0.0.1",
     "precommit-hook": "3.0.0",
