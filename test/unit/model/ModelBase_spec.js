@@ -156,14 +156,15 @@ describe('ModelBase', () => {
                 });
             });
 
-            it('should return rejected promise when the model is not dirty', (done) => {
+            it('should return a promise that resolves to an empty object when the model is not dirty', (done) => {
                 model.dirty = false;
 
                 model.save()
-                    .catch((message) => {
-                        expect(message).to.equal('No changes to be saved');
+                    .then(result => {
+                        expect(result).to.deep.equal({});
                         done();
-                    });
+                    })
+                    .catch(done);
             });
 
             it('should return rejected promise when the model is not valid', (done) => {
