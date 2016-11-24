@@ -134,28 +134,20 @@ class ModelCollectionProperty extends ModelCollection {
         }
 
         const api = this.modelDefinition.api;
+        const url = [this.parentModel.href, this.modelDefinition.plural].join('/');
+        const data = {
+            additions: Array.from(this.added).map(id => ({ id })),
+            deletions: Array.from(this.removed).map(id => ({ id })),
+        };
 
-        const queries = [];
-
-        if (this.added.size) {
-            Array.from(this.added).forEach(id => {
-                queries.push(api.post([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
-            });
-        }
-        if (this.removed.size) {
-            Array.from(this.removed).forEach(id => {
-                queries.push(api.delete([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
-            });
-        }
-
-        return Promise.all(queries)
+        return api.post(url, data)
             .then(() => {
                 this.added = new Set();
                 this.removed = new Set();
                 this.updateDirty();
                 return Promise.resolve();
             })
-            .catch((err) => Promise.reject('Failed to alter collection:', err));
+            .catch((err) => Promise.reject(err));
     }
 
     /**
