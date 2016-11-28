@@ -14,7 +14,7 @@ class UserSettings {
         this.api = api;
 
         if (userSettings) {
-            Object.assign(this, userSettings);
+            this._settings = userSettings;
         }
     }
 
@@ -33,7 +33,10 @@ class UserSettings {
      * ```
      */
     all() {
-        return this.api.get('userSettings');
+        return this._settings
+            ? Promise.resolve(this._settings)
+            : this.api.get('userSettings')
+                .then(userSettings => { this._settings = userSettings; return Promise.resolve(this._settings); });
     }
 
     /**
@@ -51,6 +54,10 @@ class UserSettings {
      * ```
      */
     get(key) {
+        if (this._settings) {
+            return this._settings[key];
+        }
+
         function processValue(value) {
             // Attempt to parse the response as JSON. If this fails we return the value as is.
             try {
@@ -71,7 +78,7 @@ class UserSettings {
                     // Store the value on the user settings object
                     this[key] = value;
                     if (value) {
-                        resolve(processValue(response));
+                        resolve(value);
                     }
                     reject(new Error('The requested userSetting has no value or does not exist.'));
                 });
@@ -94,13 +101,13 @@ class UserSettings {
      * ```
      */
     set(key, value) {
+        delete this._settings;
+
         const settingUrl = ['userSettings', key].join('/');
         if (value === null || (`${value}`).length === 0) {
-            return this.api.delete(settingUrl)
-                .then(this[key] = undefined);
+            return this.api.delete(settingUrl);
         }
-        return this.api.post(settingUrl, value, { headers: { 'Content-Type': 'text/plain' } })
-            .then(this[key] = value);
+        return this.api.post(settingUrl, value, { headers: { 'Content-Type': 'text/plain' } });
     }
 }
 

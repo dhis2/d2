@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
     "babel": "5.8.35",
@@ -65,7 +65,7 @@
     "karma-webpack": "1.7.0",
     "lodash": "3.10.1",
     "mocha": "2.3.4",
-    "node-fetch": "^1.5.3",
+    "node-fetch": "^1.6.3",
     "node-pre-gyp": "^0.6.31",
     "phantomjs": "1.9.19",
     "phantomjs-polyfill": "0.0.1",
