@@ -1,13 +1,4 @@
 let requestHandlers = new Map();
-
-beforeEach(() => {
-    createFetchMock();
-});
-
-afterEach(() => {
-    window.fetch.restore();
-});
-
 let isLogging = false;
 
 export function createFetchMock() {

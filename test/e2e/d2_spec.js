@@ -1,10 +1,15 @@
 import d2 from '../../src/d2';
-import { respondTo } from '../setup/fetch-mock';
+import { respondTo, createFetchMock } from '../setup/fetch-mock';
 import { createSpies } from '../setup/setup-d2-init-requests';
 
 describe.only('D2', function () {
     beforeEach(() => {
+        createFetchMock();
         createSpies();
+    });
+
+    afterEach(() => {
+        window.fetch.restore();
     });
 
     it('should call all http requests', () => {

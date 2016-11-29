@@ -1,5 +1,5 @@
 import {init, getInstance} from '../../../src/d2';
-import { respondTo } from '../../setup/fetch-mock';
+import { respondTo, createFetchMock } from '../../setup/fetch-mock';
 import { createSpies } from '../../setup/setup-d2-init-requests';
 
 describe('D2.models', () => {
@@ -7,6 +7,7 @@ describe('D2.models', () => {
     let d2;
 
     beforeEach(done => {
+        createFetchMock();
         createSpies();
 
         init({ baseUrl: '/dhis/api' })
@@ -15,6 +16,10 @@ describe('D2.models', () => {
                 done();
             })
             .catch(done);
+    });
+
+    afterEach(() => {
+        window.fetch.restore();
     });
 
     it('should be available on the d2 object', () => {
