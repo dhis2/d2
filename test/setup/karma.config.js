@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = function karmaConfigHandler(config) {
     config.set({
-        browsers: ['PhantomJS'], // run in Headless browser PhantomJS
+        browsers: ['Chrome'], // run in Headless browser PhantomJS
         singleRun: true,
         frameworks: [
             'mocha', // Test runner
@@ -10,9 +10,20 @@ module.exports = function karmaConfigHandler(config) {
             'sinon', // Mocking library
             'chai-sinon', // Assertions for mocks and spies
         ],
+        plugins: [
+            'karma-mocha',
+            'karma-chai',
+            'karma-sinon',
+            'karma-chai-sinon',
+            'karma-phantomjs-launcher',
+            'karma-chrome-launcher',
+            'karma-webpack',
+            'karma-coverage',
+            'karma-spec-reporter',
+        ],
         files: [
             '../../node_modules/phantomjs-polyfill/bind-polyfill.js', // Adds Function.prototype.bind that is missing from phantomjs
-            '../../node_modules/babel-core/browser-polyfill.js',
+            '../../node_modules/babel-polyfill/dist/polyfill.js',
             '../../node_modules/whatwg-fetch/fetch.js',
             '../fixtures/e2efixtures.js',
             './tests.webpack.js', // just load this file as entry for webpack
@@ -47,9 +58,6 @@ module.exports = function karmaConfigHandler(config) {
                             path.resolve('node_modules'),
                         ],
                         loader: 'babel',
-                        query: {
-                            stage: 2,
-                        },
                     },
                     // transpile and instrument only testing sources with isparta
                     {

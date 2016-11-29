@@ -1,8 +1,8 @@
 import Api from '../../../src/api/Api';
 
 describe('SystemSettings', () => {
-    const Api = require('../../../src/api/Api');
-    const SystemSettings = require('../../../src/system/SystemSettings');
+    const Api = require('../../../src/api/Api').default;
+    const SystemSettings = require('../../../src/system/SystemSettings').default;
     let systemSettings;
     let apiGet;
     let apiPost;

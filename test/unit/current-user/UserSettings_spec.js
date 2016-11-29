@@ -1,6 +1,6 @@
 describe('userSettings.CurrentUser', () => {
-    const Api = require('../../../src/api/Api');
-    const UserSettings = require('../../../src/current-user/UserSettings');
+    const Api = require('../../../src/api/Api').default;
+    const UserSettings = require('../../../src/current-user/UserSettings').default;
     let userSettings;
     let apiGet;
     let apiPost;

@@ -11,3 +11,5 @@ global.expect = global.chai.expect;
 global.fetch = require('node-fetch');
 global.Headers = fetch.Headers;
 global.FormData = require('form-data');
+
+require('./setup-d2-init-requests.js');

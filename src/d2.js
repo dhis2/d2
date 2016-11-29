@@ -13,8 +13,8 @@ let deferredD2Init = Deferred.create();
 
 const preInitConfig = Config.create();
 
-export function getManifest(url) {
-    const api = new Api();
+export function getManifest(url, ApiClass = Api) {
+    const api = ApiClass.getApi();
     api.setBaseUrl('');
 
     const manifestUtilities = {
@@ -41,8 +41,8 @@ export function getManifest(url) {
  * }
  * ```
  */
-export function getUserSettings() {
-    const api = Api.getApi();
+export function getUserSettings(ApiClass = Api) {
+    const api = ApiClass.getApi();
 
     if (preInitConfig.baseUrl && firstRun) {
         api.setBaseUrl(preInitConfig.baseUrl);
@@ -110,16 +110,15 @@ function getModelRequests(api, schemaNames) {
  *   });
  * ```
  */
-export function init(initConfig) {
-    const api = Api.getApi();
-    const logger = Logger.getLogger();
+export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
+    const api = ApiClass.getApi();
 
     const config = Config.create(preInitConfig, initConfig);
 
     const d2 = {
         models: undefined,
         model,
-        Api,
+        Api: ApiClass,
         system: System.getSystem(),
         i18n: I18n.getI18n(),
     };
@@ -141,7 +140,7 @@ export function init(initConfig) {
     const userRequests = [
         api.get('me', { fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]' }),
         api.get('me/authorization'),
-        getUserSettings(),
+        getUserSettings(ApiClass),
     ];
 
     const systemRequests = [

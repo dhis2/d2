@@ -1,85 +1,12 @@
 import {init, getInstance} from '../../../src/d2';
+import { respondTo } from '../../setup/fetch-mock';
+import { createSpies } from '../../setup/setup-d2-init-requests';
 
 describe('D2.system', function () {
-    let server;
     let d2;
 
     beforeEach(function (done) {
-        server = sinon.fakeServer.create();
-
-        server.respondWith(/(.*)/, (rq) => {
-            console.error(`D2.system 404: '${rq.method}', '${rq.url}'`);
-        });
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType%5D',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify(window.fixtures.schemas)
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/attributes?fields=:all,optionSet%5B:all,options%5B:all%5D%5D&paging=false',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({attributes: []})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/me\/authorization$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify([])
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/me?fields=:all,organisationUnits%5Bid%5D,userGroups%5Bid%5D,userCredentials%5B:all,!user,userRoles%5Bid%5D',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/userSettings$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({keyUiLocale:'en'})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/system\/info$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({version: '2.21'})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/apps$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({apps: []})
-            ]
-        );
+        createSpies();
 
         init({baseUrl: '/dhis/api'});
         getInstance()
@@ -87,12 +14,6 @@ describe('D2.system', function () {
                 d2 = initialisedD2;
                 done();
             });
-
-        server.respond();
-    });
-
-    afterEach(() => {
-        server.restore();
     });
 
     it('should be available on the d2 object', () => {
@@ -104,77 +25,48 @@ describe('D2.system', function () {
 
         beforeEach(() => {
             systemSettings = d2.system.settings;
-            server.respondWith(
-                'GET',
-                '/dhis/api/systemSettings/keyLastSuccessfulResourceTablesUpdate',
-                [
-                    200,
-                    {'Content-Type': 'text/plain'},
-                    'Sun Mar 15 00:00:00 CET 2015'
-                ]
-            );
+            
+            respondTo('/dhis/api/systemSettings/keyLastSuccessfulResourceTablesUpdate')
+                .with('Sun Mar 15 00:00:00 CET 2015', {'Content-Type': 'text/plain'});
 
-            server.respondWith(
-                'GET',
-                '/dhis/api/systemSettings/keySystemSettingsJson',
-                [
-                    200,
-                    {'Content-Type': 'text/plain'},
-                    '{"dataKey": "DataValue"}'
-                ]
-            );
+            respondTo('/dhis/api/systemSettings/keySystemSettingsJson')
+                .with('{"dataKey": "DataValue"}', {'Content-Type': 'text/plain'});
 
-            server.respondWith(
-                'GET',
-                '/dhis/api/systemSettings',
-                [
-                    200,
-                    {'Content-Type': 'application/json'},
-                    JSON.stringify({
-                        keySystemSettingsJson: {dataKey: 'DataValue'},
-                        keyLastSuccessfulResourceTablesUpdate: 'Sun Mar 15 00:00:00 CET 2015'
-                    })
-                ]
-            );
+            respondTo('/dhis/api/systemSettings')
+                .with(JSON.stringify({
+                    keySystemSettingsJson: {dataKey: 'DataValue'},
+                    keyLastSuccessfulResourceTablesUpdate: 'Sun Mar 15 00:00:00 CET 2015'
+            }));
         });
 
         it('should be available on the system object', () => {
             expect(systemSettings).to.not.be.undefined;
         });
 
-        it('should return the requested plain/text value', (done) => {
-            systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
+        it('should return the requested plain/text value', () => {
+            return systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
                 .then(systemSettingValue => {
                     expect(systemSettingValue).to.equal('Sun Mar 15 00:00:00 CET 2015');
-                })
-                .then(done);
-
-            server.respond();
+                });
         });
 
-        it('should return the requested value as json', (done) => {
-            systemSettings.get('keySystemSettingsJson')
+        it('should return the requested value as json', () => {
+            return systemSettings.get('keySystemSettingsJson')
                 .then(systemSettingValue => {
                     expect(systemSettingValue.dataKey).to.equal('DataValue');
                 })
-                .then(done);
-
-            server.respond();
         });
 
-        it('should return the settings object when all system settings are requested', (done) => {
+        it('should return the settings object when all system settings are requested', () => {
             let expectedSystemSettings = {
                 keySystemSettingsJson: {dataKey: 'DataValue'},
                 keyLastSuccessfulResourceTablesUpdate: 'Sun Mar 15 00:00:00 CET 2015'
             };
 
-            systemSettings.all()
+            return systemSettings.all()
                 .then(returnedSystemSettings => {
                     expect(returnedSystemSettings).to.deep.equal(expectedSystemSettings);
-                })
-                .then(done);
-
-            server.respond();
+                });
         });
     });
 });

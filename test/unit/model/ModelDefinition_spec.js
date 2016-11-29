@@ -15,9 +15,10 @@ import fixtures from '../../fixtures/fixtures';
 import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
 import Model from '../../../src/model/Model';
 import ModelDefinitions from '../../../src/model/ModelDefinitions';
+// import ModelDefinition from '../../../src/model/ModelDefinition';
 
 // TODO: Can not use import here as babel will not respect the override
-let ModelDefinition = require('../../../src/model/ModelDefinition');
+let ModelDefinition = require('../../../src/model/ModelDefinition').default;
 
 describe('ModelDefinition', () => {
     'use strict';
@@ -448,10 +449,10 @@ describe('ModelDefinition', () => {
             let dataSetModelDefinition;
 
             beforeEach(() => {
-                UserModelDefinition = require('../../../src/model/ModelDefinition').specialClasses.user;
+                UserModelDefinition = require('../../../src/model/ModelDefinition').default.specialClasses.user;
                 userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
 
-                DataSetModelDefinition = require('../../../src/model/ModelDefinition').specialClasses.dataSet;
+                DataSetModelDefinition = require('../../../src/model/ModelDefinition').default.specialClasses.dataSet;
                 dataSetModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataSet'));
             });
 
@@ -1078,7 +1079,7 @@ describe('ModelDefinition subsclasses', () => {
 
     beforeEach(() => {
         getOnApiStub = stub().returns(Promise.resolve());
-        ModelDefinition = require('../../../src/model/ModelDefinition');
+        ModelDefinition = require('../../../src/model/ModelDefinition').default;
 
         ModelDefinition.prototype.api = {
             get: getOnApiStub,
