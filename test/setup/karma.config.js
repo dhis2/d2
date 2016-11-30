@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = function karmaConfigHandler(config) {
     config.set({
-        browsers: ['Chrome'], // run in Headless browser PhantomJS
+        browsers: ['PhantomJS'], // run in Headless browser PhantomJS
         singleRun: true,
         frameworks: [
             'mocha', // Test runner
@@ -18,8 +18,8 @@ module.exports = function karmaConfigHandler(config) {
             'karma-phantomjs-launcher',
             'karma-chrome-launcher',
             'karma-webpack',
-            'karma-coverage',
             'karma-spec-reporter',
+            'karma-coverage',
         ],
         files: [
             '../../node_modules/phantomjs-polyfill/bind-polyfill.js', // Adds Function.prototype.bind that is missing from phantomjs
@@ -44,26 +44,12 @@ module.exports = function karmaConfigHandler(config) {
             devtool: 'inline-source-map', // just do inline source maps instead of the default
             module: {
                 preLoaders: [
-                    // instrument only testing sources with Istanbul
-                    {
-                        test: /\.js$/,
-                        include: path.resolve('../../src/'),
-                        loader: 'istanbul-instrumenter',
-                    },
-                    // transpile all files except testing sources with babel as usual
                     {
                         test: /\.js$/,
                         exclude: [
-                            path.resolve('src'),
                             path.resolve('node_modules'),
                         ],
                         loader: 'babel',
-                    },
-                    // transpile and instrument only testing sources with isparta
-                    {
-                        test: /\.js$/,
-                        include: path.resolve('src'),
-                        loader: 'isparta',
                     },
                 ],
             },

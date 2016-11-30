@@ -20,6 +20,7 @@ docs/app/highlight/styles/*
 
 bower_components
 coverage
+.nyc_output
 
 design_doc.md
 
