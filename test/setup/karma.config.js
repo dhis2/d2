@@ -16,7 +16,6 @@ module.exports = function karmaConfigHandler(config) {
             'karma-sinon',
             'karma-chai-sinon',
             'karma-phantomjs-launcher',
-            'karma-chrome-launcher',
             'karma-webpack',
             'karma-spec-reporter',
             'karma-coverage',
