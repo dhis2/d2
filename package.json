@@ -11,7 +11,7 @@
     "e2e": "NODE_ENV=test karma start test/setup/karma.config.js",
     "test-watch": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit --watch",
     "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
-    "build-only": "rm -rf lib/ && ./node_modules/babel/bin/babel.js src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
+    "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "lint": "eslint src",
     "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
@@ -36,7 +36,7 @@
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-plugin-istanbul": "^3.0.0",
