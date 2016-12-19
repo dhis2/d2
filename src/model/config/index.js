@@ -22,3 +22,35 @@ export function getDefaultValuesForModelType(modelDefinitionName) {
     }
     return {};
 }
+
+const schemaFields = [
+    'apiEndpoint',
+    'name',
+    'authorities',
+    'singular',
+    'plural',
+    'shareable',
+    'metadata',
+    'klass',
+    'identifiableObject',
+];
+
+const schemaPropertyFields = [
+    'href',
+    'writable',
+    'collection',
+    'collectionName',
+    'name',
+    'propertyType',
+    'persisted',
+    'required',
+    'min',
+    'max',
+    'ordered',
+    'unique',
+    'constants',
+    'owner',
+    'itemPropertyType',
+];
+
+export const fieldsForSchemas = schemaFields.concat(`properties[${schemaPropertyFields.join(',')}]`).join(',');

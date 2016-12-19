@@ -7,6 +7,7 @@ import I18n from './i18n/I18n';
 import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
 import 'whatwg-fetch';
+import { fieldsForSchemas } from './model/config';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -52,11 +53,6 @@ export function getUserSettings(ApiClass = Api) {
 }
 
 function getModelRequests(api, schemaNames) {
-    const fieldsForSchemas = [
-        'apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties[href',
-        'writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants',
-        'owner,itemPropertyType]',
-    ].join(',');
     const modelRequests = [];
     const loadSchemaForName = (schemaName) => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
 
