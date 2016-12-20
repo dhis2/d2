@@ -265,4 +265,29 @@ describe('D2.models', () => {
                 });
         });
     });
+
+    describe('getTranslatableProperties()', () => {
+        it('should return no translatable properties if there are none', () => {
+            expect(d2.models.dataElement.getTranslatableProperties()).to.deep.equal(['description', 'formName', 'name', 'shortName']);
+        });
+
+        it('should return no translatable properties if there are no properties on the schema', () => {
+            expect(d2.models.user.getTranslatableProperties()).to.deep.equal([]);
+        });
+    });
+
+    describe('getTranslatablePropertiesWithKeys()', () => {
+        it('should return the translatable properties with their translation keys', () => {
+            expect(d2.models.dataElement.getTranslatablePropertiesWithKeys()).to.deep.equal([
+                { name: 'description', translationKey: 'DESCRIPTION' },
+                { name: 'formName', translationKey: 'FORM_NAME' },
+                { name: 'name', translationKey: 'NAME' },
+                { name: 'shortName', translationKey: 'SHORT_NAME' },
+            ]);
+        });
+
+        it('should return an empty array when there are no translation keys', () => {
+            expect(d2.models.user.getTranslatablePropertiesWithKeys()).to.deep.equal([]);
+        });
+    });
 });

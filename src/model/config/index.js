@@ -33,6 +33,7 @@ const schemaFields = [
     'metadata',
     'klass',
     'identifiableObject',
+    'translatable',
 ];
 
 const schemaPropertyFields = [
@@ -51,6 +52,7 @@ const schemaPropertyFields = [
     'constants',
     'owner',
     'itemPropertyType',
+    'translationKey',
 ];
 
 export const fieldsForSchemas = schemaFields.concat(`properties[${schemaPropertyFields.join(',')}]`).join(',');

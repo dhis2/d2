@@ -151,7 +151,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should a properties property for each of the schema properties', () => {
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(35);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(37);
             });
 
             it('should not be able to modify the modelProperties array', () => {
@@ -159,13 +159,13 @@ describe('ModelDefinition', () => {
                     dataElementModelDefinition.modelProperties.anotherKey = {};
 
                     //TODO: There is an implementation bug in PhantomJS that does not properly freeze the array
-                    if (Object.keys(dataElementModelDefinition.modelProperties).length === 35) {
+                    if (Object.keys(dataElementModelDefinition.modelProperties).length === 37) {
                         throw new Error();
                     }
                 }
 
                 expect(shouldThrow).to.throw();
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(35);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(37);
             });
         });
 
@@ -217,16 +217,18 @@ describe('ModelDefinition', () => {
                     'aggregationType',
                     'formName',
                     'lastUpdated',
-                    'dataSets',
+                    'dataSetElements',
                     'code',
                     'access',
                     'url',
                     'domainType',
                     'legendSet',
+                    'legendSets',
                     'categoryCombo',
                     'attributeValues',
                     'optionSetValue',
                     'userGroupAccesses',
+                    'userAccesses',
                     'shortName',
                     'displayName',
                     'displayShortName',
@@ -1060,15 +1062,70 @@ describe('ModelDefinition', () => {
 
         it('should return only the owned properties', () => {
             const expectedDataElementProperties = [
-                'lastUpdated', 'code', 'id', 'created', 'name', 'formName', 'legendSet',
+                'lastUpdated', 'code', 'id', 'created', 'name', 'formName', 'legendSets',
                 'shortName', 'zeroIsSignificant', 'publicAccess', 'commentOptionSet',
                 'aggregationType', 'valueType', 'url', 'optionSet',
                 'domainType', 'description', 'categoryCombo', 'user',
-                'aggregationLevels', 'attributeValues', 'userGroupAccesses', 'translations'
+                'aggregationLevels', 'attributeValues', 'userAccesses', 'userGroupAccesses', 'translations'
             ].sort();
             const ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
 
             expect(ownProperties.sort()).to.deep.equal(expectedDataElementProperties);
+        });
+    });
+
+    describe('getTranslatableProperties()', () => {
+        let dataElementModelDefinition;
+
+        beforeEach(() => {
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+        });
+
+        it('should be a function', () => {
+            expect(dataElementModelDefinition.getTranslatableProperties).to.be.a('function');
+        });
+
+        it('should return the translatable properties', () => {
+            expect(dataElementModelDefinition.getTranslatableProperties()).to.deep.equal(['description', 'formName', 'name', 'shortName']);
+        });
+
+        it('should return only the properties that have a translatableKey', () => {
+            const dataElementSchema = fixtures.get('/api/schemas/dataElement');
+            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({...props}));
+
+            dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
+
+            expect(dataElementModelDefinition.getTranslatableProperties()).to.deep.equal([]);
+        });
+    });
+
+    describe('getTranslatablePropertiesWithKeys()', () => {
+        let dataElementModelDefinition;
+
+        beforeEach(() => {
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+        });
+
+        it('should be a function', () => {
+            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys).to.be.a('function');
+        });
+
+        it('should return the translatable properties with their keys', () => {
+            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys()).to.deep.equal([
+                { name: 'description', translationKey: 'DESCRIPTION'},
+                { name: 'formName', translationKey: 'FORM_NAME' },
+                { name: 'name', translationKey: 'NAME'},
+                { name: 'shortName', translationKey: 'SHORT_NAME'}
+            ]);
+        });
+
+        it('should return only the properties that have a translatableKey', () => {
+            const dataElementSchema = fixtures.get('/api/schemas/dataElement');
+            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({...props}));
+
+            dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
+
+            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys()).to.deep.equal([]);
         });
     });
 });

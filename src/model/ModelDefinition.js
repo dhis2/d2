@@ -1,5 +1,5 @@
 import { checkType, isObject, checkDefined, isDefined } from '../lib/check';
-import { addLockedProperty, curry, copyOwnProperties, updateAPIUrlWithBaseUrlVersionNumber } from '../lib/utils';
+import { addLockedProperty, curry, copyOwnProperties, updateAPIUrlWithBaseUrlVersionNumber, pick } from '../lib/utils';
 import ModelDefinitions from './ModelDefinitions';
 import Model from './Model';
 import ModelCollection from './ModelCollection';
@@ -110,6 +110,8 @@ function isAnUpdate(modelToCheck) {
     return Boolean(modelToCheck.id);
 }
 
+const translatableProperties = new WeakMap();
+
 /**
  * @class ModelDefinition
  *
@@ -121,23 +123,28 @@ function isAnUpdate(modelToCheck) {
  * property is an instance of `Api`.
  */
 class ModelDefinition {
-    constructor(modelName, modelNamePlural, modelOptions, properties, validations, attributes, authorities) {
+    constructor(modelName, modelNamePlural, schema = {}, properties, validations, attributes, authorities) {
         checkType(modelName, 'string');
         checkType(modelNamePlural, 'string', 'Plural');
 
         addLockedProperty(this, 'name', modelName);
         addLockedProperty(this, 'plural', modelNamePlural);
-        addLockedProperty(this, 'isShareable', (modelOptions && modelOptions.shareable) || false);
-        addLockedProperty(this, 'isMetaData', (modelOptions && modelOptions.metadata) || false);
-        addLockedProperty(this, 'apiEndpoint', modelOptions && modelOptions.apiEndpoint);
-        addLockedProperty(this, 'javaClass', modelOptions && modelOptions.klass);
-        addLockedProperty(this, 'identifiableObject', modelOptions && modelOptions.identifiableObject);
+        addLockedProperty(this, 'isShareable', schema.shareable || false);
+        addLockedProperty(this, 'isMetaData', schema.metadata || false);
+        addLockedProperty(this, 'apiEndpoint', schema.apiEndpoint);
+        addLockedProperty(this, 'javaClass', schema.klass);
+        addLockedProperty(this, 'identifiableObject', schema && schema.identifiableObject);
         addLockedProperty(this, 'modelProperties', properties);
         addLockedProperty(this, 'modelValidations', validations);
         addLockedProperty(this, 'attributeProperties', attributes);
         addLockedProperty(this, 'authorities', authorities);
 
         this.filters = Filters.getFilters(this);
+
+        translatableProperties.set(this, (schema.properties || [])
+            .filter(prop => prop.translationKey)
+            .map(({ name, translationKey }) => ({ name, translationKey }))
+        );
 
         // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
         this.getOwnedPropertyJSON = getOwnedPropertyJSON.bind(this);
@@ -381,6 +388,34 @@ class ModelDefinition {
             return this.api.delete(model.dataValues.href);
         }
         return this.api.delete([model.modelDefinition.apiEndpoint, model.dataValues.id].join('/'));
+    }
+
+    /**
+     * @method getTranslatableProperties
+     *
+     * @returns {String[]} Returns a list of property names on the object that are translatable.
+     *
+     * @description
+     * These properties can be translated using the DHIS2 _database_ translations.
+     */
+    getTranslatableProperties() {
+        return translatableProperties
+            .get(this)
+            .map(pick('name'));
+    }
+
+    /**
+     * @method getTranslatablePropertiesWithKeys
+     *
+     * @returns {Object[]} Returns an array with objects that have `name` and `translationKey` properties.
+     *
+     * @description
+     * This method is similar to getTranslatableProperties() but in addition to the property names also returns the
+     * `translationKey` that is used to save the translations for the property names.
+     */
+    getTranslatablePropertiesWithKeys() {
+        return translatableProperties
+            .get(this);
     }
 
     /**
