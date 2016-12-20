@@ -15,7 +15,7 @@ describe.only('D2', function () {
     it('should call all http requests', () => {
         return d2.init({ baseUrl: '/dhis/api' })
             .then(() => {
-                expect(fetch.requests.requestTo('/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey%5D')).to.have.callCount(1);
+                expect(fetch.requests.requestTo('/dhis/api/schemas?fields=apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey%5D')).to.have.callCount(1);
                 expect(fetch.requests.requestTo('/dhis/api/userSettings')).to.have.callCount(1);
             });
     });

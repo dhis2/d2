@@ -26,6 +26,7 @@ export function getDefaultValuesForModelType(modelDefinitionName) {
 const schemaFields = [
     'apiEndpoint',
     'name',
+    'displayName',
     'authorities',
     'singular',
     'plural',

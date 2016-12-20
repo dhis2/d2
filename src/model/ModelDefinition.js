@@ -123,12 +123,13 @@ const translatableProperties = new WeakMap();
  * property is an instance of `Api`.
  */
 class ModelDefinition {
-    constructor(modelName, modelNamePlural, schema = {}, properties, validations, attributes, authorities) {
-        checkType(modelName, 'string');
-        checkType(modelNamePlural, 'string', 'Plural');
+    constructor(schema = {}, properties, validations, attributes, authorities) {
+        checkType(schema.singular, 'string');
+        checkType(schema.plural, 'string', 'Plural');
 
-        addLockedProperty(this, 'name', modelName);
-        addLockedProperty(this, 'plural', modelNamePlural);
+        addLockedProperty(this, 'name', schema.singular);
+        addLockedProperty(this, 'displayName', schema.displayName);
+        addLockedProperty(this, 'plural', schema.plural);
         addLockedProperty(this, 'isShareable', schema.shareable || false);
         addLockedProperty(this, 'isMetaData', schema.metadata || false);
         addLockedProperty(this, 'apiEndpoint', schema.apiEndpoint);
@@ -451,8 +452,6 @@ class ModelDefinition {
         }
 
         return Object.freeze(new ModelDefinitionClass(
-            schema.singular,
-            schema.plural,
             schema,
             Object.freeze(createPropertiesObject(schema.properties)),
             Object.freeze(createValidations(schema.properties)),

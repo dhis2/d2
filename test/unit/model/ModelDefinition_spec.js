@@ -29,7 +29,7 @@ describe('ModelDefinition', () => {
         ModelCollection.create.reset();
         ModelCollectionProperty.create.reset();
 
-        modelDefinition = new ModelDefinition('dataElement', 'dataElements');
+        modelDefinition = new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement', plural: 'dataElements' });
     });
 
     it('should not be allowed to be called without new', () => {
@@ -51,16 +51,9 @@ describe('ModelDefinition', () => {
         expect(shouldThrow).to.throw('Value should be provided');
     });
 
-    it('should throw if the name is not a string', () => {
-        function shouldThrow() {
-            new ModelDefinition({});
-        }
-        expect(shouldThrow).to.throw('Expected [object Object] to have type string');
-    });
-
     it('should throw an error when plural is not specified', () => {
         function shouldThrow() {
-            new ModelDefinition('dataElement');
+            new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement' });
         }
         expect(shouldThrow).to.throw('Plural should be provided');
     });
@@ -83,8 +76,22 @@ describe('ModelDefinition', () => {
                 }
             }
 
-            expect(modelDefinition.name).to.equal('dataElement');
             expect(shouldThrow).to.throw();
+            expect(modelDefinition.name).to.equal('dataElement');
+        });
+
+        it('should have the correct displayName', () => {
+            expect(modelDefinition.displayName).to.equal('Data Elements');
+        });
+
+        it('should not change the displayName', () => {
+            function shouldThrow() {
+                'use strict';
+                modelDefinition.displayName = 'Another Name';
+            }
+
+            expect(shouldThrow).to.throw();
+            expect(modelDefinition.displayName).to.equal('Data Elements');
         });
 
         it('should not be able to change the isMetaData', () => {
@@ -1150,7 +1157,7 @@ describe('ModelDefinition subsclasses', () => {
         beforeEach(() => {
             UserModelDefinition = ModelDefinition.specialClasses.user;
 
-            userModelDefinition = new UserModelDefinition('user', 'users', {}, {}, {});
+            userModelDefinition = new UserModelDefinition({ singular: 'user', plural: 'users', displayName: 'Users' }, {}, {});
         });
 
         it('should be instance of Model', () => {

@@ -1,7 +1,7 @@
 import { respondTo } from './fetch-mock';
 
 export function createSpies() {    
-    const schemasRequest = respondTo('/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey%5D')
+    const schemasRequest = respondTo('/dhis/api/schemas?fields=apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey%5D')
         .with(
             JSON.stringify(window.fixtures.schemas), {
                 status: 200,
@@ -10,7 +10,7 @@ export function createSpies() {
                 }
             });
 
-    const dataElementSchemasRequest = respondTo('/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey%5D')
+    const dataElementSchemasRequest = respondTo('/dhis/api/schemas/dataElement?fields=apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey%5D')
         .with(
             JSON.stringify(window.fixtures.dataElementSchema), {
                 status: 200,
