@@ -464,4 +464,53 @@ describe('Api', () => {
             });
         });
     });
+
+    describe('IE11', () => {
+        beforeEach(() => {
+            jqueryMock.ajax = spy();
+
+            global.navigator = {};
+
+            sinon.stub(global, 'Date')
+                .returns({
+                    getTime() {
+                        return '1234567890';
+                    },
+                })
+        });
+
+        afterEach(() => {
+            delete global.navigator;
+
+            global.Date.restore();
+        });
+
+        it('should append a query param when it is an IE11 environment', () => {
+            global.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+
+            api.get('manifest.webapp');
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'GET',
+                url: '/api/manifest.webapp?_=1234567890',
+                dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
+                contentType: undefined,
+                data: {},
+            });
+        });
+
+        it('should not append a query string if it is not IE11', () => {
+            api.get('manifest.webapp');
+
+            expect(jqueryMock.ajax).to.be.calledWith({
+                type: 'GET',
+                url: '/api/manifest.webapp',
+                dataType: 'json',
+                headers: { 'Cache-Control': 'no-store' },
+                contentType: undefined,
+                data: {},
+            });
+        });
+    });
 });

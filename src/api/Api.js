@@ -51,16 +51,18 @@ function getUrl(baseUrl, url) {
     }
     urlParts.push(url);
 
-    if (isIE11()) {
-        const cacheBreaker = `_=${(new Date).getTime()}`;
-        const cacheBreakerQueryParam = /\?/.test(url) ? `&${cacheBreaker}` : `?${cacheBreaker}`;
-
-        urlParts.push(cacheBreakerQueryParam);
-    }
-
-    return urlParts.join('/')
+    const fullUrl = urlParts.join('/')
         .replace(new RegExp('(.(?:[^:]))\/\/+', 'g'), '$1/')
         .replace(new RegExp('\/$'), '');
+
+    if (isIE11()) {
+        const cacheBreaker = `_=${(new Date).getTime()}`;
+        const cacheBreakerQueryParam = /\?/.test(fullUrl) ? `&${cacheBreaker}` : `?${cacheBreaker}`;
+
+        return `${fullUrl}${cacheBreakerQueryParam}`;
+    }
+
+    return fullUrl;
 }
 
 class Api {
