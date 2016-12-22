@@ -42,9 +42,9 @@
     "chai": "3.4.1",
     "chai-as-promised": "5.2.0",
     "codeclimate-test-reporter": "0.3.0",
-    "eslint": "^2.2.0",
-    "eslint-config-dhis2": "^2.0.0",
-    "eslint-plugin-react": "^4.0.0",
+    "eslint": "2.2.0",
+    "eslint-config-dhis2": "2.0.0",
+    "eslint-plugin-react": "4.0.0",
     "esprima": "2.5.0",
     "exports-loader": "0.6.2",
     "imports-loader": "0.6.5",
@@ -71,7 +71,7 @@
     "sinon-chai": "2.8.0",
     "webpack": "1.12.12",
     "whatwg-fetch": "0.10.0",
-    "wrapper-webpack-plugin": "^0.1.7"
+    "wrapper-webpack-plugin": "0.1.7"
   },
   "engines": {
     "npm": ">=3.5.1",
