@@ -6,6 +6,7 @@ import dataElementGroupSetDefaults from './model-defaults/dataElementGroupSet';
 import dataSetDefaults from './model-defaults/dataSet';
 import externalMapLayer from './model-defaults/externalMapLayer';
 import validationNotificationTemplate from './model-defaults/validationNotificationTemplate';
+import validationRuleDefaults from './model-defaults/validationRule';
 
 export const defaultValues = new Map([
     ['organisationUnitGroupSet', organisationUnitGroupSetDefaults],
@@ -16,6 +17,7 @@ export const defaultValues = new Map([
     ['dataSet', dataSetDefaults],
     ['externalMapLayer', externalMapLayer],
     ['validationNotificationTemplate', validationNotificationTemplate],
+    ['validationRule', validationRuleDefaults],
 ]);
 
 export function getDefaultValuesForModelType(modelDefinitionName) {
