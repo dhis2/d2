@@ -1170,4 +1170,29 @@ describe('ModelDefinition subsclasses', () => {
             expect(getOnApiStub).to.be.calledWith('/myUserId', { fields: ':all,userCredentials[:owner]' });
         });
     });
+
+    describe('OrganisationUnitDefinition', () => {
+        let OrganisationUnitModelDefinition;
+        let organisationUnitModelDefinition;
+
+        beforeEach(() => {
+            OrganisationUnitModelDefinition = ModelDefinition.specialClasses.organisationUnit;
+
+            organisationUnitModelDefinition = new OrganisationUnitModelDefinition({ singular: 'organisationUnit', plural: 'organisationUnits', apiEndpoint: 'organisationUnits' },
+                {}, {}, {}, {},
+            );
+        });
+
+        it('should use the special root orgunit id when fetching lists', () => {
+            organisationUnitModelDefinition.list({ root: 'myRootId' });
+
+            expect(getOnApiStub).to.be.calledWith('organisationUnits/myRootId', { fields: ':all' });
+        });
+
+        it('should handle list queries without special `root` parameters', () => {
+            organisationUnitModelDefinition.list();
+
+            expect(getOnApiStub).to.be.calledWith('organisationUnits', { fields: ':all' });
+        })
+    });
 });

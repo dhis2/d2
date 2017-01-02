@@ -302,11 +302,11 @@ class ModelDefinition {
      *   });
      * ```
      */
-    list(extraParams = {}) {
+    list(listParams = {}) {
+        const { apiEndpoint, ...extraParams } = listParams;
         const params = Object.assign({ fields: ':all' }, extraParams);
         const definedFilters = this.filters.getFilters();
 
-        // FIXME: If both params.filter and definedFilters are present, they should probably be merged
         if (!isDefined(params.filter)) {
             delete params.filter;
             if (definedFilters.length) {
@@ -314,7 +314,8 @@ class ModelDefinition {
             }
         }
 
-        return this.api.get(this.apiEndpoint, params)
+        // If listParams.apiEndpoint exists, send the request there in stead of this.apiEndpoint
+        return this.api.get(apiEndpoint || this.apiEndpoint, params)
             .then((responseData) => ModelCollection.create(
                 this,
                 responseData[this.plural].map((data) => this.create(data)),
@@ -499,9 +500,24 @@ class DataSetModelDefinition extends ModelDefinition {
     }
 }
 
+class OrganisationUnitModelDefinition extends ModelDefinition {
+    // If a 'root' is specified when listing organisation units the results will be limited to the root and its
+    // descendants. This is special behavior for the organisation unit API endpoint, which is documented here:
+    // https://dhis2.github.io/dhis2-docs/master/en/developer/html/webapi_organisation_units.html
+    list(extraParams = {}) {
+        if (extraParams.hasOwnProperty('root')) {
+            extraParams.apiEndpoint = [this.apiEndpoint, extraParams.root].join('/');
+            delete extraParams.root;
+        }
+
+        return super.list(extraParams);
+    }
+}
+
 ModelDefinition.specialClasses = {
     user: UserModelDefinition,
     dataSet: DataSetModelDefinition,
+    organisationUnit: OrganisationUnitModelDefinition,
 };
 
 export default ModelDefinition;
