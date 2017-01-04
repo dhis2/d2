@@ -1,3 +1,12 @@
+const NON_MODEL_COLLECTIONS = new Set([
+    'compulsoryDataElementOperands',
+    'greyedFields',
+    'aggregationLevels',
+    'grantTypes',
+    'translations',
+    'deliveryChannels',
+]);
+
 function isPlainValue(collection) {
     return function isPlainValueInCollection(property) {
         return collection.indexOf(property) === -1;
@@ -36,11 +45,7 @@ export function getJSONForProperties(model, properties) {
         .forEach((propertyName) => {
             // compulsoryDataElementOperands and greyedFields are not arrays of models.
             // TODO: This is not the proper way to do this. We should check if the array contains Models
-            if (propertyName === 'compulsoryDataElementOperands' ||
-                propertyName === 'greyedFields' ||
-                propertyName === 'aggregationLevels' ||
-                propertyName === 'grantTypes' ||
-                propertyName === 'translations') {
+            if (NON_MODEL_COLLECTIONS.has(propertyName)) {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
             }

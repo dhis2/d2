@@ -4,9 +4,9 @@ proxyquire('../../../src/api/Api', {
 });
 
 describe('ModelValidations', () => {
-    const ModelValidation = require('../../../src/model/ModelValidation');
-    const Logger = require('../../../src/logger/Logger');
-    const Api = require('../../../src/api/Api');
+    const ModelValidation = require('../../../src/model/ModelValidation').default;
+    const Logger = require('../../../src/logger/Logger').default;
+    const Api = require('../../../src/api/Api').default;
 
     let api;
     let modelValidation;

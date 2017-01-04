@@ -10,9 +10,9 @@ const apiMock = {
 };
 
 describe('System', () => {
-    const System = require('../../../src/system/System');
-    const SystemConfiguration = require('../../../src/system/SystemConfiguration');
-    const SystemSettings = require('../../../src/system/SystemSettings');
+    const System = require('../../../src/system/System').default;
+    const SystemConfiguration = require('../../../src/system/SystemConfiguration').default;
+    const SystemSettings = require('../../../src/system/SystemSettings').default;
     let system;
 
     beforeEach(() => {

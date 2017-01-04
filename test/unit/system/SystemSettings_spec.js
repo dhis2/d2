@@ -1,11 +1,10 @@
-import Api from '../../../src/api/Api';
-
 const settingsFixture = {
     keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015',
 };
 
 describe('settings.System', () => {
-    const SystemSettings = require('../../../src/system/SystemSettings');
+    const Api = require('../../../src/api/Api').default;
+    const SystemSettings = require('../../../src/system/SystemSettings').default;
     let systemSettings;
     let apiGet;
     let apiPost;

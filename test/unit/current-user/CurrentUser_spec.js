@@ -1,7 +1,7 @@
 import fixtures from '../../fixtures/fixtures';
 import CurrentUser from '../../../src/current-user/CurrentUser';
 import UserAuthorities from '../../../src/current-user/UserAuthorities';
-const UserSettings = require('../../../src/current-user/UserSettings');
+const UserSettings = require('../../../src/current-user/UserSettings').default;
 import {noCreateAllowedFor} from '../../../src/defaultConfig';
 
 describe('CurrentUser', () => {

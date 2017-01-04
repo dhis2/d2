@@ -40,7 +40,7 @@ describe('ModelCollection', () => {
         Pager.reset();
         Pager.returns(pagerObject);
 
-        ModelCollection = require('../../../src/model/ModelCollection');
+        ModelCollection = require('../../../src/model/ModelCollection').default;
     });
 
     describe('extension of Map', () => {
@@ -61,11 +61,11 @@ describe('ModelCollection', () => {
         });
 
         it('should get the values', () => {
-            expect([...modelCollection.values()][0]).to.equal(firstValue);
+            expect(Array.from(modelCollection.values())[0]).to.equal(firstValue);
         });
 
         it('should get the keys', () => {
-            expect([...modelCollection.keys()][0]).to.equal('q2egwkkrfco');
+            expect(Array.from(modelCollection.keys())[0]).to.equal('q2egwkkrfco');
         });
 
         it('should run the forEach with the correct values', () => {
@@ -83,7 +83,7 @@ describe('ModelCollection', () => {
         });
 
         it('should get the entries', () => {
-            expect([...modelCollection.entries()][0]).to.deep.equal(['q2egwkkrfco', firstValue]);
+            expect(Array.from(modelCollection)[0]).to.deep.equal(['q2egwkkrfco', firstValue]);
         });
 
         it('should return true when the entry is in the collection', () => {

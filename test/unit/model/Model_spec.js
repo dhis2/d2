@@ -1,7 +1,7 @@
 import fixtures from '../../fixtures/fixtures.js';
 
 describe('Model', () => {
-    let Model = require('../../../src/model/Model');
+    let Model = require('../../../src/model/Model').default;
     let model;
 
     beforeEach(() => {
@@ -140,7 +140,7 @@ describe('Model', () => {
         let dataElementModel;
 
         beforeEach(() => {
-            const ModelDefinition = require('../../../src/model/ModelDefinition');
+            const ModelDefinition = require('../../../src/model/ModelDefinition').default;
             let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
 
             dataElementModel = Model.create(dataElementModelDefinition);
@@ -165,14 +165,14 @@ describe('Model', () => {
         let dataElementModel;
 
         beforeEach(() => {
-            const ModelDefinition = require('../../../src/model/ModelDefinition');
+            const ModelDefinition = require('../../../src/model/ModelDefinition').default;
             let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
 
             dataElementModel = Model.create(dataElementModelDefinition);
         });
 
         it('should not create the property when there are no attributes', () => {
-            const ModelDefinition = require('../../../src/model/ModelDefinition');
+            const ModelDefinition = require('../../../src/model/ModelDefinition').default;
             let dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
 
             dataElementModel = Model.create(dataElementModelDefinition);

@@ -13,7 +13,7 @@ describe('Logger', () => {
             warn: spy()
         };
 
-        Logger = require('../../../src/logger/Logger');
+        Logger = require('../../../src/logger/Logger').default;
         logger = new Logger(consoleMock);
     });
 

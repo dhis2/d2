@@ -1,132 +1,14 @@
 import {init, getInstance} from '../../../src/d2';
+import { respondTo, createFetchMock } from '../../setup/fetch-mock';
+import { createSpies } from '../../setup/setup-d2-init-requests';
 
 describe('D2.models', () => {
     var server;
     let d2;
 
     beforeEach(done => {
-        server = sinon.fakeServer.create();
-        server.autoRespond = true;
-        server.xhr.useFilters = true;
-
-        // Show the requests made to the fake server.
-        // server.xhr.addFilter(function (method, url) {
-        //    console.log(method, url);
-        //    return false;
-        // });
-
-        server.respondWith(/(.*)/, (rq) => {
-            console.error(`D2.models 404: '${rq.method}', '${rq.url}'`);
-        });
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/schemas?fields=apiEndpoint,name,authorities,singular,plural,shareable,metadata,klass,identifiableObject,properties%5Bhref,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType%5D',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify(window.fixtures.schemas)
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/schemas/dataElement?fields=apiEndpoint,name,authorities,plural,sharable,metadata,klass,identifiableObject,properties[href,writable,referenceType,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner]',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify(window.fixtures.dataElementSchema)
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/attributes?fields=:all,optionSet%5B:all,options%5B:all%5D%5D&paging=false',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({attributes: []})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/me\/authorization$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify([])
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/me?fields=:all,organisationUnits%5Bid%5D,userGroups%5Bid%5D,userCredentials%5B:all,!user,userRoles%5Bid%5D',
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/userSettings$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({
-                    "keyDbLocale": "en",
-                    "keyMessageSmsNotification": true,
-                    "keyTrackerDashboardLayout": null,
-                    "keyStyle": "light_blue/light_blue.css",
-                    "keyAutoSaveDataEntryForm": false,
-                    "keyUiLocale": "fr",
-                    "keyAutoSavetTrackedEntityForm": false,
-                    "keyAnalysisDisplayProperty": "name",
-                    "keyAutoSaveCaseEntryForm": false,
-                    "keyMessageEmailNotification": true
-                })
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/system\/info$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({version: '2.21'})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            /^\/dhis\/api\/apps$/,
-            [
-                200,
-                {'Content-Type': 'application/json'},
-                JSON.stringify({apps: []})
-            ]
-        );
-
-        server.respondWith(
-            'GET',
-            '/dhis/api/me?fields=:all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]',
-            [
-                200,
-                {'Content-Type': 'text/plain'},
-                '{}'
-            ]
-        );
-
-        server.respondWith(() => {
-            [
-                404,
-                {'Content-Type': 'text/plain'},
-                'Resource not found'
-            ]
-        });
+        createFetchMock();
+        createSpies();
 
         init({ baseUrl: '/dhis/api' })
             .then(d2instance => {
@@ -137,7 +19,7 @@ describe('D2.models', () => {
     });
 
     afterEach(() => {
-        server.restore();
+        window.fetch.restore();
     });
 
     it('should be available on the d2 object', () => {
@@ -171,37 +53,22 @@ describe('D2.models', () => {
 
     describe('validate', () => {
         beforeEach(() => {
-            server.respondWith(
-                'POST',
-                '/dhis/api/schemas/dataElement',
-                [
-                    200,
-                    {'Content-Type': 'application/json'},
-                    JSON.stringify({
+            respondTo('/dhis/api/schemas/dataElement', 'POST')
+                .with(JSON.stringify({
                         'httpStatus': 'OK',
                         'httpStatusCode': 200,
                         'status': 'OK',
                         'response': {
                             'responseType': 'ValidationViolations',
                         },
-                    }),
-                ]
-            );
+                    }));
         });
 
-        afterEach(() => {
-            server.restore();
-        });
-
-        it('should return false for an empty model', (done) => {
+        it('should return false for an empty model', () => {
             var dataElementModel = d2.models.dataElement.create();
-            server.respondWith(
-                'POST',
-                '/dhis/api/schemas/dataElement',
-                [
-                    200,
-                    {'Content-Type': 'application/json'},
-                    JSON.stringify({
+
+            respondTo('/dhis/api/schemas/dataElement', 'POST')
+                .with(JSON.stringify({
                         "httpStatus": "Conflict",
                         "httpStatusCode": 409,
                         "status": "WARNING",
@@ -249,55 +116,32 @@ describe('D2.models', () => {
                                 }
                             ]
                         }
-                    }),
-                ]
-            );
+                    }));
 
-            dataElementModel.validate()
+            return dataElementModel.validate()
                 .then((validationStatus) => {
                     expect(validationStatus.status).to.be.false;
-                    done();
-                })
-                .catch(done);
-
-            server.respond();
+                });
         });
 
         describe('model with data', () => {
             var loadedDataElementModel;
 
-            beforeEach(function (done) {
-                server.respondWith(
-                    'GET',
-                    'http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=:all,attributeValues%5B:all,attribute%5Bid,name,displayName%5D%5D',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify(window.fixtures.dataElements.umC9U5YGDq4)
-                    ]
-                );
+            beforeEach(function () {
+                respondTo('http://localhost:8080/dhis/api/dataElements/umC9U5YGDq4?fields=:all,attributeValues%5B:all,attribute%5Bid,name,displayName%5D%5D')
+                    .with(JSON.stringify(window.fixtures.dataElements.umC9U5YGDq4));
 
-                d2.models.dataElement.get('umC9U5YGDq4')
+                return d2.models.dataElement.get('umC9U5YGDq4')
                     .then(function (model) {
                         loadedDataElementModel = model;
-                    })
-                    .then(done, done);
-
-                server.respond();
+                    });
             });
 
-            afterEach(() => {
-                server.restore();
-            });
-
-            it('should return true for an object from the api', function (done) {
-                loadedDataElementModel.validate()
+            it('should return true for an object from the api', function () {
+                return loadedDataElementModel.validate()
                     .then((validationStatus) => {
                         expect(validationStatus.status).to.be.true;
-                    })
-                    .then(done);
-
-                server.respond();
+                    });
             });
         });
     });
@@ -305,41 +149,20 @@ describe('D2.models', () => {
     // TODO: Stringify doesn't work because it has some sort of cyclic structure. Probably some polyfill that modifies base objects
     describe('list', () => {
         beforeEach(() => {
-            server.respondWith(
-                'GET',
-                'http://localhost:8080/dhis/api/dataElements?fields=:all',
-                [
-                    200,
-                    {'Content-Type': 'application/json'},
-                    JSON.stringify({dataElements: [window.fixtures.dataElements.umC9U5YGDq4]})
-                ]
-            );
+            respondTo('http://localhost:8080/dhis/api/dataElements?fields=:all')
+                .with(JSON.stringify({dataElements: [window.fixtures.dataElements.umC9U5YGDq4]}));
 
-            server.respondWith(
-                'GET',
-                'http://localhost:8080/dhis/api/dataElements?filter=id:eq:umC9U5YGDq4&fields=:all',
-                [
-                    200,
-                    {'Content-Type': 'application/json'},
-                    '{"dataElements": []}'
-                ]
-            );
+            respondTo('http://localhost:8080/dhis/api/dataElements?filter=id:eq:umC9U5YGDq4&fields=:all')
+                .with('{"dataElements": []}');
         });
 
-        afterEach(() => {
-            server.restore();
-        });
-
-        it('should load a list of dataElements from the server', (done) => {
-            d2.models.dataElement
+        it('should load a list of dataElements from the server', () => {
+            return d2.models.dataElement
                 .list()
                 .then(function (modelCollection) {
                     expect(modelCollection.size).to.equal(1);
                     expect(modelCollection.toArray()[0].id).to.equal('umC9U5YGDq4');
-                    done();
                 });
-
-            server.respond();
         });
 
         it('should call the api with the filters', (done) => {
@@ -355,8 +178,6 @@ describe('D2.models', () => {
                     done('Error:' + err);
                 })
             ;
-
-            server.respond();
         });
     });
 
@@ -365,79 +186,46 @@ describe('D2.models', () => {
             var loadedModel;
 
             beforeEach(function (done) {
-                server.respondWith(
-                    'GET',
-                    'http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=:all,userCredentials%5B:owner%5D',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify(window.fixtures.users.VWgvyibrAq0)
-                    ]
-                );
+                respondTo('http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=:all,userCredentials%5B:owner%5D')
+                    .with(JSON.stringify(window.fixtures.users.VWgvyibrAq0));
 
-                server.respondWith(
-                    '/dhis/api/schemas/user',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify({
+                respondTo('/dhis/api/schemas/user', 'POST')
+                    .with(JSON.stringify({
                             "httpStatus": "OK",
                             "httpStatusCode": 200,
                             "status": "OK",
                             "response": {
                                 "responseType": "ValidationViolations"
                             }
-                        })
-                    ]
-                );
+                        }));
 
-                server.respondWith(
-                    'PUT',
-                    'http://localhost:8080/dhis/api/users/VWgvyibrAq0?mergeStrategy=REPLACE',
-                    [
-                        200,
-                        {'Content-Type': 'application/json'},
-                        JSON.stringify({
+                respondTo('http://localhost:8080/dhis/api/users/VWgvyibrAq0?mergeStrategy=REPLACE', 'PUT')
+                    .with(JSON.stringify({
                             response: {
                                 importCount: {
 
                                 }
                             }
-                        })
-                    ]
-                );
+                        }));
 
                 d2.models.user.get('VWgvyibrAq0')
                     .then(function (model) {
                         loadedModel = model;
-                        done();
                     })
-                    .catch(done);
-
-                server.respond();
+                    .then(done);
             });
 
-            it('should save not save the model if there were no changes', function (done) {
-                loadedModel.save()
+            it('should save not save the model if there were no changes', function () {
+                return loadedModel.save()
                     .catch(function (e) {
                         expect(e).to.equal('No changes to be saved');
-                        done();
                     });
             });
 
-            it('should save the model when a property was changed', (done) => {
+            it('should save the model when a property was changed', () => {
                 loadedModel.firstName = 'Mark';
 
-                loadedModel.save()
-                    .then(() => {
-                        done();
-                    })
-                    .catch(done);
-
-                //Respond to validation against schema
-                server.respond();
-                //Respond to PUT request on next event loop
-                setTimeout(() => server.respond());
+                return loadedModel.save()
             });
         });
     });
@@ -446,61 +234,35 @@ describe('D2.models', () => {
         var loadedModel;
 
         beforeEach(function (done) {
-            server.respondWith(
-                'GET',
-                'http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=:all,userCredentials%5B:owner%5D',
-                [
-                    200,
-                    {'Content-Type': 'application/json'},
-                    JSON.stringify(window.fixtures.users.VWgvyibrAq0)
-                ]
-            );
+            respondTo('http://localhost:8080/dhis/api/users/VWgvyibrAq0?fields=:all,userCredentials%5B:owner%5D')
+                .with(JSON.stringify(window.fixtures.users.VWgvyibrAq0));
 
-            server.respondWith(
-                'DELETE',
-                'http://localhost:8080/dhis/api/users/VWgvyibrAq0',
-                [
-                    204,
-                    {'Content-Type': 'application/json'},
-                    ''
-                ]
-            );
+            respondTo('http://localhost:8080/dhis/api/users/VWgvyibrAq0', 'DELETE')
+                .with(204);
+
 
             d2.models.user.get('VWgvyibrAq0')
                 .then(function (model) {
                     loadedModel = model;
                     done();
                 });
-
-            server.respond();
         });
 
-        it('should call the api to delete the model', (done) => {
-            loadedModel.delete()
-                .then(() => {
-                    done();
-                });
-
-            server.respond();
+        it('should call the api to delete the model', () => {
+            return loadedModel.delete();
         });
 
         it('should fail when the resource does not exist', (done) => {
-            server.respondWith(
-                'DELETE',
-                'http://localhost:8080/dhis/api/users/VWgvyibrAq0',
-                [
-                    404,
-                    {'Content-Type': 'application/json'},
-                    '{"message": "Resource does not exist"}'
-                ]
-            );
+            respondTo('http://localhost:8080/dhis/api/users/VWgvyibrAq0', 'DELETE')
+                .with(404, '{"message": "Resource does not exist"}');
 
-            loadedModel.delete()
+            return loadedModel.delete()
+                .then((d) => {
+                    console.log('it was sucessful!', d);
+                })
                 .catch(() => {
                     done();
                 });
-
-            server.respond();
         });
     });
 });
