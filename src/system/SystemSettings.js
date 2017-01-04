@@ -71,7 +71,7 @@ class SystemSettings {
             const options = { headers: { accept: 'text/plain' } };
             this.api.get(
                 ['systemSettings', systemSettingsKey].join('/'), undefined, options)
-                .then(response => {
+                .then((response) => {
                     const systemSettingValue = processValue(response);
                     if (systemSettingValue) {
                         resolve(processValue(response));

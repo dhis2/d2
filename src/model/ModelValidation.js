@@ -50,9 +50,7 @@ class ModelValidation {
 
         // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
         return Api.getApi().post(url, getOwnedPropertyJSON(model))
-            .catch(e => {
-                return Promise.reject(e);
-            })
+            .catch(e => Promise.reject(e))
             .then((webMessage) => {
                 if (webMessage.status === 'OK') {
                     return [];

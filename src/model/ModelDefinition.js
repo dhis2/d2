@@ -182,9 +182,9 @@ class ModelDefinition {
                 .keys(model)
                 .forEach((modelProperty) => {
                     const referenceType =
-                        validations[modelProperty].hasOwnProperty('referenceType') &&
-                        validations[modelProperty].referenceType ||
-                        models.hasOwnProperty(modelProperty) && modelProperty;
+                        (validations[modelProperty].hasOwnProperty('referenceType') &&
+                        validations[modelProperty].referenceType) ||
+                        (models.hasOwnProperty(modelProperty) && modelProperty);
 
                     // For collections of objects, create ModelCollectionProperties rather than plain arrays
                     if (
@@ -227,7 +227,7 @@ class ModelDefinition {
 
             Object
                 .keys(model)
-                .filter((modelProperty) => !checkForModelProperty(modelProperty))
+                .filter(modelProperty => !checkForModelProperty(modelProperty))
                 .forEach((modelProperty) => {
                     model.dataValues[modelProperty] = defaultValues[modelProperty];
                 });
@@ -275,7 +275,7 @@ class ModelDefinition {
 
         // TODO: should throw error if API has not been defined
         return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
-            .then((data) => this.create(data))
+            .then(data => this.create(data))
             .catch((response) => {
                 if (response.message) {
                     return Promise.reject(response.message);
@@ -316,9 +316,9 @@ class ModelDefinition {
 
         // If listParams.apiEndpoint exists, send the request there in stead of this.apiEndpoint
         return this.api.get(apiEndpoint || this.apiEndpoint, params)
-            .then((responseData) => ModelCollection.create(
+            .then(responseData => ModelCollection.create(
                 this,
-                responseData[this.plural].map((data) => this.create(data)),
+                responseData[this.plural].map(data => this.create(data)),
                 responseData.pager
             ));
     }
@@ -505,12 +505,13 @@ class OrganisationUnitModelDefinition extends ModelDefinition {
     // descendants. This is special behavior for the organisation unit API endpoint, which is documented here:
     // https://dhis2.github.io/dhis2-docs/master/en/developer/html/webapi_organisation_units.html
     list(extraParams = {}) {
-        if (extraParams.hasOwnProperty('root')) {
-            extraParams.apiEndpoint = [this.apiEndpoint, extraParams.root].join('/');
-            delete extraParams.root;
+        const { root, ...params } = extraParams;
+
+        if (extraParams.hasOwnProperty('root') && root) {
+            params.apiEndpoint = `${this.apiEndpoint}/${root}`;
         }
 
-        return super.list(extraParams);
+        return super.list(params);
     }
 }
 

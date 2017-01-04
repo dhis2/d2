@@ -1,4 +1,4 @@
-const auths = Symbol();
+const auths = Symbol('authorities');
 
 export default class UserAuthorities {
     constructor(authorities = []) {

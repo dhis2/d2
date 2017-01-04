@@ -1,3 +1,4 @@
+import 'whatwg-fetch';
 import { pick, Deferred, updateAPIUrlWithBaseUrlVersionNumber } from './lib/utils';
 import Logger from './logger/Logger';
 import model from './model/models';
@@ -6,7 +7,6 @@ import System from './system/System';
 import I18n from './i18n/I18n';
 import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
-import 'whatwg-fetch';
 import { fieldsForSchemas } from './model/config';
 
 let firstRun = true;
@@ -54,7 +54,7 @@ export function getUserSettings(ApiClass = Api) {
 
 function getModelRequests(api, schemaNames) {
     const modelRequests = [];
-    const loadSchemaForName = (schemaName) => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
+    const loadSchemaForName = schemaName => api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas });
 
     if (Array.isArray(schemaNames)) {
         const individualSchemaRequests = schemaNames.map(loadSchemaForName).concat([]);
@@ -150,7 +150,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
         ...systemRequests,
         d2.i18n.load(),
     ])
-        .then(res => {
+        .then((res) => {
             const responses = {
                 schemas: pick('schemas')(res[0]),
                 attributes: pick('attributes')(res[1]),
@@ -165,7 +165,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
                 // TODO: Remove this when the schemas endpoint is versioned or shows the correct urls for the requested version
                 // The schemas endpoint is not versioned which will result into the modelDefinitions always using the
                 // "default" endpoint, we therefore modify the endpoint url based on the given baseUrl.
-                .map(schema => {
+                .map((schema) => {
                     schema.apiEndpoint = updateAPIUrlWithBaseUrlVersionNumber(schema.apiEndpoint, config.baseUrl); // eslint-disable-line no-param-reassign
 
                     return schema;
@@ -174,7 +174,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
                     // Attributes that do not have values do not by default get returned with the data,
                     // therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
                     const schemaAttributes = responses.attributes
-                        .filter(attributeDescriptor => {
+                        .filter((attributeDescriptor) => {
                             const attributeNameFilter = [schema.singular, 'Attribute'].join('');
                             return attributeDescriptor[attributeNameFilter] === true;
                         });

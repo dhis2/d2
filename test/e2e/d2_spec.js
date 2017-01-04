@@ -2,7 +2,7 @@ import d2 from '../../src/d2';
 import { respondTo, createFetchMock } from '../setup/fetch-mock';
 import { createSpies } from '../setup/setup-d2-init-requests';
 
-describe.only('D2', function () {
+describe('D2', function () {
     beforeEach(() => {
         createFetchMock();
         createSpies();

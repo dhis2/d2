@@ -8,14 +8,14 @@
     "coverage": "NODE_ENV=test nyc --require babel-register --require babel-polyfill mocha --reporter dot --require test/setup/node.js --recursive test/unit && nyc report --reporter=lcov",
     "validate": "npm ls --depth 0 || yarn list",
     "test": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
-    "e2e": "echo === DISABLED: [e2e] NODE_ENV=test karma start test/setup/karma.config.js",
-    "test-watch": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit --watch",
+    "e2e": "NODE_ENV=test karma start test/setup/karma.config.js",
+    "test-watch": "npm run test -- --watch",
     "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
-    "lint": "echo === DISABLED: [lint] eslint src",
+    "lint": "eslint src",
     "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
-    "travis": "npm run coverage && npm run e2e && npm run lint"
+    "travis": "npm run coverage && npm run build"
   },
   "repository": {
     "type": "git",
@@ -38,8 +38,9 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.8",
-    "babel-plugin-istanbul": "^3.0.0",
+    "babel-plugin-istanbul": "3.1.1",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-stage-2": "^6.18.0",

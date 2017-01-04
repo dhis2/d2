@@ -138,12 +138,12 @@ class ModelCollectionProperty extends ModelCollection {
         const queries = [];
 
         if (this.added.size) {
-            Array.from(this.added).forEach(id => {
+            Array.from(this.added).forEach((id) => {
                 queries.push(api.post([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
             });
         }
         if (this.removed.size) {
-            Array.from(this.removed).forEach(id => {
+            Array.from(this.removed).forEach((id) => {
                 queries.push(api.delete([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
             });
         }
@@ -155,7 +155,7 @@ class ModelCollectionProperty extends ModelCollection {
                 this.updateDirty();
                 return Promise.resolve();
             })
-            .catch((err) => Promise.reject('Failed to alter collection:', err));
+            .catch(err => Promise.reject('Failed to alter collection:', err));
     }
 
     /**
