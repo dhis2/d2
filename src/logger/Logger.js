@@ -1,3 +1,4 @@
+/* global window */
 import { checkType, isType } from '../lib/check';
 
 class Logger {

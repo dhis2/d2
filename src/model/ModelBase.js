@@ -20,7 +20,7 @@ function updateModelFromResponseStatus(result) {
     }
     this.dirty = false;
     this.getDirtyChildren()
-        .forEach(value => {
+        .forEach((value) => {
             if (value.resetDirtyState) {
                 value.resetDirtyState();
             } else {
@@ -48,7 +48,7 @@ class ModelBase {
      */
     create() {
         return this.validate()
-            .then(validationState => {
+            .then((validationState) => {
                 if (!validationState.status) {
                     return Promise.reject(validationState);
                 }
@@ -81,7 +81,7 @@ class ModelBase {
         }
 
         return this.validate()
-            .then(validationState => {
+            .then((validationState) => {
                 if (!validationState.status) {
                     return Promise.reject(validationState);
                 }
@@ -129,14 +129,14 @@ class ModelBase {
 
             // Run async validation against the api
             asyncRemoteValidation(this)
-                .catch(remoteMessages => {
+                .catch((remoteMessages) => {
                     // Errors are ok in this case
                     if (Array.isArray(remoteMessages)) {
                         return remoteMessages;
                     }
                     return Promise.reject(remoteMessages);
                 })
-                .then(remoteMessages => {
+                .then((remoteMessages) => {
                     validationMessages = validationMessages.concat(remoteMessages);
 
                     const validationState = {
@@ -163,7 +163,7 @@ class ModelBase {
     }
 
     isDirty(includeChildren = true) {
-        if (!(this.dirty || includeChildren === true && this.hasDirtyChildren())) {
+        if (!(this.dirty || (includeChildren === true && this.hasDirtyChildren()))) {
             return false;
         }
         return true;
@@ -187,7 +187,7 @@ class ModelBase {
     getCollectionChildrenPropertyNames() {
         return Object
             .keys(this)
-            .filter((propertyName) =>
+            .filter(propertyName =>
                 this.modelDefinition &&
                 this.modelDefinition.modelValidations &&
                 this.modelDefinition.modelValidations[propertyName] &&

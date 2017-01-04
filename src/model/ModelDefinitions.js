@@ -67,18 +67,11 @@ class ModelDefinitions {
      *
      */
     mapThroughDefinitions(transformer) {
-        const result = [];
-        let modelDefinition;
-
         checkType(transformer, 'function', 'transformer');
 
-        for (modelDefinition in this) {
-            if (this.hasOwnProperty(modelDefinition) && !(this[modelDefinition].plural === modelDefinition)) {
-                result.push(transformer(this[modelDefinition]));
-            }
-        }
-
-        return result;
+        return Object.keys(this)
+            .filter(modelDefinition => this.hasOwnProperty(modelDefinition) && !(this[modelDefinition].plural === modelDefinition))
+            .map(modelDefinition => transformer(this[modelDefinition]));
     }
 }
 

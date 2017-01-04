@@ -156,7 +156,7 @@ class ModelCollectionProperty extends ModelCollection {
                 this.updateDirty();
                 return Promise.resolve({});
             })
-            .catch((err) => Promise.reject('Failed to alter collection:', err));
+            .catch(err => Promise.reject('Failed to alter collection:', err));
     }
 
     /**

@@ -13,7 +13,7 @@
     "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
-    "lint": "echo === disabled: eslint src",
+    "lint": "eslint src",
     "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
     "travis": "npm run coverage && npm run e2e && npm run lint"
   },
@@ -38,7 +38,7 @@
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
-    "babel-eslint": "^7.1.0",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.8",
     "babel-plugin-istanbul": "^3.0.0",
     "babel-polyfill": "^6.16.0",

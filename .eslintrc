@@ -1,4 +1,13 @@
 {
+    "extends": "dhis2",
     "parser": "babel-eslint",
-    "extends": "dhis2"
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "rules": {
+        "class-methods-use-this": ["warn"],
+        "no-underscore-dangle": ["warn"]
+    }
 }

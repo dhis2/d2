@@ -13,8 +13,8 @@ class SystemConfiguration {
     constructor(api = Api.getApi()) {
         this.api = api;
 
-        this._configuration = undefined;
-        this._configPromise = null;
+        this.configuration = undefined;
+        this.configPromise = null;
     }
 
     /**
@@ -25,15 +25,15 @@ class SystemConfiguration {
      * @returns {Promise} Promise that resolves with all the individual configuration options from the api.
      */
     all(ignoreCache) {
-        if (this._configPromise === null || ignoreCache === true) {
-            this._configPromise = this.api.get('configuration')
-                .then(configuration => {
-                    this._configuration = configuration;
-                    return this._configuration;
+        if (this.configPromise === null || ignoreCache === true) {
+            this.configPromise = this.api.get('configuration')
+                .then((configuration) => {
+                    this.configuration = configuration;
+                    return this.configuration;
                 });
         }
 
-        return this._configPromise;
+        return this.configPromise;
     }
 
     /**
@@ -46,7 +46,7 @@ class SystemConfiguration {
      * @returns {Promise}
      */
     get(key, ignoreCache) {
-        return this.all(ignoreCache).then(config => {
+        return this.all(ignoreCache).then((config) => {
             if (config.hasOwnProperty(key)) {
                 return Promise.resolve(config[key]);
             }
@@ -90,7 +90,7 @@ class SystemConfiguration {
             .then(() => {
                 // Ideally we'd update the cache here, but doing so requires another trip to the server
                 // For now, just bust the cache to ensure it's not incorrect
-                that._configuration = undefined;
+                that.configuration = undefined;
                 return Promise.resolve();
             })
             .catch(() => Promise.reject(`No configuration found for ${key}`));

@@ -252,16 +252,13 @@ describe('D2.models', () => {
             return loadedModel.delete();
         });
 
-        it('should fail when the resource does not exist', (done) => {
+        it('should fail when the resource does not exist', () => {
             respondTo('http://localhost:8080/dhis/api/users/VWgvyibrAq0', 'DELETE')
                 .with(404, '{"message": "Resource does not exist"}');
 
             return loadedModel.delete()
-                .then((d) => {
-                    console.log('it was sucessful!', d);
-                })
-                .catch(() => {
-                    done();
+                .catch(err => {
+                    expect(err.message).to.equal('Resource does not exist');
                 });
         });
     });

@@ -72,7 +72,7 @@ class ModelCollection {
 
         // Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
-            values.forEach((value) => this.valuesContainerMap.set(value.id, value));
+            values.forEach(value => this.valuesContainerMap.set(value.id, value));
         }
     }
 
@@ -150,40 +150,40 @@ class ModelCollection {
      */
     // TODO: Reset the pager?
     clear() {
-        return this.valuesContainerMap.clear.apply(this.valuesContainerMap);
+        return this.valuesContainerMap.clear.call(this.valuesContainerMap);
     }
 
     delete(...args) {
-        return this.valuesContainerMap.delete.apply(this.valuesContainerMap, args);
+        return this.valuesContainerMap.delete.call(this.valuesContainerMap, ...args);
     }
 
     entries() {
-        return this.valuesContainerMap.entries.apply(this.valuesContainerMap);
+        return this.valuesContainerMap.entries.call(this.valuesContainerMap);
     }
 
     // FIXME: This calls the forEach function with the values Map and not with the ModelCollection as the third argument
     forEach(...args) {
-        return this.valuesContainerMap.forEach.apply(this.valuesContainerMap, args);
+        return this.valuesContainerMap.forEach.call(this.valuesContainerMap, ...args);
     }
 
     get(...args) {
-        return this.valuesContainerMap.get.apply(this.valuesContainerMap, args);
+        return this.valuesContainerMap.get.call(this.valuesContainerMap, ...args);
     }
 
     has(...args) {
-        return this.valuesContainerMap.has.apply(this.valuesContainerMap, args);
+        return this.valuesContainerMap.has.call(this.valuesContainerMap, ...args);
     }
 
     keys() {
-        return this.valuesContainerMap.keys.apply(this.valuesContainerMap);
+        return this.valuesContainerMap.keys.call(this.valuesContainerMap);
     }
 
     set(...args) {
-        return this.valuesContainerMap.set.apply(this.valuesContainerMap, args);
+        return this.valuesContainerMap.set.call(this.valuesContainerMap, ...args);
     }
 
     values() {
-        return this.valuesContainerMap.values.apply(this.valuesContainerMap);
+        return this.valuesContainerMap.values.call(this.valuesContainerMap);
     }
 }
 

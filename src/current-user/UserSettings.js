@@ -36,7 +36,7 @@ class UserSettings {
         return this._settings
             ? Promise.resolve(this._settings)
             : this.api.get('userSettings')
-                .then(userSettings => { this._settings = userSettings; return Promise.resolve(this._settings); });
+                .then((userSettings) => { this._settings = userSettings; return Promise.resolve(this._settings); });
     }
 
     /**
@@ -73,7 +73,7 @@ class UserSettings {
             }
 
             this.api.get(['userSettings', key].join('/'))
-                .then(response => {
+                .then((response) => {
                     const value = processValue(response);
                     // Store the value on the user settings object
                     this[key] = value;

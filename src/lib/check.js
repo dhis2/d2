@@ -11,7 +11,7 @@ export function checkType(value, type, name) {
     checkDefined(type, 'Type');
 
     if ((typeof type === 'function' && value instanceof type) ||
-        (typeof type === 'string' && typeof value === type)) {
+        (typeof type === 'string' && typeof value === type)) { // eslint-disable-line valid-typeof
         return true;
     }
     throw new Error(['Expected', name || value, 'to have type', type].join(' '));
@@ -65,7 +65,7 @@ if (!Number.isInteger) {
 export function isNumeric(nVal) {
     return typeof nVal === 'number' &&
         isFinite(nVal) &&
-        (nVal - parseFloat(nVal) + 1) >= 0;
+        ((nVal - parseFloat(nVal)) + 1) >= 0;
 }
 
 export function contains(item, list) {

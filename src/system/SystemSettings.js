@@ -39,7 +39,7 @@ class SystemSettings {
         return this._settings
             ? Promise.resolve(this._settings)
             : this.api.get('systemSettings')
-                .then(settings => { this._settings = settings; return Promise.resolve(this._settings); });
+                .then((settings) => { this._settings = settings; return Promise.resolve(this._settings); });
     }
 
     /**
@@ -78,7 +78,7 @@ class SystemSettings {
             const options = { headers: { accept: 'text/plain' } };
             this.api.get(
                 ['systemSettings', systemSettingsKey].join('/'), undefined, options)
-                .then(response => {
+                .then((response) => {
                     if (response) {
                         resolve(processValue(response));
                     }
