@@ -66,7 +66,7 @@ class UserSettings {
             }
 
             this.api.get(['userSettings', key].join('/'))
-                .then(response => {
+                .then((response) => {
                     const value = processValue(response);
                     // Store the value on the user settings object
                     this[key] = value;

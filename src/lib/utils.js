@@ -22,19 +22,17 @@ export function addLockedProperty(object, name, value) {
 }
 
 export function copyOwnProperties(to, from) {
-    let key;
-
-    for (key in from) {
-        if (from.hasOwnProperty(key)) {
+    Object.keys(from)
+        .filter(key => from.hasOwnProperty(key))
+        .forEach((key) => {
             to[key] = from[key]; // eslint-disable-line no-param-reassign
-        }
-    }
+        });
 
     return to;
 }
 
 export function pick(property) {
-    return item => {
+    return (item) => {
         if (item) {
             return item[property];
         }

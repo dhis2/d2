@@ -1,7 +1,8 @@
+/* global window fetch Headers */
+import 'whatwg-fetch';
 import { checkType } from '../lib/check';
 import { customEncodeURIComponent } from '../lib/utils';
 import System from '../system/System';
-import 'whatwg-fetch';
 
 
 function getMergeStrategyParam(mergeType = 'REPLACE') {
@@ -29,8 +30,8 @@ function getUrl(baseUrl, url) {
     urlParts.push(url);
 
     return urlParts.join('/')
-        .replace(new RegExp('(.(?:[^:]))\/\/+', 'g'), '$1/')
-        .replace(new RegExp('\/$'), '');
+        .replace(new RegExp('(.(?:[^:]))//+', 'g'), '$1/')
+        .replace(new RegExp('/$'), '');
 }
 
 class Api {
@@ -132,7 +133,9 @@ class Api {
         // When using the GET method, transform the data object to query parameters
         if (data && method === 'GET') {
             Object.keys(data)
-                .forEach(key => { query = `${query}${(query.length > 0 ? '&' : '')}${key}=${data[key]}`; });
+                .forEach((key) => {
+                    query = `${query}${(query.length > 0 ? '&' : '')}${key}=${data[key]}`;
+                });
         }
 
         function getOptions(mergeOptions, requestData) {
@@ -196,12 +199,12 @@ class Api {
             // fetch returns a promise that will resolve with any response received from the server
             // It will be rejected ONLY if no response is received from the server, i.e. because there's no internet
             this.fetch(requestUrl, requestOptions)
-                .then(response => {
+                .then((response) => {
                     // If the request failed, response.ok will be false and response.status will be the status code
                     if (response.ok) {
                         response.text().then(text => resolve(parseResponseData(text)));
                     } else {
-                        response.text().then(text => {
+                        response.text().then((text) => {
                             if (!process.env || process.env.npm_lifecycle_event !== 'test') {
                                 console.warn( // eslint-disable-line
                                     `API request failed with status ${response.status} ${response.statusText}\n`,

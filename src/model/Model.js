@@ -6,8 +6,7 @@
  */
 
 import { checkType } from '../lib/check';
-import ModelBase from './ModelBase';
-import { DIRTY_PROPERTY_LIST } from './ModelBase';
+import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase';
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
@@ -74,7 +73,7 @@ class Model {
             value: {},
         });
 
-        const hasKeys = (object) => object && !!Object.keys(object).length;
+        const hasKeys = object => object && !!Object.keys(object).length;
         const attributes = {};
         const attributeProperties = modelDefinition.attributeProperties;
         if (hasKeys(attributeProperties)) {
@@ -85,7 +84,7 @@ class Model {
 
             Object
                 .keys(attributeProperties)
-                .forEach(attributeName => {
+                .forEach((attributeName) => {
                     Object.defineProperty(attributes, attributeName, {
                         enumerable: true,
                         get: () => {

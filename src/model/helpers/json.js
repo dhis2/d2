@@ -14,7 +14,7 @@ function isPlainValue(collection) {
 }
 
 function isCollectionProperty(collection) {
-    return (property) => !isPlainValue(collection)(property);
+    return property => !isPlainValue(collection)(property);
 }
 
 export function getJSONForProperties(model, properties) {
@@ -35,7 +35,7 @@ export function getJSONForProperties(model, properties) {
     // Handle plain values
     propertyNames
         .filter(isPlainValue(collectionProperties))
-        .forEach(propertyName => {
+        .forEach((propertyName) => {
             objectToSave[propertyName] = model.dataValues[propertyName];
         });
 
