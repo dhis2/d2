@@ -55,7 +55,7 @@ class ModelBase {
 
                 return this.modelDefinition
                     .saveNew(this)
-                    .then(updateModelFromResponseStatus.bind(this));
+                    .then(apiResponse => updateModelFromResponseStatus.call(this, apiResponse));
             });
     }
 
@@ -75,8 +75,9 @@ class ModelBase {
      * ```
      */
     save(includeChildren) {
+        // Calling save when there's nothing to be saved is a no-op
         if (!this.isDirty(includeChildren)) {
-            return Promise.reject('No changes to be saved');
+            return Promise.resolve({});
         }
 
         return this.validate()
@@ -87,7 +88,7 @@ class ModelBase {
 
                 return this.modelDefinition
                     .save(this)
-                    .then(updateModelFromResponseStatus.bind(this));
+                    .then(apiResponse => updateModelFromResponseStatus.call(this, apiResponse));
             });
     }
 

@@ -36,7 +36,10 @@ class SystemSettings {
      * ```
      */
     all() {
-        return this.api.get('systemSettings');
+        return this.settings
+            ? Promise.resolve(this.settings)
+            : this.api.get('systemSettings')
+                .then((settings) => { this.settings = settings; return Promise.resolve(this.settings); });
     }
 
     /**
@@ -54,6 +57,10 @@ class SystemSettings {
      * ```
      */
     get(systemSettingsKey) {
+        if (this.settings) {
+            return this.settings[systemSettingsKey];
+        }
+
         function processValue(value) {
             // Attempt to parse the response as JSON. If this fails we return the value as is.
             try {
@@ -72,8 +79,7 @@ class SystemSettings {
             this.api.get(
                 ['systemSettings', systemSettingsKey].join('/'), undefined, options)
                 .then((response) => {
-                    const systemSettingValue = processValue(response);
-                    if (systemSettingValue) {
+                    if (response) {
                         resolve(processValue(response));
                     }
                     reject(new Error('The requested systemSetting has no value or does not exist.'));
@@ -82,6 +88,8 @@ class SystemSettings {
     }
 
     set(systemSettingsKey, value) {
+        delete this.settings;
+
         const settingUrl = ['systemSettings', systemSettingsKey].join('/');
         if (value === null || (`${value}`).length === 0) {
             return this.api.delete(settingUrl);

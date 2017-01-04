@@ -118,6 +118,15 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
+     * @method isDirty
+     *
+     * @returns {boolean} true if any elements have been added to or removed from the collection
+     */
+    isDirty() {
+        return this.dirty;
+    }
+
+    /**
      * @method save
      *
      * @returns {Promise} A `Promise`
@@ -128,32 +137,24 @@ class ModelCollectionProperty extends ModelCollection {
      * either the changes weren't saved or if there were no changes to save.
      */
     save() {
-        // TODO: Use Promise constructor and call resolve/reject as appropriate
-        if (!this.dirty) {
-            return Promise.reject('Nothing to save!');
+        // Calling save when there's nothing to be saved is a no-op (not an error)
+        if (!this.isDirty()) {
+            return Promise.resolve({});
         }
 
         const api = this.modelDefinition.api;
+        const url = [this.parentModel.href, this.modelDefinition.plural].join('/');
+        const data = {
+            additions: Array.from(this.added).map(id => ({ id })),
+            deletions: Array.from(this.removed).map(id => ({ id })),
+        };
 
-        const queries = [];
-
-        if (this.added.size) {
-            Array.from(this.added).forEach((id) => {
-                queries.push(api.post([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
-            });
-        }
-        if (this.removed.size) {
-            Array.from(this.removed).forEach((id) => {
-                queries.push(api.delete([this.parentModel.href, this.modelDefinition.plural, id].join('/')));
-            });
-        }
-
-        return Promise.all(queries)
+        return api.post(url, data)
             .then(() => {
                 this.added = new Set();
                 this.removed = new Set();
                 this.updateDirty();
-                return Promise.resolve();
+                return Promise.resolve({});
             })
             .catch(err => Promise.reject('Failed to alter collection:', err));
     }

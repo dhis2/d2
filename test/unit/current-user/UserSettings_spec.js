@@ -1,6 +1,7 @@
 describe('userSettings.CurrentUser', () => {
     const Api = require('../../../src/api/Api').default;
     const UserSettings = require('../../../src/current-user/UserSettings').default;
+    const userSettingsFixture = { keyUiLocale: 'en' };
     let userSettings;
     let apiGet;
     let apiPost;
@@ -20,7 +21,7 @@ describe('userSettings.CurrentUser', () => {
 
     describe('all', () => {
         beforeEach(() => {
-            userSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve({ keyUiLocale: 'en' }));
+            userSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve(userSettingsFixture));
         });
 
         it('should be a function', () => {
@@ -41,11 +42,21 @@ describe('userSettings.CurrentUser', () => {
                     done();
                 });
         });
+
+        it('should cache the current user settings', done => {
+            userSettings.all().then(() => userSettings.all())
+                .then(() => {
+                    expect(apiGet.callCount).to.equal(1);
+                    expect(userSettings.settings).to.deep.equal(userSettingsFixture);
+                    done();
+                })
+                .catch(err => done(err));
+        });
     });
 
     describe('get', () => {
         beforeEach(() => {
-            userSettings.api.get = sinon.stub().returns(Promise.resolve('en'));
+            userSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve(userSettingsFixture.keyUiLocale));
         });
 
         it('should be a function', () => {
@@ -103,6 +114,18 @@ describe('userSettings.CurrentUser', () => {
                     done();
                 });
         });
+
+        it('should use the cache', done => {
+            apiGet.returns(Promise.resolve(userSettingsFixture));
+
+            userSettings.all().then(() => userSettings.get('keyUiLocale'))
+                .then(value => {
+                    expect(apiGet.callCount).to.equal(1);
+                    expect(value).to.equal(userSettingsFixture.keyUiLocale);
+                    done();
+                })
+                .catch(err => done(err));
+        });
     });
 
     describe('set', () => {
@@ -111,6 +134,7 @@ describe('userSettings.CurrentUser', () => {
             userSettings.api.post = apiPost = sinon.stub();
             userSettings.api.delete = apiDelete = sinon.stub();
 
+            apiGet.returns(Promise.resolve(userSettingsFixture));
             apiGet.withArgs('configuration').returns(Promise.resolve());
             apiPost.returns(Promise.resolve());
             apiDelete.returns(Promise.resolve());
@@ -145,5 +169,19 @@ describe('userSettings.CurrentUser', () => {
                     done(new Error(err));
                 });
         });
+
+        it('should clear out the cache', done => {
+            userSettings.all()
+                .then(() => userSettings.all())
+                .then(() => userSettings.set('a', 'b'))
+                .then(() => userSettings.all())
+                .then(() => userSettings.all())
+                .then(value => {
+                    expect(apiPost.callCount).to.equal(1);
+                    expect(apiGet.callCount).to.equal(2);
+                    done();
+                })
+                .catch(err => done(err));
+        })
     });
 });

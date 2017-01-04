@@ -1,6 +1,8 @@
-import Api from '../../../src/api/Api';
+const settingsFixture = {
+    keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015',
+};
 
-describe('SystemSettings', () => {
+describe('settings.System', () => {
     const Api = require('../../../src/api/Api').default;
     const SystemSettings = require('../../../src/system/SystemSettings').default;
     let systemSettings;
@@ -23,7 +25,7 @@ describe('SystemSettings', () => {
 
     describe('all', () => {
         beforeEach(() => {
-            systemSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve({ keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015' }));
+            systemSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve(settingsFixture));
         });
 
         it('should be a function', () => {
@@ -44,11 +46,22 @@ describe('SystemSettings', () => {
                     done();
                 });
         });
+
+        it('should only call the API once', (done) => {
+            systemSettings.all().then(() => systemSettings.all())
+                .then(() => {
+                    expect(systemSettings.settings).to.deep.equal(settingsFixture);
+                    expect(apiGet.callCount).to.equal(1);
+                    done();
+                })
+                .catch(err => done(err));
+        });
     });
 
     describe('get', () => {
         beforeEach(() => {
-            systemSettings.api.get = sinon.stub().returns(Promise.resolve('Tue Mar 10 12:24:00 CET 2015'));
+            systemSettings = new SystemSettings(new Api());
+            systemSettings.api.get = sinon.stub().returns(Promise.resolve(settingsFixture['keyLastSuccessfulResourceTablesUpdate']));
         });
 
         it('should be a function', () => {
@@ -106,6 +119,30 @@ describe('SystemSettings', () => {
                     done();
                 });
         });
+
+        it('should call the API for every operation when there\'s no cache', (done) => {
+            systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
+                .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
+                .then(() => {
+                    expect(systemSettings.api.get.callCount).to.equal(2);
+                    done();
+                })
+                .catch(err => done(err));
+        });
+
+        it('should only call the API once when there is a cache', (done) => {
+            systemSettings.api.get.returns(Promise.resolve(settingsFixture));
+
+            systemSettings.all()
+                .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
+                .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
+                .then(value => {
+                    expect(value).to.equal(settingsFixture['keyLastSuccessfulResourceTablesUpdate']);
+                    expect(systemSettings.api.get.callCount).to.equal(1);
+                    done();
+                })
+                .catch(err => done(err));
+        });
     });
 
     describe('.set', () => {
@@ -114,6 +151,7 @@ describe('SystemSettings', () => {
             systemSettings.api.post = apiPost = sinon.stub();
             systemSettings.api.delete = apiDelete = sinon.stub();
 
+            apiGet.returns(Promise.resolve(settingsFixture));
             apiPost.returns(Promise.resolve());
             apiDelete.returns(Promise.resolve());
         });
@@ -178,6 +216,18 @@ describe('SystemSettings', () => {
                 .catch(err => {
                     done(new Error(err));
                 });
+        });
+
+        it('should clear the settings cache', done => {
+            systemSettings.all()
+                .then(() => systemSettings.set('test', 'value'))
+                .then(() => systemSettings.all())
+                .then(() => {
+                    expect(apiGet.callCount).to.equal(2);
+                    expect(apiPost.callCount).to.equal(1);
+                    done();
+                })
+                .catch(err => done(err));
         });
     });
 
