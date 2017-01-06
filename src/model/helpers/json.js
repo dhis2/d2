@@ -5,6 +5,7 @@ const NON_MODEL_COLLECTIONS = new Set([
     'grantTypes',
     'translations',
     'deliveryChannels',
+    'redirectUris',
 ]);
 
 function isPlainValue(collection) {
