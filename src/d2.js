@@ -111,6 +111,10 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
 
     const config = Config.create(preInitConfig, initConfig);
 
+    if (config.headers) {
+        api.setDefaultHeaders(config.headers);
+    }
+
     const d2 = {
         models: undefined,
         model,

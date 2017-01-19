@@ -34,6 +34,8 @@ function getUrl(baseUrl, url) {
         .replace(new RegExp('/$'), '');
 }
 
+let defaultHeaders = {};
+
 class Api {
     constructor(fetchImpl) {
         // Optionally provide fetch to the constructor so it can be mocked during testing
@@ -51,6 +53,11 @@ class Api {
             credentials: 'include', // include cookies with same-origin requests
             cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode
         };
+        this.defaultHeaders = {};
+    }
+
+    setDefaultHeaders(headers) {
+        defaultHeaders = headers;
     }
 
     get(url, data, options) {
@@ -140,7 +147,10 @@ class Api {
 
         function getOptions(mergeOptions, requestData) {
             const resultOptions = Object.assign({}, api.defaultFetchOptions, mergeOptions);
-            const headers = new Headers(mergeOptions.headers || {});
+            const headers = new Headers({
+                ...defaultHeaders,
+                ...mergeOptions.headers,
+            });
 
             resultOptions.method = method;
 
