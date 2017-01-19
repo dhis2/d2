@@ -529,4 +529,58 @@ describe('Api', () => {
             expect(fetchMock).to.be.calledWith('/api/some/fake/api/endpoint?mergeStrategy=REPLACE');
         });
     });
+
+    describe('defaultHeaders', () => {
+        it('should use the set default headers for the request', () => {
+            api.setDefaultHeaders({
+                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q='
+            });
+
+            api.get('/me');
+
+            expect(fetchMock).to.be.calledWith(
+                '/api/me',
+                Object.assign(baseFetchOptions, {
+                    method: 'GET',
+                    headers: new Headers({ 'Authorization': 'Basic YWRtaW46ZGlzdHJpY3Q=' }),
+                }),
+            );
+        });
+
+        it('should not use the defaultHeaders if specific header has been passed', () => {
+            api.setDefaultHeaders({
+                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q='
+            });
+
+            api.get('/me', undefined, { headers: { 'Authorization': 'Bearer ASDW212331sss' } });
+
+            expect(fetchMock).to.be.calledWith(
+                '/api/me',
+                Object.assign(baseFetchOptions, {
+                    method: 'GET',
+                    headers: new Headers({ 'Authorization': 'Bearer ASDW212331sss' }),
+                }),
+            );
+        });
+
+        it('should still use the default headers for keys that have not been defined', () => {
+            api.setDefaultHeaders({
+                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=',
+                'Custom-Header': 'Some header data',
+            });
+
+            api.get('/me', undefined, { headers: { 'Authorization': 'Bearer ASDW212331sss' } });
+
+            expect(fetchMock).to.be.calledWith(
+                '/api/me',
+                Object.assign(baseFetchOptions, {
+                    method: 'GET',
+                    headers: new Headers({
+                        Authorization: 'Bearer ASDW212331sss',
+                        'Custom-Header': 'Some header data',
+                    }),
+                }),
+            );
+        });
+    });
 });

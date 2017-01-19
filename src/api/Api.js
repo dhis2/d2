@@ -34,7 +34,6 @@ function getUrl(baseUrl, url) {
         .replace(new RegExp('/$'), '');
 }
 
-let defaultHeaders = {};
 
 class Api {
     constructor(fetchImpl) {
@@ -57,7 +56,7 @@ class Api {
     }
 
     setDefaultHeaders(headers) {
-        defaultHeaders = headers;
+        this.defaultHeaders = headers;
     }
 
     get(url, data, options) {
@@ -145,12 +144,14 @@ class Api {
                 });
         }
 
-        function getOptions(mergeOptions, requestData) {
+        function getOptions(defaultHeaders, mergeOptions, requestData) {
             const resultOptions = Object.assign({}, api.defaultFetchOptions, mergeOptions);
-            const headers = new Headers({
-                ...defaultHeaders,
-                ...mergeOptions.headers,
-            });
+            const headers = new Headers(mergeOptions.headers || {});
+
+            Object
+                .keys(defaultHeaders)
+                .filter(header => !headers.get(header))
+                .forEach(header => headers.set(header, defaultHeaders[header]));
 
             resultOptions.method = method;
 
@@ -194,7 +195,7 @@ class Api {
         if (query.length) {
             requestUrl = `${requestUrl}?${customEncodeURIComponent(query)}`;
         }
-        const requestOptions = getOptions(options, data);
+        const requestOptions = getOptions(this.defaultHeaders, options, data);
 
         // If the provided value is valid JSON, return the parsed JSON object. If not, return the raw value as is.
         function parseResponseData(value) {
