@@ -5,7 +5,7 @@
  * @requires d2/system/SystemSettings
  */
 import Api from '../api/Api';
-import { isString } from '../lib/check';
+import { isString, isArray } from '../lib/check';
 import { getInstance } from '../d2';
 import DataStoreNamespace from './DataStoreNamespace';
 /**
@@ -22,7 +22,7 @@ class DataStore {
     }
 
     open(namespace) {
-        console.log("test")
+        console.log("testf")
         return getInstance()
             .then(d2 => d2.Api.getApi())
             .then(api => {
@@ -33,17 +33,33 @@ class DataStore {
 
                 return api.get([this.endPoint, namespace].join('/'))
                     .then((response) => {
-                        console.log(response)
-                        if (response) {
-                            resolve(new DataStoreNamespace(namespace, response));
+                        if (response && isArray(response)) {
+                            return new DataStoreNamespace(namespace, response);
                         }
+
                         return new Error('The requested namespace has no keys or does not exist.');
+                    }).catch(e => {
+                        if(e.httpStatusCode === 404) {
+                            return new DataStoreNamespace(namespace);
+                        } else {
+                            throw e;
+                        }
                     });
             });
     }
 
-    openAll() {
-
+    getNamespaces() {
+        return getInstance()
+            .then(d2 => d2.Api.getApi())
+            .then(api => {
+                return api.get([this.endPoint])
+                    .then((response) => {
+                        if (response && isArray(response)) {
+                           return response;
+                        }
+                        return new Error('No namespaces exist.');
+                    });
+            });
     }
 
     delete(namespace) {
@@ -51,14 +67,6 @@ class DataStore {
             .then(d2 => d2.Api.getApi())
             .then(api => {
                 return api.delete([this.endPoint,namespace].join('/n'))
-            });
-    }
-
-    create(namespace) {
-        return getInstance()
-            .then(d2 => d2.Api.getApi())
-            .then(api => {
-               return api.post([this.endPoint,namespace].join('/n'))
             });
     }
 
@@ -71,7 +79,6 @@ class DataStore {
 }
 
 export const dataStore = (() => {
-    return DataStore();
-})
+    return new DataStore();
+})()
 
-export dataStore;
