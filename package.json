@@ -87,7 +87,8 @@
   },
   "pre-commit": [
     "lint",
-    "validate"
+    "validate",
+    "test"
   ],
   "nyc": {
     "sourceMap": false,
