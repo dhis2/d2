@@ -162,6 +162,8 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
             };
 
             responses.schemas
+                // We only deal with metadata schemas
+                .filter(schema => schema.metadata)
                 // TODO: Remove this when the schemas endpoint is versioned or shows the correct urls for the requested version
                 // The schemas endpoint is not versioned which will result into the modelDefinitions always using the
                 // "default" endpoint, we therefore modify the endpoint url based on the given baseUrl.
