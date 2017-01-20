@@ -17,11 +17,11 @@ const getFormatterMemoized = (() => {
         const formatter = new Intl.DateTimeFormat(locale, options);
 
         formatters.set(locale, new Map([[options, formatter]]));
-        
+
         return formatter;
     };
 })();
 
-export function toLocaleDayFormat(date, locale = 'en') {
+export function toLocaleDayFormat(date, locale = 'en') { // eslint-disable-line import/prefer-default-export
     return getFormatterMemoized(locale, localeDayFormatOptions).format(date);
 }

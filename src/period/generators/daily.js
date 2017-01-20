@@ -1,13 +1,12 @@
-import { isInteger } from '../../lib/check';
 import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, addDays } from '../helpers';
 import { toLocaleDayFormat } from '../formatters';
 
 /**
  * Generate daily periods for the given year.
- * 
+ *
  * @param {Integer} [year=getCurrentYear()] The year to generate the daily periods for.
  */
-export function generateDailyPeriodsForYear(year = getCurrentYear(), locale = 'en') {
+export function generateDailyPeriodsForYear(year = getCurrentYear(), locale = 'en') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
 
     const periods = [];
@@ -20,7 +19,7 @@ export function generateDailyPeriodsForYear(year = getCurrentYear(), locale = 'e
         const period = {
             startDate: formattedDate,
             endDate: formattedDate,
-            name: toLocaleDayFormat(date),
+            name: toLocaleDayFormat(date, locale),
             id: formattedDate.replace(/-/g, ''),
         };
 
@@ -32,4 +31,4 @@ export function generateDailyPeriodsForYear(year = getCurrentYear(), locale = 'e
     }
 
     return periods;
-};
+}

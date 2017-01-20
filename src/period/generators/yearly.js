@@ -1,22 +1,20 @@
 import { isInteger } from '../../lib/check';
-import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, addDays, monthNames, getYYYYMM } from '../helpers';
+import { validateIfValueIsInteger, formatAsISODate, getCurrentYear } from '../helpers';
 
-export function generateYearlyPeriodsUpToYear(year = getCurrentYear(), numberOfYears = 10) {
+export function generateYearlyPeriodsUpToYear(year = getCurrentYear(), numberOfYears = 10) { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
     if ((!isInteger(numberOfYears)) || numberOfYears < 1) { throw new Error('Yearly generator parameter `numberOfYears` should be an integer larger than 0.'); }
 
-    let periods = [];
+    const periods = [];
     const date = new Date(`31 Dec ${year}`);
 
     while ((year - date.getFullYear()) < numberOfYears) {
         const period = {};
-        period['endDate'] = formatAsISODate(date);
+        period.endDate = formatAsISODate(date);
         date.setMonth(0, 1);
-        period['startDate'] = formatAsISODate(date);
-        period['name'] = date.getFullYear().toString();
-        //period['id'] = 'Yearly_' + period['startDate'];
-        // period['iso'] = date.getFullYear().toString();
-        period['id'] = date.getFullYear().toString();
+        period.startDate = formatAsISODate(date);
+        period.name = date.getFullYear().toString();
+        period.id = date.getFullYear().toString();
         periods.push(period);
         date.setDate(0);
     }

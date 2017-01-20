@@ -1,7 +1,6 @@
-import { isInteger } from '../../lib/check';
-import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, addDays, getMonthNamesForLocale, getYYYYMM } from '../helpers';
+import { validateIfValueIsInteger, getCurrentYear, getMonthNamesForLocale } from '../helpers';
 
-export function generateSixMonthlyPeriodsForYear(year = getCurrentYear(), locale = 'en') {
+export function generateSixMonthlyPeriodsForYear(year = getCurrentYear(), locale = 'en') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
 
     const monthNames = getMonthNamesForLocale(locale);
@@ -18,6 +17,6 @@ export function generateSixMonthlyPeriodsForYear(year = getCurrentYear(), locale
             endDate: `${year}-12-31`,
             name: `${monthNames[6]} - ${monthNames[11]} ${year}`,
             id: `${year}S2`,
-        }
+        },
     ];
 }

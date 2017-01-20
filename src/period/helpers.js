@@ -6,18 +6,19 @@ export function formatAsISODate(date) {
     }
 
     const y = date.getFullYear();
-    let m = new String(date.getMonth() + 1);
-    let d = new String(date.getDate());
+    let m = `${date.getMonth() + 1}`;
+    let d = `${date.getDate()}`;
     m = m.length < 2 ? `0${m}` : m;
     d = d.length < 2 ? `0${d}` : d;
     return `${y}-${m}-${d}`;
-};
+}
 
 export function filterFuturePeriods(periods) {
-    const array = [], now = new Date();
+    const array = [];
+    const now = new Date();
 
     for (let i = 0; i < periods.length; i++) {
-        if (new Date(periods[i]['startDate']) <= now) {
+        if (new Date(periods[i].startDate) <= now) {
             array.push(periods[i]);
         }
     }
@@ -27,21 +28,21 @@ export function filterFuturePeriods(periods) {
 
 export function getYYYYMM(date) {
     const y = date.getFullYear();
-    let m = new String(date.getMonth() + 1);
+    let m = `${date.getMonth() + 1}`;
     m = m.length < 2 ? `0${m}` : m;
     return y + m;
 }
 
 export function getBiMonthlyId(date) {
     const y = date.getFullYear();
-    let m = new String(date.getMonth() + 1);
+    let m = `${date.getMonth() + 1}`;
     m = m.length < 2 ? `0${m}` : m;
     return `${y + m}B`;
 }
 
 export function validateIfValueIsInteger(year) {
     if (!isInteger(year)) {
-        throw new Error('Generator should be called with an integer to identify the year. Perhaps you passed a Date object?')
+        throw new Error('Generator should be called with an integer to identify the year. Perhaps you passed a Date object?');
     }
 
     if (year < 0) {
@@ -54,7 +55,7 @@ export function getCurrentYear() {
 }
 
 export function is53WeekISOYear(year) {
-    const p = (y) => y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400);
+    const p = y => ((y + Math.floor(y / 4)) - Math.floor(y / 100)) + Math.floor(y / 400);
 
     return p(year) % 7 === 4 || p(year - 1) % 7 === 3;
 }
@@ -69,7 +70,7 @@ export function addDays(days, date) {
 
 export function addMonths(months, date) {
     const result = new Date(date);
-    
+
     result.setMonth(date.getMonth() + months);
 
     return result;
