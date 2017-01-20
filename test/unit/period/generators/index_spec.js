@@ -373,4 +373,18 @@ describe('generators', () => {
             });
         });
     });
+
+    describe('default values', () => {
+        beforeEach(() => {
+            sinon.spy(daily, 'generateDailyPeriodsForYear');
+        });
+
+        it('should use the default locale when no locale is passed', () => {
+            const generators = createPeriodGeneratorsForLocale();
+
+            generators.generateDailyPeriodsForYear(2017);
+
+            expect(daily.generateDailyPeriodsForYear).to.be.calledWith(2017, 'en');
+        });
+    });
 });
