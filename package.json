@@ -1,6 +1,6 @@
 {
   "name": "d2",
-  "version": "26.1.4",
+  "version": "26.1.5",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
@@ -87,7 +87,8 @@
   },
   "pre-commit": [
     "lint",
-    "validate"
+    "validate",
+    "test"
   ],
   "nyc": {
     "sourceMap": false,

@@ -34,6 +34,7 @@ function getUrl(baseUrl, url) {
         .replace(new RegExp('/$'), '');
 }
 
+
 class Api {
     constructor(fetchImpl) {
         // Optionally provide fetch to the constructor so it can be mocked during testing
@@ -51,6 +52,11 @@ class Api {
             credentials: 'include', // include cookies with same-origin requests
             cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode
         };
+        this.defaultHeaders = {};
+    }
+
+    setDefaultHeaders(headers) {
+        this.defaultHeaders = headers;
     }
 
     get(url, data, options) {
@@ -138,9 +144,14 @@ class Api {
                 });
         }
 
-        function getOptions(mergeOptions, requestData) {
+        function getOptions(defaultHeaders, mergeOptions, requestData) {
             const resultOptions = Object.assign({}, api.defaultFetchOptions, mergeOptions);
             const headers = new Headers(mergeOptions.headers || {});
+
+            Object
+                .keys(defaultHeaders)
+                .filter(header => !headers.get(header))
+                .forEach(header => headers.set(header, defaultHeaders[header]));
 
             resultOptions.method = method;
 
@@ -184,7 +195,7 @@ class Api {
         if (query.length) {
             requestUrl = `${requestUrl}?${customEncodeURIComponent(query)}`;
         }
-        const requestOptions = getOptions(options, data);
+        const requestOptions = getOptions(this.defaultHeaders, options, data);
 
         // If the provided value is valid JSON, return the parsed JSON object. If not, return the raw value as is.
         function parseResponseData(value) {

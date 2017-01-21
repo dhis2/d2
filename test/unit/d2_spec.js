@@ -46,7 +46,8 @@ describe('D2', () => {
             setBaseUrl: spy(),
             getApi() {
                 return this;
-            }
+            },
+            setDefaultHeaders: spy(),
         };
 
         apiMock.get
@@ -168,6 +169,21 @@ describe('D2', () => {
             d2.getInstance()
                 .then(() => {
                     expect(apiMock.setBaseUrl).to.be.calledWith('/demo/api');
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should use default headers for requests', (done) => {
+            d2.config.baseUrl = '/dhis/api';
+            d2.config.headers = {
+                Authorization: new Buffer('admin:district').toString('base64'),
+            }
+
+            d2.init({ baseUrl: '/demo/api' }, apiMock);
+            d2.getInstance()
+                .then(() => {
+                    expect(apiMock.setDefaultHeaders).to.be.calledWith({ Authorization: 'YWRtaW46ZGlzdHJpY3Q=' });
                     done();
                 })
                 .catch(done);
