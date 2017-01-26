@@ -115,3 +115,37 @@ export function getMonthNamesForLocale(locale) {
 
     return monthNames;
 }
+
+export function getLastDateOfMonth(year, month) {
+    return new Date(new Date(year, month + 1).setDate(0));
+}
+
+export function getFirstDateOfQuarter(year, quarter) {
+    const startMonth = (quarter - 1) * 3;
+    return new Date(year, startMonth);
+}
+
+export function getLastDateOfQuarter(year, quarter) {
+    return new Date(getFirstDateOfQuarter(year, quarter + 1).setDate(0));
+}
+
+const ordTable = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+const ordTableLeap = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
+
+export function getFirstDateOfWeek(year, week) {
+    const isLeapYear = new Date(new Date(year, 2, 1).setDate(0)).getDate() === 29;
+    const ordDiff = isLeapYear ? ordTableLeap : ordTable;
+
+    const correction = ((new Date(year, 0, 4)).getDay() || 7) + 3;
+    const ordDate = (week * 7) + (1 - correction);
+    if (ordDate < 0) {
+        return new Date(year, 0, ordDate);
+    }
+
+    let month = 11;
+    while (ordDate < ordDiff[month]) {
+        month--; // eslint-disable-line
+    }
+
+    return new Date(year, month, ordDate - ordDiff[month]);
+}
