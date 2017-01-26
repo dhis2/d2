@@ -6,10 +6,8 @@ export function formatAsISODate(date) {
     }
 
     const y = date.getFullYear();
-    let m = `${date.getMonth() + 1}`;
-    let d = `${date.getDate()}`;
-    m = m.length < 2 ? `0${m}` : m;
-    d = d.length < 2 ? `0${d}` : d;
+    const m = `0${date.getMonth() + 1}`.substr(-2);
+    const d = `0${date.getDate()}`.substr(-2);
     return `${y}-${m}-${d}`;
 }
 
@@ -29,14 +27,13 @@ export function filterFuturePeriods(periods) {
 export function getYYYYMM(date) {
     const y = date.getFullYear();
     let m = `${date.getMonth() + 1}`;
-    m = m.length < 2 ? `0${m}` : m;
+    m = `0${m}`.substr(-2);
     return y + m;
 }
 
 export function getBiMonthlyId(date) {
     const y = date.getFullYear();
-    let m = `${date.getMonth() + 1}`;
-    m = m.length < 2 ? `0${m}` : m;
+    const m = `0${Math.floor(date.getMonth() / 2) + 1}`.substr(-2);
     return `${y + m}B`;
 }
 

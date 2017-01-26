@@ -14,11 +14,11 @@ describe('Yearly period', () => {
 
     describe('generateYearlyPeriodsUpToYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateYearlyPeriodsUpToYear(-10)).to.throw('Generator does not support generating year before the year 0');
+            expect(() => generateYearlyPeriodsUpToYear(-10)).to.throw();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateYearlyPeriodsUpToYear(new Date())).to.throw('Generator should be called with an integer to identify the year. Perhaps you passed a Date object?');
+            expect(() => generateYearlyPeriodsUpToYear(new Date())).to.throw();
         });
 
         it('should generate 10 yearly periods when no numberOfYears was passed', () => {
@@ -117,12 +117,12 @@ describe('Yearly period', () => {
         });
 
         it('should throw an error when the numberOfYears is not a positive integer', () => {
-            expect(() => generateYearlyPeriodsUpToYear(2017, 'a')).to.throw('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
-            expect(() => generateYearlyPeriodsUpToYear(2017, 1.2)).to.throw('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
-            expect(() => generateYearlyPeriodsUpToYear(2017, true)).to.throw('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
-            expect(() => generateYearlyPeriodsUpToYear(2017, -1)).to.throw('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
-            expect(() => generateYearlyPeriodsUpToYear(2017, 0)).to.throw('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
-            expect(() => generateYearlyPeriodsUpToYear(2017, Infinity)).to.throw('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
+            expect(() => generateYearlyPeriodsUpToYear(2017, 'a')).to.throw();
+            expect(() => generateYearlyPeriodsUpToYear(2017, 1.2)).to.throw();
+            expect(() => generateYearlyPeriodsUpToYear(2017, true)).to.throw();
+            expect(() => generateYearlyPeriodsUpToYear(2017, -1)).to.throw();
+            expect(() => generateYearlyPeriodsUpToYear(2017, 0)).to.throw();
+            expect(() => generateYearlyPeriodsUpToYear(2017, Infinity)).to.throw();
         });
 
         it('should generate the yearly periods for 2021 and 2022', () => {

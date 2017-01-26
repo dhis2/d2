@@ -14,11 +14,11 @@ describe('Bi-monthly period', () => {
 
     describe('generateBiMonthlyPeriodsForYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateBiMonthlyPeriodsForYear(-10)).to.throw('Generator does not support generating year before the year 0');
+            expect(() => generateBiMonthlyPeriodsForYear(-10)).to.throw();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateBiMonthlyPeriodsForYear(new Date())).to.throw('Generator should be called with an integer to identify the year. Perhaps you passed a Date object?');
+            expect(() => generateBiMonthlyPeriodsForYear(new Date())).to.throw();
         });
 
         it('should return 6 bi-monthly periods for 2017', () => {
@@ -35,27 +35,27 @@ describe('Bi-monthly period', () => {
                 startDate: '2017-03-01',
                 endDate: '2017-04-30',
                 name: `March - April 2017`,
-                id: '201703B',
+                id: '201702B',
             }, {
                 startDate: '2017-05-01',
                 endDate: '2017-06-30',
                 name: `May - June 2017`,
-                id: '201705B',
+                id: '201703B',
             }, {
                 startDate: '2017-07-01',
                 endDate: '2017-08-31',
                 name: `July - August 2017`,
-                id: '201707B',
+                id: '201704B',
             }, {
                 startDate: '2017-09-01',
                 endDate: '2017-10-31',
                 name: `September - October 2017`,
-                id: '201709B',
+                id: '201705B',
             }, {
                 startDate: '2017-11-01',
                 endDate: '2017-12-31',
                 name: `November - December 2017`,
-                id: '201711B',
+                id: '201706B',
             }]);
         });
 

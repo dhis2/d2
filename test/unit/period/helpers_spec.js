@@ -13,10 +13,10 @@ describe('Period helpers', () => {
         });
 
         it('should throw when the passed date is not a Date', () => {
-            expect(() => formatAsISODate('2017-02-01')).to.throw('formatAsISODate(date) only accepts Date objects');
-            expect(() => formatAsISODate()).to.throw('formatAsISODate(date) only accepts Date objects');
-            expect(() => formatAsISODate(null)).to.throw('formatAsISODate(date) only accepts Date objects');
-            expect(() => formatAsISODate(1)).to.throw('formatAsISODate(date) only accepts Date objects');
+            expect(() => formatAsISODate('2017-02-01')).to.throw();
+            expect(() => formatAsISODate()).to.throw();
+            expect(() => formatAsISODate(null)).to.throw();
+            expect(() => formatAsISODate(1)).to.throw();
         });
     });
 
