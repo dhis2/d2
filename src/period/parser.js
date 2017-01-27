@@ -45,9 +45,14 @@ const regexMatchToPeriod = {
         if (week < 1 || week > 53) {
             throw new Error('Invalid week number');
         }
+
+        const monthNames = getMonthNamesForLocale(locale);
+
         const startDate = getFirstDateOfWeek(year, week);
         const startMonth = startDate.getMonth();
         const startYear = startDate.getFullYear();
+        const startMonthName = monthNames[startMonth];
+        const startDayNum = startDate.getDate();
 
         if (week === 53 && startYear !== year) {
             week = 1;
@@ -57,13 +62,12 @@ const regexMatchToPeriod = {
 
         const endDate = addDays(6, startDate);
         const endMonth = endDate.getMonth();
-        const endYear = endDate.getFullYear();
-
-        const monthNames = getMonthNamesForLocale(locale);
+        const endDayNum = endDate.getDate();
+        const endMonthName = monthNames[endMonth];
 
         const name = startMonth === endMonth
-            ? `W${week} ${monthNames[startMonth]} ${startDate.getDate()} - ${endDate.getDate()}, ${startYear}`
-            : `W${week} ${monthNames[startMonth]} ${startDate.getDate()}, ${startYear} - ${monthNames[endMonth]} ${endDate.getDate()}, ${endYear}`;
+            ? `${year} W${week} ${startMonthName} ${startDayNum} - ${endDayNum}`
+            : `${year} W${week} ${startMonthName} ${startDayNum} - ${endMonthName} ${endDayNum}`;
 
         return {
             id,
