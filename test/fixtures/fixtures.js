@@ -26,6 +26,7 @@ export default (function () {
     addFixture('/api/schemas/indicatorGroup', require('./json/api/schemas/indicatorGroup.json'));
     addFixture('/api/schemas/organisationUnit', require('./json/api/schemas/organisationUnit.json'));
     addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
+    addFixture('/api/schemas/validationRule', require('./json/api/schemas/validationRule'));
     addFixture('/api/schemas/user', require('./json/api/schemas/user.json'));
     addFixture('/api/userSettings', require('./json/api/userSettings'));
     addFixture('/appStore', require('./json/api/appStore.json'));
