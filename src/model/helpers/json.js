@@ -7,6 +7,7 @@ const NON_MODEL_COLLECTIONS = new Set([
     'deliveryChannels',
     'redirectUris',
     'dataSetElements',
+    'dataInputPeriods',
 ]);
 
 function isPlainValue(collection) {
