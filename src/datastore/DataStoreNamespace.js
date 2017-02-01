@@ -1,5 +1,5 @@
 import Api from '../api/Api';
-import { isString, isArray } from '../lib/check';
+import { isArray } from '../lib/check';
 
 class DataStoreNamespace {
 
@@ -24,7 +24,7 @@ class DataStoreNamespace {
      * @returns {Promise} with the value of the key.
      */
     get(key) {
-        return this.api.get([this.endPoint,this.namespace,key].join('/'))
+        return this.api.get([this.endPoint, this.namespace, key].join('/'));
     }
 
     /**
@@ -36,10 +36,10 @@ class DataStoreNamespace {
      * @returns {Promise}
      */
     set(key, value, overrideUpdate = false) {
-        if(!overrideUpdate && this.keys.includes(key)) {
+        if (!overrideUpdate && this.keys.includes(key)) {
             return this.update(key, value);
         }
-        return this.api.post([this.endPoint,this.namespace, key].join('/'), value)
+        return this.api.post([this.endPoint, this.namespace, key].join('/'), value);
     }
 
     /**
@@ -47,7 +47,7 @@ class DataStoreNamespace {
      * @param key to delete.
      */
     delete(key) {
-        return this.api.delete([this.endPoint,this.namespace, key].join('/'))
+        return this.api.delete([this.endPoint, this.namespace, key].join('/'));
     }
 
     /**
@@ -57,7 +57,7 @@ class DataStoreNamespace {
      * @returns {Promise}
      */
     update(key, value) {
-        return this.api.update(['dataStore',key].join('/'), value);
+        return this.api.update(['dataStore', key].join('/'), value);
     }
 
     /**

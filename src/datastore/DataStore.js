@@ -36,8 +36,7 @@ class DataStore {
 
         return getInstance()
             .then(d2 => d2.Api.getApi())
-            .then((api) => {
-                return api.get([this.endPoint, namespace].join('/'))
+            .then(api => api.get([this.endPoint, namespace].join('/'))
                     .then((response) => {
                         if (response && isArray(response)) {
                             return new DataStoreNamespace(namespace, response);
@@ -50,8 +49,7 @@ class DataStore {
                             return new DataStoreNamespace(namespace);
                         }
                         throw e;
-                    });
-            });
+                    }));
     }
 
     /**
@@ -61,15 +59,13 @@ class DataStore {
     getNamespaces() {
         return getInstance()
             .then(d2 => d2.Api.getApi())
-            .then((api) => {
-                return api.get([this.endPoint])
+            .then(api => api.get([this.endPoint])
                     .then((response) => {
                         if (response && isArray(response)) {
                             return response;
                         }
                         return new Error('No namespaces exist.');
-                    });
-            });
+                    }));
     }
 
     /**
@@ -80,13 +76,11 @@ class DataStore {
     delete(namespace) {
         return getInstance()
             .then(d2 => d2.Api.getApi())
-            .then((api) => {
-                return api.delete([this.endPoint, namespace].join('/n'));
-            });
+            .then(api => api.delete([this.endPoint, namespace].join('/n')));
     }
 
 }
 
-export const dataStore = (() =>
+export const dataStore = (() => // eslint-disable-line
     new DataStore())();
 
