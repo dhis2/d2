@@ -7,6 +7,7 @@ describe('dataStore', () => {
     let initConfig;
     let api;
     beforeEach(() => {
+        console.log("asf")
         initConfig = {
             baseUrl: 'https://play.dhis2.org/test/api',
             headers: { Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=' }
@@ -62,7 +63,6 @@ describe('dataStore', () => {
             .then(d2 => {
                 console.log(dataStore)
                 dataStore.open('asfaaaa').then(namespace => {
-                  //  expect(namespace.keys).to.be.empty;
                     namespace.get('a').then(res => {
                         console.log(res)
                         expect(res).to.be.equal("2")
@@ -80,10 +80,9 @@ describe('dataStore', () => {
         api
             .then(d2 => {
                 console.log(dataStore)
-                dataStore.open('asfaaaa',false).then(namespace => {
-                    //  expect(namespace.keys).to.be.empty;
+                dataStore.open('asfaaaa', false).then(namespace => {
                     expect(namespace.getKeys()).to.be.empty;
-                      done();
+                    done();
                 }).catch(e => done(e))
             })
             .catch((e) => {

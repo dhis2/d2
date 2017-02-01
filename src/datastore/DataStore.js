@@ -1,6 +1,6 @@
 import { isString, isArray } from '../lib/check';
-import { getInstance } from '../d2';
 import DataStoreNamespace from './DataStoreNamespace';
+import Api from '../api/Api';
 
 /**
  * @class DataStore
@@ -10,8 +10,10 @@ import DataStoreNamespace from './DataStoreNamespace';
  * can be used to interact with the namespace API.
  */
 class DataStore {
-    constructor() {
+    constructor(api = Api.getApi()) {
         this.endPoint = 'dataStore';
+
+        this.api = api;
     }
 
     /**
@@ -34,9 +36,7 @@ class DataStore {
             });
         }
 
-        return getInstance()
-            .then(d2 => d2.Api.getApi())
-            .then(api => api.get([this.endPoint, namespace].join('/'))
+        return this.api.get([this.endPoint, namespace].join('/'))
                     .then((response) => {
                         if (response && isArray(response)) {
                             return new DataStoreNamespace(namespace, response);
@@ -49,23 +49,22 @@ class DataStore {
                             return new DataStoreNamespace(namespace);
                         }
                         throw e;
-                    }));
+                    });
     }
+
 
     /**
      * Retrieves a list of all public namespaces on the server.
      * @returns {Promise} with an array of namespaces.
      */
     getNamespaces() {
-        return getInstance()
-            .then(d2 => d2.Api.getApi())
-            .then(api => api.get([this.endPoint])
-                    .then((response) => {
-                        if (response && isArray(response)) {
-                            return response;
-                        }
-                        return new Error('No namespaces exist.');
-                    }));
+        return this.api.get([this.endPoint])
+            .then((response) => {
+                if (response && isArray(response)) {
+                    return response;
+                }
+                return new Error('No namespaces exist.');
+            });
     }
 
     /**
@@ -74,13 +73,14 @@ class DataStore {
      * @returns {Promise} with the response from the API.
      */
     delete(namespace) {
-        return getInstance()
-            .then(d2 => d2.Api.getApi())
-            .then(api => api.delete([this.endPoint, namespace].join('/n')));
+        return this.api.delete([this.endPoint, namespace].join('/n'));
     }
 
 }
 
 export const dataStore = (() => // eslint-disable-line
     new DataStore())();
+
+export default DataStore;
+
 
