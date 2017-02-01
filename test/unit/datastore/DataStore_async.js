@@ -61,7 +61,7 @@ describe('dataStore', () => {
         api
             .then(d2 => {
                 console.log(dataStore)
-                dataStore.open('asfaaaaaa').then(namespace => {
+                dataStore.open('asfaaaa').then(namespace => {
                   //  expect(namespace.keys).to.be.empty;
                     namespace.get('a').then(res => {
                         console.log(res)
@@ -69,6 +69,21 @@ describe('dataStore', () => {
                         done();
                     }).catch(e => done(e))
                     //  done();
+                }).catch(e => done(e))
+            })
+            .catch((e) => {
+                done(e);
+            });
+    });
+
+    it('should open an empty namespace if autoload is false', done => {
+        api
+            .then(d2 => {
+                console.log(dataStore)
+                dataStore.open('asfaaaa',false).then(namespace => {
+                    //  expect(namespace.keys).to.be.empty;
+                    expect(namespace.getKeys()).to.be.empty;
+                      done();
                 }).catch(e => done(e))
             })
             .catch((e) => {

@@ -1,84 +1,92 @@
-/* global FormData, XMLHttpRequest */
-/**
- * @module System
- *
- * @requires d2/system/SystemSettings
- */
-import Api from '../api/Api';
 import { isString, isArray } from '../lib/check';
 import { getInstance } from '../d2';
 import DataStoreNamespace from './DataStoreNamespace';
+
 /**
  * @class DataStore
  *
  * @description
- * Represents the dataStore that can be interacted with. There is a single instance of this pre-defined onto the d2
- * object after initialisation. This can be interacted with using its property objects to among other be used
- * to get and edit namespaces in the dataStore.
+ * Represents the dataStore that can be interacted with. This can be used to get instances of DataStoreNamespace, which
+ * can be used to interact with the namespace API.
  */
 class DataStore {
-    constructor(namespaces) {
+    constructor() {
         this.endPoint = 'dataStore';
     }
 
-    open(namespace) {
-        console.log("testf")
+    /**
+     * Retrieves a list of keys for the given namespace, and returns an instance of DataStoreNamespace that
+     * may be used to interact with this namespace. See {@link DataStoreNamespace}.
+     * @param namespace to open.
+     * @param autoLoad if true, autoloads the keys of the namespace loading the namespace. If false, an instance of
+     * the namespace is returned, and you may use the namespace directly.
+     * Note that you might want to use namespace.refresh(), to load namespaces.
+     * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with.
+     */
+    open(namespace, autoLoad = true) {
+        if (!isString(namespace)) {
+            throw new TypeError('A "namespace" parameter should be specified when calling open() on dataStore');
+        }
+
+        if (!autoLoad) {
+            return new Promise((resolve) => {
+                resolve(new DataStoreNamespace(namespace));
+            });
+        }
+
         return getInstance()
             .then(d2 => d2.Api.getApi())
-            .then(api => {
-
-                if (!isString(namespace)) {
-                    throw new TypeError('A "namespace" parameter should be specified when calling get() on dataStore');
-                }
-
+            .then((api) => {
                 return api.get([this.endPoint, namespace].join('/'))
                     .then((response) => {
                         if (response && isArray(response)) {
                             return new DataStoreNamespace(namespace, response);
                         }
-
                         return new Error('The requested namespace has no keys or does not exist.');
-                    }).catch(e => {
-                        if(e.httpStatusCode === 404) {
+                    }).catch((e) => {
+                        if (e.httpStatusCode === 404) {
+                            // If namespace does not exist, provide an instance of DataStoreNamespace
+                            // so it's possible to interact with the namespace.
                             return new DataStoreNamespace(namespace);
-                        } else {
-                            throw e;
                         }
+                        throw e;
                     });
             });
     }
 
+    /**
+     * Retrieves a list of all public namespaces on the server.
+     * @returns {Promise} with an array of namespaces.
+     */
     getNamespaces() {
         return getInstance()
             .then(d2 => d2.Api.getApi())
-            .then(api => {
+            .then((api) => {
                 return api.get([this.endPoint])
                     .then((response) => {
                         if (response && isArray(response)) {
-                           return response;
+                            return response;
                         }
                         return new Error('No namespaces exist.');
                     });
             });
     }
 
+    /**
+     * Deletes a namespace
+     * @param namespace to delete
+     * @returns {Promise} with the response from the API.
+     */
     delete(namespace) {
         return getInstance()
             .then(d2 => d2.Api.getApi())
-            .then(api => {
-                return api.delete([this.endPoint,namespace].join('/n'))
+            .then((api) => {
+                return api.delete([this.endPoint, namespace].join('/n'));
             });
     }
 
-    static dataStore() {
-        if(!DataStore.dataStore.dataStore) {
-            DataStore.dataStore.dataStore = new DataStore()
-        }
-        return DataStore.dataStore.dataStore;
-    }
 }
 
-export const dataStore = (() => {
-    return new DataStore();
-})()
+export const dataStore = (() =>
+    new DataStore())();
 
