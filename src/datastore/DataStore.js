@@ -78,9 +78,7 @@ class DataStore {
 
 }
 
-export const dataStore = (() => // eslint-disable-line
+export const dataStore = (() =>
     new DataStore())();
 
 export default DataStore;
-
-
