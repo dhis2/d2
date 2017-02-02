@@ -94,7 +94,7 @@ export default class CurrentUser {
 
         return this[models].organisationUnit.list(
             Object.assign(
-                { fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]' },
+                { fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]' },
                 listOptions,
                 { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] }
             )
@@ -106,7 +106,7 @@ export default class CurrentUser {
 
         return this[models].organisationUnit.list(
             Object.assign(
-                { fields: ':all,displayName,children[id,displayName,path,children::isNotEmpty]' },
+                { fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]' },
                 listOptions,
                 { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] }
             )

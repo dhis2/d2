@@ -1,13 +1,13 @@
 {
   "name": "d2",
-  "version": "26.1.4",
+  "version": "26.1.10",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
     "documentation": "documentation build src/* --github --output docs --format html",
     "coverage": "NODE_ENV=test nyc --require babel-register --require babel-polyfill mocha --reporter dot --require test/setup/node.js --recursive test/unit && nyc report --reporter=lcov",
     "validate": "npm ls --depth 0 || yarn list",
-    "test": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
+    "test": "TZ=UTC mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
     "e2e": "NODE_ENV=test karma start test/setup/karma.config.js",
     "test-watch": "npm run test -- --watch",
     "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
@@ -87,7 +87,8 @@
   },
   "pre-commit": [
     "lint",
-    "validate"
+    "validate",
+    "test"
   ],
   "nyc": {
     "sourceMap": false,
