@@ -29,6 +29,7 @@ class DataStoreNamespace {
 
     /**
      * Sets the value of given key to given value.
+     * This will also create a new namespace on the API-end if it does not exist.
      * If the key exists {@link update} will be called.
      * @param key in namespace to update.
      * @param value to be set

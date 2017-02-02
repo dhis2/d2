@@ -73,7 +73,7 @@ class DataStore {
      * @returns {Promise} with the response from the API.
      */
     delete(namespace) {
-        return this.api.delete([this.endPoint, namespace].join('/n'));
+        return this.api.delete([this.endPoint, namespace].join('/'));
     }
 
 }
