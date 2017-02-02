@@ -34,7 +34,7 @@ describe('DataStoreNamespace', () => {
 
     it('should contain a string of a namespace', () => {
         expect(namespace.namespace).to.be.a('string');
-    })
+    });
 
     describe('getKeys()', () => {
         beforeEach(() => {
@@ -68,7 +68,7 @@ describe('DataStoreNamespace', () => {
     });
 
     describe('set()', () => {
-        let valueData = "value";
+        const valueData = 'value';
         beforeEach(() => {
             namespace.update = sinon.spy(namespace.update);
         });
@@ -100,8 +100,17 @@ describe('DataStoreNamespace', () => {
         });
     });
 
+    describe('delete()', () => {
+        it('should call api.delete() with the correct url', (done) => {
+            namespace.delete('key1').then(() => {
+                expect(apiMock.delete).to.be.calledWith('dataStore/DHIS/key1');
+                done();
+            }).catch(e => done(e));
+        });
+    });
+
     describe('update()', () => {
-        let valueData = "value";
+        const valueData = 'value';
         beforeEach(() => {
         });
 
@@ -115,7 +124,7 @@ describe('DataStoreNamespace', () => {
     });
 
     describe('refresh()', () => {
-        let addKeys = keys.concat('additionalKey');
+        const addKeys = keys.concat('additionalKey');
         beforeEach(() => {
             apiMock.get = sinon.stub().returns(Promise.resolve(addKeys));
         });
@@ -128,8 +137,8 @@ describe('DataStoreNamespace', () => {
         });
         it('should return an array with the keys, and populate current namespace', (done) => {
             namespace.refresh().then((retKeys) => {
-                expect(retKeys).to.be.deep.equal(addKeys)
-                expect(namespace.getKeys()).to.be.deep.equal(addKeys)
+                expect(retKeys).to.be.deep.equal(addKeys);
+                expect(namespace.getKeys()).to.be.deep.equal(addKeys);
                 done();
             }).catch(e => done(e));
         });

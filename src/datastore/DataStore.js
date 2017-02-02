@@ -33,9 +33,9 @@ class DataStore {
      * Retrieves a list of keys for the given namespace, and returns an instance of DataStoreNamespace that
      * may be used to interact with this namespace. See {@link DataStoreNamespace}.
      * @param namespace to open.
-     * @param autoLoad if true, autoloads the keys of the namespace loading the namespace. If false, an instance of
-     * the namespace is returned, and you may use the namespace directly.
-     * Note that you might want to use namespace.refresh(), to load namespaces.
+     * @param autoLoad if true, autoloads the keys of the namespace before the namespace. If false, an instance of
+     * the namespace is returned. Default true
+     * namespace.refresh() can then be used to load keys on demand.
      * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with.
      */
     open(namespace, autoLoad = true) {
