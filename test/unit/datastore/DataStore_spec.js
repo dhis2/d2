@@ -57,8 +57,8 @@ describe('DataStore', () => {
         });
 
         it('should return an array of namespaces', (done) => {
-            dataStore.getNamespaces().then((namespaces) => {
-                expect(namespaces).to.be.deep.equal(namespaces);
+            dataStore.getNamespaces().then((namespaceRes) => {
+                expect(namespaces).to.be.deep.equal(namespaceRes);
                 done();
             }).catch(e => done(e));
         });

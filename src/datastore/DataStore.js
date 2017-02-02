@@ -8,7 +8,20 @@ import Api from '../api/Api';
  * @description
  * Represents the dataStore that can be interacted with. This can be used to get instances of DataStoreNamespace, which
  * can be used to interact with the namespace API.
+ *
+ * Example usage:
+ * ```js
+ * import init from 'd2';
+ * import { dataStore } from 'DataStore';
+ * init({baseUrl: '/dhis/api'})
+ *   .then((d2) => {
+ *     dataStore.open('namespace').then(namespace => {
+ *          namespace.get('key').then(value => console.log(value))
+ *      });
+ *   });
+ * ```
  */
+
 class DataStore {
     constructor(api = Api.getApi()) {
         this.endPoint = 'dataStore';
