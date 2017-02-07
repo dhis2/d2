@@ -15,11 +15,23 @@ class DataStoreNamespace {
     }
 
     /**
-     *
+     * If forceLoad is true, retrieves, updates and returns the keys
+     * from the remote API.
      * @returns {Array} of the internal list of keys for current namespace.
      */
-    getKeys() {
-        return this.keys;
+    getKeys(forceLoad = false) {
+        if(!forceLoad) {
+            return this.keys;
+        }
+
+        return this.api.get([this.endPoint, this.namespace].join('/'))
+            .then((response) => {
+                if (response && isArray(response)) {
+                    this.keys = response;
+                    return response;
+                }
+                return new Error('The requested namespace has no keys or does not exist.');
+            });
     }
 
     /**
@@ -63,23 +75,6 @@ class DataStoreNamespace {
      */
     update(key, value) {
         return this.api.update([this.endPoint, this.namespace, key].join('/'), value);
-    }
-
-    /**
-     * Refreshes the internal list of keys.
-     * Useful if the state of the API and the current instance
-     * have diverged.
-     * @returns {Promise} with the response array.
-     */
-    refresh() {
-        return this.api.get([this.endPoint, this.namespace].join('/'))
-            .then((response) => {
-                if (response && isArray(response)) {
-                    this.keys = response;
-                    return response;
-                }
-                return new Error('The requested namespace has no keys or does not exist.');
-            });
     }
 
 }

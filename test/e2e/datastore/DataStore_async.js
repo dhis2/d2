@@ -14,10 +14,10 @@ describe('dataStore', () => {
         api = init(initConfig);
     });
 
-    it('should return an array when you open a namespace', (done) => {
+    it('should return an array when you get a namespace', (done) => {
         api
             .then((d2) => {
-                dataStore.open('asf').then((namespace) => {
+                dataStore.get('asf').then((namespace) => {
                     expect(namespace.keys).to.be.an('array');
                     done();
                 }).catch(e => done(e));
@@ -30,7 +30,7 @@ describe('dataStore', () => {
     it('should return an array when you get namespaces', (done) => {
         api
             .then((d2) => {
-                dataStore.getNamespaces().then((namespaces) => {
+                dataStore.getAll().then((namespaces) => {
                     expect(namespaces).to.be.an('array');
                     done();
                 });
@@ -43,7 +43,7 @@ describe('dataStore', () => {
     it('should return an empty namespace if it does not exists', (done) => {
         api
             .then((d2) => {
-                dataStore.open('oasfioq').then((namespace) => {
+                dataStore.get('oasfioq').then((namespace) => {
                     expect(namespace.keys).to.be.empty;
                     done();
                 }).catch(e => done(e));
@@ -56,7 +56,7 @@ describe('dataStore', () => {
     it('should return a value if it exists', (done) => {
         api
             .then((d2) => {
-                dataStore.open('asfaaaa').then((namespace) => {
+                dataStore.get('asfaaaa').then((namespace) => {
                     namespace.get('a').then((res) => {
                         console.log(res);
                         expect(res).to.be.equal('2');
@@ -70,10 +70,10 @@ describe('dataStore', () => {
             });
     });
 
-    it('should open an empty namespace if autoload is false', (done) => {
+    it('should get an empty namespace if autoload is false', (done) => {
         api
             .then((d2) => {
-                dataStore.open('asfaaaa', false).then((namespace) => {
+                dataStore.get('asfaaaa', false).then((namespace) => {
                     expect(namespace.getKeys()).to.be.empty;
                     done();
                 }).catch(e => done(e));

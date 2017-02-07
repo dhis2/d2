@@ -123,24 +123,4 @@ describe('DataStoreNamespace', () => {
         });
     });
 
-    describe('refresh()', () => {
-        const addKeys = keys.concat('additionalKey');
-        beforeEach(() => {
-            apiMock.get = sinon.stub().returns(Promise.resolve(addKeys));
-        });
-
-        it('should call the api with correct url', (done) => {
-            namespace.refresh().then(() => {
-                expect(apiMock.get).to.be.calledWith(`dataStore/${namespace.namespace}`);
-                done();
-            }).catch(e => done(e));
-        });
-        it('should return an array with the keys, and populate current namespace', (done) => {
-            namespace.refresh().then((retKeys) => {
-                expect(retKeys).to.be.deep.equal(addKeys);
-                expect(namespace.getKeys()).to.be.deep.equal(addKeys);
-                done();
-            }).catch(e => done(e));
-        });
-    });
 });

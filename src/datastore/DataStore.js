@@ -15,7 +15,7 @@ import Api from '../api/Api';
  * import { dataStore } from 'DataStore';
  * init({baseUrl: '/dhis/api'})
  *   .then((d2) => {
- *     dataStore.open('namespace').then(namespace => {
+ *     dataStore.get('namespace').then(namespace => {
  *          namespace.get('key').then(value => console.log(value))
  *      });
  *   });
@@ -32,15 +32,15 @@ class DataStore {
     /**
      * Retrieves a list of keys for the given namespace, and returns an instance of DataStoreNamespace that
      * may be used to interact with this namespace. See {@link DataStoreNamespace}.
-     * @param namespace to open.
+     * @param namespace to get.
      * @param autoLoad if true, autoloads the keys of the namespace before the namespace. If false, an instance of
      * the namespace is returned. Default true
      * namespace.refresh() can then be used to load keys on demand.
      * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with.
      */
-    open(namespace, autoLoad = true) {
+    get(namespace, autoLoad = true) {
         if (!isString(namespace)) {
-            throw new TypeError('A "namespace" parameter should be specified when calling open() on dataStore');
+            throw new TypeError('A "namespace" parameter should be specified when calling get() on dataStore');
         }
 
         if (!autoLoad) {
@@ -70,7 +70,7 @@ class DataStore {
      * Retrieves a list of all public namespaces on the server.
      * @returns {Promise} with an array of namespaces.
      */
-    getNamespaces() {
+    getAll() {
         return this.api.get([this.endPoint])
             .then((response) => {
                 if (response && isArray(response)) {
