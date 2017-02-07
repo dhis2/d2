@@ -37,9 +37,11 @@ describe('DataStore', () => {
         it('should return a datastorenamespace with keys if it exists', (done) => {
             apiMock.get = sinon.stub().returns(Promise.resolve(keys));
             dataStore.get('DHIS').then((namespace) => {
-                expect(namespace.getKeys()).to.deep.equal(keys);
-                expect(apiMock.get).calledOnce;
-                done();
+                namespace.getKeys().then((res) => {
+                    expect(res).to.deep.equal(keys);
+                    expect(apiMock.get).to.be.calledOnce;
+                    done();
+                }).catch(e => done(e));
             }).catch(e => done(e));
         });
 

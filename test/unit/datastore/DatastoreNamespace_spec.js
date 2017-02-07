@@ -1,4 +1,3 @@
-import DataStore from '../../../src/datastore/DataStore';
 import DataStoreNamespace from '../../../src/datastore/DataStoreNamespace';
 import Api from '../../../src/api/Api';
 
@@ -37,13 +36,33 @@ describe('DataStoreNamespace', () => {
     });
 
     describe('getKeys()', () => {
+        const refreshedKeys = keys.concat('newkey');
         beforeEach(() => {
-            apiMock.get = sinon.stub().returns(Promise.resolve(keys));
+            apiMock.get = sinon.stub().returns(Promise.resolve(refreshedKeys));
         });
 
-        it('should return an array of keys', () => {
-            expect(namespace.keys).to.be.an('array');
-            expect(namespace.keys).to.be.deep.equal(keys);
+        it('should return an array of keys', (done) => {
+            namespace.getKeys().then((res) => {
+                expect(res).to.be.deep.equal(keys);
+                done();
+            }).catch(e => done(e));
+        });
+
+        it('should not call remote api if forceload is false or not present', (done) => {
+            namespace.getKeys().then((res) => {
+                expect(res).to.be.deep.equal(keys);
+                expect(apiMock.get).to.not.be.called;
+                done();
+            }).catch(e => done(e));
+        });
+
+        it('should call remote api if forceload is true and update internal array', (done) => {
+            namespace.getKeys(true).then((res) => {
+                expect(res).to.be.deep.equal(refreshedKeys);
+                expect(namespace.keys).to.be.deep.equal(refreshedKeys);
+                expect(apiMock.get).to.be.calledWith('dataStore/DHIS');
+                done();
+            }).catch(e => done(e));
         });
     });
 
@@ -111,8 +130,6 @@ describe('DataStoreNamespace', () => {
 
     describe('update()', () => {
         const valueData = 'value';
-        beforeEach(() => {
-        });
 
         it('should call the api with correct url', (done) => {
             const setKey = 'DHIS';
@@ -122,5 +139,4 @@ describe('DataStoreNamespace', () => {
             }).catch(e => done(e));
         });
     });
-
 });

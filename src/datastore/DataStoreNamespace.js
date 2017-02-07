@@ -15,13 +15,15 @@ class DataStoreNamespace {
     }
 
     /**
-     * If forceLoad is true, retrieves, updates and returns the keys
-     * from the remote API.
-     * @returns {Array} of the internal list of keys for current namespace.
+     * Get the keys for current namespace.
+     *
+     * @param forceLoad if true, retrieves and updates internal keys with
+     * response from API. Default false
+     * @returns {Promise} of the internal list of keys for current namespace.
      */
     getKeys(forceLoad = false) {
         if (!forceLoad) {
-            return this.keys;
+            return Promise.resolve(this.keys);
         }
 
         return this.api.get([this.endPoint, this.namespace].join('/'))
@@ -64,6 +66,10 @@ class DataStoreNamespace {
      * @param key to delete.
      */
     delete(key) {
+        const ind = this.keys.indexOf(key);
+        if (ind > -1) {
+            this.keys.splice(ind, 1);
+        }
         return this.api.delete([this.endPoint, this.namespace, key].join('/'));
     }
 
