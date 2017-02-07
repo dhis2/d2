@@ -20,7 +20,7 @@ class DataStoreNamespace {
      * @returns {Array} of the internal list of keys for current namespace.
      */
     getKeys(forceLoad = false) {
-        if(!forceLoad) {
+        if (!forceLoad) {
             return this.keys;
         }
 
