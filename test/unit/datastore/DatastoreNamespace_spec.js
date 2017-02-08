@@ -86,6 +86,28 @@ describe('DataStoreNamespace', () => {
         });
     });
 
+    describe('getMetaData()', () => {
+        const key = 'key1';
+        const metaObj = { created: '2017-01-22T14:15:14.176', lastUpdated: '2017-01-22T14:15:14.176', externalAccess: false, namespace: 'DHIS', key: 'key1', value: '{}', id: 'B6SZPkuigc0' };
+        beforeEach(() => {
+            apiMock.get = sinon.stub().returns(Promise.resolve(metaObj));
+        });
+
+        it('should retrieve an object with metaData', (done) => {
+            namespace.getMetaData(key).then((res) => {
+                expect(res).to.be.equal(metaObj);
+                done();
+            }).catch(e => done(e));
+        });
+
+        it('should call api.get() with correct parameters', (done) => {
+            namespace.getMetaData(key).then((res) => {
+                expect(apiMock.get).to.be.calledWith(`dataStore/DHIS/${key}/metaData`);
+                done();
+            }).catch(e => done(e));
+        });
+    });
+
     describe('set()', () => {
         const valueData = 'value';
         beforeEach(() => {

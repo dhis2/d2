@@ -46,6 +46,14 @@ class DataStoreNamespace {
     }
 
     /**
+     * Retrieves metaData of given key in current namespace.
+     * @param key to reterieve metaData for
+     */
+    getMetaData(key) {
+        return this.api.get([this.endPoint, this.namespace, key, 'metaData'].join('/'));
+    }
+
+    /**
      * Sets the value of given key to given value.
      * This will also create a new namespace on the API-end if it does not exist.
      * If the key exists {@link update} will be called.
