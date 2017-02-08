@@ -126,6 +126,14 @@ describe('DataStoreNamespace', () => {
                 done();
             }).catch(e => done(e));
         });
+
+        it('should delete key from internal array', (done) => {
+            const orgLen = namespace.keys.length;
+            namespace.delete('key1').then(() => {
+                expect(namespace.keys.length).to.be.equal(orgLen - 1);
+                done();
+            }).catch(e => done(e));
+        });
     });
 
     describe('update()', () => {

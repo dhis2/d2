@@ -68,7 +68,7 @@ class DataStoreNamespace {
     delete(key) {
         const ind = this.keys.indexOf(key);
         if (ind > -1) {
-            this.keys.splice(ind, 1);
+            this.keys = [...this.keys.slice(0, ind), ...this.keys.slice(ind + 1)];
         }
         return this.api.delete([this.endPoint, this.namespace, key].join('/'));
     }
