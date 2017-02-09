@@ -8,6 +8,7 @@ import I18n from './i18n/I18n';
 import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
 import { fieldsForSchemas } from './model/config';
+import { dataStore } from './datastore/DataStore';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -121,6 +122,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
         Api: ApiClass,
         system: System.getSystem(),
         i18n: I18n.getI18n(),
+        dataStore,
     };
 
     // Process the config in a the config class to keep all config calls together.
