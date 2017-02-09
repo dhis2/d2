@@ -11,3 +11,10 @@ global.expect = global.chai.expect;
 global.fetch = require('node-fetch');
 global.Headers = fetch.Headers;
 global.FormData = require('form-data');
+
+process.on('unhandledRejection', (reason, p) => {
+    const e = new Error();
+    console.log('\n\n================================================');
+    console.log('Somebody made a boo-boo and forgot to clean up at:', p, 'Because:', reason);
+    console.log('================================================\n');
+});

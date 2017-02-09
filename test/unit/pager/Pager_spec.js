@@ -133,11 +133,12 @@ describe('Pager', () => {
                 expect(modelDefinition.list).to.be.called;
             });
 
-            it('should only ask for a new list if the pager has a nextPage property', () => {
+            it('should only ask for a new list if the pager has a nextPage property', (done) => {
                 delete pager.nextPage;
-                pager.getNextPage();
-
-                expect(modelDefinition.list).to.not.be.called;
+                pager.getNextPage().catch(() => {
+                    expect(modelDefinition.list).to.not.be.called;
+                    done();
+                });
             });
 
             it('should return a rejected promise if there are no more new pages', (done) => {
@@ -162,8 +163,10 @@ describe('Pager', () => {
                 expect(pager.getPreviousPage).to.be.instanceof(Function);
             });
 
-            it('should return a promise', () => {
-                expect(pager.getPreviousPage()).to.be.instanceof(Promise);
+            it('should return a promise', (done) => {
+                pager.getPreviousPage()
+                    .then(() => done())
+                    .catch(() => done());
             });
 
             it('should ask for the previous page if the prevPage property is set', () => {
@@ -175,10 +178,10 @@ describe('Pager', () => {
                 expect(modelDefinition.list).to.be.called;
             });
 
-            it('should not ask for a new list if there is no previous page', () => {
-                pager.getPreviousPage();
-
+            it('should not ask for a new list if there is no previous page', (done) => {
+                expect(() => pager.getPreviousPage()).to.throw;
                 expect(modelDefinition.list).to.not.be.called;
+                done();
             });
 
             it('should return a rejected promise if there are no more previous pages', (done) => {

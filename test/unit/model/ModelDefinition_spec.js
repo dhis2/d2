@@ -1183,16 +1183,18 @@ describe('ModelDefinition subsclasses', () => {
             );
         });
 
-        it('should use the special root orgunit id when fetching lists', () => {
-            organisationUnitModelDefinition.list({ root: 'myRootId' });
-
-            expect(getOnApiStub).to.be.calledWith('organisationUnits/myRootId', { fields: ':all' });
+        it('should use the special root orgunit id when fetching lists', (done) => {
+            organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
+                expect(getOnApiStub).to.be.calledWith('organisationUnits/myRootId', { fields: ':all' });
+                done();
+            });
         });
 
-        it('should handle list queries without special `root` parameters', () => {
-            organisationUnitModelDefinition.list();
-
-            expect(getOnApiStub).to.be.calledWith('organisationUnits', { fields: ':all' });
+        it('should handle list queries without special `root` parameters', (done) => {
+            organisationUnitModelDefinition.list().catch(() => {
+                expect(getOnApiStub).to.be.calledWith('organisationUnits', { fields: ':all' });
+                done();
+            });
         })
     });
 });
