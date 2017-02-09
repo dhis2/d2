@@ -51,6 +51,31 @@ describe('DataStore', () => {
                 done();
             }).catch(e => done(e));
         });
+
+        it('should throw an error when no response', (done) => {
+            apiMock.get = sinon.stub().returns(Promise.resolve(null));
+            dataStore.get('DHIS').catch(e => {
+                expect(e.message).to.equal('The requested namespace has no keys or does not exist.');
+                done();
+            });
+        });
+
+        it('should return an instance of Datastorenamespace if it does not exist on server', (done) => {
+            apiMock.get = sinon.stub().returns(Promise.reject({httpStatusCode: 404}));
+            dataStore.get('DHIS').then(namespace => {
+                    expect(namespace).to.be.instanceOf(DataStoreNamespace);
+                    done();
+            }).catch(e => done(e));
+
+            it('should throw when error is not 404', (done) => {
+                let error = {httpStatusCode: 500};
+                apiMock.get = sinon.stub().returns(Promise.reject(error));
+                dataStore.get('DHIS').catch(e => {
+                    expect(e).to.deep.equal(error);
+                    done();
+                });
+            });
+        });
     });
 
     describe('getAll()', () => {

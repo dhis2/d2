@@ -1,4 +1,4 @@
-import { isString, isArray } from '../lib/check';
+import { isArray } from '../lib/check';
 import DataStoreNamespace from './DataStoreNamespace';
 import Api from '../api/Api';
 
@@ -44,10 +44,6 @@ class DataStore {
      * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true) {
-        if (!isString(namespace)) {
-            throw new TypeError('A "namespace" parameter should be specified when calling get() on dataStore');
-        }
-
         if (!autoLoad) {
             return new Promise((resolve) => {
                 resolve(new DataStoreNamespace(namespace));
@@ -59,7 +55,7 @@ class DataStore {
                         if (response && isArray(response)) {
                             return new DataStoreNamespace(namespace, response);
                         }
-                        return new Error('The requested namespace has no keys or does not exist.');
+                        throw new Error('The requested namespace has no keys or does not exist.');
                     }).catch((e) => {
                         if (e.httpStatusCode === 404) {
                             // If namespace does not exist, provide an instance of DataStoreNamespace
@@ -76,7 +72,7 @@ class DataStore {
      * @returns {Promise} with an array of namespaces.
      */
     getAll() {
-        return this.api.get([this.endPoint])
+        return this.api.get(this.endPoint)
             .then((response) => {
                 if (response && isArray(response)) {
                     return response;
