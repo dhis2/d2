@@ -1,6 +1,16 @@
 import Api from '../api/Api';
 import { isString, isArray } from '../lib/check';
 
+/**
+ * @class DataStoreNamespace
+ *
+ * @description
+ * Represents a namespace in the dataStore that can be used to be used to interact with
+ * the remote API.
+ *
+ * @property {Array} keys an array of the loaded keys.
+ * @property {String} namespace Name of the namespace as on the server.
+ */
 class DataStoreNamespace {
 
     constructor(namespace, keys, api = Api.getApi()) {
@@ -8,7 +18,6 @@ class DataStoreNamespace {
             throw new Error('DataStoreNamespaces must be called with a string to identify the Namespace');
         }
         this.api = api;
-
         this.namespace = namespace;
         this.keys = keys || [];
         this.endPoint = 'dataStore';
@@ -47,7 +56,7 @@ class DataStoreNamespace {
 
     /**
      * Retrieves metaData of given key in current namespace.
-     * @param key to reterieve metaData for
+     * @param key to retrieve metaData for
      */
     getMetaData(key) {
         return this.api.get([this.endPoint, this.namespace, key, 'metaData'].join('/'));
@@ -66,7 +75,9 @@ class DataStoreNamespace {
         if (!overrideUpdate && this.keys.includes(key)) {
             return this.update(key, value);
         }
-        return this.api.post([this.endPoint, this.namespace, key].join('/'), value);
+        return this.api.post([this.endPoint, this.namespace, key].join('/'), value).then(() => {
+            this.keys = [...this.keys, key];
+        });
     }
 
     /**
@@ -85,7 +96,7 @@ class DataStoreNamespace {
      * Updates a key with given value.
      * @param key to update
      * @param value to update to
-     * @returns {Promise}
+     * @returns {Promise} of return value from API-call.
      */
     update(key, value) {
         return this.api.update([this.endPoint, this.namespace, key].join('/'), value);
