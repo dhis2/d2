@@ -81,7 +81,7 @@ class DataStore {
                 if (response && isArray(response)) {
                     return response;
                 }
-                return new Error('No namespaces exist.');
+                throw new Error('No namespaces exist.');
             });
     }
 

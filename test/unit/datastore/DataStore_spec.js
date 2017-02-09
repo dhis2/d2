@@ -64,6 +64,16 @@ describe('DataStore', () => {
                 done();
             }).catch(e => done(e));
         });
+
+        it('should throw an error when there is no response', (done) => {
+            apiMock.get = sinon.stub().returns(Promise.resolve(null));
+
+            dataStore.getAll()
+                .catch((namespaceRes) => {
+                    expect(namespaceRes.message).to.equal('No namespaces exist.');
+                    done();
+                });
+        });
     });
 
     describe('delete()', () => {
