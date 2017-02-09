@@ -131,11 +131,20 @@ describe('DataStoreNamespace', () => {
             }).catch(e => done(e));
         });
 
-        it('should post if the key exists and override is true', (done) => {
+        it('should call post if the key exists and override is true', (done) => {
             const setKey = 'key1';
             namespace.set(setKey, valueData, true).then(() => {
                 expect(namespace.update).not.called;
                 expect(apiMock.post).to.be.calledWith(`dataStore/DHIS/${setKey}`, valueData);
+                done();
+            }).catch(e => done(e));
+        });
+
+        it('should add key to internal array', (done) => {
+            const arr = namespace.keys;
+            const key = 'key';
+            namespace.set('key', valueData).then(() => {
+                expect(namespace.keys).to.be.deep.equals(arr.concat(key));
                 done();
             }).catch(e => done(e));
         });
