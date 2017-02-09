@@ -79,7 +79,6 @@ class Filter {
 }
 
 // Add the filters to the Filter prototype
-// TODO: Change to for..of. Currently would break e2e tests because of polyfill
 Object.keys(FILTER_COMPARATORS).forEach((filter) => {
     Object.defineProperty(Filter.prototype, filter, {
         value: function filterGetter(filterValue) {
