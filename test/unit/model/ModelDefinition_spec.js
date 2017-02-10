@@ -1,21 +1,13 @@
 let proxyquire = require('proxyquire').noCallThru();
 
-function ModelCollection() {}
-ModelCollection.create = sinon.stub().returns(new ModelCollection());
-
-function ModelCollectionProperty() {}
-ModelCollectionProperty.create = sinon.stub().returns(new ModelCollectionProperty());
-
-proxyquire('../../../src/model/ModelDefinition', {
-    './ModelCollection': ModelCollection,
-    './ModelCollectionProperty': ModelCollectionProperty,
-});
-
 import fixtures from '../../fixtures/fixtures';
 import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
 import Model from '../../../src/model/Model';
 import ModelDefinitions from '../../../src/model/ModelDefinitions';
 // import ModelDefinition from '../../../src/model/ModelDefinition';
+
+import ModelCollection from '../../../src/model/ModelCollection';
+import ModelCollectionProperty from '../../../src/model/ModelCollectionProperty';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('../../../src/model/ModelDefinition').default;
@@ -23,13 +15,22 @@ let ModelDefinition = require('../../../src/model/ModelDefinition').default;
 describe('ModelDefinition', () => {
     'use strict';
 
-    var modelDefinition;
+    let modelDefinition;
+    let mockModelCollectionCreate;
+    let mockModelCollectionPropertyCreate;
 
     beforeEach(() => {
-        ModelCollection.create.reset();
-        ModelCollectionProperty.create.reset();
-
         modelDefinition = new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement', plural: 'dataElements' });
+
+        mockModelCollectionCreate = sinon.stub(ModelCollection, 'create');
+        mockModelCollectionCreate.returns(new ModelCollection(modelDefinition, [], {}));
+        mockModelCollectionPropertyCreate = sinon.stub(ModelCollectionProperty, 'create');
+        mockModelCollectionPropertyCreate.returns(new ModelCollectionProperty({}, modelDefinition, []));
+    });
+
+    afterEach(() => {
+        ModelCollection.create.restore();
+        ModelCollectionProperty.create.restore();
     });
 
     it('should not be allowed to be called without new', () => {
