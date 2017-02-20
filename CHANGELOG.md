@@ -1,5 +1,14 @@
 # D2 Changelog
 
+## 27.0.0-0
+###### _February 20th 2016_
+
+**Breaking changes:**
+
+- `d2.currentUser.uiLocale` has been removed, `d2.currentUser.userSettings.get` should be used instead.
+- `userSettings.get` will now now always return a Promise (This therefore also applies to `d2.currentUser.userSettings.get`)
+- `systemSettings.get` will now always return a Promise.
+
 ## 25.2.0
 ###### _November 18th 2016_
 
