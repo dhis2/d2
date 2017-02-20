@@ -54,8 +54,8 @@ class UserSettings {
      * ```
      */
     get(key) {
-        if (this.settings) {
-            return this.settings[key];
+        if (this.settings && this.settings[key]) {
+            return Promise.resolve(this.settings[key]);
         }
 
         function processValue(value) {
