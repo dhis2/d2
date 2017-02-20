@@ -115,16 +115,24 @@ describe('userSettings.CurrentUser', () => {
                 });
         });
 
-        it('should use the cache', done => {
+        it('should use the cache', () => {
             apiGet.returns(Promise.resolve(userSettingsFixture));
 
-            userSettings.all().then(() => userSettings.get('keyUiLocale'))
+            return userSettings.all()
+                .then(() => userSettings.get('keyUiLocale'))
                 .then(value => {
                     expect(apiGet.callCount).to.equal(1);
                     expect(value).to.equal(userSettingsFixture.keyUiLocale);
-                    done();
-                })
-                .catch(err => done(err));
+                });
+        });
+
+        it('should also return a promise when serving cached values', () => {
+            apiGet.returns(Promise.resolve(userSettingsFixture));
+
+            return userSettings.all()
+                .then(() => {
+                    expect(userSettings.get('keyUiLocale')).to.be.instanceof(Promise);
+                });
         });
     });
 

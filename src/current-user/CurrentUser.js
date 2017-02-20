@@ -161,13 +161,6 @@ export default class CurrentUser {
         return this.checkAuthorityForType(authTypes.CREATE, modelType);
     }
 
-    get uiLocale() {
-        if (this.userSettings && this.userSettings.keyUiLocale) {
-            return this.userSettings.keyUiLocale;
-        }
-        return 'en';
-    }
-
     static create(userData, authorities, modelDefinitions, userSettings) {
         return new CurrentUser(
             userData,

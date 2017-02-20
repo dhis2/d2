@@ -143,6 +143,15 @@ describe('settings.System', () => {
                 })
                 .catch(err => done(err));
         });
+
+        it('should also return a promise when serving cached values', () => {
+            systemSettings.api.get.returns(Promise.resolve(settingsFixture));
+
+            return systemSettings.all()
+                .then(() => {
+                    expect(systemSettings.get('keyLastSuccessfulResourceTablesUpdate')).to.be.instanceof(Promise);
+                });
+        });
     });
 
     describe('.set', () => {

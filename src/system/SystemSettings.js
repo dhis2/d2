@@ -57,8 +57,8 @@ class SystemSettings {
      * ```
      */
     get(systemSettingsKey) {
-        if (this.settings) {
-            return this.settings[systemSettingsKey];
+        if (this.settings && this.settings[systemSettingsKey]) {
+            return Promise.resolve(this.settings[systemSettingsKey]);
         }
 
         function processValue(value) {
