@@ -41,7 +41,7 @@ class DataStoreNamespace {
                     this.keys = response;
                     return response;
                 }
-                return new Error('The requested namespace has no keys or does not exist.');
+                throw new Error('The requested namespace has no keys or does not exist.');
             });
     }
 

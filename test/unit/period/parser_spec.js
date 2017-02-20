@@ -63,7 +63,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
             doPeriodTest('20171231');
             doPeriodTest('20040229');
         });
-        it('should handle Daily periods in French');
+        //it('should handle Daily periods in French');
         it('should accept nearly valid Daily periods', () => {
             doPeriodTest('20170229');
         });
@@ -77,7 +77,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
             doPeriodTest('2017W4');
             doPeriodTest('1981W37');
         });
-        it('should handle Weekly periods in French');
+        // it('should handle Weekly periods in French');
         it('should handle Week 1 that starts the previous year', () => {
             doPeriodTest('2015W1');
             doPeriodTest('1981W1');
@@ -106,7 +106,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
         it('should handle valid Monthly periods', () => {
             doPeriodTest('198103');
         });
-        it('should handle Monthly periods in French');
+        // it('should handle Monthly periods in French');
         it('should handle February properly in leap years', () => {
             doPeriodTest('198002');
         });
@@ -126,7 +126,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
             doPeriodTest('198105B');
             doPeriodTest('198106B');
         });
-        it('should handle BiMonthly periods in French');
+        // it('should handle BiMonthly periods in French');
         it('should not accept invalid BiMonthly periods without leading zeros', () => {
             expect(() => getPeriodFromPeriodId('19812B')).to.throw();
         });
@@ -144,7 +144,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
             doPeriodTest('1981Q3');
             doPeriodTest('1981Q4');
         });
-        it('should handle Quarters in French');
+        // it('should handle Quarters in French');
         it('should not accept Quarters below 1 or above 4', () => {
             expect(() => getPeriodFromPeriodId('1981Q0')).to.throw();
             expect(() => getPeriodFromPeriodId('2017Q5')).to.throw();
@@ -155,7 +155,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
             doPeriodTest('1981S1');
             doPeriodTest('1981S2');
         });
-        it('should handle SixMonthly periods in French');
+        // it('should handle SixMonthly periods in French');
         it('should not accept SixMonthly periods below 1 or above 2', () => {
             expect(() => getPeriodFromPeriodId('1981S0')).to.throw();
             expect(() => getPeriodFromPeriodId('1981S3')).to.throw();
@@ -166,7 +166,7 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
             doPeriodTest('1981AprilS1');
             doPeriodTest('1981AprilS2');
         });
-        it('should handle SixMonthlyApril periods in French');
+        // it('should handle SixMonthlyApril periods in French');
         it('should not accept SixMonthlyApril periods below 1 or above 2', () => {
             expect(() => getPeriodFromPeriodId('1981AprilS0')).to.throw();
             expect(() => getPeriodFromPeriodId('1981AprilS3')).to.throw();
@@ -182,31 +182,31 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
         it('should handle FinancialApril periods', () => {
             doPeriodTest('1981April');
         });
-        xit('should handle FinancialApril periods in French', () => {
-            expect(getPeriodFromPeriodId('1981April', 'fr')).to.deep.equal(
-                makePeriodFixture('1981April', 'avril 1981 - march 1982', '1981-04-01', '1982-03-31')
-            );
-        });
+        // xit('should handle FinancialApril periods in French', () => {
+        //     expect(getPeriodFromPeriodId('1981April', 'fr')).to.deep.equal(
+        //         makePeriodFixture('1981April', 'avril 1981 - march 1982', '1981-04-01', '1982-03-31')
+        //     );
+        // });
     });
     describe('for FinancialJuly periods', () => {
         it('should handle FinancialJuly periods', () => {
             doPeriodTest('1981July');
         });
-        xit('should handle FinancialJuly periods in French', () => {
-            expect(getPeriodFromPeriodId('1981July', 'fr')).to.deep.equal(
-                makePeriodFixture('1981July', 'juilet 1981 - juin 1982', '1981-07-01', '1982-06-30')
-            );
-        });
+        // xit('should handle FinancialJuly periods in French', () => {
+        //     expect(getPeriodFromPeriodId('1981July', 'fr')).to.deep.equal(
+        //         makePeriodFixture('1981July', 'juilet 1981 - juin 1982', '1981-07-01', '1982-06-30')
+        //     );
+        // });
     });
     describe('for FinancialOct periods', () => {
         it('should handle FinancialOct periods', () => {
             doPeriodTest('1981Oct');
         });
-        xit('should handle FinancialOct periods in French', () => {
-            expect(getPeriodFromPeriodId('1981Oct', 'fr')).to.deep.equal(
-                makePeriodFixture('1981Oct', 'octobre 1981 - septembre 1982', '1981-10-01', '1982-09-30')
-            );
-        });
+        // xit('should handle FinancialOct periods in French', () => {
+        //     expect(getPeriodFromPeriodId('1981Oct', 'fr')).to.deep.equal(
+        //         makePeriodFixture('1981Oct', 'octobre 1981 - septembre 1982', '1981-10-01', '1982-09-30')
+        //     );
+        // });
     });
     describe('for invalid periods', () => {
         it('should not accept invalid periods', () => {

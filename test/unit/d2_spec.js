@@ -369,6 +369,7 @@ describe('D2', () => {
         });
 
         // FIXME: Test fails because the the ModelDefinitions class is a singleton
+/*
         xit('should create a ModelDefinition for each of the schemas', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
@@ -378,7 +379,9 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+*/
 
+/*
         xit('should call the ModelDefinition.createFromSchema with the schema', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
@@ -387,6 +390,7 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+*/
 
         it('should add the ModelDefinitions to the models list', (done) => {
             d2.init(undefined, apiMock)
@@ -451,6 +455,7 @@ describe('D2', () => {
         });
 
         // FIXME: Impossible to test due to the global firstRun flag
+/*
         xit('should preset the baseUrl from the config', (done) => {
             d2.config.baseUrl = '/dhis/api';
 
@@ -461,6 +466,7 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+*/
 
         it('should use the default base url when the set baseUrl is not valid', (done) => {
             d2.config.baseUrl = undefined;

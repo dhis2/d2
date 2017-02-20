@@ -1,3 +1,4 @@
+import Api from '../api/Api';
 import ModelCollection from './ModelCollection';
 
 
@@ -17,13 +18,14 @@ class ModelCollectionProperty extends ModelCollection {
      * @param {Model} parentModel The `Model` of the parent of this `ModelCollectionProperty`
      * @param {ModelDefinition} modelDefinition The `ModelDefinition` that this `ModelCollection` property is for
      * @param {Model[]} values Initial values that should be added to the collection property
+     * @param {Api} api The class to use for API calls
      *
      * @description
      *
      * Creates a new `ModelCollectionProperty` object. This is a subclass of `ModelCollection`, which adds logic
      * for handling adding and removing elements to the collection and saving the changes to the API.
      */
-    constructor(parentModel, modelDefinition, values) {
+    constructor(parentModel, modelDefinition, values, api) {
         super(modelDefinition, values, undefined);
 
         // Dirty bit
@@ -31,6 +33,8 @@ class ModelCollectionProperty extends ModelCollection {
         // Keep track of added and removed elements
         this.added = new Set();
         this.removed = new Set();
+
+        this.api = api;
 
         // Store the parent model of this collection so we can construct the URI for API calls
         this.parentModel = parentModel;
@@ -47,7 +51,6 @@ class ModelCollectionProperty extends ModelCollection {
      * what, if any, changes that have been made to the collection.
      */
     add(value) {
-        // TODO: Allow adding plain ID's that aren't Model instances maybe?
         if (this.valuesContainerMap.has(value.id)) {
             return this;
         }
@@ -76,7 +79,6 @@ class ModelCollectionProperty extends ModelCollection {
      * made to the collection.
      */
     remove(value) {
-        // TODO: Allow removing plain ID's that aren't Model instances maybe?
         ModelCollection.throwIfContainsOtherThanModelObjects([value]);
         ModelCollection.throwIfContainsModelWithoutUid([value]);
 
@@ -142,18 +144,15 @@ class ModelCollectionProperty extends ModelCollection {
             return Promise.resolve({});
         }
 
-        const api = this.modelDefinition.api;
         const url = [this.parentModel.href, this.modelDefinition.plural].join('/');
         const data = {
             additions: Array.from(this.added).map(id => ({ id })),
             deletions: Array.from(this.removed).map(id => ({ id })),
         };
 
-        return api.post(url, data)
+        return this.api.post(url, data)
             .then(() => {
-                this.added = new Set();
-                this.removed = new Set();
-                this.updateDirty();
+                this.resetDirtyState();
                 return Promise.resolve({});
             })
             .catch(err => Promise.reject('Failed to alter collection:', err));
@@ -171,7 +170,7 @@ class ModelCollectionProperty extends ModelCollection {
      * See `ModelCollectionProperty.constructor`.
      */
     static create(parentModel, modelDefinition, values) {
-        return new ModelCollectionProperty(parentModel, modelDefinition, values);
+        return new ModelCollectionProperty(parentModel, modelDefinition, values, Api.getApi());
     }
 }
 
