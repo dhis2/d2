@@ -1,5 +1,6 @@
 import '../setup/setup.js'; // Import for global beforeEach / afterEach
 import fixtures from '../fixtures/fixtures';
+import DataStore from '../../src/datastore/DataStore';
 
 // TODO: The Config class should probably be mocked
 describe('D2', () => {
@@ -428,6 +429,15 @@ describe('D2', () => {
                     expect(apiMock.get).to.have.been.calledWith('schemas/user', {
                         fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey]',
                     });
+                });
+        });
+    });
+
+    describe('DataStore', () => {
+        it('should have a dataStore object on the instance', () => {
+            return d2.init(undefined, apiMock)
+                .then(d2Instance => {
+                    expect(d2Instance.dataStore).to.be.instanceof(DataStore);
                 });
         });
     });

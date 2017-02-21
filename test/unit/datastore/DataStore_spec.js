@@ -114,4 +114,14 @@ describe('DataStore', () => {
             }).catch(e => done(e));
         });
     });
+
+    describe('getDataStore', () => {
+        it('should return an instance of DataStore', () => {
+            expect(DataStore.getDataStore()).to.be.instanceof(DataStore);
+        });
+
+        it('should return the same object when called twice', () => {
+            expect(DataStore.getDataStore()).to.equal(DataStore.getDataStore());
+        });
+    });
 });
