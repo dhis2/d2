@@ -7,10 +7,9 @@ global.chai.use(require('chai-as-promised'));
 
 global.expect = global.chai.expect;
 
-// fetch and FormData for node
+// fetch for node
 global.fetch = require('node-fetch');
 global.Headers = fetch.Headers;
-global.FormData = require('form-data');
 
 process.on('unhandledRejection', (reason, p) => {
     const e = new Error();
