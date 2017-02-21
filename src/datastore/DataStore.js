@@ -90,9 +90,23 @@ class DataStore {
         return this.api.delete([this.endPoint, namespace].join('/'));
     }
 
-}
+    /**
+     * @method getDataStore
+     * @static
+     *
+     * @returns {DataStore} Object with the dataStore interaction properties
+     *
+     * @description
+     * Get a new instance of the dataStore object. This will function as a singleton, when a DataStore object has been created
+     * when requesting getDataStore again the original version will be returned.
+     */
+    static getDataStore() {
+        if (!DataStore.getDataStore.dataStore) {
+            DataStore.getDataStore.dataStore = new DataStore();
+        }
 
-export const dataStore = (() =>
-    new DataStore())();
+        return DataStore.getDataStore.dataStore;
+    }
+}
 
 export default DataStore;
