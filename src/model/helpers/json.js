@@ -8,6 +8,8 @@ const NON_MODEL_COLLECTIONS = new Set([
     'redirectUris',
     'dataSetElements',
     'dataInputPeriods',
+    'userGroupAccesses',
+    'userAccesses',
 ]);
 
 function isPlainValue(collection) {
@@ -53,15 +55,17 @@ export function getJSONForProperties(model, properties) {
                 return;
             }
 
+            const values = Array.isArray(model.dataValues[propertyName]) ?
+                model.dataValues[propertyName] : Array.from(model.dataValues[propertyName].values());
+
             // Transform an object collection to an array of objects with id properties
-            objectToSave[propertyName] = Array
-                .from(model.dataValues[propertyName].values())
+            objectToSave[propertyName] = values
                 .filter(value => value.id)
                 .map((childModel) => {
                     // Legends can be saved as part of the LegendSet object.
                     // To make this work properly we will return all of the properties for the items in the collection
                     // instead of just the `id` fields
-                    if (model.modelDefinition && model.modelDefinition.name === 'legendSet') {
+                    if (model.modelDefinition && model.modelDefinition.name === 'legendSet' && propertyName === 'legends') {
                         return getOwnedPropertyJSON.call(childModel.modelDefinition, childModel); // eslint-disable-line no-use-before-define
                     }
 
