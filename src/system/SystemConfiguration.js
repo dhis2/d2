@@ -27,7 +27,7 @@ class SystemConfiguration {
     all(ignoreCache) {
         if (this._configPromise === null || ignoreCache === true) {
             this._configPromise = this.api.get('configuration')
-                .then(configuration => {
+                .then((configuration) => {
                     this._configuration = configuration;
                     return this._configuration;
                 });
@@ -46,7 +46,7 @@ class SystemConfiguration {
      * @returns {Promise}
      */
     get(key, ignoreCache) {
-        return this.all(ignoreCache).then(config => {
+        return this.all(ignoreCache).then((config) => {
             if (config.hasOwnProperty(key)) {
                 return Promise.resolve(config[key]);
             }

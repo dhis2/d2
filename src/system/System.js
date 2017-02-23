@@ -89,7 +89,7 @@ class System {
         const api = Api.getApi();
 
         return api.get('apps')
-            .then(apps => {
+            .then((apps) => {
                 this.setInstalledApps(apps);
 
                 return apps;
@@ -106,7 +106,7 @@ class System {
     uploadApp(zipFile, onProgress) {
         const api = Api.getApi();
         const data = new FormData();
-        let xhr = undefined;
+        let xhr;
         data.append('file', zipFile);
 
         if (onProgress !== undefined) {
@@ -134,11 +134,11 @@ class System {
     loadAppStore(compatibleOnly = true) {
         return new Promise((resolve, reject) => {
             const api = Api.getApi();
-            api.get('appStore').then(appStoreData => {
+            api.get('appStore').then((appStoreData) => {
                 const appStore = Object.assign({}, appStoreData);
 
                 appStore.apps = appStore.apps
-                    .map(appData => {
+                    .map((appData) => {
                         const app = Object.assign({}, appData);
 
                         if (compatibleOnly) {
@@ -151,7 +151,7 @@ class System {
                     .filter(appData => appData.versions.length > 0);
 
                 resolve(appStore);
-            }).catch(err => {
+            }).catch((err) => {
                 reject(err);
             });
         });

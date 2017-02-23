@@ -72,7 +72,7 @@ class ModelCollection {
 
         // Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
-            values.forEach((value) => this.valuesContainerMap.set(value.id, value));
+            values.forEach(value => this.valuesContainerMap.set(value.id, value));
         }
     }
 

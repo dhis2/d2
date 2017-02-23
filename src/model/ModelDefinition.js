@@ -123,7 +123,7 @@ function getOwnedPropertyJSON(model) {
                 } else {
                     // compulsoryDataElementOperands and greyedFields are not arrays of models.
                     // TODO: This is not the proper way to do this. We should check if the array contains Models
-                    if (propertyName === 'compulsoryDataElementOperands' || propertyName === 'greyedFields') {
+                    if (propertyName === 'compulsoryDataElementOperands' || propertyName === 'greyedFields' || propertyName === 'userGroupAccesses') {
                         objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                         return;
                     }
@@ -264,7 +264,7 @@ class ModelDefinition {
 
             Object
                 .keys(model)
-                .filter((modelProperty) => !checkForModelProperty(modelProperty))
+                .filter(modelProperty => !checkForModelProperty(modelProperty))
                 .forEach((modelProperty) => {
                     model.dataValues[modelProperty] = defaultValues[modelProperty];
                 });
@@ -312,7 +312,7 @@ class ModelDefinition {
 
         // TODO: should throw error if API has not been defined
         return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
-            .then((data) => this.create(data))
+            .then(data => this.create(data))
             .catch((response) => {
                 if (response.message) {
                     return Promise.reject(response.message);
@@ -347,9 +347,9 @@ class ModelDefinition {
         }
 
         return this.api.get(this.apiEndpoint, Object.assign({ fields: ':all' }, queryParams))
-            .then((responseData) => ModelCollection.create(
+            .then(responseData => ModelCollection.create(
                 this,
-                responseData[this.plural].map((data) => this.create(data)),
+                responseData[this.plural].map(data => this.create(data)),
                 responseData.pager
             ));
     }

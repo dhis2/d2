@@ -60,10 +60,10 @@ class I18n {
 
         const propFiles = [];
 
-        this.sources.forEach(source => {
+        this.sources.forEach((source) => {
             propFiles.push(
                 i18n.api.request('GET', source, undefined, { dataType: 'text' }).then(
-                    (data) => Promise.resolve(parseProperties(data)),
+                    data => Promise.resolve(parseProperties(data)),
 
                     // Resolve errors to an empty object, so that one missing file doesn't prevent
                     // the rest from being loaded
@@ -73,8 +73,8 @@ class I18n {
         });
 
         return Promise.all(propFiles).then((propFile) => {
-            propFile.forEach(props => {
-                Object.keys(props).forEach(str => {
+            propFile.forEach((props) => {
+                Object.keys(props).forEach((str) => {
                     if (!i18n.translations.hasOwnProperty(str)) {
                         i18n.translations[str] = props[str];
                     }
@@ -86,7 +86,7 @@ class I18n {
                 return i18n.api.post('i18n', Array.from(i18n.strings)).then((res) => {
                     Object.keys(res)
                         .filter(str => str !== res[str])
-                        .forEach(str => {
+                        .forEach((str) => {
                             i18n.translations[str] = res[str];
                             i18n.strings.delete(str);
                         });

@@ -56,7 +56,7 @@ function getUrl(baseUrl, url) {
         .replace(new RegExp('\/$'), '');
 
     if (isIE11()) {
-        const cacheBreaker = `_=${(new Date).getTime()}`;
+        const cacheBreaker = `_=${(new Date()).getTime()}`;
         const cacheBreakerQueryParam = /\?/.test(fullUrl) ? `&${cacheBreaker}` : `?${cacheBreaker}`;
 
         return `${fullUrl}${cacheBreakerQueryParam}`;

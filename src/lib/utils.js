@@ -34,7 +34,7 @@ export function copyOwnProperties(to, from) {
 }
 
 export function pick(property) {
-    return item => {
+    return (item) => {
         if (item) {
             return item[property];
         }

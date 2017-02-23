@@ -147,7 +147,7 @@ class ModelCollectionProperty extends ModelCollection {
                 this.updateDirty();
                 return Promise.resolve();
             })
-            .catch((err) => Promise.reject(err));
+            .catch(err => Promise.reject(err));
     }
 
     /**

@@ -74,7 +74,7 @@ class Model {
             value: {},
         });
 
-        const hasKeys = (object) => object && !!Object.keys(object).length;
+        const hasKeys = object => object && !!Object.keys(object).length;
         const attributes = {};
         const attributeProperties = modelDefinition.attributeProperties;
         if (hasKeys(attributeProperties)) {
@@ -85,7 +85,7 @@ class Model {
 
             Object
                 .keys(attributeProperties)
-                .forEach(attributeName => {
+                .forEach((attributeName) => {
                     Object.defineProperty(attributes, attributeName, {
                         enumerable: true,
                         get: () => {
