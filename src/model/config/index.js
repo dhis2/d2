@@ -58,6 +58,7 @@ const schemaPropertyFields = [
     'owner',
     'itemPropertyType',
     'translationKey',
+    'embeddedObject',
 ];
 
 export const fieldsForSchemas = schemaFields.concat(`properties[${schemaPropertyFields.join(',')}]`).join(',');

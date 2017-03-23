@@ -60,6 +60,7 @@ function createValidationSetting(validationObject, schemaProperty) {
         writable: schemaProperty.writable,
         constants: schemaProperty.constants,
         ordered: Boolean(schemaProperty.ordered),
+        embeddedObject: Boolean(schemaProperty.embeddedObject),
     };
 
     function getReferenceTypeFrom(property) {

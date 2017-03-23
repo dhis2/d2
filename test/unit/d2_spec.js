@@ -427,7 +427,7 @@ describe('D2', () => {
             return d2.getInstance()
                 .then(newD2 => {
                     expect(apiMock.get).to.have.been.calledWith('schemas/user', {
-                        fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey]',
+                        fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]',
                     });
                 });
         });
