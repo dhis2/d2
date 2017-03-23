@@ -188,8 +188,8 @@ describe('ModelCollectionProperty', () => {
         });
 
         afterEach(() => {
-            api.get.reset();
-            api.post.reset();
+            api.get.resetHistory();
+            api.post.resetHistory();
         });
 
         it('Does nothing when the collection not dirty', done => {
