@@ -132,7 +132,10 @@ class Api {
 
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
-            query = `${query}${query.length ? '&' : ''}filter=${data.filter.join('&filter=')}`;
+            const encodedFilters = data.filter
+                .map(filter => filter.split(':').map(encodeURIComponent).join(':'));
+
+            query = `${customEncodeURIComponent(query)}${query.length ? '&' : ''}filter=${encodedFilters.join('&filter=')}`;
             delete data.filter; // eslint-disable-line no-param-reassign
         }
 
@@ -140,7 +143,7 @@ class Api {
         if (data && method === 'GET') {
             Object.keys(data)
                 .forEach((key) => {
-                    query = `${query}${(query.length > 0 ? '&' : '')}${key}=${data[key]}`;
+                    query = `${query}${(query.length > 0 ? '&' : '')}${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`;
                 });
         }
 
@@ -193,7 +196,7 @@ class Api {
         }
 
         if (query.length) {
-            requestUrl = `${requestUrl}?${customEncodeURIComponent(query)}`;
+            requestUrl = `${requestUrl}?${query}`;
         }
         const requestOptions = getOptions(this.defaultHeaders, options, data);
 
