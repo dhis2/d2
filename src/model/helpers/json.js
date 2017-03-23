@@ -1,15 +1,9 @@
 const NON_MODEL_COLLECTIONS = new Set([
-    'compulsoryDataElementOperands',
-    'greyedFields',
     'aggregationLevels',
     'grantTypes',
     'translations',
     'deliveryChannels',
     'redirectUris',
-    'dataSetElements',
-    'dataInputPeriods',
-    'userGroupAccesses',
-    'userAccesses',
 ]);
 
 function isPlainValue(collection) {
@@ -24,7 +18,7 @@ function isCollectionProperty(collection) {
 
 export function getJSONForProperties(model, properties) {
     const objectToSave = {};
-    const collectionProperties = model
+    const collectionPropertiesNames = model
         .getCollectionChildrenPropertyNames()
         // Even though attributeValues are considered collections, they are handled separately due to their
         // difference in structure.
@@ -39,17 +33,17 @@ export function getJSONForProperties(model, properties) {
 
     // Handle plain values
     propertyNames
-        .filter(isPlainValue(collectionProperties))
+        .filter(isPlainValue(collectionPropertiesNames))
         .forEach((propertyName) => {
             objectToSave[propertyName] = model.dataValues[propertyName];
         });
 
-    // Handle Collection properties
+    // Handle non-embedded collection properties
     propertyNames
-        .filter(isCollectionProperty(collectionProperties))
+        .filter(isCollectionProperty(collectionPropertiesNames))
         .forEach((propertyName) => {
-            // compulsoryDataElementOperands and greyedFields are not arrays of models.
             // TODO: This is not the proper way to do this. We should check if the array contains Models
+            // These objects are not marked as embedded objects but they behave like they are
             if (NON_MODEL_COLLECTIONS.has(propertyName)) {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
@@ -58,20 +52,17 @@ export function getJSONForProperties(model, properties) {
             const values = Array.isArray(model.dataValues[propertyName]) ?
                 model.dataValues[propertyName] : Array.from(model.dataValues[propertyName].values());
 
+            // If the collection is a embedded collection we can save it as is.
+            if (model.getEmbeddedObjectCollectionPropertyNames().indexOf(propertyName) !== -1) {
+                objectToSave[propertyName] = values;
+                return;
+            }
+
             // Transform an object collection to an array of objects with id properties
             objectToSave[propertyName] = values
                 .filter(value => value.id)
-                .map((childModel) => {
-                    // Legends can be saved as part of the LegendSet object.
-                    // To make this work properly we will return all of the properties for the items in the collection
-                    // instead of just the `id` fields
-                    if (model.modelDefinition && model.modelDefinition.name === 'legendSet' && propertyName === 'legends') {
-                        return getOwnedPropertyJSON.call(childModel.modelDefinition, childModel); // eslint-disable-line no-use-before-define
-                    }
-
-                    // For any other types we return an object with just an id
-                    return { id: childModel.id };
-                });
+                // For any other types we return an object with just an id
+                .map(childModel => ({ id: childModel.id }));
         });
 
     return objectToSave;

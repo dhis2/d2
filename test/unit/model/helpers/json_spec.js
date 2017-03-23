@@ -27,13 +27,11 @@ describe('getJSONForProperties', () => {
 
             getJSONForProperties = require('../../../../src/model/helpers/json').getJSONForProperties;
 
-            let legendSchema = fixtures.get('/api/schemas/legend');
             legendSetSchema = fixtures.get('/api/schemas/legendSet');
-            
+
             legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
-            mockModelDefinitions.legend = ModelDefinition.createFromSchema(legendSchema);
             mockModelDefinitions.legendSet = legendSetSchemaDefinition;
-            
+
             legendSet = fixtures.get('/api/legendSets/k1JHPfXsJND');
         });
 
@@ -43,20 +41,20 @@ describe('getJSONForProperties', () => {
 
         it('should embed the legends in the payload', () => {
             const model = legendSetSchemaDefinition.create(legendSet);
-            
+
             expect(getJSONForProperties(model, ['legends']).legends).to.have.length(6);
             expect(getJSONForProperties(model, ['legends']).legends).to.deep.equal(legendSet.legends);
         });
 
         it('should not throw on userGroupAcceses', () => {
             const model = legendSetSchemaDefinition.create(legendSet);
-            
+
             expect(getJSONForProperties(model, ['userGroupAccesses']).userGroupAccesses).to.have.length(1);
         });
 
         it('should maintain the full structure of the userGroupAccesses', () => {
             const model = legendSetSchemaDefinition.create(legendSet);
-            
+
             expect(getJSONForProperties(model, ['userGroupAccesses']).userGroupAccesses).to.deep.equal([
                 {
                     access: 'rw------',
@@ -70,7 +68,7 @@ describe('getJSONForProperties', () => {
         it('should maintain the full structure of the userAccesses', () => {
             const legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
             const model = legendSetSchemaDefinition.create(legendSet);
-            
+
             expect(getJSONForProperties(model, ['userAccesses']).userAccesses).to.deep.equal([
                 {
                     access: 'rw------',

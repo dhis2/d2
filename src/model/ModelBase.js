@@ -195,6 +195,11 @@ class ModelBase {
             );
     }
 
+    getEmbeddedObjectCollectionPropertyNames() {
+        return this.getCollectionChildrenPropertyNames()
+            .filter(propertyName => this.modelDefinition.modelValidations[propertyName].embeddedObject);
+    }
+
     getDirtyChildren() {
         return this.getCollectionChildren()
             .filter(property => property && (property.dirty === true));

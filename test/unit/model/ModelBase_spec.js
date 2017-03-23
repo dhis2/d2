@@ -474,6 +474,9 @@ describe('ModelBase', () => {
                     dataElements: {
                         owner: true,
                     },
+                    userGroups: {
+
+                    },
                 },
             };
             model.dataElements = {
@@ -493,6 +496,78 @@ describe('ModelBase', () => {
 
         it('should not return the children that are not collections', () => {
             expect(model.getCollectionChildren()).not.to.contain(model.userGroups);
+        });
+    });
+
+    describe('getCollectionChildrenPropertyNames', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        type: 'COLLECTION',
+                    },
+                    dataEntryForm: {
+                        type: 'COMPLEX',
+                    },
+                },
+            };
+
+            model.dataElements = [];
+        });
+
+        it('should return the correct property collections', () => {
+            expect(model.getCollectionChildrenPropertyNames()).to.contain('dataElements');
+        });
+
+        it('should not return the collection for the property if there is no modelValidation for the property', () => {
+            model.indicators = [];
+
+            expect(model.getCollectionChildrenPropertyNames()).not.to.contain('indicators');
+        });
+
+        it('should not return the collection for the property if there is no modelValidation for the property', () => {
+            model.modelDefinition.modelValidations.indicators = {
+                type: 'COLLECTION',
+            };
+
+            expect(model.getCollectionChildrenPropertyNames()).not.to.contain('indicators');
+        });
+    });
+
+    describe('getEmbeddedObjectCollectionPropertyNames', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        type: 'COLLECTION',
+                        embeddedObject: false,
+                    },
+                    dataEntryForm: {
+                        type: 'COMPLEX',
+                    },
+                    legends: {
+                        type: 'COLLECTION',
+                        embeddedObject: true,
+                    }
+                },
+            };
+
+            model.dataElements = [];
+            model.legends = [];
+        });
+
+        it('should include the embedded collection', () => {
+            expect(model.getEmbeddedObjectCollectionPropertyNames()).to.contain('legends');
+        });
+
+        it('should not include non embedded object collections', () => {
+            expect(model.getEmbeddedObjectCollectionPropertyNames()).not.to.contain('dataElements');
         });
     });
 

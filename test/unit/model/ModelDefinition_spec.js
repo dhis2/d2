@@ -449,6 +449,28 @@ describe('ModelDefinition', () => {
                     expect(modelValidations.userGroupAccesses.referenceType).to.be.undefined;
                 });
             });
+
+            describe('embedded object property', () => {
+                let indicatorGroupModelDefinition;
+                let modelValidations;
+
+                beforeEach(() => {
+                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/legendSet'));
+                    modelValidations = indicatorGroupModelDefinition.modelValidations;
+                });
+
+                it('should have set the embedded property validation for userGroupAcceses to true', () => {
+                    expect(modelValidations.userGroupAccesses.embeddedObject).to.be.true;
+                });
+
+                it('should have set the embedded property validation for attributeValues to false', () => {
+                    expect(modelValidations.attributeValues.embeddedObject).to.be.false;
+                });
+
+                it('should set the embedded object to false for simple types', () => {
+                    expect(modelValidations.name.embeddedObject).to.be.false;
+                });
+            });
         });
 
         describe('specialized definitions', () => {
@@ -873,6 +895,7 @@ describe('ModelDefinition', () => {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
                     this.getCollectionChildrenPropertyNames = stub().returns([]);
+                    this.getEmbeddedObjectCollectionPropertyNames = stub().returns([]);
                 }
             }
             model = new Model();
