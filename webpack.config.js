@@ -25,8 +25,6 @@ module.exports = {
                 })();
             `,
         }),
-
-        new webpack.optimize.DedupePlugin(),
     ],
     module: {
         loaders: [
@@ -34,7 +32,7 @@ module.exports = {
                 test: /\.js?$/,
                 // We only want to babelify files in the source folder
                 include: isFileInSrcFolder,
-                loader: 'babel',
+                loader: 'babel-loader',
             },
         ],
     },
