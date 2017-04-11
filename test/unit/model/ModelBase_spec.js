@@ -1,6 +1,8 @@
+/* global sinon, require, describe, beforeEach, it, expect, stub */
+const proxyquire = require('proxyquire').noCallThru();
+
 function setupFakeModelValidation() {
     const validateAgainstSchemaSpy = sinon.stub();
-    const proxyquire = require('proxyquire').noCallThru();
 
     class ModelValidation {
         constructor() {
@@ -29,6 +31,7 @@ describe('ModelBase', () => {
         validateAgainstSchemaSpy.reset();
 
         modelBaseModule = require('../../../src/model/ModelBase');
+
         modelBase = modelBaseModule.default;
         DIRTY_PROPERTY_LIST = modelBaseModule.DIRTY_PROPERTY_LIST;
     });
@@ -554,7 +557,7 @@ describe('ModelBase', () => {
                     legends: {
                         type: 'COLLECTION',
                         embeddedObject: true,
-                    }
+                    },
                 },
             };
 
@@ -588,11 +591,55 @@ describe('ModelBase', () => {
                 dirty: true,
                 size: 2,
             };
-            // model.getCollectionChildren = sinon.stub().returns([model.dataElements]);
         });
 
         it('should return the dirty children properties', () => {
             expect(model.getDirtyChildren()).to.deep.equal([model.dataElements]);
+        });
+    });
+
+    describe('toJSON', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    name: {
+                        owner: true,
+                    },
+                    dataElements: {
+                        owner: true,
+                        type: 'COLLECTION',
+                    },
+                },
+            };
+            model.dataValues = {
+                name: 'ANC',
+                dataElements: new Map([
+                    ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC', name: 'anc1' }],
+                    ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS', name: 'anc2' }],
+                ]),
+            };
+
+            model.name = model.dataValues.name;
+            model.dataElements = model.dataValues.dataElements;
+        });
+
+        it('should be a function', () => {
+            expect(model.toJSON).to.be.a('function');
+        });
+
+        it('should return a json representation of the model', () => {
+            const expected = JSON.stringify(({
+                name: 'ANC',
+                dataElements: [
+                    { id: 'P3jJH5Tu5VC' },
+                    { id: 'FQ2o8UBlcrS' },
+                ],
+            }));
+
+            expect(model.toJSON()).to.equal(expected);
         });
     });
 });

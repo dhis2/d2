@@ -153,6 +153,8 @@ class ModelBase {
     }
 
     clone() {
+        // TODO: Only clones "shallow"
+        // TODO: Resets dirty state
         return this.modelDefinition.create(
             getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations))
         );
@@ -207,6 +209,10 @@ class ModelBase {
 
     hasDirtyChildren() {
         return this.getDirtyChildren().length > 0;
+    }
+
+    toJSON() {
+        return JSON.stringify(getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations)));
     }
 }
 
