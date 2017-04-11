@@ -10,12 +10,12 @@
     "test": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
     "e2e": "NODE_ENV=test karma start test/setup/karma.config.js",
     "test-watch": "mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit --watch",
-    "prebuild": "npm run lint && npm run validate && npm run test && npm run e2e",
+    "prebuild": "npm run lint && npm run validate && npm run test",
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "lint": "eslint src",
     "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
-    "travis": "npm run coverage && npm run e2e && npm run lint"
+    "travis": "npm run coverage && npm run lint"
   },
   "repository": {
     "type": "git",
