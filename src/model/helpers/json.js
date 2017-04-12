@@ -1,3 +1,5 @@
+const isFunction = fun => typeof fun === 'function';
+
 const NON_MODEL_COLLECTIONS = new Set([
     'aggregationLevels',
     'grantTypes',
@@ -16,7 +18,7 @@ function isCollectionProperty(collection) {
     return property => !isPlainValue(collection)(property);
 }
 
-export function getJSONForProperties(model, properties) {
+export function getJSONForProperties(model, properties, keepFullModels = false) {
     const objectToSave = {};
     const collectionPropertiesNames = model
         .getCollectionChildrenPropertyNames()
@@ -62,7 +64,12 @@ export function getJSONForProperties(model, properties) {
             objectToSave[propertyName] = values
                 .filter(value => value.id)
                 // For any other types we return an object with just an id
-                .map(childModel => ({ id: childModel.id }));
+                .map((childModel) => {
+                    if (keepFullModels && isFunction(childModel.clone)) {
+                        return childModel.clone();
+                    }
+                    return ({ id: childModel.id });
+                });
         });
 
     return objectToSave;

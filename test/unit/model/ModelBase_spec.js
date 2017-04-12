@@ -322,8 +322,8 @@ describe('ModelBase', () => {
             constructor(modelDef) {
                 this.modelDefinition = modelDef;
                 this.validate = stub().returns(Promise.resolve({ status: true }));
-                this.dirty = true;
-                this[DIRTY_PROPERTY_LIST] = new Set(['name']);
+                this.dirty = false;
+                this[DIRTY_PROPERTY_LIST] = new Set([]);
                 this.dataValues = {
                     id: 'DXyJmlo9rge',
                     name: 'My metadata object',
@@ -412,6 +412,28 @@ describe('ModelBase', () => {
             });
         });
 
+        it('should retain all of the values in the child collections', () => {
+            model.dataValues.userGroups = new Map([
+                ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC', name: 'Administrators', clone() {
+                    return { id: 'P3jJH5Tu5VC', name: 'Administrators' };
+                } }],
+                ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS', name: 'Super users', clone() {
+                    return { id: 'FQ2o8UBlcrS', name: 'Super users' };
+                } }],
+            ]);
+
+            model.clone();
+
+            expect(modelDefinition.create).to.be.calledWith({
+                id: 'DXyJmlo9rge',
+                name: 'My metadata object',
+                userGroups: [
+                    { id: 'P3jJH5Tu5VC', name: 'Administrators' },
+                    { id: 'FQ2o8UBlcrS', name: 'Super users' },
+                ],
+            });
+        });
+
         it('should return an independent clone', () => {
             const modelClone = model.clone();
 
@@ -421,6 +443,15 @@ describe('ModelBase', () => {
 
             expect(modelClone.dataValues.name).to.equal('NewName');
             expect(model.dataValues.name).to.equal('My metadata object');
+        });
+
+        it('should preserve the dirty state of the original model', () => {
+            model.dirty = true;
+            model[DIRTY_PROPERTY_LIST] = new Set(['name']);
+
+            const modelClone = model.clone();
+
+            expect(modelClone.dirty).to.be.true;
         });
     });
 
