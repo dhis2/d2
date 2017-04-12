@@ -152,12 +152,21 @@ class ModelBase {
         });
     }
 
+    // TODO: Cloning large graphs is very slow
     clone() {
-        // TODO: Only clones "shallow"
-        // TODO: Resets dirty state
-        return this.modelDefinition.create(
-            getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations))
+        const modelClone = this.modelDefinition.create(
+            getJSONForProperties(
+                this,
+                Object.keys(this.modelDefinition.modelValidations),
+                true
+            )
         );
+
+        if (this.isDirty()) {
+            modelClone.dirty = this.isDirty(true);
+        }
+
+        return modelClone;
     }
 
     delete() {
@@ -175,6 +184,7 @@ class ModelBase {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }
 
+    // TODO: This name is very misleading and should probably be renamed (would be a breaking change)
     getCollectionChildren() {
         // TODO: Can't be sure that this has a `modelDefinition` property
         return Object.keys(this)
