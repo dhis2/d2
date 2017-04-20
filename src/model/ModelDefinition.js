@@ -63,7 +63,6 @@ function createValidationSetting(validationObject, schemaProperty) {
         owner: schemaProperty.owner,
         unique: schemaProperty.unique,
         writable: schemaProperty.writable,
-        constants: schemaProperty.constants,
         ordered: Boolean(schemaProperty.ordered),
         embeddedObject: Boolean(schemaProperty.embeddedObject),
     };
