@@ -21,6 +21,11 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
         },
     };
 
+    // Store available constants for ENUM type properties
+    if (schemaProperty.constants) {
+        propertyDetails.constants = schemaProperty.constants;
+    }
+
     // Only add a setter for writable properties
     if (schemaProperty.writable) {
         propertyDetails.set = function dynamicPropertySetter(value) {
