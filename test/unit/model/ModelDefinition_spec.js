@@ -404,12 +404,6 @@ describe('ModelDefinition', () => {
                 });
             });
 
-            describe('domainType', () => {
-                it('should have loaded the constants', () => {
-                    expect(modelValidations.domainType.constants).to.deep.equal(['AGGREGATE', 'TRACKER']);
-                });
-            });
-
             it('should add the referenceType to the optionSet and commentOptionSet', () => {
                 expect(modelValidations.commentOptionSet.referenceType).to.equal('optionSet');
                 expect(modelValidations.optionSet.referenceType).to.equal('optionSet');
