@@ -175,6 +175,29 @@ describe('ModelDefinition', () => {
                 expect(shouldThrow).to.throw();
                 expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(37);
             });
+
+            it('should store property constants', () => {
+                dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+
+                expect(dataElementModelDefinition.modelProperties.aggregationType.constants).to.eql([
+                    "SUM",
+                    "AVERAGE",
+                    "AVERAGE_SUM_ORG_UNIT",
+                    "COUNT",
+                    "STDDEV",
+                    "VARIANCE",
+                    "MIN",
+                    "MAX",
+                    "NONE",
+                    "CUSTOM",
+                    "DEFAULT",
+                    "AVERAGE_SUM_INT",
+                    "AVERAGE_SUM_INT_DISAGGREGATION",
+                    "AVERAGE_INT",
+                    "AVERAGE_INT_DISAGGREGATION",
+                    "AVERAGE_BOOL",
+                ]);
+            });
         });
 
         describe('modelProperties', () => {
