@@ -231,4 +231,59 @@ describe('Pager', () => {
             });
         });
     });
+
+    describe('instance with data and query parameters', () => {
+        let pager;
+        let modelDefinition;
+
+        beforeEach(() => {
+            pagerFixtureOne = {
+                page: 1,
+                pageCount: 37,
+                query: { fields: ':all' },
+                total: 1844,
+                nextPage: 'http://localhost:8080/dhis/api/dataElements?page=2l'
+            };
+            pageFixtureTwo = {
+                page: 3,
+                pageCount: 37,
+                total: 1844,
+                nextPage: 'http://localhost:8080/dhis/api/dataElements?page=4',
+                prevPage: 'http://localhost:8080/dhis/api/dataElements?page=2'
+            };
+
+            class ModelDefinition {}
+            ModelDefinition.prototype.list = stub().returns(new Promise((resolve) => resolve()));
+            modelDefinition = new ModelDefinition();
+
+            pager = new Pager(pagerFixtureOne, modelDefinition, { fields: ':all' });
+        });
+
+        describe('nextPage', () => {
+            it('should include the current query parameters', () => {
+                pager.getNextPage();
+
+                expect(modelDefinition.list).to.be.calledWith({ page: 2, fields: ':all' });
+            });
+        });
+
+        describe('previousPage', () => {
+            it('should include the current query parameters', () => {
+                pager.page = 3;
+                pager.prevPage = 'http://url.to.the.next.page';
+
+                pager.getPreviousPage();
+
+                expect(modelDefinition.list).to.be.calledWith({ page: 2, fields: ':all' });
+            });
+        });
+
+        describe('goToPage', () => {
+            it('should call the list method with the current query parameters', () => {
+                pager.goToPage(2);
+
+                expect(modelDefinition.list).to.be.calledWith({ page: 2, fields: ':all' });
+            });
+        });
+    })
 });

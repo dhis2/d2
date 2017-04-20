@@ -320,7 +320,7 @@ class ModelDefinition {
             .then(responseData => ModelCollection.create(
                 this,
                 responseData[this.plural].map(data => this.create(data)),
-                responseData.pager
+                Object.assign(responseData.pager || {}, { query: params })
             ));
     }
 

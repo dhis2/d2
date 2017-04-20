@@ -18,7 +18,7 @@ class Pager {
      * Returns a newly created pager object with methods to navigate pages.
      */
     constructor(
-        pager = { page: 1, pageCount: 1 },
+        pager = { page: 1, pageCount: 1, query: {} },
         pagingHandler = { list: () => Promise.reject('No handler available') }
     ) {
         /**
@@ -55,6 +55,15 @@ class Pager {
          * If there is no previous page then this will be undefined.
          */
         this.prevPage = pager.prevPage;
+
+        /**
+         * @property {object} query Query parameters
+         *
+         * @description
+         * Query parameters are used for things like filtering and field selection. Used to guarantee that pages are
+         * from the same collection.
+         */
+        this.query = pager.query;
 
         this.pagingHandler = pagingHandler;
     }
@@ -124,7 +133,7 @@ class Pager {
             throw new Error(`PageNr can not be larger than the total page count of ${this.pageCount}`);
         }
 
-        return this.pagingHandler.list({ page: pageNr });
+        return this.pagingHandler.list(Object.assign({}, this.query, { page: pageNr }));
     }
 }
 
