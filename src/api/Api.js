@@ -92,7 +92,9 @@ class Api {
                 // Ensure that the browser will set the correct Content-Type header for FormData, including boundary
                 options.headers.delete('Content-Type');
                 payload = data;
-            } else if (options.headers.get('Content-Type') === 'text/plain') {
+            } else if (options.headers.get('Content-Type') === 'text/plain' ||
+                      options.headers.get('Content-Type') === 'text/css' ||
+                      options.headers.get('Content-Type') === 'text/javascript') {
                 payload = String(data);
             } else {
                 // Send JSON data by default
