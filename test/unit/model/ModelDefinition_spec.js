@@ -1123,6 +1123,28 @@ describe('ModelDefinition', () => {
         });
     });
 
+    describe('isTranslatable', () => {
+        let dataElementModelDefinition;
+        let userModelDefinition;
+
+        beforeEach(() => {
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+            userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+        });
+
+        it('should be a function', () => {
+            expect(dataElementModelDefinition.isTranslatable).to.be.a('function');
+        });
+
+        it('should return true if the schema supports translations', () => {
+            expect(dataElementModelDefinition.isTranslatable()).to.be.true;
+        });
+
+        it('should return false if the schema can not be translated', () => {
+            expect(userModelDefinition.isTranslatable()).to.be.false;
+        });
+    });
+
     describe('getTranslatableProperties()', () => {
         let dataElementModelDefinition;
 
