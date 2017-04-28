@@ -144,6 +144,7 @@ class ModelDefinition {
         addLockedProperty(this, 'modelValidations', validations);
         addLockedProperty(this, 'attributeProperties', attributes);
         addLockedProperty(this, 'authorities', authorities);
+        addLockedProperty(this, 'translatable', schema.translatable || false);
 
         this.filters = Filters.getFilters(this);
 
@@ -395,6 +396,15 @@ class ModelDefinition {
             return this.api.delete(model.dataValues.href);
         }
         return this.api.delete([model.modelDefinition.apiEndpoint, model.dataValues.id].join('/'));
+    }
+
+    /**
+     * @method isTranslatable
+     *
+     * @returns {Boolean} True when the schema can be translated, false otherwise
+     */
+    isTranslatable() {
+        return this.translatable;
     }
 
     /**
