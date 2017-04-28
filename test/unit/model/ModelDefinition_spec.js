@@ -913,6 +913,7 @@ describe('ModelDefinition', () => {
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
                     this.getCollectionChildrenPropertyNames = stub().returns([]);
                     this.getEmbeddedObjectCollectionPropertyNames = stub().returns([]);
+                    this.getReferenceProperties = stub().returns([]);
                 }
             }
             model = new Model();

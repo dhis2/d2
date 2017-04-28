@@ -207,6 +207,18 @@ class ModelBase {
             );
     }
 
+    getReferenceProperties() {
+        return Object
+            .keys(this)
+            .filter(propertyName =>
+                this.modelDefinition &&
+                this.modelDefinition.modelValidations &&
+                this.modelDefinition.modelValidations[propertyName] &&
+                this.modelDefinition.modelValidations[propertyName].type === 'REFERENCE' &&
+                this.modelDefinition.modelValidations[propertyName].embeddedObject === false
+            );
+    }
+
     getEmbeddedObjectCollectionPropertyNames() {
         return this.getCollectionChildrenPropertyNames()
             .filter(propertyName => this.modelDefinition.modelValidations[propertyName].embeddedObject);
@@ -222,7 +234,7 @@ class ModelBase {
     }
 
     toJSON() {
-        return JSON.stringify(getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations)));
+        return getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations));
     }
 }
 
