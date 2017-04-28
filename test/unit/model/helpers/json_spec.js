@@ -78,5 +78,20 @@ describe('getJSONForProperties', () => {
                 },
             ]);
         });
+
+        it('should only use the ID of the user object', () => {
+            const legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
+            const model = legendSetSchemaDefinition.create(legendSet);
+
+            model.user = {
+                id: 'xE7jOejl9FI',
+                username: 'admin',
+                firstName: 'John',
+            };
+
+            expect(getJSONForProperties(model, ['user']).user).to.deep.equal({
+                id: 'xE7jOejl9FI',
+            });
+        });
     });
 });

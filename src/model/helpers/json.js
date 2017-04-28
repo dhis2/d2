@@ -18,6 +18,10 @@ function isCollectionProperty(collection) {
     return property => !isPlainValue(collection)(property);
 }
 
+function isReferenceProperty(collection) {
+    return property => collection.indexOf(property) >= 0;
+}
+
 export function getJSONForProperties(model, properties, keepFullModels = false) {
     const objectToSave = {};
     const collectionPropertiesNames = model
@@ -36,8 +40,17 @@ export function getJSONForProperties(model, properties, keepFullModels = false) 
     // Handle plain values
     propertyNames
         .filter(isPlainValue(collectionPropertiesNames))
+        .filter(v => !isReferenceProperty(model.getReferenceProperties())(v))
         .forEach((propertyName) => {
             objectToSave[propertyName] = model.dataValues[propertyName];
+        });
+
+    // Handle reference properties
+    propertyNames
+        .filter(isPlainValue(collectionPropertiesNames))
+        .filter(isReferenceProperty(model.getReferenceProperties()))
+        .forEach((propertyName) => {
+            objectToSave[propertyName] = { id: model.dataValues[propertyName].id };
         });
 
     // Handle non-embedded collection properties

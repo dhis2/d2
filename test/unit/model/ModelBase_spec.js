@@ -571,6 +571,65 @@ describe('ModelBase', () => {
         });
     });
 
+    describe('getReferenceProperties', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        type: 'COLLECTION',
+                        embeddedObject: false,
+                    },
+                    dataEntryForm: {
+                        type: 'COMPLEX',
+                    },
+                    user: {
+                        type: 'REFERENCE',
+                        embeddedObject: false,
+                    },
+                    accesses: {
+                        type: 'REFERENCE',
+                        embeddedObject: true,
+                    },
+                },
+            };
+
+            model.dataElements = [];
+            model.user = {
+                id: 'xE7jOejl9FI',
+                firstName: 'John',
+            };
+            model.accesses = {
+                read: true,
+                write: true,
+            };
+        });
+
+        it('should return the correct reference properties', () => {
+            expect(model.getReferenceProperties()).to.contain('user');
+        });
+
+        it('should not return the reference property if there is no modelValidation for the property', () => {
+            model.randomObject = {};
+
+            expect(model.getReferenceProperties()).not.to.contain('randomObject');
+        });
+
+        it('should not return the reference property if there is no value for the property', () => {
+            model.modelDefinition.modelValidations.randomObject = {
+                type: 'REFERENCE',
+            };
+
+            expect(model.getReferenceProperties()).not.to.contain('randomObject');
+        });
+
+        it('should not return the property if the reference property is embedded', () => {
+            expect(model.getReferenceProperties()).not.to.contain('accesses');
+        });
+    });
+
     describe('getEmbeddedObjectCollectionPropertyNames', () => {
         let model;
 
@@ -662,15 +721,15 @@ describe('ModelBase', () => {
         });
 
         it('should return a json representation of the model', () => {
-            const expected = JSON.stringify(({
+            const expected = ({
                 name: 'ANC',
                 dataElements: [
                     { id: 'P3jJH5Tu5VC' },
                     { id: 'FQ2o8UBlcrS' },
                 ],
-            }));
+            });
 
-            expect(model.toJSON()).to.equal(expected);
+            expect(model.toJSON()).to.deep.equal(expected);
         });
     });
 });
