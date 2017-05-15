@@ -1,5 +1,3 @@
-'use strict';
-
 export default (function () {
     var fixtures = {};
 
@@ -27,6 +25,8 @@ export default (function () {
     addFixture('/api/schemas/organisationUnit', require('./json/api/schemas/organisationUnit.json'));
     addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
     addFixture('/api/schemas/validationRule', require('./json/api/schemas/validationRule'));
+    addFixture('/api/schemas/program', require('./json/api/schemas/program'));
+    addFixture('/api/schemas/programNotificationTemplate', require('./json/api/schemas/programNotificationTemplate'));
     addFixture('/api/schemas/user', require('./json/api/schemas/user.json'));
     addFixture('/api/schemas/legendSet', require('./json/api/schemas/legendSet.json'));
     addFixture('/api/schemas/legend', require('./json/api/schemas/legend.json'));
