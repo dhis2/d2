@@ -67,7 +67,7 @@ class Filter {
      *
      * @param {Filters} filters Filters list that this filter will be added to when it is completed.
      *
-     * @returns A instance of the Filter class that can be used to create
+     * @returns {Filter} A instance of the Filter class that can be used to create
      * filters.
      *
      * @description
