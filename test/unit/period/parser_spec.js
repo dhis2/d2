@@ -22,8 +22,8 @@ const periodFixtures = {
     // Weekly Wednesday/Thursday/Saturday/Sunday
     '2017WedW4': makePeriodFixture('2017WedW4', '2017 W4 January 25 - 31', '2017-01-25', '2017-01-31'),
     '2017ThuW4': makePeriodFixture('2017ThuW4', '2017 W4 January 26 - February 1', '2017-01-26', '2017-02-01'),
-    '2017SatW4': makePeriodFixture('2017SatW4', '2017 W4 January 28 - February 3', '2017-01-28', '2017-02-03'),
-    '2017SunW4': makePeriodFixture('2017SunW4', '2017 W4 January 29 - February 4', '2017-01-29', '2017-02-04'),
+    '2017SatW4': makePeriodFixture('2017SatW4', '2017 W4 January 21 - 27', '2017-01-21', '2017-01-27'),
+    '2017SunW4': makePeriodFixture('2017SunW4', '2017 W4 January 22 - 28', '2017-01-22', '2017-01-28'),
     // Monthly
     '198103': makePeriodFixture('198103', 'March 1981', '1981-03-01', '1981-03-31'),
     '198002': makePeriodFixture('198002', 'February 1980', '1980-02-01', '1980-02-29'),

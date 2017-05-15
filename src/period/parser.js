@@ -41,8 +41,8 @@ const weeklyMatcherParser = (match, locale = 'en') => {
     switch (weekType) {
     case 'Wed': weekTypeDiff = 2; break;
     case 'Thu': weekTypeDiff = 3; break;
-    case 'Sat': weekTypeDiff = 5; break;
-    case 'Sun': weekTypeDiff = 6; break;
+    case 'Sat': weekTypeDiff = -2; break;
+    case 'Sun': weekTypeDiff = -1; break;
     default: break;
     }
 
