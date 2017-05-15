@@ -19,6 +19,11 @@ const periodFixtures = {
     '2016W53': makePeriodFixture('2017W1', '2017 W1 January 2 - 8', '2017-01-02', '2017-01-08'),
     '2016W52': makePeriodFixture('2016W52', '2016 W52 December 26 - January 1', '2016-12-26', '2017-01-01'),
     '2017W04': makePeriodFixture('2017W4', '2017 W4 January 23 - 29', '2017-01-23', '2017-01-29'),
+    // Weekly Wednesday/Thursday/Saturday/Sunday
+    '2017WedW4': makePeriodFixture('2017WedW4', '2017 W4 January 25 - 31', '2017-01-25', '2017-01-31'),
+    '2017ThuW4': makePeriodFixture('2017ThuW4', '2017 W4 January 26 - February 1', '2017-01-26', '2017-02-01'),
+    '2017SatW4': makePeriodFixture('2017SatW4', '2017 W4 January 21 - 27', '2017-01-21', '2017-01-27'),
+    '2017SunW4': makePeriodFixture('2017SunW4', '2017 W4 January 22 - 28', '2017-01-22', '2017-01-28'),
     // Monthly
     '198103': makePeriodFixture('198103', 'March 1981', '1981-03-01', '1981-03-31'),
     '198002': makePeriodFixture('198002', 'February 1980', '1980-02-01', '1980-02-29'),
@@ -100,6 +105,18 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
         });
         it('should handle Week 1-9 with leading zero', () => {
             doPeriodTest('2017W04');
+        });
+        it('should handle Weekly Wednesday period types', () => {
+            doPeriodTest('2017WedW4');
+        });
+        it('should handle Weekly Thursday period types', () => {
+            doPeriodTest('2017ThuW4');
+        });
+        it('should handle Weekly Saturday period types', () => {
+            doPeriodTest('2017SatW4');
+        });
+        it('should handle Weekly Sunday period types', () => {
+            doPeriodTest('2017SunW4');
         });
     });
     describe('for Monthly periods', () => {
