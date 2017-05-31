@@ -16,6 +16,7 @@
   "singular": "user",
   "persisted": true,
   "order": 101,
+  "translatable": false,
   "references": [
     "org.hisp.dhis.user.UserCredentials",
     "org.hisp.dhis.organisationunit.OrganisationUnit",

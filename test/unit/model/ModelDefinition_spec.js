@@ -1,21 +1,13 @@
 let proxyquire = require('proxyquire').noCallThru();
 
-function ModelCollection() {}
-ModelCollection.create = sinon.stub().returns(new ModelCollection());
-
-function ModelCollectionProperty() {}
-ModelCollectionProperty.create = sinon.stub().returns(new ModelCollectionProperty());
-
-proxyquire('../../../src/model/ModelDefinition', {
-    './ModelCollection': ModelCollection,
-    './ModelCollectionProperty': ModelCollectionProperty,
-});
-
 import fixtures from '../../fixtures/fixtures';
 import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
 import Model from '../../../src/model/Model';
 import ModelDefinitions from '../../../src/model/ModelDefinitions';
 // import ModelDefinition from '../../../src/model/ModelDefinition';
+
+import ModelCollection from '../../../src/model/ModelCollection';
+import ModelCollectionProperty from '../../../src/model/ModelCollectionProperty';
 
 // TODO: Can not use import here as babel will not respect the override
 let ModelDefinition = require('../../../src/model/ModelDefinition').default;
@@ -23,13 +15,22 @@ let ModelDefinition = require('../../../src/model/ModelDefinition').default;
 describe('ModelDefinition', () => {
     'use strict';
 
-    var modelDefinition;
+    let modelDefinition;
+    let mockModelCollectionCreate;
+    let mockModelCollectionPropertyCreate;
 
     beforeEach(() => {
-        ModelCollection.create.reset();
-        ModelCollectionProperty.create.reset();
-
         modelDefinition = new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement', plural: 'dataElements' });
+
+        mockModelCollectionCreate = sinon.stub(ModelCollection, 'create');
+        mockModelCollectionCreate.returns(new ModelCollection(modelDefinition, [], {}));
+        mockModelCollectionPropertyCreate = sinon.stub(ModelCollectionProperty, 'create');
+        mockModelCollectionPropertyCreate.returns(new ModelCollectionProperty({}, modelDefinition, []));
+    });
+
+    afterEach(() => {
+        ModelCollection.create.restore();
+        ModelCollectionProperty.create.restore();
     });
 
     it('should not be allowed to be called without new', () => {
@@ -173,6 +174,29 @@ describe('ModelDefinition', () => {
 
                 expect(shouldThrow).to.throw();
                 expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(37);
+            });
+
+            it('should store property constants', () => {
+                dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+
+                expect(dataElementModelDefinition.modelProperties.aggregationType.constants).to.eql([
+                    "SUM",
+                    "AVERAGE",
+                    "AVERAGE_SUM_ORG_UNIT",
+                    "COUNT",
+                    "STDDEV",
+                    "VARIANCE",
+                    "MIN",
+                    "MAX",
+                    "NONE",
+                    "CUSTOM",
+                    "DEFAULT",
+                    "AVERAGE_SUM_INT",
+                    "AVERAGE_SUM_INT_DISAGGREGATION",
+                    "AVERAGE_INT",
+                    "AVERAGE_INT_DISAGGREGATION",
+                    "AVERAGE_BOOL",
+                ]);
             });
         });
 
@@ -380,12 +404,6 @@ describe('ModelDefinition', () => {
                 });
             });
 
-            describe('domainType', () => {
-                it('should have loaded the constants', () => {
-                    expect(modelValidations.domainType.constants).to.deep.equal(['AGGREGATE', 'TRACKER']);
-                });
-            });
-
             it('should add the referenceType to the optionSet and commentOptionSet', () => {
                 expect(modelValidations.commentOptionSet.referenceType).to.equal('optionSet');
                 expect(modelValidations.optionSet.referenceType).to.equal('optionSet');
@@ -446,6 +464,28 @@ describe('ModelDefinition', () => {
 
                 it('should not add a reference type for a collection of complex objects', () => {
                     expect(modelValidations.userGroupAccesses.referenceType).to.be.undefined;
+                });
+            });
+
+            describe('embedded object property', () => {
+                let indicatorGroupModelDefinition;
+                let modelValidations;
+
+                beforeEach(() => {
+                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/legendSet'));
+                    modelValidations = indicatorGroupModelDefinition.modelValidations;
+                });
+
+                it('should have set the embedded property validation for userGroupAcceses to true', () => {
+                    expect(modelValidations.userGroupAccesses.embeddedObject).to.be.true;
+                });
+
+                it('should have set the embedded property validation for attributeValues to false', () => {
+                    expect(modelValidations.attributeValues.embeddedObject).to.be.false;
+                });
+
+                it('should set the embedded object to false for simple types', () => {
+                    expect(modelValidations.name.embeddedObject).to.be.false;
                 });
             });
         });
@@ -872,6 +912,8 @@ describe('ModelDefinition', () => {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
                     this.getCollectionChildrenPropertyNames = stub().returns([]);
+                    this.getEmbeddedObjectCollectionPropertyNames = stub().returns([]);
+                    this.getReferenceProperties = stub().returns([]);
                 }
             }
             model = new Model();
@@ -1081,6 +1123,28 @@ describe('ModelDefinition', () => {
         });
     });
 
+    describe('isTranslatable', () => {
+        let dataElementModelDefinition;
+        let userModelDefinition;
+
+        beforeEach(() => {
+            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+            userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
+        });
+
+        it('should be a function', () => {
+            expect(dataElementModelDefinition.isTranslatable).to.be.a('function');
+        });
+
+        it('should return true if the schema supports translations', () => {
+            expect(dataElementModelDefinition.isTranslatable()).to.be.true;
+        });
+
+        it('should return false if the schema can not be translated', () => {
+            expect(userModelDefinition.isTranslatable()).to.be.false;
+        });
+    });
+
     describe('getTranslatableProperties()', () => {
         let dataElementModelDefinition;
 
@@ -1183,16 +1247,18 @@ describe('ModelDefinition subsclasses', () => {
             );
         });
 
-        it('should use the special root orgunit id when fetching lists', () => {
-            organisationUnitModelDefinition.list({ root: 'myRootId' });
-
-            expect(getOnApiStub).to.be.calledWith('organisationUnits/myRootId', { fields: ':all' });
+        it('should use the special root orgunit id when fetching lists', (done) => {
+            organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
+                expect(getOnApiStub).to.be.calledWith('organisationUnits/myRootId', { fields: ':all' });
+                done();
+            });
         });
 
-        it('should handle list queries without special `root` parameters', () => {
-            organisationUnitModelDefinition.list();
-
-            expect(getOnApiStub).to.be.calledWith('organisationUnits', { fields: ':all' });
+        it('should handle list queries without special `root` parameters', (done) => {
+            organisationUnitModelDefinition.list().catch(() => {
+                expect(getOnApiStub).to.be.calledWith('organisationUnits', { fields: ':all' });
+                done();
+            });
         })
     });
 });

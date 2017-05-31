@@ -1,5 +1,3 @@
-'use strict';
-
 export default (function () {
     var fixtures = {};
 
@@ -27,7 +25,11 @@ export default (function () {
     addFixture('/api/schemas/organisationUnit', require('./json/api/schemas/organisationUnit.json'));
     addFixture('/api/schemas/organisationUnitGroupSet', require('./json/api/schemas/organisationUnitGroupSet'));
     addFixture('/api/schemas/validationRule', require('./json/api/schemas/validationRule'));
+    addFixture('/api/schemas/program', require('./json/api/schemas/program'));
+    addFixture('/api/schemas/programNotificationTemplate', require('./json/api/schemas/programNotificationTemplate'));
     addFixture('/api/schemas/user', require('./json/api/schemas/user.json'));
+    addFixture('/api/schemas/legendSet', require('./json/api/schemas/legendSet.json'));
+    addFixture('/api/schemas/legend', require('./json/api/schemas/legend.json'));
     addFixture('/api/userSettings', require('./json/api/userSettings'));
     addFixture('/appStore', require('./json/api/appStore.json'));
     addFixture('/dataElementAttributes', require('./json/dataElementAttributes.json'));
@@ -36,6 +38,7 @@ export default (function () {
     addFixture('/modelDefinitions/dataElement', require('./json/modelDefinitions/dataElement.json'));
     addFixture('/singleUserAllFields', require('./json/singleUserAllFields.json'));
     addFixture('/singleUserOwnerFields', require('./json/singleUserOwnerFields.json'));
+    addFixture('/api/legendSets/k1JHPfXsJND', require('./json/api/legendSets/k1JHPfXsJND.json'));
 
     return {
         get: getFixture,

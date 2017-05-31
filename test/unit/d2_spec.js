@@ -1,5 +1,6 @@
 import '../setup/setup.js'; // Import for global beforeEach / afterEach
 import fixtures from '../fixtures/fixtures';
+import DataStore from '../../src/datastore/DataStore';
 
 // TODO: The Config class should probably be mocked
 describe('D2', () => {
@@ -369,6 +370,7 @@ describe('D2', () => {
         });
 
         // FIXME: Test fails because the the ModelDefinitions class is a singleton
+/*
         xit('should create a ModelDefinition for each of the schemas', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
@@ -378,7 +380,9 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+*/
 
+/*
         xit('should call the ModelDefinition.createFromSchema with the schema', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
@@ -387,6 +391,7 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+*/
 
         it('should add the ModelDefinitions to the models list', (done) => {
             d2.init(undefined, apiMock)
@@ -422,8 +427,17 @@ describe('D2', () => {
             return d2.getInstance()
                 .then(newD2 => {
                     expect(apiMock.get).to.have.been.calledWith('schemas/user', {
-                        fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey]',
+                        fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]',
                     });
+                });
+        });
+    });
+
+    describe('DataStore', () => {
+        it('should have a dataStore object on the instance', () => {
+            return d2.init(undefined, apiMock)
+                .then(d2Instance => {
+                    expect(d2Instance.dataStore).to.be.instanceof(DataStore);
                 });
         });
     });
@@ -451,6 +465,7 @@ describe('D2', () => {
         });
 
         // FIXME: Impossible to test due to the global firstRun flag
+/*
         xit('should preset the baseUrl from the config', (done) => {
             d2.config.baseUrl = '/dhis/api';
 
@@ -461,6 +476,7 @@ describe('D2', () => {
                 })
                 .catch(done);
         });
+*/
 
         it('should use the default base url when the set baseUrl is not valid', (done) => {
             d2.config.baseUrl = undefined;

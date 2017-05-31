@@ -63,6 +63,7 @@ describe('ModelValidations', () => {
                 },
                 dataValues: { id: 'R4dd3wwdwdw', name: 'ANC' },
                 getCollectionChildrenPropertyNames: stub().returns([]),
+                getReferenceProperties: stub().returns([]),
             };
         });
 

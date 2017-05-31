@@ -152,10 +152,21 @@ class ModelBase {
         });
     }
 
+    // TODO: Cloning large graphs is very slow
     clone() {
-        return this.modelDefinition.create(
-            getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations))
+        const modelClone = this.modelDefinition.create(
+            getJSONForProperties(
+                this,
+                Object.keys(this.modelDefinition.modelValidations),
+                true
+            )
         );
+
+        if (this.isDirty()) {
+            modelClone.dirty = this.isDirty(true);
+        }
+
+        return modelClone;
     }
 
     delete() {
@@ -173,6 +184,7 @@ class ModelBase {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }
 
+    // TODO: This name is very misleading and should probably be renamed (would be a breaking change)
     getCollectionChildren() {
         // TODO: Can't be sure that this has a `modelDefinition` property
         return Object.keys(this)
@@ -195,6 +207,23 @@ class ModelBase {
             );
     }
 
+    getReferenceProperties() {
+        return Object
+            .keys(this)
+            .filter(propertyName =>
+                this.modelDefinition &&
+                this.modelDefinition.modelValidations &&
+                this.modelDefinition.modelValidations[propertyName] &&
+                this.modelDefinition.modelValidations[propertyName].type === 'REFERENCE' &&
+                this.modelDefinition.modelValidations[propertyName].embeddedObject === false
+            );
+    }
+
+    getEmbeddedObjectCollectionPropertyNames() {
+        return this.getCollectionChildrenPropertyNames()
+            .filter(propertyName => this.modelDefinition.modelValidations[propertyName].embeddedObject);
+    }
+
     getDirtyChildren() {
         return this.getCollectionChildren()
             .filter(property => property && (property.dirty === true));
@@ -202,6 +231,10 @@ class ModelBase {
 
     hasDirtyChildren() {
         return this.getDirtyChildren().length > 0;
+    }
+
+    toJSON() {
+        return getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations));
     }
 }
 

@@ -153,14 +153,15 @@ describe('System.configuration', () => {
 
             it('should call the API again if ignoreCache is true', (done) => {
                 configuration.all(true).then(() => {
+                    expect(apiGet.callCount).to.equal(1);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
+
                     configuration.all(true).then(() => {
                         expect(apiGet.callCount).to.equal(2);
                         expect(apiGet.withArgs('configuration').callCount).to.equal(2);
                         done();
-                    });
-                    expect(apiGet.callCount).to.equal(1);
-                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
-                });
+                    }).catch(e => done(e));
+                }).catch(e => done(e));
             });
         });
 
@@ -183,32 +184,34 @@ describe('System.configuration', () => {
             });
 
             it('should only query the API once', (done) => {
-                configuration.get('systemId').then(() => {
-                    configuration.get('systemId').then((res) => {
-                        expect(res).to.equal(mockConfiguration.systemId);
+                configuration.get('systemId').then((res1) => {
+                    expect(res1).to.equal(mockConfiguration.systemId);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
+
+                    configuration.get('systemId').then((res2) => {
+                        expect(res2).to.equal(mockConfiguration.systemId);
                         expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                         done();
                     }, (err) => {
                         done(err);
                     });
-                    expect(res).to.equal(mockConfiguration.systemId);
-                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 }, (err) => {
                     done(err);
                 });
             });
 
             it('should query the API twice if ignoreCache is true', (done) => {
-                configuration.get('systemId', true).then(() => {
-                    configuration.get('systemId', true).then((res) => {
-                        expect(res).to.equal(mockConfiguration.systemId);
+                configuration.get('systemId', true).then((res1) => {
+                    expect(res1).to.equal(mockConfiguration.systemId);
+                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
+
+                    configuration.get('systemId', true).then((res2) => {
+                        expect(res2).to.equal(mockConfiguration.systemId);
                         expect(apiGet.withArgs('configuration').callCount).to.equal(2);
                         done();
                     }, (err) => {
                         done(err);
                     });
-                    expect(res).to.equal(mockConfiguration.systemId);
-                    expect(apiGet.withArgs('configuration').callCount).to.equal(1);
                 }, (err) => {
                     done(err);
                 });

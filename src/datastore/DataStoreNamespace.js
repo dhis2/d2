@@ -41,7 +41,7 @@ class DataStoreNamespace {
                     this.keys = response;
                     return response;
                 }
-                return new Error('The requested namespace has no keys or does not exist.');
+                throw new Error('The requested namespace has no keys or does not exist.');
             });
     }
 
@@ -75,8 +75,10 @@ class DataStoreNamespace {
         if (!overrideUpdate && this.keys.includes(key)) {
             return this.update(key, value);
         }
-        return this.api.post([this.endPoint, this.namespace, key].join('/'), value).then(() => {
+
+        return this.api.post([this.endPoint, this.namespace, key].join('/'), value).then((resp) => {
             this.keys = [...this.keys, key];
+            return resp;
         });
     }
 

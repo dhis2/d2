@@ -270,18 +270,4 @@ describe('CurrentUser', () => {
             expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).to.be.false;
         });
     });
-
-    describe('uiLocale', () => {
-        it('should return the default uiLocale for the user', () => {
-            expect(currentUser.uiLocale).to.equal('en');
-        });
-
-        it('should return the set ui locale from the userSettings', () => {
-            currentUser.userSettings = {
-                keyUiLocale: 'fr',
-            };
-
-            expect(currentUser.uiLocale).to.equal('fr');
-        });
-    });
 });

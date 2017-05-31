@@ -21,6 +21,11 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
         },
     };
 
+    // Store available constants for ENUM type properties
+    if (schemaProperty.constants) {
+        propertyDetails.constants = schemaProperty.constants;
+    }
+
     // Only add a setter for writable properties
     if (schemaProperty.writable) {
         propertyDetails.set = function dynamicPropertySetter(value) {
@@ -58,8 +63,8 @@ function createValidationSetting(validationObject, schemaProperty) {
         owner: schemaProperty.owner,
         unique: schemaProperty.unique,
         writable: schemaProperty.writable,
-        constants: schemaProperty.constants,
         ordered: Boolean(schemaProperty.ordered),
+        embeddedObject: Boolean(schemaProperty.embeddedObject),
     };
 
     function getReferenceTypeFrom(property) {
@@ -139,6 +144,7 @@ class ModelDefinition {
         addLockedProperty(this, 'modelValidations', validations);
         addLockedProperty(this, 'attributeProperties', attributes);
         addLockedProperty(this, 'authorities', authorities);
+        addLockedProperty(this, 'translatable', schema.translatable || false);
 
         this.filters = Filters.getFilters(this);
 
@@ -319,7 +325,7 @@ class ModelDefinition {
             .then(responseData => ModelCollection.create(
                 this,
                 responseData[this.plural].map(data => this.create(data)),
-                responseData.pager
+                Object.assign(responseData.pager || {}, { query: params })
             ));
     }
 
@@ -390,6 +396,15 @@ class ModelDefinition {
             return this.api.delete(model.dataValues.href);
         }
         return this.api.delete([model.modelDefinition.apiEndpoint, model.dataValues.id].join('/'));
+    }
+
+    /**
+     * @method isTranslatable
+     *
+     * @returns {Boolean} True when the schema can be translated, false otherwise
+     */
+    isTranslatable() {
+        return this.translatable;
     }
 
     /**

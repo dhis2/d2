@@ -1,13 +1,11 @@
+const isFunction = fun => typeof fun === 'function';
+
 const NON_MODEL_COLLECTIONS = new Set([
-    'compulsoryDataElementOperands',
-    'greyedFields',
     'aggregationLevels',
     'grantTypes',
     'translations',
     'deliveryChannels',
     'redirectUris',
-    'dataSetElements',
-    'dataInputPeriods',
 ]);
 
 function isPlainValue(collection) {
@@ -20,9 +18,13 @@ function isCollectionProperty(collection) {
     return property => !isPlainValue(collection)(property);
 }
 
-export function getJSONForProperties(model, properties) {
+function isReferenceProperty(collection) {
+    return property => collection.indexOf(property) >= 0;
+}
+
+export function getJSONForProperties(model, properties, keepFullModels = false) {
     const objectToSave = {};
-    const collectionProperties = model
+    const collectionPropertiesNames = model
         .getCollectionChildrenPropertyNames()
         // Even though attributeValues are considered collections, they are handled separately due to their
         // difference in structure.
@@ -37,36 +39,49 @@ export function getJSONForProperties(model, properties) {
 
     // Handle plain values
     propertyNames
-        .filter(isPlainValue(collectionProperties))
+        .filter(isPlainValue(collectionPropertiesNames))
+        .filter(v => !isReferenceProperty(model.getReferenceProperties())(v))
         .forEach((propertyName) => {
             objectToSave[propertyName] = model.dataValues[propertyName];
         });
 
-    // Handle Collection properties
+    // Handle reference properties
     propertyNames
-        .filter(isCollectionProperty(collectionProperties))
+        .filter(isPlainValue(collectionPropertiesNames))
+        .filter(isReferenceProperty(model.getReferenceProperties()))
         .forEach((propertyName) => {
-            // compulsoryDataElementOperands and greyedFields are not arrays of models.
+            objectToSave[propertyName] = { id: model.dataValues[propertyName].id };
+        });
+
+    // Handle non-embedded collection properties
+    propertyNames
+        .filter(isCollectionProperty(collectionPropertiesNames))
+        .forEach((propertyName) => {
             // TODO: This is not the proper way to do this. We should check if the array contains Models
+            // These objects are not marked as embedded objects but they behave like they are
             if (NON_MODEL_COLLECTIONS.has(propertyName)) {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
             }
 
-            // Transform an object collection to an array of objects with id properties
-            objectToSave[propertyName] = Array
-                .from(model.dataValues[propertyName].values())
-                .filter(value => value.id)
-                .map((childModel) => {
-                    // Legends can be saved as part of the LegendSet object.
-                    // To make this work properly we will return all of the properties for the items in the collection
-                    // instead of just the `id` fields
-                    if (model.modelDefinition && model.modelDefinition.name === 'legendSet') {
-                        return getOwnedPropertyJSON.call(childModel.modelDefinition, childModel); // eslint-disable-line no-use-before-define
-                    }
+            const values = Array.isArray(model.dataValues[propertyName]) ?
+                model.dataValues[propertyName] : Array.from(model.dataValues[propertyName].values());
 
-                    // For any other types we return an object with just an id
-                    return { id: childModel.id };
+            // If the collection is a embedded collection we can save it as is.
+            if (model.getEmbeddedObjectCollectionPropertyNames().indexOf(propertyName) !== -1) {
+                objectToSave[propertyName] = values;
+                return;
+            }
+
+            // Transform an object collection to an array of objects with id properties
+            objectToSave[propertyName] = values
+                .filter(value => value.id)
+                // For any other types we return an object with just an id
+                .map((childModel) => {
+                    if (keepFullModels && isFunction(childModel.clone)) {
+                        return childModel.clone();
+                    }
+                    return ({ id: childModel.id });
                 });
         });
 

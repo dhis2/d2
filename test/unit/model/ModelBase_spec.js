@@ -1,6 +1,8 @@
+/* global sinon, require, describe, beforeEach, it, expect, stub */
+const proxyquire = require('proxyquire').noCallThru();
+
 function setupFakeModelValidation() {
     const validateAgainstSchemaSpy = sinon.stub();
-    const proxyquire = require('proxyquire').noCallThru();
 
     class ModelValidation {
         constructor() {
@@ -29,6 +31,7 @@ describe('ModelBase', () => {
         validateAgainstSchemaSpy.reset();
 
         modelBaseModule = require('../../../src/model/ModelBase');
+
         modelBase = modelBaseModule.default;
         DIRTY_PROPERTY_LIST = modelBaseModule.DIRTY_PROPERTY_LIST;
     });
@@ -319,8 +322,8 @@ describe('ModelBase', () => {
             constructor(modelDef) {
                 this.modelDefinition = modelDef;
                 this.validate = stub().returns(Promise.resolve({ status: true }));
-                this.dirty = true;
-                this[DIRTY_PROPERTY_LIST] = new Set(['name']);
+                this.dirty = false;
+                this[DIRTY_PROPERTY_LIST] = new Set([]);
                 this.dataValues = {
                     id: 'DXyJmlo9rge',
                     name: 'My metadata object',
@@ -409,6 +412,28 @@ describe('ModelBase', () => {
             });
         });
 
+        it('should retain all of the values in the child collections', () => {
+            model.dataValues.userGroups = new Map([
+                ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC', name: 'Administrators', clone() {
+                    return { id: 'P3jJH5Tu5VC', name: 'Administrators' };
+                } }],
+                ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS', name: 'Super users', clone() {
+                    return { id: 'FQ2o8UBlcrS', name: 'Super users' };
+                } }],
+            ]);
+
+            model.clone();
+
+            expect(modelDefinition.create).to.be.calledWith({
+                id: 'DXyJmlo9rge',
+                name: 'My metadata object',
+                userGroups: [
+                    { id: 'P3jJH5Tu5VC', name: 'Administrators' },
+                    { id: 'FQ2o8UBlcrS', name: 'Super users' },
+                ],
+            });
+        });
+
         it('should return an independent clone', () => {
             const modelClone = model.clone();
 
@@ -418,6 +443,15 @@ describe('ModelBase', () => {
 
             expect(modelClone.dataValues.name).to.equal('NewName');
             expect(model.dataValues.name).to.equal('My metadata object');
+        });
+
+        it('should preserve the dirty state of the original model', () => {
+            model.dirty = true;
+            model[DIRTY_PROPERTY_LIST] = new Set(['name']);
+
+            const modelClone = model.clone();
+
+            expect(modelClone.dirty).to.be.true;
         });
     });
 
@@ -474,6 +508,9 @@ describe('ModelBase', () => {
                     dataElements: {
                         owner: true,
                     },
+                    userGroups: {
+
+                    },
                 },
             };
             model.dataElements = {
@@ -496,6 +533,137 @@ describe('ModelBase', () => {
         });
     });
 
+    describe('getCollectionChildrenPropertyNames', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        type: 'COLLECTION',
+                    },
+                    dataEntryForm: {
+                        type: 'COMPLEX',
+                    },
+                },
+            };
+
+            model.dataElements = [];
+        });
+
+        it('should return the correct property collections', () => {
+            expect(model.getCollectionChildrenPropertyNames()).to.contain('dataElements');
+        });
+
+        it('should not return the collection for the property if there is no modelValidation for the property', () => {
+            model.indicators = [];
+
+            expect(model.getCollectionChildrenPropertyNames()).not.to.contain('indicators');
+        });
+
+        it('should not return the collection for the property if there is no modelValidation for the property', () => {
+            model.modelDefinition.modelValidations.indicators = {
+                type: 'COLLECTION',
+            };
+
+            expect(model.getCollectionChildrenPropertyNames()).not.to.contain('indicators');
+        });
+    });
+
+    describe('getReferenceProperties', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        type: 'COLLECTION',
+                        embeddedObject: false,
+                    },
+                    dataEntryForm: {
+                        type: 'COMPLEX',
+                    },
+                    user: {
+                        type: 'REFERENCE',
+                        embeddedObject: false,
+                    },
+                    accesses: {
+                        type: 'REFERENCE',
+                        embeddedObject: true,
+                    },
+                },
+            };
+
+            model.dataElements = [];
+            model.user = {
+                id: 'xE7jOejl9FI',
+                firstName: 'John',
+            };
+            model.accesses = {
+                read: true,
+                write: true,
+            };
+        });
+
+        it('should return the correct reference properties', () => {
+            expect(model.getReferenceProperties()).to.contain('user');
+        });
+
+        it('should not return the reference property if there is no modelValidation for the property', () => {
+            model.randomObject = {};
+
+            expect(model.getReferenceProperties()).not.to.contain('randomObject');
+        });
+
+        it('should not return the reference property if there is no value for the property', () => {
+            model.modelDefinition.modelValidations.randomObject = {
+                type: 'REFERENCE',
+            };
+
+            expect(model.getReferenceProperties()).not.to.contain('randomObject');
+        });
+
+        it('should not return the property if the reference property is embedded', () => {
+            expect(model.getReferenceProperties()).not.to.contain('accesses');
+        });
+    });
+
+    describe('getEmbeddedObjectCollectionPropertyNames', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    dataElements: {
+                        type: 'COLLECTION',
+                        embeddedObject: false,
+                    },
+                    dataEntryForm: {
+                        type: 'COMPLEX',
+                    },
+                    legends: {
+                        type: 'COLLECTION',
+                        embeddedObject: true,
+                    },
+                },
+            };
+
+            model.dataElements = [];
+            model.legends = [];
+        });
+
+        it('should include the embedded collection', () => {
+            expect(model.getEmbeddedObjectCollectionPropertyNames()).to.contain('legends');
+        });
+
+        it('should not include non embedded object collections', () => {
+            expect(model.getEmbeddedObjectCollectionPropertyNames()).not.to.contain('dataElements');
+        });
+    });
+
     describe('getDirtyChildren', () => {
         let model;
 
@@ -513,11 +681,55 @@ describe('ModelBase', () => {
                 dirty: true,
                 size: 2,
             };
-            // model.getCollectionChildren = sinon.stub().returns([model.dataElements]);
         });
 
         it('should return the dirty children properties', () => {
             expect(model.getDirtyChildren()).to.deep.equal([model.dataElements]);
+        });
+    });
+
+    describe('toJSON', () => {
+        let model;
+
+        beforeEach(() => {
+            model = Object.create(modelBase);
+            model.modelDefinition = {
+                modelValidations: {
+                    name: {
+                        owner: true,
+                    },
+                    dataElements: {
+                        owner: true,
+                        type: 'COLLECTION',
+                    },
+                },
+            };
+            model.dataValues = {
+                name: 'ANC',
+                dataElements: new Map([
+                    ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC', name: 'anc1' }],
+                    ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS', name: 'anc2' }],
+                ]),
+            };
+
+            model.name = model.dataValues.name;
+            model.dataElements = model.dataValues.dataElements;
+        });
+
+        it('should be a function', () => {
+            expect(model.toJSON).to.be.a('function');
+        });
+
+        it('should return a json representation of the model', () => {
+            const expected = ({
+                name: 'ANC',
+                dataElements: [
+                    { id: 'P3jJH5Tu5VC' },
+                    { id: 'FQ2o8UBlcrS' },
+                ],
+            });
+
+            expect(model.toJSON()).to.deep.equal(expected);
         });
     });
 });

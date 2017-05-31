@@ -64,6 +64,17 @@ describe('DataStoreNamespace', () => {
                 done();
             }).catch(e => done(e));
         });
+
+        it('should throw an error when there is no response', (done) => {
+            apiMock.get.returns(Promise.resolve(null));
+            apiMock.get = sinon.stub().returns(Promise.resolve({}))
+
+            namespace.getKeys(true)
+                .catch((namespaceRes) => {
+                    expect(namespaceRes.message).to.equal('The requested namespace has no keys or does not exist.');
+                    done();
+                })
+        });
     });
 
     describe('get()', () => {

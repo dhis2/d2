@@ -67,7 +67,7 @@ class Filter {
      *
      * @param {Filters} filters Filters list that this filter will be added to when it is completed.
      *
-     * @returns A instance of the Filter class that can be used to create
+     * @returns {Filter} A instance of the Filter class that can be used to create
      * filters.
      *
      * @description
@@ -79,7 +79,6 @@ class Filter {
 }
 
 // Add the filters to the Filter prototype
-// TODO: Change to for..of. Currently would break e2e tests because of polyfill
 Object.keys(FILTER_COMPARATORS).forEach((filter) => {
     Object.defineProperty(Filter.prototype, filter, {
         value: function filterGetter(filterValue) {
