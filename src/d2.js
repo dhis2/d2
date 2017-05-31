@@ -15,6 +15,29 @@ let deferredD2Init = Deferred.create();
 
 const preInitConfig = Config.create();
 
+/**
+ * @function getManifest
+ *
+ * @description
+ * Utility function to load the app manifest.
+ *
+ * The manifest well be enhanced with a `getBaseUrl()` utility function that will return the base url of the DHIS2 instance.
+ * This is a simple getter for the `activities.dhis.href` property on the manifest.
+ *
+ * ```js
+ * import { getManifest } from 'd2/lib/d2';
+ *
+ * getManifest()
+ *   .then(manifest => {
+ *      console.log(manifest.getBaseUrl());
+ *   });
+ * ```
+ *
+ * @param {string} url The location of the manifest. Generally this is located in the root of your app folder. (e.g. './manifest.webapp)
+ * @param {Api} [ApiClass] An implementation of the Api class that will be used to fetch the manifest.
+ *
+ * @returns {Promise} Returns a Promise to  the DHIS2 app manifest with the added `getBaseUrl` method.
+ */
 export function getManifest(url, ApiClass = Api) {
     const api = ApiClass.getApi();
     api.setBaseUrl('');
