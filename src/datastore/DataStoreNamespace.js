@@ -75,8 +75,10 @@ class DataStoreNamespace {
         if (!overrideUpdate && this.keys.includes(key)) {
             return this.update(key, value);
         }
-        return this.api.post([this.endPoint, this.namespace, key].join('/'), value).then(() => {
+
+        return this.api.post([this.endPoint, this.namespace, key].join('/'), value).then((resp) => {
             this.keys = [...this.keys, key];
+            return resp;
         });
     }
 
