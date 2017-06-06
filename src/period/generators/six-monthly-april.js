@@ -1,5 +1,9 @@
 import { validateIfValueIsInteger, getCurrentYear, getMonthNamesForLocale } from '../helpers';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
+/**
+ * @private
+ */
 export function generateSixMonthlyAprilPeriodsForYear(year = getCurrentYear(), locale = 'en') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
 

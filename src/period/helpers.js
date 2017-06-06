@@ -1,5 +1,8 @@
 import { isInteger } from '../lib/check';
 
+/**
+ * @private
+ */
 export function formatAsISODate(date) {
     if (!(date instanceof Date)) {
         throw new Error('formatAsISODate(date) only accepts Date objects');
@@ -11,6 +14,9 @@ export function formatAsISODate(date) {
     return `${y}-${m}-${d}`;
 }
 
+/**
+ * @private
+ */
 export function filterFuturePeriods(periods) {
     const array = [];
     const now = new Date();
@@ -24,6 +30,9 @@ export function filterFuturePeriods(periods) {
     return array;
 }
 
+/**
+ * @private
+ */
 export function getYYYYMM(date) {
     const y = date.getFullYear();
     let m = `${date.getMonth() + 1}`;
@@ -31,12 +40,18 @@ export function getYYYYMM(date) {
     return y + m;
 }
 
+/**
+ * @private
+ */
 export function getBiMonthlyId(date) {
     const y = date.getFullYear();
     const m = `0${Math.floor(date.getMonth() / 2) + 1}`.substr(-2);
     return `${y + m}B`;
 }
 
+/**
+ * @private
+ */
 export function validateIfValueIsInteger(year) {
     if (!isInteger(year)) {
         throw new Error('Generator should be called with an integer to identify the year. Perhaps you passed a Date object?');
@@ -47,16 +62,25 @@ export function validateIfValueIsInteger(year) {
     }
 }
 
+/**
+ * @private
+ */
 export function getCurrentYear() {
     return new Date().getFullYear();
 }
 
+/**
+ * @private
+ */
 export function is53WeekISOYear(year) {
     const p = y => ((y + Math.floor(y / 4)) - Math.floor(y / 100)) + Math.floor(y / 400);
 
     return p(year) % 7 === 4 || p(year - 1) % 7 === 3;
 }
 
+/**
+ * @private
+ */
 export function addDays(days, date) {
     const result = new Date(date);
 
@@ -65,6 +89,9 @@ export function addDays(days, date) {
     return result;
 }
 
+/**
+ * @private
+ */
 export function addMonths(months, date) {
     const result = new Date(date);
 
@@ -73,10 +100,16 @@ export function addMonths(months, date) {
     return result;
 }
 
+/**
+ * @private
+ */
 export function subtractDays(days, date) {
     return addDays(-days, date);
 }
 
+/**
+ * @private
+ */
 export function getFirstDayInFirstISOWeekForYear(year) {
     // The first ISO week of the year always contains 4th January. We can use this as a pointer to start the first week.
     let startDate = new Date(year, 0, 4);
@@ -94,6 +127,9 @@ export function getFirstDayInFirstISOWeekForYear(year) {
     return startDate;
 }
 
+/**
+ * @private
+ */
 export function getLastDayOfTheWeekForFirstDayOfTheWeek(startDate) {
     const endDate = new Date(startDate);
 
@@ -102,6 +138,9 @@ export function getLastDayOfTheWeekForFirstDayOfTheWeek(startDate) {
     return endDate;
 }
 
+/**
+ * @private
+ */
 export function getMonthNamesForLocale(locale) {
     const monthNames = [];
 
@@ -113,15 +152,24 @@ export function getMonthNamesForLocale(locale) {
     return monthNames;
 }
 
+/**
+ * @private
+ */
 export function getLastDateOfMonth(year, month) {
     return new Date(new Date(year, month + 1).setDate(0));
 }
 
+/**
+ * @private
+ */
 export function getFirstDateOfQuarter(year, quarter) {
     const startMonth = (quarter - 1) * 3;
     return new Date(year, startMonth);
 }
 
+/**
+ * @private
+ */
 export function getLastDateOfQuarter(year, quarter) {
     return new Date(getFirstDateOfQuarter(year, quarter + 1).setDate(0));
 }
@@ -129,6 +177,9 @@ export function getLastDateOfQuarter(year, quarter) {
 const ordTable = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 const ordTableLeap = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
 
+/**
+ * @private
+ */
 export function getFirstDateOfWeek(year, week) {
     const isLeapYear = new Date(new Date(year, 2, 1).setDate(0)).getDate() === 29;
     const ordDiff = isLeapYear ? ordTableLeap : ordTable;

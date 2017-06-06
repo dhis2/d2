@@ -25,12 +25,12 @@ class UserSettings {
      *
      * @description
      * Loads all the user settings of current user and returns them as an object from the promise.
-     * ```js
+     *
+     * @example
      * d2.currentUser.userSettings.all()
      *  .then(userSettings => {
      *    console.log('UI Locale: ' + userSettings.keyUiLocale);
      *  });
-     * ```
      */
     all() {
         return this.settings
@@ -45,13 +45,11 @@ class UserSettings {
      * @param {String} key The identifier of the user setting that should be retrieved.
      * @returns {Promise} A promise that resolves with the value or will fail if the value is not available.
      *
-     * @description
-     * ```js
+     * @example
      * d2.currentUser.userSettings.get('keyUiLocale')
      *  .then(userSettingValue => {
      *    console.log('UI Locale: ' + userSettingValue);
      *  });
-     * ```
      */
     get(key) {
         if (this.settings && this.settings[key]) {
@@ -92,13 +90,11 @@ class UserSettings {
      * @param {String} value The new value of the user setting.
      * @returns {Promise} A promise that will resolve when the new value has been saved, or fail if saving fails.
      *
-     * @description
-     * ```js
+     * @example
      * d2.currentUser.userSettings.set('keyUiLocale', 'fr')
      *  .then(() => {
      *   console.log('UI Locale is now "fr");
      *  });
-     * ```
      */
     set(key, value) {
         delete this.settings;

@@ -1,6 +1,10 @@
 import { isInteger } from '../../lib/check';
 import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, getMonthNamesForLocale } from '../helpers';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
+/**
+ * @private
+ */
 export function generateFinancialAprilPeriodsUpToYear(year = getCurrentYear(), numberOfYears = 10, locale = 'en') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
     if ((!isInteger(numberOfYears)) || numberOfYears < 1) { throw new Error('FinancialApril generator parameter `numberOfYears` should be an integer larger than 0.'); }

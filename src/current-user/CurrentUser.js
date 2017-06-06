@@ -66,13 +66,11 @@ export default class CurrentUser {
          * @property {UserSettings} settings Contains a reference to a `UserSettings` instance that can be used
          * to retrieve and save system settings.
          *
-         * @description
-         * ```js
+         * @example
          * d2.currentUser.userSettings.get('keyUiLocale')
          *  .then(userSettingsValue => {
          *    console.log('UI Locale: ' + userSettingsValue);
          *  });
-         * ```
          */
         this.userSettings = settings;
     }

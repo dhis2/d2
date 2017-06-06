@@ -4,7 +4,7 @@ import ModelDefinitions from './ModelDefinitions';
 import Model from './Model';
 import ModelCollection from './ModelCollection';
 import ModelCollectionProperty from './ModelCollectionProperty';
-import schemaTypes from '../lib/SchemaTypes';
+import { typeLookup } from '../lib/schemaTypes';
 import Filters from './Filters';
 import { DIRTY_PROPERTY_LIST } from './ModelBase';
 import { getDefaultValuesForModelType } from './config';
@@ -56,7 +56,7 @@ function createValidationSetting(validationObject, schemaProperty) {
     const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
     const validationDetails = {
         persisted: schemaProperty.persisted,
-        type: schemaTypes.typeLookup(schemaProperty.propertyType),
+        type: typeLookup(schemaProperty.propertyType),
         required: schemaProperty.required,
         min: schemaProperty.min,
         max: schemaProperty.max,
@@ -172,9 +172,8 @@ class ModelDefinition {
      * Creates a fresh Model instance based on the `ModelDefinition`. If data is passed into the method that
      * data will be loaded into the matching properties of the model.
      *
-     * ```js
+     * @example
      * dataElement.create({name: 'ANC', id: 'd2sf33s3ssf'});
-     * ```
      */
     create(data) {
         const model = Model.create(this);
@@ -265,12 +264,11 @@ class ModelDefinition {
      * Get a `Model` instance from the api loaded with data that relates to `identifier`.
      * This will do an API call and return a Promise that resolves with a `Model` or rejects with the api error message.
      *
-     * ```js
+     * @example
      * //Do a get request for the dataElement with given id (d2sf33s3ssf) and print it's name
      * //when that request is complete and the model is loaded.
      * dataElement.get('d2sf33s3ssf')
      *   .then(model => console.log(model.name));
-     * ```
      */
     get(identifier, queryParams = { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' }) {
         checkDefined(identifier, 'Identifier');
@@ -300,13 +298,12 @@ class ModelDefinition {
      * @description
      * Loads a list of models.
      *
-     * ```js
+     * @example
      * // Loads a list of models and prints their name.
      * dataElement.list()
      *   .then(modelCollection => {
      *     modelCollection.forEach(model => console.log(model.name));
      *   });
-     * ```
      */
     list(listParams = {}) {
         const { apiEndpoint, ...extraParams } = listParams;
@@ -372,9 +369,8 @@ class ModelDefinition {
      * as "owner" properties on this schema. This means these properties are used
      * when saving the model to the server.
      *
-     * ```js
+     * @example
      * dataElement.getOwnedPropertyNames()
-     * ```
      */
     getOwnedPropertyNames() {
         return Object.keys(this.modelValidations)
@@ -450,9 +446,8 @@ class ModelDefinition {
      * required by DHIS. Since these schemas can not be altered on the server from
      * the modelDefinition is frozen to prevent accidental changes to the definition.
      *
-     * ```js
+     * @example
      * ModelDefinition.createFromSchema(schemaDefinition, attributes);
-     * ```
      *
      * @note {info} An example of a schema definition can be found on
      * https://apps.dhis2.org/demo/api/schemas/dataElement

@@ -22,13 +22,11 @@ class System {
          * @property {SystemSettings} settings Contains a reference to a `SystemSettings` instance that can be used
          * to retrieve and save system settings.
          *
-         * @description
-         * ```js
+         * @example
          * d2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')
          *  .then(systemSettingsValue => {
          *    console.log('Analytics was last updated on: ' + systemSettingsValue);
          *  });
-         * ```
          */
         this.settings = settings;
 

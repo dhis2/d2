@@ -1,3 +1,6 @@
+/**
+ * @private
+ */
 export function checkDefined(value, name) {
     if (value !== undefined) {
         return true;
@@ -6,6 +9,9 @@ export function checkDefined(value, name) {
 }
 
 // TODO: Decide if checkType([], 'object') is a 'false' positive
+/**
+ * @private
+ */
 export function checkType(value, type, name) {
     checkDefined(value, name);
     checkDefined(type, 'Type');
@@ -18,6 +24,9 @@ export function checkType(value, type, name) {
 }
 
 // TODO: Log type error?
+/**
+ * @private
+ */
 export function isType(value, type) {
     function noop() {}
 
@@ -31,22 +40,37 @@ export function isType(value, type) {
     return false;
 }
 
+/**
+ * @private
+ */
 export function isString(value) {
     return isType(value, 'string');
 }
 
+/**
+ * @private
+ */
 export function isArray(value) {
     return Array.isArray(value);
 }
 
+/**
+ * @private
+ */
 export function isObject(value) {
     return isType(value, Object);
 }
 
+/**
+ * @private
+ */
 export function isDefined(value) {
     return value !== undefined;
 }
 
+/**
+ * @private
+ */
 export function isInteger(nVal) {
     return typeof nVal === 'number' &&
         isFinite(nVal) &&
@@ -62,22 +86,34 @@ if (!Number.isInteger) {
     Number.isInteger = isInteger;
 }
 
+/**
+ * @private
+ */
 export function isNumeric(nVal) {
     return typeof nVal === 'number' &&
         isFinite(nVal) &&
         ((nVal - parseFloat(nVal)) + 1) >= 0;
 }
 
+/**
+ * @private
+ */
 export function contains(item, list) {
     const listToCheck = (isArray(list) && list) || [];
 
     return listToCheck.indexOf(item) >= 0;
 }
 
+/**
+ * @private
+ */
 export function isValidUid(value) {
     return value && value.length === 11;
 }
 
+/**
+ * @private
+ */
 export default {
     checkType,
     checkDefined,

@@ -8,7 +8,9 @@ import {
     is53WeekISOYear,
 } from '../helpers';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
 /**
+ * @private
  * Generate weekly periods types
  */
 export function generateWeeklyPeriodsForYear(year = getCurrentYear()) { // eslint-disable-line import/prefer-default-export

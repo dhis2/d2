@@ -15,6 +15,7 @@ build/*
 dist/*
 lib/*
 docs/dist/*
+esdoc/*
 docs/app/highlight/styles/*
 !docs/app/highlight/styles/default.css
 

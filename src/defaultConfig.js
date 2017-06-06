@@ -1,3 +1,7 @@
+/**
+ * @private
+ * @type {Set}
+ */
 export const noCreateAllowedFor = new Set([
     'categoryOptionCombo',
 ]);

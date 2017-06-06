@@ -1,0 +1,8 @@
+{
+  "source": "src",
+  "destination": "./esdoc/docs",
+  "experimentalProposal": {
+    "classProperties": true,
+    "objectRestSpread": true
+  }
+}

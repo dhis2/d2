@@ -4,6 +4,10 @@ import { getJSONForProperties } from './helpers/json';
 
 const modelValidator = ModelValidation.getModelValidation();
 
+/**
+ * @private
+ * @type {Symbol}
+ */
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
 function hasModelValidationForProperty(model, property) {
@@ -69,10 +73,9 @@ class ModelBase {
      * Checks if the model is dirty. When the model is dirty it will check if the values of the model are valid by calling
      * `validate`. If this is correct it will attempt to save the [Model](#/model/Model) to the api.
      *
-     * ```js
+     * @example
      * myModel.save()
      *   .then((message) => console.log(message));
-     * ```
      */
     save(includeChildren) {
         // Calling save when there's nothing to be saved is a no-op
@@ -103,14 +106,13 @@ class ModelBase {
      * through the DHIS2 schema. It will check min/max for strings/numbers etc. Additionally it will
      * run model validations against the schema.
      *
-     * ```js
+     * @example
      * myModel.validate()
      *  .then(myModelStatus => {
      *    if (myModelStatus.status === false) {
      *      myModelStatus.fields.forEach((fieldName) => console.log(fieldName));
      *    }
      * });
-     * ```
      */
     validate() {
         return new Promise((resolve, reject) => {

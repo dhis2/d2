@@ -1,6 +1,8 @@
 import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, getMonthNamesForLocale } from '../helpers';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
 /**
+ * @private
  * Generate Quarterly periods for a year.
  *
  * This will generate four quarters for a given year. The generated quarterly periods looks as follows.

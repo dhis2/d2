@@ -48,6 +48,7 @@ class Model {
         });
 
         /**
+         * @private
          * @property {Boolean} dirty Represents the state of the model. When the model is concidered `dirty`
          * there are pending changes.
          * This property is not enumerable or writable and will therefore not show up when looping
@@ -61,6 +62,7 @@ class Model {
         });
 
         /**
+         * @private
          * @property {Object} dataValues Values object used to store the actual model values. Normally access to the
          * Model data will be done through accessor properties that are generated from the modelDefinition.
          *
@@ -139,6 +141,10 @@ class Model {
 
         Object.defineProperties(this, modelDefinition.modelProperties);
 
+        /**
+         * @private
+         * @type {Set}
+         */
         this[DIRTY_PROPERTY_LIST] = new Set([]);
     }
 
@@ -151,9 +157,8 @@ class Model {
      *
      * @description The static method is a factory method to create Model objects. It calls `new Model()` with the passed `ModelDefinition`.
      *
-     * ```js
+     * @example
      * let myModel = Model.create(modelDefinition);
-     * ```
      */
     static create(modelDefinition) {
         return new Model(modelDefinition);

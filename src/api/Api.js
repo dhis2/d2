@@ -250,15 +250,13 @@ class Api {
 
         return this;
     }
-}
 
-function getApi() {
-    if (getApi.api) {
-        return getApi.api;
+    static getApi() {
+        if (Api.getApi.api) {
+            return Api.getApi.api;
+        }
+        return (Api.getApi.api = new Api());
     }
-    return (getApi.api = new Api());
 }
-
-Api.getApi = getApi;
 
 export default Api;

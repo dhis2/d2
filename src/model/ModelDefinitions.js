@@ -10,9 +10,8 @@ import { checkType, isType } from '../lib/check';
  * After calling the initialise function `d2({baseUrl: 'dhis/api'})` this object is the `models` property
  * that allows you to access
  *
- * ```js
+ * @example
  * models.dataElement.getList();
- * ```
  */
 class ModelDefinitions {
     // TODO: Elaborate this documentation
@@ -26,9 +25,8 @@ class ModelDefinitions {
      * The Definition object should have the following properties
      * `modelName, modelNamePlural, modelOptions, properties, validations`
      *
-     * ```js
+     * @example
      * models.add({name: 'MyDefinition', plural: 'MyDefinitions', endPointname: '/myDefinition'});
-     * ```
      */
     add(modelDefinition) {
         try {
@@ -56,9 +54,8 @@ class ModelDefinitions {
      * @description
      * Map through the modelDefinitions like you would with a simple `Array.map()`
      *
-     * ```js
+     * @example
      * models.mapThroughDefinitions(definition => console.log(definition.name);
-     * ```
      *
      * @note {info} When mapping through the definition list `transformer` is called with the just the definition
      * Unlike other map functions, no index or the full object is being passed.

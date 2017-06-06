@@ -46,11 +46,9 @@ export function generateUid() {
  * @return {boolean} Returns true if the code is valid, false otherwise.
  *
  * @example
- * ```js
  * isValidUid('JkWynlWMjJR'); // true
  * isValidUid('0kWynlWMjJR'); // false (Uid can not start with a number)
  * isValidUid('AkWy$lWMjJR'); // false (Uid can only contain alphanumeric characters.
- * ```
  */
 export function isValidUid(code) {
     if (code == null) { // eslint-disable-line eqeqeq

@@ -5,6 +5,7 @@
   "main": "d2.js",
   "scripts": {
     "documentation": "documentation build src/* --github --output docs --format html",
+    "doc": "esdoc -c esdoc.json",
     "coverage": "NODE_ENV=test nyc --require babel-register --require babel-polyfill mocha --reporter dot --require test/setup/node.js --recursive test/unit && nyc report --reporter=lcov",
     "validate": "npm ls --depth 0 || yarn list",
     "test": "TZ=UTC mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
@@ -32,6 +33,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
+    "esdoc": "^0.5.2",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import organisationUnitGroupSetDefaults from './model-defaults/organisationUnitGroupSet';
-import categoryDefaults from './model-defaults/category';
+import { categoryDefaults } from './model-defaults/category';
 import categoryOptionGroupSetDefaults from './model-defaults/categoryOptionGroupSet';
 import dataElementDefaults from './model-defaults/dataElement';
 import dataElementGroupSetDefaults from './model-defaults/dataElementGroupSet';

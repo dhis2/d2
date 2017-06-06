@@ -1,7 +1,9 @@
 import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, addDays } from '../helpers';
 import { toLocaleDayFormat } from '../formatters';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
 /**
+ * @private
  * Generate daily periods for the given year.
  *
  * @param {Integer} [year=getCurrentYear()] The year to generate the daily periods for.

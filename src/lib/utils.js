@@ -1,16 +1,25 @@
 // TODO: Most of these functions should be moved out to d2-utilizr
 
+/**
+ * @private
+ */
 export function throwError(message) {
     throw new Error(message);
 }
 
 // TODO: Throw an error when `toCurry` is not a function
+/**
+ * @private
+ */
 export function curry(toCurry, parameter) {
     return function curried(...args) {
         return toCurry.apply(this, [parameter].concat(args));
     };
 }
 
+/**
+ * @private
+ */
 export function addLockedProperty(object, name, value) {
     const propertyDescriptor = {
         enumerable: true,
@@ -21,6 +30,9 @@ export function addLockedProperty(object, name, value) {
     Object.defineProperty(object, name, propertyDescriptor);
 }
 
+/**
+ * @private
+ */
 export function copyOwnProperties(to, from) {
     Object.keys(from)
         .filter(key => from.hasOwnProperty(key))
@@ -31,6 +43,9 @@ export function copyOwnProperties(to, from) {
     return to;
 }
 
+/**
+ * @private
+ */
 export function pick(property) {
     return (item) => {
         if (item) {
@@ -40,6 +55,9 @@ export function pick(property) {
     };
 }
 
+/**
+ * @private
+ */
 export class Deferred {
     constructor() {
         this.promise = new Promise((resolve, reject) => {
@@ -53,6 +71,9 @@ export class Deferred {
     }
 }
 
+/**
+ * @private
+ */
 export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
     if (!baseUrl || !apiUrl) {
         return apiUrl;
@@ -80,6 +101,8 @@ const whitelistURICodes = whitelistURI.split('').map(c => encodeURIComponent(c))
 const whitelistRegExp = new RegExp(`(?:${whitelistURICodes.join('|')})`, 'g');
 
 /**
+ * @private
+ * 
  * Encode all invalid URI characters, except the ones we've decided we don't want to
  */
 export function customEncodeURIComponent(uri) {

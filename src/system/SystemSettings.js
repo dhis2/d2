@@ -28,12 +28,12 @@ class SystemSettings {
      *
      * @description
      * Loads all the system settings in the system and returns them as an object from the promise.
-     * ```js
+     *
+     * @example
      * d2.system.settings.all()
      *  .then(systemSettings => {
      *    console.log('Analytics was last updated on: ' + systemSettings.keyLastSuccessfulResourceTablesUpdate);
      *  });
-     * ```
      */
     all() {
         return this.settings
@@ -48,13 +48,11 @@ class SystemSettings {
      * @param {String} systemSettingsKey The identifier of the system setting that should be retrieved.
      * @returns {Promise} A promise that resolves with the value or will fail if the value is not available.
      *
-     * @description
-     * ```js
+     * @example
      * d2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')
      *  .then(systemSettingsValue => {
      *    console.log('Analytics was last updated on: ' + systemSettingsValue);
      *  });
-     * ```
      */
     get(systemSettingsKey) {
         if (this.settings && this.settings[systemSettingsKey]) {

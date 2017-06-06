@@ -216,6 +216,13 @@ const regexMatchToPeriod = {
     },
 };
 
+// TODO: add link to Intl dateformat on MDN
+/**
+ *
+ * @param {string} periodId The period identifier to find the period for.
+ * @param {string} [locale] The locale to format the string for. This is the locale used for Intl
+ * @returns {*}
+ */
 export function getPeriodFromPeriodId(periodId, locale = 'en') {
     const period = Object.keys(periodTypeRegex)
         .filter(periodType => periodTypeRegex[periodType].test(periodId) && regexMatchToPeriod.hasOwnProperty(periodType))

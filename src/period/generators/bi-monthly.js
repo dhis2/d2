@@ -1,5 +1,9 @@
 import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, addMonths, getBiMonthlyId } from '../helpers';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
+/**
+ * @private
+ */
 export function generateBiMonthlyPeriodsForYear(year = getCurrentYear(), locale = 'en') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
 

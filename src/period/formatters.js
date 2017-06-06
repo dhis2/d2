@@ -22,6 +22,9 @@ const getFormatterMemoized = (() => {
     };
 })();
 
+/**
+ * @private
+ */
 export function toLocaleDayFormat(date, locale = 'en') { // eslint-disable-line import/prefer-default-export
     return getFormatterMemoized(locale, localeDayFormatOptions).format(date);
 }

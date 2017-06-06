@@ -10,6 +10,10 @@ import { generateFinancialOctoberPeriodsUpToYear } from './financial-october';
 import { generateFinancialJulyPeriodsUpToYear } from './financial-july';
 import { generateFinancialAprilPeriodsUpToYear } from './financial-april';
 
+// TODO: Period generator is not ready to be released as it is gregorian only
+/**
+ * @private
+ */
 export function createPeriodGeneratorsForLocale(locale = 'en') { // eslint-disable-line import/prefer-default-export
     return {
         generateDailyPeriodsForYear: year => generateDailyPeriodsForYear(year, locale),
