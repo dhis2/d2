@@ -11,36 +11,28 @@ class Logger {
         return !!(type && console && isType(this.logger[type], 'function'));
     }
 
-    debug(...rest) {
-        if (this.canLog('debug')) {
-            this.logger.debug.apply(console, rest);
+    logMessage(type = 'log', ...rest) {
+        if (this.canLog(type) && this.logger[type]) {
+            this.logger[type](...rest);
             return true;
         }
         return false;
+    }
+
+    debug(...rest) {
+        return this.logMessage('debug', ...rest);
     }
 
     error(...rest) {
-        if (this.canLog('error')) {
-            this.logger.error.apply(console, rest);
-            return true;
-        }
-        return false;
+        return this.logMessage('error', ...rest);
     }
 
     log(...rest) {
-        if (this.canLog('log')) {
-            this.logger.log.apply(console, rest);
-            return true;
-        }
-        return false;
+        return this.logMessage('log', ...rest);
     }
 
     warn(...rest) {
-        if (this.canLog('warn')) {
-            this.logger.warn.apply(console, rest);
-            return true;
-        }
-        return false;
+        return this.logMessage('warn', ...rest);
     }
 
     static getLogger() {
