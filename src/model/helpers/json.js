@@ -1,4 +1,5 @@
 const NON_MODEL_COLLECTIONS = new Set([
+    'authorities',
     'compulsoryDataElementOperands',
     'greyedFields',
     'aggregationLevels',
