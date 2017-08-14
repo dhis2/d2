@@ -18,8 +18,9 @@ import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, getMonthName
  * In most cases the `id` property contained the same value so this can be used instead.
  *
  * @param {Integer} [year=new Date().getFullYear()] The year to generate the daily periods for.
+ * @param {String} [locale='en-gb'] The locale to use when getting month names.
  */
-export function generateQuarterlyPeriodsForYear(year = getCurrentYear(), locale) { // eslint-disable-line import/prefer-default-export
+export function generateQuarterlyPeriodsForYear(year = getCurrentYear(), locale = 'en-gb') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
 
     const periods = [];
