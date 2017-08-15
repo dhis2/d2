@@ -13,7 +13,7 @@ describe('CurrentUser', () => {
     beforeEach(() => {
         modelDefinitions = {
             userGroup: {
-                get: stub().returns(Promise.resolve([])),
+                list: stub().returns(Promise.resolve([])),
                 authorities: [
                     {
                         type: 'CREATE_PUBLIC',
@@ -22,7 +22,7 @@ describe('CurrentUser', () => {
                 ],
             },
             userRole: {
-                get: stub().returns(Promise.resolve([])),
+                list: stub().returns(Promise.resolve([])),
             },
             organisationUnit: {
                 list: stub().returns(Promise.resolve([])),
@@ -151,7 +151,7 @@ describe('CurrentUser', () => {
         it('should be called with the userGroup ids', () => {
             currentUser.getUserGroups();
 
-            expect(modelDefinitions.userGroup.get).to.be.calledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
+            expect(modelDefinitions.userGroup.list).to.be.calledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
         });
     });
 
@@ -163,7 +163,7 @@ describe('CurrentUser', () => {
         it('should be called with the userRole ids', () => {
             currentUser.getUserRoles();
 
-            expect(modelDefinitions.userRole.get).to.be.calledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
+            expect(modelDefinitions.userRole.list).to.be.calledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
         });
     });
 

@@ -80,13 +80,13 @@ export default class CurrentUser {
     getUserGroups() {
         const userGroupIds = this[propertySymbols.userGroups];
 
-        return this[models].userGroup.get({ filter: [`id:in:[${userGroupIds.join(',')}]`] });
+        return this[models].userGroup.list({ filter: [`id:in:[${userGroupIds.join(',')}]`] });
     }
 
     getUserRoles() {
         const userRoleIds = this[propertySymbols.userRoles];
 
-        return this[models].userRole.get({ filter: [`id:in:[${userRoleIds.join(',')}]`] });
+        return this[models].userRole.list({ filter: [`id:in:[${userRoleIds.join(',')}]`] });
     }
 
     getOrganisationUnits(listOptions) {
