@@ -7,7 +7,7 @@
     "documentation": "documentation build src/* --github --output docs --format html",
     "coverage": "NODE_ENV=test nyc --require babel-register --require babel-polyfill mocha --reporter dot --require test/setup/node.js --recursive test/unit && nyc report --reporter=lcov",
     "validate": "npm ls --depth 0 || yarn list",
-    "test": "TZ=UTC mocha --reporter dot --compilers js:babel-core/register --require test/setup/node.js --recursive test/unit",
+    "test": "TZ=UTC jest",
     "test-watch": "npm run test -- --watch",
     "prebuild": "npm run lint && npm run validate && npm run test",
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
+    "jest": "^21.0.2",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
