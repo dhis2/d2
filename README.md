@@ -9,6 +9,8 @@ d2
 == 
 
 #Documentation
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/dhis2/d2.svg)](https://greenkeeper.io/)
 The documentation is temporarily available on [http://d2.markionium.com](http://d2.markionium.com)
 
 #D2
