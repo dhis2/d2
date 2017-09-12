@@ -67,8 +67,8 @@ class I18n {
 
                     // Resolve errors to an empty object, so that one missing file doesn't prevent
                     // the rest from being loaded
-                    () => Promise.resolve({})
-                )
+                    () => Promise.resolve({}),
+                ),
             );
         });
 

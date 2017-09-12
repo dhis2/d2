@@ -12,7 +12,6 @@ import { isString, isArray } from '../lib/check';
  * @property {String} namespace Name of the namespace as on the server.
  */
 class DataStoreNamespace {
-
     constructor(namespace, keys, api = Api.getApi()) {
         if (!isString(namespace)) {
             throw new Error('DataStoreNamespaces must be called with a string to identify the Namespace');
@@ -103,7 +102,6 @@ class DataStoreNamespace {
     update(key, value) {
         return this.api.update([this.endPoint, this.namespace, key].join('/'), value);
     }
-
 }
 
 export default DataStoreNamespace;

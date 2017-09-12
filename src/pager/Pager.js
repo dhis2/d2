@@ -7,7 +7,6 @@ import { isDefined } from '../lib/check';
  * Pager object that can be used to navigate pages within a `Modelcollection`
  */
 class Pager {
-
     /**
      * @constructor
      *
@@ -19,7 +18,7 @@ class Pager {
      */
     constructor(
         pager = { page: 1, pageCount: 1, query: {} },
-        pagingHandler = { list: () => Promise.reject('No handler available') }
+        pagingHandler = { list: () => Promise.reject('No handler available') },
     ) {
         /**
          * @property {number} page Current page number

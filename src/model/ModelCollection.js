@@ -34,7 +34,6 @@ function throwIfContainsModelWithoutUid(values) {
  * pages within the system.
  */
 class ModelCollection {
-
     /**
      * @constructor
      *
