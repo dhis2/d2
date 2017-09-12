@@ -8,5 +8,17 @@
     },
     "rules": {
         "class-methods-use-this": ["warn"]
+    },
+    "overrides": {
+        "files": [ "**/*spec.js" ],
+        "env": {
+            "mocha": true,
+            "node": true
+        },
+        "globals": {
+            "expect": false,
+            "sinon": false
+        },
+        "rules": {}
     }
 }
