@@ -5,7 +5,7 @@
   "main": "d2.js",
   "scripts": {
     "documentation": "documentation build src/* --github --output docs --format html",
-    "coverage": "NODE_ENV=test nyc --require babel-register --require babel-polyfill mocha --reporter dot --require test/setup/node.js --recursive test/unit && nyc report --reporter=lcov",
+    "coverage": "npm test -- --coverage",
     "validate": "npm ls --depth 0 || yarn list",
     "test": "TZ=UTC jest",
     "test-watch": "npm run test -- --watch",
