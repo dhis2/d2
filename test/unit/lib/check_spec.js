@@ -130,20 +130,18 @@ describe('Check', () => {
     });
 
     describe('isArray', () => {
-        const sinon = require('sinon');
-
         beforeEach(() => {
-            sinon.spy(Array, 'isArray');
+            jest.spyOn(Array, 'isArray')
         });
 
         afterEach(() => {
-            Array.isArray.restore();
+            Array.isArray.mockRestore();
         });
 
         it('should call Array.isArray', () => {
             check.isArray([]);
 
-            expect(Array.isArray.calledOnce).toBe(true);
+            expect(Array.isArray).toHaveBeenCalledTimes(1);
         });
     });
 
