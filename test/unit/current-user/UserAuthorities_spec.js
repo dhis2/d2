@@ -12,26 +12,26 @@ describe('UserAuthorities', () => {
     });
 
     it('should return true if the user has an authority', () => {
-        expect(userAuthorities.has('F_DATAVALUE_DELETE')).to.equal(true);
+        expect(userAuthorities.has('F_DATAVALUE_DELETE')).toBe(true);
     });
 
     it('should return false if the user does not have an authority', () => {
-        expect(userAuthorities.has('F_DOCUMENT_PUBLIC_DELETE')).equal(false);
+        expect(userAuthorities.has('F_DOCUMENT_PUBLIC_DELETE')).toBe(false);
     });
 
     it('should return true if the user does not have an authority but does have ALL', () => {
         userAuthorities = UserAuthorities.create(['F_DATAVALUE_DELETE', 'ALL']);
 
-        expect(userAuthorities.has('F_DOCUMENT_PUBLIC_DELETE')).equal(true);
+        expect(userAuthorities.has('F_DOCUMENT_PUBLIC_DELETE')).toBe(true);
     });
 
     it('should return false when asking for ALL and the user does not have it', () => {
-        expect(userAuthorities.has('ALL')).equals(false);
+        expect(userAuthorities.has('ALL')).toBe(false);
     });
 
     it('should return true when asking for ALL and the user has the authority', () => {
         userAuthorities = UserAuthorities.create(['F_DATAVALUE_DELETE', 'ALL']);
 
-        expect(userAuthorities.has('ALL')).equals(true);
+        expect(userAuthorities.has('ALL')).toBe(true);
     });
 });

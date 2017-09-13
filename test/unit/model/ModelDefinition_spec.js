@@ -1,71 +1,61 @@
-let proxyquire = require('proxyquire').noCallThru();
-
 import fixtures from '../../fixtures/fixtures';
 import { DIRTY_PROPERTY_LIST } from '../../../src/model/ModelBase';
 import Model from '../../../src/model/Model';
 import ModelDefinitions from '../../../src/model/ModelDefinitions';
-// import ModelDefinition from '../../../src/model/ModelDefinition';
-
-import ModelCollection from '../../../src/model/ModelCollection';
 import ModelCollectionProperty from '../../../src/model/ModelCollectionProperty';
+import ModelCollection from '../../../src/model/ModelCollection';
+import ModelDefinition from '../../../src/model/ModelDefinition';
 
-// TODO: Can not use import here as babel will not respect the override
-let ModelDefinition = require('../../../src/model/ModelDefinition').default;
+jest.mock('../../../src/model/ModelCollection');
+jest.mock('../../../src/model/ModelCollectionProperty');
+jest.mock('../../../src/model/Model');
 
 describe('ModelDefinition', () => {
-    'use strict';
-
     let modelDefinition;
     let mockModelCollectionCreate;
     let mockModelCollectionPropertyCreate;
 
     beforeEach(() => {
         modelDefinition = new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement', plural: 'dataElements' });
-
-        mockModelCollectionCreate = sinon.stub(ModelCollection, 'create');
-        mockModelCollectionCreate.returns(new ModelCollection(modelDefinition, [], {}));
-        mockModelCollectionPropertyCreate = sinon.stub(ModelCollectionProperty, 'create');
-        mockModelCollectionPropertyCreate.returns(new ModelCollectionProperty({}, modelDefinition, []));
-    });
-
-    afterEach(() => {
-        ModelCollection.create.restore();
-        ModelCollectionProperty.create.restore();
+        mockModelCollectionCreate = jest.fn(ModelCollection, 'create');
+        mockModelCollectionCreate.mockReturnValue(new ModelCollection(modelDefinition, [], {}));
+        mockModelCollectionPropertyCreate = jest.fn(ModelCollectionProperty, 'create');
+        mockModelCollectionPropertyCreate.mockReturnValue(new ModelCollectionProperty({}, modelDefinition, []));
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinition()).to.throw('Cannot call a class as a function');
+        expect(() => ModelDefinition()).toThrowError('Cannot call a class as a function');
     });
 
     it('should create a ModelDefinition object', () => {
-        expect(modelDefinition).to.be.instanceof(ModelDefinition);
+        expect(modelDefinition).toBeInstanceOf(ModelDefinition);
     });
 
     it('should not add epiEndpoint when it does not exist', () => {
-        expect(modelDefinition.apiEndpoint).to.be.undefined;
+        expect(modelDefinition.apiEndpoint).toBeUndefined();
     });
 
     it('should throw an error when a name is not specified', () => {
         function shouldThrow() {
             new ModelDefinition();
         }
-        expect(shouldThrow).to.throw('Value should be provided');
+        expect(shouldThrow).toThrowError('Value should be provided');
     });
 
     it('should throw an error when plural is not specified', () => {
         function shouldThrow() {
             new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement' });
         }
-        expect(shouldThrow).to.throw('Plural should be provided');
+        expect(shouldThrow).toThrowError('Plural should be provided');
     });
 
     describe('instance', () => {
         it('should not be able to change the name', () => {
-            var isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').writable;
-            var isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').configurable;
+            const isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').writable;
+            const isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'name').configurable;
 
-            expect(isWritable).to.be.false;
-            expect(isConfigurable).to.be.false;
+            expect(isWritable).toBe(false);
+            expect(isConfigurable).toBe(false);
         });
 
         it('should not change the name', () => {
@@ -77,30 +67,29 @@ describe('ModelDefinition', () => {
                 }
             }
 
-            expect(shouldThrow).to.throw();
-            expect(modelDefinition.name).to.equal('dataElement');
+            expect(shouldThrow).toThrowError();
+            expect(modelDefinition.name).toBe('dataElement');
         });
 
         it('should have the correct displayName', () => {
-            expect(modelDefinition.displayName).to.equal('Data Elements');
+            expect(modelDefinition.displayName).toBe('Data Elements');
         });
 
         it('should not change the displayName', () => {
             function shouldThrow() {
-                'use strict';
                 modelDefinition.displayName = 'Another Name';
             }
 
-            expect(shouldThrow).to.throw();
-            expect(modelDefinition.displayName).to.equal('Data Elements');
+            expect(shouldThrow).toThrowError();
+            expect(modelDefinition.displayName).toBe('Data Elements');
         });
 
         it('should not be able to change the isMetaData', () => {
             const isWritable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').writable;
             const isConfigurable = Object.getOwnPropertyDescriptor(modelDefinition, 'isMetaData').configurable;
 
-            expect(isWritable).to.be.false;
-            expect(isConfigurable).to.be.false;
+            expect(isWritable).toBe(false);
+            expect(isConfigurable).toBe(false);
         });
 
         it('should not change the isMetaData', () => {
@@ -112,103 +101,103 @@ describe('ModelDefinition', () => {
                 }
             }
 
-            expect(modelDefinition.isMetaData).to.equal(false);
-            expect(shouldThrow).to.throw();
+            expect(modelDefinition.isMetaData).toBe(false);
+            expect(shouldThrow).toThrowError();
         });
     });
 
     describe('createFromSchema', () => {
-        var dataElementModelDefinition;
+        let dataElementModelDefinition;
 
         beforeEach(() => {
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/api/attributes').attributes);
         });
 
         it('should be a method on ModelDefinition', () => {
-            expect(ModelDefinition.createFromSchema).to.not.be.undefined;
+            expect(ModelDefinition.createFromSchema).toBeDefined();
         });
 
         it('should throw if the schema is not provided', () => {
-            expect(ModelDefinition.createFromSchema).to.throw('Schema should be provided');
+            expect(ModelDefinition.createFromSchema).toThrowError('Schema should be provided');
         });
 
         describe('dataElementSchema', () => {
             it('should return a ModelDefinition object', () => {
-                expect(dataElementModelDefinition).to.be.instanceof(ModelDefinition);
+                expect(dataElementModelDefinition).toBeInstanceOf(ModelDefinition);
             });
 
             it('should set the name on the definition', () => {
-                expect(dataElementModelDefinition.name).to.equal('dataElement');
+                expect(dataElementModelDefinition.name).toBe('dataElement');
             });
 
             it('should set if it is a metadata model', () => {
-                expect(dataElementModelDefinition.isMetaData).to.be.true;
+                expect(dataElementModelDefinition.isMetaData).toBe(true);
             });
 
             it('should set the epiEndpoint', () => {
-                expect(dataElementModelDefinition.apiEndpoint).to.equal('https://play.dhis2.org/demo/api/dataElements');
+                expect(dataElementModelDefinition.apiEndpoint).toBe('https://play.dhis2.org/demo/api/dataElements');
             });
 
             it('should set metadata to false if it is not a metadata model', () => {
-                var nonMetaDataModel = fixtures.get('/api/schemas/dataElement');
+                const nonMetaDataModel = fixtures.get('/api/schemas/dataElement');
                 nonMetaDataModel.metadata = false;
 
                 dataElementModelDefinition = ModelDefinition.createFromSchema(nonMetaDataModel);
 
-                expect(dataElementModelDefinition.isMetaData).to.be.false;
+                expect(dataElementModelDefinition.isMetaData).toBe(false);
             });
 
             it('should a properties property for each of the schema properties', () => {
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(37);
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).toBe(37);
             });
 
             it('should not be able to modify the modelProperties array', () => {
                 function shouldThrow() {
                     dataElementModelDefinition.modelProperties.anotherKey = {};
 
-                    //TODO: There is an implementation bug in PhantomJS that does not properly freeze the array
+                    // TODO: There is an implementation bug in PhantomJS that does not properly freeze the array
                     if (Object.keys(dataElementModelDefinition.modelProperties).length === 37) {
                         throw new Error();
                     }
                 }
 
-                expect(shouldThrow).to.throw();
-                expect(Object.keys(dataElementModelDefinition.modelProperties).length).to.equal(37);
+                expect(shouldThrow).toThrowError();
+                expect(Object.keys(dataElementModelDefinition.modelProperties).length).toBe(37);
             });
 
             it('should store property constants', () => {
                 dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
 
-                expect(dataElementModelDefinition.modelProperties.aggregationType.constants).to.eql([
-                    "SUM",
-                    "AVERAGE",
-                    "AVERAGE_SUM_ORG_UNIT",
-                    "COUNT",
-                    "STDDEV",
-                    "VARIANCE",
-                    "MIN",
-                    "MAX",
-                    "NONE",
-                    "CUSTOM",
-                    "DEFAULT",
-                    "AVERAGE_SUM_INT",
-                    "AVERAGE_SUM_INT_DISAGGREGATION",
-                    "AVERAGE_INT",
-                    "AVERAGE_INT_DISAGGREGATION",
-                    "AVERAGE_BOOL",
+                expect(dataElementModelDefinition.modelProperties.aggregationType.constants).toEqual([
+                    'SUM',
+                    'AVERAGE',
+                    'AVERAGE_SUM_ORG_UNIT',
+                    'COUNT',
+                    'STDDEV',
+                    'VARIANCE',
+                    'MIN',
+                    'MAX',
+                    'NONE',
+                    'CUSTOM',
+                    'DEFAULT',
+                    'AVERAGE_SUM_INT',
+                    'AVERAGE_SUM_INT_DISAGGREGATION',
+                    'AVERAGE_INT',
+                    'AVERAGE_INT_DISAGGREGATION',
+                    'AVERAGE_BOOL',
                 ]);
             });
         });
 
         describe('modelProperties', () => {
-            var modelProperties;
+            let modelProperties;
 
             beforeEach(() => {
                 modelProperties = dataElementModelDefinition.modelProperties;
             });
 
             it('should be an object', () => {
-                expect(modelProperties.name).to.be.instanceof(Object);
+                expect(modelProperties.name).toBeInstanceOf(Object);
             });
 
             it('should throw an error when a type is not found', () => {
@@ -224,7 +213,7 @@ describe('ModelDefinition', () => {
                     propertyType: 'uio.some.unknown.type',
                 });
 
-                expect(shouldThrow).to.throw('Type from schema "uio.some.unknown.type" not found available type list.');
+                expect(shouldThrow).toThrowError('Type from schema "uio.some.unknown.type" not found available type list.');
             });
 
             it('should not add properties that do not have a name', () => {
@@ -269,28 +258,28 @@ describe('ModelDefinition', () => {
                     'dimensionItemType',
                 ];
 
-                schema.properties.push({propertyType: 'TEXT'});
+                schema.properties.push({ propertyType: 'TEXT' });
 
                 const definition = ModelDefinition.createFromSchema(schema);
 
-                expect(Object.keys(definition.modelProperties).sort()).to.deep.equal(expectedProperties.sort());
+                expect(Object.keys(definition.modelProperties).sort()).toEqual(expectedProperties.sort());
             });
 
             it('should use the collection name for collections', () => {
-                expect(modelProperties.dataElementGroups).to.not.be.undefined;
-                expect(modelProperties.dataElementGroup).to.be.undefined;
+                expect(modelProperties.dataElementGroups).toBeDefined();
+                expect(modelProperties.dataElementGroup).toBeUndefined();
             });
 
             it('should add a get method to the propertyDescriptor', () => {
-                expect(modelProperties.name.get).to.be.instanceof(Function);
+                expect(modelProperties.name.get).toBeInstanceOf(Function);
             });
 
             it('should add a set method to the propertyDescriptor for name', () => {
-                expect(modelProperties.name.set).to.be.instanceof(Function);
+                expect(modelProperties.name.set).toBeInstanceOf(Function);
             });
 
             it('should not have a set method for dimensionItem', () => {
-                expect(modelProperties.dimensionItem.set).not.to.be.instanceof(Function);
+                expect(modelProperties.dimensionItem.set).not.toBeInstanceOf(Function);
             });
 
             it('should create getter function on the propertyDescriptor', () => {
@@ -300,7 +289,7 @@ describe('ModelDefinition', () => {
                     },
                 };
 
-                expect(modelProperties.name.get.call(model)).to.equal('Mark');
+                expect(modelProperties.name.get.call(model)).toBe('Mark');
             });
 
             it('should create setter function on the propertyDescriptor', () => {
@@ -311,7 +300,7 @@ describe('ModelDefinition', () => {
 
                 modelProperties.name.set.call(model, 'James');
 
-                expect(model.dataValues.name).to.equal('James');
+                expect(model.dataValues.name).toBe('James');
             });
 
             describe('setter', () => {
@@ -329,21 +318,21 @@ describe('ModelDefinition', () => {
                 it('should set the dirty property to true when a value is set', () => {
                     modelProperties.name.set.call(model, 'James');
 
-                    expect(model.dirty).to.be.true;
+                    expect(model.dirty).toBe(true);
                 });
 
                 it('should not set the dirty property to true when the value is the same', () => {
                     model.dataValues.name = 'James';
                     modelProperties.name.set.call(model, 'James');
 
-                    expect(model.dirty).to.be.false;
+                    expect(model.dirty).toBe(false);
                 });
 
                 it('should set the dirty property when a different object is added', () => {
                     model.dataValues.name = { name: 'James' };
                     modelProperties.name.set.call(model, { name: 'James', last: 'Doe' });
 
-                    expect(model.dirty).to.be.true;
+                    expect(model.dirty).toBe(true);
                 });
             });
         });
@@ -357,21 +346,21 @@ describe('ModelDefinition', () => {
 
             describe('created', () => {
                 it('should set the data object as a type for date fields', () => {
-                    expect(modelValidations.created.type).to.equal('DATE');
+                    expect(modelValidations.created.type).toBe('DATE');
                 });
 
                 it('should be owned by this schema', () => {
-                    expect(modelValidations.created.owner).to.be.true;
+                    expect(modelValidations.created.owner).toBe(true);
                 });
             });
 
             describe('externalAccess', () => {
                 it('should set the boolean datatype for externalAccess', () => {
-                    expect(modelValidations.externalAccess.type).to.equal('BOOLEAN');
+                    expect(modelValidations.externalAccess.type).toBe('BOOLEAN');
                 });
 
                 it('should not be owned by this schema', () => {
-                    expect(modelValidations.externalAccess.owner).to.be.false;
+                    expect(modelValidations.externalAccess.owner).toBe(false);
                 });
 
                 // TODO: This currently has some sort of max value
@@ -382,48 +371,48 @@ describe('ModelDefinition', () => {
 
             describe('id', () => {
                 it('should have a maxLength', () => {
-                    expect(modelValidations.id.max).to.equal(11);
+                    expect(modelValidations.id.max).toBe(11);
                 });
             });
 
             describe('name', () => {
                 it('should have have a type property', () => {
-                    expect(modelValidations.name.type).to.equal('TEXT');
+                    expect(modelValidations.name.type).toBe('TEXT');
                 });
 
                 it('should have a persisted property', () => {
-                    expect(modelValidations.name.persisted).to.be.true;
+                    expect(modelValidations.name.persisted).toBe(true);
                 });
 
                 it('should have a required property', () => {
-                    expect(modelValidations.name.required).to.be.true;
+                    expect(modelValidations.name.required).toBe(true);
                 });
 
                 it('should have an owner property', () => {
-                    expect(modelValidations.name.owner).to.be.true;
+                    expect(modelValidations.name.owner).toBe(true);
                 });
             });
 
             it('should add the referenceType to the optionSet and commentOptionSet', () => {
-                expect(modelValidations.commentOptionSet.referenceType).to.equal('optionSet');
-                expect(modelValidations.optionSet.referenceType).to.equal('optionSet');
+                expect(modelValidations.commentOptionSet.referenceType).toBe('optionSet');
+                expect(modelValidations.optionSet.referenceType).toBe('optionSet');
             });
 
             it('should add the referenceType to the categoryCombo property', () => {
-                expect(modelValidations.categoryCombo.referenceType).to.equal('categoryCombo');
+                expect(modelValidations.categoryCombo.referenceType).toBe('categoryCombo');
             });
 
             it('should add the referenceType to the user property', () => {
-                expect(modelValidations.user.referenceType).to.equal('user');
+                expect(modelValidations.user.referenceType).toBe('user');
             });
 
             it('should not add a referenceType for a property that are not a reference', () => {
-                expect(modelValidations.name.referenceType).to.be.undefined;
+                expect(modelValidations.name.referenceType).toBeUndefined();
             });
 
             describe('ordered', () => {
                 it('should set ordered to false when the property is not available', () => {
-                    expect(modelValidations.name.ordered).to.be.false;
+                    expect(modelValidations.name.ordered).toBe(false);
                 });
 
                 it('should set ordered to false when the ordered property is available and is false', () => {
@@ -434,7 +423,7 @@ describe('ModelDefinition', () => {
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 
-                    expect(modelValidations.aggregationType.ordered).to.be.false;
+                    expect(modelValidations.aggregationType.ordered).toBe(false);
                 });
 
                 it('should set ordered to true when the ordered property is available and is true', () => {
@@ -445,7 +434,7 @@ describe('ModelDefinition', () => {
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 
-                    expect(modelValidations.aggregationLevels.ordered).to.be.true;
+                    expect(modelValidations.aggregationLevels.ordered).toBe(true);
                 });
             });
 
@@ -459,11 +448,11 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should add a reference type for a collection of references', () => {
-                    expect(modelValidations.indicators.referenceType).to.equal('indicator');
+                    expect(modelValidations.indicators.referenceType).toBe('indicator');
                 });
 
                 it('should not add a reference type for a collection of complex objects', () => {
-                    expect(modelValidations.userGroupAccesses.referenceType).to.be.undefined;
+                    expect(modelValidations.userGroupAccesses.referenceType).toBeUndefined();
                 });
             });
 
@@ -477,15 +466,15 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should have set the embedded property validation for userGroupAcceses to true', () => {
-                    expect(modelValidations.userGroupAccesses.embeddedObject).to.be.true;
+                    expect(modelValidations.userGroupAccesses.embeddedObject).toBe(true);
                 });
 
                 it('should have set the embedded property validation for attributeValues to false', () => {
-                    expect(modelValidations.attributeValues.embeddedObject).to.be.false;
+                    expect(modelValidations.attributeValues.embeddedObject).toBe(false);
                 });
 
                 it('should set the embedded object to false for simple types', () => {
-                    expect(modelValidations.name.embeddedObject).to.be.false;
+                    expect(modelValidations.name.embeddedObject).toBe(false);
                 });
             });
         });
@@ -506,12 +495,12 @@ describe('ModelDefinition', () => {
             });
 
             it('should return a UserModelDefinition for the user schema', () => {
-                expect(userModelDefinition).to.be.instanceof(UserModelDefinition);
+                expect(userModelDefinition).toBeInstanceOf(UserModelDefinition);
             });
 
             it('should return a DataSetModelDefinition for the data set schema', () => {
-                expect(dataSetModelDefinition).to.be.instanceof(DataSetModelDefinition);
-            })
+                expect(dataSetModelDefinition).toBeInstanceOf(DataSetModelDefinition);
+            });
         });
 
         describe('attribute properties', () => {
@@ -522,11 +511,11 @@ describe('ModelDefinition', () => {
             });
 
             it('should have added the attribute properties onto the model', () => {
-                expect(attributeProperties).to.not.be.undefined;
+                expect(attributeProperties).toBeDefined();
             });
 
             it('should be descriptor objects', () => {
-                expect(attributeProperties.name).to.be.instanceof(Object);
+                expect(attributeProperties.name).toBeInstanceOf(Object);
             });
         });
     });
@@ -540,7 +529,7 @@ describe('ModelDefinition', () => {
 
         // TODO: This is currently not a pure unit test as we haven't mocked out Model
         it('should return an instance of Model', () => {
-            expect(dataElementModelDefinition.create()).to.be.instanceof(Model);
+            expect(dataElementModelDefinition.create()).toBeInstanceOf(Model);
         });
 
         describe('with default values', () => {
@@ -552,7 +541,7 @@ describe('ModelDefinition', () => {
             });
 
             it('should set the default data dimension', () => {
-                expect(model.dataDimension).to.be.true;
+                expect(model.dataDimension).toBe(true);
             });
         });
 
@@ -574,35 +563,41 @@ describe('ModelDefinition', () => {
                 }
             });
 
+            afterEach(() => {
+                ModelCollectionProperty.create.mockClear();
+            });
+
             describe('with data', () => {
                 beforeEach(() => {
                     model = userModelDefinition.create({
                         organisationUnits: [
-                            {name: 'Kenya', id: 'FTRrcoaog83'},
-                            {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+                            { name: 'Kenya', id: 'FTRrcoaog83' },
+                            { name: 'Oslo', id: 'P3jJH5Tu5VC' },
                         ],
                     });
                 });
 
                 it('should create a ModelCollectionProperty.create for a collection of objects', () => {
-                    expect(ModelCollectionProperty.create).to.have.callCount(1);
+                    expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(1);
                 });
 
                 it('should create a ModelCollectionProperty with the correct values', () => {
-                    const modelDefinitionForCollection = ModelCollectionProperty.create.getCall(0).args[1];
-                    const modelCollectionData = ModelCollectionProperty.create.getCall(0).args[2];
-                    const passedModelInstance = ModelCollectionProperty.create.getCall(0).args[0];
+                    // const modelDefinitionForCollection = ModelCollectionProperty.create.mock.calls[0][1];
+                    // const modelCollectionData = ModelCollectionProperty.create.mock.calls[0][2];
+                    // const passedModelInstance = ModelCollectionProperty.create.mock.calls[0][0];
 
-                    // First argument to ModelCollectionPrototype.create
-                    expect(passedModelInstance).to.equal(model);
+                    expect(ModelCollectionProperty.create.mock.calls[0]).toMatchSnapshot();
 
-                    // Second argument to ModelCollectionProperty.create
-                    expect(modelDefinitionForCollection.name).to.equal(orgunitModelDefinition.name);
-                    expect(modelDefinitionForCollection.plural).to.equal(orgunitModelDefinition.plural);
-
-                    // Third argument to ModelCollectionProperty.create
-                    expect(modelCollectionData[0]).to.deep.equal(orgunitModelDefinition.create({name: 'Kenya', id: 'FTRrcoaog83'}));
-                    expect(modelCollectionData[1]).to.deep.equal(orgunitModelDefinition.create({name: 'Oslo', id: 'P3jJH5Tu5VC'}));
+                    // // First argument to ModelCollectionPrototype.create
+                    // expect(passedModelInstance).toBe(model);
+                    //
+                    // // Second argument to ModelCollectionProperty.create
+                    // expect(modelDefinitionForCollection.name).toBe(orgunitModelDefinition.name);
+                    // expect(modelDefinitionForCollection.plural).toBe(orgunitModelDefinition.plural);
+                    //
+                    // // Third argument to ModelCollectionProperty.create
+                    // expect(modelCollectionData[0]).toEqual(orgunitModelDefinition.create({ name: 'Kenya', id: 'FTRrcoaog83' }));
+                    // expect(modelCollectionData[1]).toEqual(orgunitModelDefinition.create({ name: 'Oslo', id: 'P3jJH5Tu5VC' }));
                 });
             });
 
@@ -612,23 +607,23 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should create a ModelCollectionProperty.create for a collection of objects', () => {
-                    expect(ModelCollectionProperty.create).to.have.callCount(3);
+                    expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(3);
                 });
 
                 it('should create a ModelCollectionProperty without data', () => {
-                    const passedModelInstance = ModelCollectionProperty.create.getCall(0).args[0];
-                    const modelDefinitionForCollection = ModelCollectionProperty.create.getCall(0).args[1];
-                    const modelCollectionData = ModelCollectionProperty.create.getCall(0).args[2];
+                    const passedModelInstance = ModelCollectionProperty.create.mock.calls[0][0];
+                    const modelDefinitionForCollection = ModelCollectionProperty.create.mock.calls[0][1];
+                    const modelCollectionData = ModelCollectionProperty.create.mock.calls[0][2];
 
                     // First argument to ModelCollectionPrototype.create
-                    expect(passedModelInstance).to.equal(model);
+                    expect(passedModelInstance).toMatchSnapshot();
 
                     // Second argument to ModelCollectionProperty.create
-                    expect(modelDefinitionForCollection.name).to.equal(orgunitModelDefinition.name);
-                    expect(modelDefinitionForCollection.plural).to.equal(orgunitModelDefinition.plural);
+                    expect(modelDefinitionForCollection.name).toBe(orgunitModelDefinition.name);
+                    expect(modelDefinitionForCollection.plural).toBe(orgunitModelDefinition.plural);
 
                     // Third argument to ModelCollectionProperty.create
-                    expect(modelCollectionData).to.deep.equal([]);
+                    expect(modelCollectionData).toEqual([]);
                 });
             });
         });
@@ -639,7 +634,7 @@ describe('ModelDefinition', () => {
 
         beforeEach(() => {
             ModelDefinition.prototype.api = {
-                get: stub().returns(new Promise((resolve) => {
+                get: jest.fn().mockReturnValue(new Promise((resolve) => {
                     resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
                 })),
             };
@@ -652,78 +647,73 @@ describe('ModelDefinition', () => {
                 dataElementModelDefinition.get();
             }
 
-            expect(shouldThrow).to.throw('Identifier should be provided');
+            expect(shouldThrow).toThrowError('Identifier should be provided');
         });
 
         it('should return a promise', () => {
             const modelPromise = dataElementModelDefinition
                 .get('d4343fsss');
 
-            expect(modelPromise.then).to.be.instanceof(Function);
+            expect(modelPromise.then).toBeInstanceOf(Function);
         });
 
         it('should call the api for the requested id', () => {
             dataElementModelDefinition.get('d4343fsss');
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements/d4343fsss', { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements/d4343fsss', { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' });
         });
 
-        it('should set the data onto the model when it is available', (done) => {
-            dataElementModelDefinition.get('d4343fsss')
+        it('should set the data onto the model when it is available', () => {
+            return dataElementModelDefinition.get('d4343fsss')
                 .then((dataElementModel) => {
-                    expect(dataElementModel.name).to.equal('BS_COLL (N, DSD) TARGET: Blood Units Donated');
-                    done();
+                    expect(dataElementModel.name).toBe('BS_COLL (N, DSD) TARGET: Blood Units Donated');
                 });
         });
 
-        it('should reject the promise with the message when the request fails', (done) => {
-            ModelDefinition.prototype.api.get = stub().returns(Promise.reject({
+        it('should reject the promise with the message when the request fails', () => {
+            ModelDefinition.prototype.api.get = jest.fn()
+                .mockReturnValue(Promise.reject({
                     httpStatus: 'Not Found',
                     httpStatusCode: 404,
                     status: 'ERROR',
                     message: 'DataElementCategory with id sdfsf could not be found.',
-                })
-            );
+                }));
 
-            dataElementModelDefinition.get('d4343fsss')
-                .then(done)
+            return dataElementModelDefinition.get('d4343fsss')
                 .catch((dataElementError) => {
-                    expect(dataElementError).to.equal('DataElementCategory with id sdfsf could not be found.');
-                    done();
+                    expect(dataElementError).toBe('DataElementCategory with id sdfsf could not be found.');
                 });
         });
 
         it('should reject with the promise payload when no message was returned', () => {
             const responsePayload = '500 error string';
 
-            ModelDefinition.prototype.api.get = stub().returns(Promise.reject(responsePayload));
+            ModelDefinition.prototype.api.get = jest.fn().mockReturnValue(Promise.reject(responsePayload));
 
             return dataElementModelDefinition.get('d4343fsss')
                 .catch((dataElementError) => {
-                    expect(dataElementError).to.equal(responsePayload);
+                    expect(dataElementError).toBe(responsePayload);
                 });
         });
 
         describe('multiple', () => {
-            it('should return a ModelCollection object', (done) => {
+            it('should return a ModelCollection object', () => {
                 const dataElementsResult = fixtures.get('/api/dataElements');
-                ModelDefinition.prototype.api.get = stub().returns(Promise.resolve(dataElementsResult));
+                ModelDefinition.prototype.api.get = jest.fn().mockReturnValue(Promise.resolve(dataElementsResult));
 
-                dataElementModelDefinition.get(['id1', 'id2'])
+                return dataElementModelDefinition.get(['id1', 'id2'])
                     .then((dataElementCollection) => {
-                        expect(dataElementCollection).to.be.instanceof(ModelCollection);
-                        done();
-                    })
-                    .catch(done);
+                        expect(dataElementCollection).toBeInstanceOf(ModelCollection);
+                    });
             });
 
             it('should call the api with the in filter', (done) => {
                 const dataElementsResult = fixtures.get('/api/dataElements');
-                ModelDefinition.prototype.api.get = stub().returns(Promise.resolve(dataElementsResult));
+                ModelDefinition.prototype.api.get = jest.fn().mockReturnValue(Promise.resolve(dataElementsResult));
 
                 dataElementModelDefinition.get(['id1', 'id2'])
                     .then((dataElementCollection) => {
-                        expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { filter: ['id:in:[id1,id2]'], fields: ':all' });
+                        expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { filter: ['id:in:[id1,id2]'], fields: ':all' });
                         done();
                     })
                     .catch(done);
@@ -732,69 +722,53 @@ describe('ModelDefinition', () => {
     });
 
     describe('list', () => {
-        let dataElementsResult = fixtures.get('/api/dataElements');
+        const dataElementsResult = fixtures.get('/api/dataElements');
         let dataElementModelDefinition;
 
         beforeEach(() => {
             ModelDefinition.prototype.api = {
-                get: stub().returns(new Promise((resolve) => {
+                get: jest.fn().mockReturnValue(new Promise((resolve) => {
                     resolve(dataElementsResult);
-                }))
+                })),
             };
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
         it('should be a function', () => {
-            expect(dataElementModelDefinition.list).to.be.instanceof(Function);
+            expect(dataElementModelDefinition.list).toBeInstanceOf(Function);
         });
 
         it('should call the get method on the api', () => {
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.called;
+            expect(ModelDefinition.prototype.api.get).toBeCalled();
         });
 
         it('should return a promise', () => {
-            expect(dataElementModelDefinition.list()).to.be.instanceof(Promise);
+            expect(dataElementModelDefinition.list()).toBeInstanceOf(Promise);
         });
 
         it('should call the get method on the api with the endpoint of the model', () => {
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
         });
 
-        it('should return a model collection object', (done) => {
-            dataElementModelDefinition.list()
+        it('should return a model collection object', () => {
+            return dataElementModelDefinition.list()
                 .then((dataElementCollection) => {
-                    expect(dataElementCollection).to.be.instanceof(ModelCollection);
-                    done();
-                })
-                .catch(done);
+                    expect(dataElementCollection).toBeInstanceOf(ModelCollection);
+                });
         });
 
-        it('should not call the model collection create function with new', (done) => {
-            dataElementModelDefinition.list()
+        it('should call the model collection constructor with the correct data', () => {
+            return dataElementModelDefinition.list()
                 .then(() => {
-                    expect(ModelCollection.create).to.not.be.calledWithNew;
-                    done();
-                })
-                .catch(done);
-        });
+                    const firstCallArguments = ModelCollection.create.mock.calls[0];
 
-        it('should call the model collection constructor with the correct data', (done) => {
-            dataElementModelDefinition.list()
-                .then(() => {
-                    let firstCallArguments = ModelCollection.create.getCall(0).args;
-
-                    expect(firstCallArguments[0]).to.equal(dataElementModelDefinition);
-                    expect(firstCallArguments[1].length).to.equal(5);
-                    expect(firstCallArguments[2]).to.equal(dataElementsResult.pager);
-
-                    done();
-                })
-                .catch(done);
+                    expect(firstCallArguments).toMatchSnapshot();
+                });
         });
 
         it('should call the api get method with the correct parameters after filters are set', () => {
@@ -802,11 +776,11 @@ describe('ModelDefinition', () => {
                 .filter().on('name').like('John')
                 .list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
         });
 
         it('should return a separate modelDefinition when filter is called', () => {
-            expect(dataElementModelDefinition.filter).not.to.equal(dataElementModelDefinition);
+            expect(dataElementModelDefinition.filter).not.toBe(dataElementModelDefinition);
         });
 
         it('should not influence the list method of the default modelDefinition', () => {
@@ -816,8 +790,8 @@ describe('ModelDefinition', () => {
 
             dataElementModelDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
         });
 
         it('should support multiple filters', () => {
@@ -826,61 +800,61 @@ describe('ModelDefinition', () => {
                 .filter().on('username').equals('admin')
                 .list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
         });
 
         it('should not try to filter by "undefined"', () => {
             dataElementModelDefinition
                 .list({ filter: undefined });
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
-        })
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+        });
     });
 
     describe('clone', () => {
-        let dataElementsResult = fixtures.get('/api/dataElements');
+        const dataElementsResult = fixtures.get('/api/dataElements');
         let dataElementModelDefinition;
 
         beforeEach(() => {
             ModelDefinition.prototype.api = {
-                get: stub().returns(new Promise((resolve) => {
+                get: jest.fn().mockReturnValue(new Promise((resolve) => {
                     resolve(dataElementsResult);
-                }))
+                })),
             };
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
         });
 
         it('should be a method', () => {
-            expect(dataElementModelDefinition.clone).to.be.instanceof(Function);
+            expect(dataElementModelDefinition.clone).toBeInstanceOf(Function);
         });
 
         it('should return a cloned modelDefinition', () => {
-            expect(dataElementModelDefinition.clone()).not.to.equal(dataElementModelDefinition);
+            expect(dataElementModelDefinition.clone()).not.toBe(dataElementModelDefinition);
         });
 
         it('should deep equal the creator', () => {
-            let clonedDefinition = dataElementModelDefinition.clone();
+            const clonedDefinition = dataElementModelDefinition.clone();
 
-            expect(clonedDefinition.name).to.equal(dataElementModelDefinition.name);
-            expect(clonedDefinition.plural).to.equal(dataElementModelDefinition.plural);
-            expect(clonedDefinition.isMetaData).to.equal(dataElementModelDefinition.isMetaData);
-            expect(clonedDefinition.apiEndpoint).to.equal(dataElementModelDefinition.apiEndpoint);
-            expect(clonedDefinition.modelProperties).to.equal(dataElementModelDefinition.modelProperties);
+            expect(clonedDefinition.name).toBe(dataElementModelDefinition.name);
+            expect(clonedDefinition.plural).toBe(dataElementModelDefinition.plural);
+            expect(clonedDefinition.isMetaData).toBe(dataElementModelDefinition.isMetaData);
+            expect(clonedDefinition.apiEndpoint).toBe(dataElementModelDefinition.apiEndpoint);
+            expect(clonedDefinition.modelProperties).toBe(dataElementModelDefinition.modelProperties);
         });
 
         it('should not have reset the filter', () => {
-            let clonedDefinition = dataElementModelDefinition.clone();
+            const clonedDefinition = dataElementModelDefinition.clone();
 
-            expect(clonedDefinition.filters).not.to.equal(dataElementModelDefinition.filters);
+            expect(clonedDefinition.filters).not.toBe(dataElementModelDefinition.filters);
         });
 
         it('should still work like normal modelDefinition', () => {
-            let clonedDefinition = dataElementModelDefinition.clone();
+            const clonedDefinition = dataElementModelDefinition.clone();
 
             clonedDefinition.list();
 
-            expect(ModelDefinition.prototype.api.get).to.be.calledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
         });
     });
 
@@ -891,18 +865,18 @@ describe('ModelDefinition', () => {
         let userModelDefinition;
 
         beforeEach(() => {
-            let singleUserAllFields = fixtures.get('/singleUserAllFields');
+            const singleUserAllFields = fixtures.get('/singleUserAllFields');
 
-            apiUpdateStub = stub().returns(new Promise((resolve) => {
+            apiUpdateStub = jest.fn().mockReturnValue(new Promise((resolve) => {
                 resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
             }));
-            apiPostStub = stub().returns(new Promise((resolve) => {
+            apiPostStub = jest.fn().mockReturnValue(new Promise((resolve) => {
                 resolve({ name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated' });
             }));
 
             ModelDefinition.prototype.api = {
                 update: apiUpdateStub,
-                post: apiPostStub
+                post: apiPostStub,
             };
 
             userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
@@ -911,9 +885,9 @@ describe('ModelDefinition', () => {
                 constructor() {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
-                    this.getCollectionChildrenPropertyNames = stub().returns([]);
-                    this.getEmbeddedObjectCollectionPropertyNames = stub().returns([]);
-                    this.getReferenceProperties = stub().returns([]);
+                    this.getCollectionChildrenPropertyNames = jest.fn().mockReturnValue([]);
+                    this.getEmbeddedObjectCollectionPropertyNames = jest.fn().mockReturnValue([]);
+                    this.getReferenceProperties = jest.fn().mockReturnValue([]);
                 }
             }
             model = new Model();
@@ -928,63 +902,63 @@ describe('ModelDefinition', () => {
 
         describe('save()', () => {
             it('should be a method that returns a promise', () => {
-                expect(userModelDefinition.save(model)).to.be.instanceof(Promise);
+                expect(userModelDefinition.save(model)).toBeInstanceOf(Promise);
             });
 
             it('should call the update method on the api', () => {
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub).to.be.called;
+                expect(apiUpdateStub).toBeCalled();
             });
 
             it('should pass only the properties that are owned to the api', () => {
-                let expectedPayload = fixtures.get('/singleUserOwnerFields');
+                const expectedPayload = fixtures.get('/singleUserOwnerFields');
 
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
+                expect(apiUpdateStub.mock.calls[0][1]).toEqual(expectedPayload);
             });
 
             it('should let a falsy value pass as an owned property', () => {
-                let expectedPayload = fixtures.get('/singleUserOwnerFields');
+                const expectedPayload = fixtures.get('/singleUserOwnerFields');
                 expectedPayload.surname = '';
 
                 model.dataValues.surname = '';
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+                expect(apiUpdateStub.mock.calls[0][1].surname).toEqual(expectedPayload.surname);
             });
 
             it('should not let undefined pass as a value', () => {
-                let expectedPayload = fixtures.get('/singleUserOwnerFields');
+                const expectedPayload = fixtures.get('/singleUserOwnerFields');
                 delete expectedPayload.surname;
 
                 model.dataValues.surname = undefined;
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+                expect(apiUpdateStub.mock.calls[0][1].surname).toEqual(expectedPayload.surname);
             });
 
             it('should not let null pass as a value', () => {
-                let expectedPayload = fixtures.get('/singleUserOwnerFields');
+                const expectedPayload = fixtures.get('/singleUserOwnerFields');
                 delete expectedPayload.surname;
 
                 model.dataValues.surname = null;
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[1].surname).to.deep.equal(expectedPayload.surname);
+                expect(apiUpdateStub.mock.calls[0][1].surname).toEqual(expectedPayload.surname);
             });
 
             it('should save to the url set on the model', () => {
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[0]).to.equal(fixtures.get('/singleUserAllFields').href);
+                expect(apiUpdateStub.mock.calls[0][0]).toBe(fixtures.get('/singleUserAllFields').href);
             });
 
             it('should call the update method on the api with the replace strategy option set to true', () => {
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[2]).to.be.true;
+                expect(apiUpdateStub.mock.calls[0][2]).toBe(true);
             });
 
             it('should save a new object using a post', () => {
@@ -993,51 +967,51 @@ describe('ModelDefinition', () => {
 
                 userModelDefinition.save(model);
 
-                expect(apiPostStub).to.be.called;
+                expect(apiPostStub).toBeCalled();
             });
 
             it('should translate a collection property to an array of ids', () => {
-                model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
+                model.getCollectionChildrenPropertyNames.mockReturnValue(['organisationUnits']);
                 model.dataValues.organisationUnits = new Set([
-                    {name: 'Kenya', id: 'FTRrcoaog83'},
-                    {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+                    { name: 'Kenya', id: 'FTRrcoaog83' },
+                    { name: 'Oslo', id: 'P3jJH5Tu5VC' },
                 ]);
 
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'FTRrcoaog83'}, {id: 'P3jJH5Tu5VC'}]);
+                expect(apiUpdateStub.mock.calls[0][1].organisationUnits).toEqual([{ id: 'FTRrcoaog83' }, { id: 'P3jJH5Tu5VC' }]);
             });
 
             it('should not add invalid objects that do not have an id', () => {
-                model.getCollectionChildrenPropertyNames.returns(['organisationUnits']);
+                model.getCollectionChildrenPropertyNames.mockReturnValue(['organisationUnits']);
                 model.dataValues.organisationUnits = new Set([
-                    {name: 'Kenya'},
-                    {name: 'Oslo', id: 'P3jJH5Tu5VC'},
+                    { name: 'Kenya' },
+                    { name: 'Oslo', id: 'P3jJH5Tu5VC' },
                 ]);
 
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.getCall(0).args[1].organisationUnits).to.deep.equal([{id: 'P3jJH5Tu5VC'}]);
+                expect(apiUpdateStub.mock.calls[0][1].organisationUnits).toEqual([{ id: 'P3jJH5Tu5VC' }]);
             });
         });
 
         describe('saveNew()', () => {
             it('should be a method that returns a promise', () => {
-                expect(userModelDefinition.saveNew(model)).to.be.instanceof(Promise);
+                expect(userModelDefinition.saveNew(model)).toBeInstanceOf(Promise);
             });
 
             it('should call the update method on the api', () => {
                 userModelDefinition.saveNew(model);
 
-                expect(apiPostStub).to.be.called;
+                expect(apiPostStub).toBeCalled();
             });
 
             it('should pass only the properties that are owned to the api', () => {
-                let expectedPayload = fixtures.get('/singleUserOwnerFields');
+                const expectedPayload = fixtures.get('/singleUserOwnerFields');
 
                 userModelDefinition.saveNew(model);
 
-                expect(apiPostStub.getCall(0).args[1]).to.deep.equal(expectedPayload);
+                expect(apiPostStub.mock.calls[0][1]).toEqual(expectedPayload);
             });
         });
     });
@@ -1050,7 +1024,7 @@ describe('ModelDefinition', () => {
         beforeEach(() => {
             const singleUserAllFields = fixtures.get('/singleUserAllFields');
 
-            apiDeleteStub = stub().returns(new Promise((resolve) => {
+            apiDeleteStub = jest.fn().mockReturnValue(new Promise((resolve) => {
                 resolve();
             }));
 
@@ -1080,17 +1054,17 @@ describe('ModelDefinition', () => {
         it('should call the delete method on the api', () => {
             userModelDefinition.delete(model);
 
-            expect(apiDeleteStub).to.be.called;
+            expect(apiDeleteStub).toBeCalled();
         });
 
         it('should call delete with the url', () => {
             userModelDefinition.delete(model);
 
-            expect(apiDeleteStub).to.be.calledWith(model.href);
+            expect(apiDeleteStub).toBeCalledWith(model.href);
         });
 
         it('should return a promise', () => {
-            expect(userModelDefinition.delete(model)).to.be.instanceof(Promise);
+            expect(userModelDefinition.delete(model)).toBeInstanceOf(Promise);
         });
 
         it('should create the url from the endpoint and model.id when the href is not available', () => {
@@ -1098,7 +1072,7 @@ describe('ModelDefinition', () => {
 
             userModelDefinition.delete(model);
 
-            expect(apiDeleteStub).to.be.calledWith('http://localhost:8080/dhis/api/users/aUplAx3DOWy');
+            expect(apiDeleteStub).toBeCalledWith('http://localhost:8080/dhis/api/users/aUplAx3DOWy');
         });
     });
 
@@ -1115,11 +1089,11 @@ describe('ModelDefinition', () => {
                 'shortName', 'zeroIsSignificant', 'publicAccess', 'commentOptionSet',
                 'aggregationType', 'valueType', 'url', 'optionSet',
                 'domainType', 'description', 'categoryCombo', 'user',
-                'aggregationLevels', 'attributeValues', 'userAccesses', 'userGroupAccesses', 'translations'
+                'aggregationLevels', 'attributeValues', 'userAccesses', 'userGroupAccesses', 'translations',
             ].sort();
             const ownProperties = dataElementModelDefinition.getOwnedPropertyNames();
 
-            expect(ownProperties.sort()).to.deep.equal(expectedDataElementProperties);
+            expect(ownProperties.sort()).toEqual(expectedDataElementProperties);
         });
     });
 
@@ -1133,15 +1107,15 @@ describe('ModelDefinition', () => {
         });
 
         it('should be a function', () => {
-            expect(dataElementModelDefinition.isTranslatable).to.be.a('function');
+            expect(typeof dataElementModelDefinition.isTranslatable).toBe('function');
         });
 
         it('should return true if the schema supports translations', () => {
-            expect(dataElementModelDefinition.isTranslatable()).to.be.true;
+            expect(dataElementModelDefinition.isTranslatable()).toBe(true);
         });
 
         it('should return false if the schema can not be translated', () => {
-            expect(userModelDefinition.isTranslatable()).to.be.false;
+            expect(userModelDefinition.isTranslatable()).toBe(false);
         });
     });
 
@@ -1153,20 +1127,20 @@ describe('ModelDefinition', () => {
         });
 
         it('should be a function', () => {
-            expect(dataElementModelDefinition.getTranslatableProperties).to.be.a('function');
+            expect(typeof dataElementModelDefinition.getTranslatableProperties).toBe('function');
         });
 
         it('should return the translatable properties', () => {
-            expect(dataElementModelDefinition.getTranslatableProperties()).to.deep.equal(['description', 'formName', 'name', 'shortName']);
+            expect(dataElementModelDefinition.getTranslatableProperties()).toEqual(['description', 'formName', 'name', 'shortName']);
         });
 
         it('should return only the properties that have a translatableKey', () => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement');
-            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({...props}));
+            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({ ...props }));
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
-            expect(dataElementModelDefinition.getTranslatableProperties()).to.deep.equal([]);
+            expect(dataElementModelDefinition.getTranslatableProperties()).toEqual([]);
         });
     });
 
@@ -1178,25 +1152,25 @@ describe('ModelDefinition', () => {
         });
 
         it('should be a function', () => {
-            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys).to.be.a('function');
+            expect(typeof dataElementModelDefinition.getTranslatablePropertiesWithKeys).toBe('function');
         });
 
         it('should return the translatable properties with their keys', () => {
-            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys()).to.deep.equal([
-                { name: 'description', translationKey: 'DESCRIPTION'},
+            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys()).toEqual([
+                { name: 'description', translationKey: 'DESCRIPTION' },
                 { name: 'formName', translationKey: 'FORM_NAME' },
-                { name: 'name', translationKey: 'NAME'},
-                { name: 'shortName', translationKey: 'SHORT_NAME'}
+                { name: 'name', translationKey: 'NAME' },
+                { name: 'shortName', translationKey: 'SHORT_NAME' },
             ]);
         });
 
         it('should return only the properties that have a translatableKey', () => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement');
-            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({...props}));
+            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({ ...props }));
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
-            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys()).to.deep.equal([]);
+            expect(dataElementModelDefinition.getTranslatablePropertiesWithKeys()).toEqual([]);
         });
     });
 });
@@ -1206,7 +1180,7 @@ describe('ModelDefinition subsclasses', () => {
     let getOnApiStub;
 
     beforeEach(() => {
-        getOnApiStub = stub().returns(Promise.resolve());
+        getOnApiStub = jest.fn().mockReturnValue(Promise.resolve());
         ModelDefinition = require('../../../src/model/ModelDefinition').default;
 
         ModelDefinition.prototype.api = {
@@ -1221,17 +1195,24 @@ describe('ModelDefinition subsclasses', () => {
         beforeEach(() => {
             UserModelDefinition = ModelDefinition.specialClasses.user;
 
-            userModelDefinition = new UserModelDefinition({ singular: 'user', plural: 'users', displayName: 'Users' }, {}, {});
+            userModelDefinition = new UserModelDefinition({
+                singular: 'user',
+                plural: 'users',
+                displayName: 'Users',
+            },
+                {},
+                {}
+            );
         });
 
         it('should be instance of Model', () => {
-            expect(userModelDefinition).to.be.instanceof(ModelDefinition);
+            expect(userModelDefinition).toBeInstanceOf(ModelDefinition);
         });
 
-        it('should call the get function with the extra parameters', function () {
+        it('should call the get function with the extra parameters', () => {
             userModelDefinition.get('myUserId');
 
-            expect(getOnApiStub).to.be.calledWith('/myUserId', { fields: ':all,userCredentials[:owner]' });
+            expect(getOnApiStub).toBeCalledWith('/myUserId', { fields: ':all,userCredentials[:owner]' });
         });
     });
 
@@ -1242,23 +1223,30 @@ describe('ModelDefinition subsclasses', () => {
         beforeEach(() => {
             OrganisationUnitModelDefinition = ModelDefinition.specialClasses.organisationUnit;
 
-            organisationUnitModelDefinition = new OrganisationUnitModelDefinition({ singular: 'organisationUnit', plural: 'organisationUnits', apiEndpoint: 'organisationUnits' },
-                {}, {}, {}, {},
+            organisationUnitModelDefinition = new OrganisationUnitModelDefinition({
+                singular: 'organisationUnit',
+                plural: 'organisationUnits',
+                apiEndpoint: 'organisationUnits',
+            },
+                {},
+                {},
+                {},
+                {},
             );
         });
 
         it('should use the special root orgunit id when fetching lists', (done) => {
             organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
-                expect(getOnApiStub).to.be.calledWith('organisationUnits/myRootId', { fields: ':all' });
+                expect(getOnApiStub).toBeCalledWith('organisationUnits/myRootId', { fields: ':all' });
                 done();
             });
         });
 
         it('should handle list queries without special `root` parameters', (done) => {
             organisationUnitModelDefinition.list().catch(() => {
-                expect(getOnApiStub).to.be.calledWith('organisationUnits', { fields: ':all' });
+                expect(getOnApiStub).toBeCalledWith('organisationUnits', { fields: ':all' });
                 done();
             });
-        })
+        });
     });
 });

@@ -1,16 +1,14 @@
 describe('Logger', () => {
-    'use strict';
-
-    var Logger;
-    var logger;
-    var consoleMock;
+    let Logger;
+    let logger;
+    let consoleMock;
 
     beforeEach(() => {
         consoleMock = {
-            log: spy(),
-            debug: spy(),
-            error: spy(),
-            warn: spy()
+            log: jest.fn(),
+            debug: jest.fn(),
+            error: jest.fn(),
+            warn: jest.fn(),
         };
 
         Logger = require('../../../src/logger/Logger').default;
@@ -18,74 +16,74 @@ describe('Logger', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Logger()).to.throw('Cannot call a class as a function');
+        expect(() => Logger()).toThrowError('Cannot call a class as a function');
     });
 
     it('should get the correct Logger instance from the namespace', () => {
-        expect(logger).to.be.instanceof(Logger);
+        expect(logger).toBeInstanceOf(Logger);
     });
 
     it('should have a log function', () => {
-        expect(logger.log).to.not.be.undefined;
-        expect(logger.log).to.be.instanceof(Function);
+        expect(logger.log).toBeDefined();
+        expect(logger.log).toBeInstanceOf(Function);
     });
 
     it('should log to the console', () => {
         logger.log('my message');
 
-        expect(consoleMock.log).to.have.been.calledWith('my message');
+        expect(consoleMock.log).toBeCalledWith('my message');
     });
 
     it('should return true after successful logging', () => {
-        expect(logger.log('my message')).to.be.true;
+        expect(logger.log('my message')).toBe(true);
     });
 
     it('should not log when it does not exist', () => {
         delete consoleMock.log;
 
-        expect(logger.log('my message')).to.be.false;
+        expect(logger.log('my message')).toBe(false);
     });
 
     it('should not log if the method does not exist', () => {
         delete consoleMock.warn;
 
-        expect(logger.warn('my message')).to.be.false;
+        expect(logger.warn('my message')).toBe(false);
     });
 
     it('should log a warning', () => {
-        expect(logger.warn('my message')).to.be.true;
-        expect(consoleMock.warn).to.have.been.calledWith('my message');
+        expect(logger.warn('my message')).toBe(true);
+        expect(consoleMock.warn).toBeCalledWith('my message');
     });
 
     it('should log a debug request', () => {
-        expect(logger.debug('my message')).to.be.true;
-        expect(consoleMock.debug).to.have.been.calledWith('my message');
+        expect(logger.debug('my message')).toBe(true);
+        expect(consoleMock.debug).toBeCalledWith('my message');
     });
 
     it('should not log when it does not exist', () => {
         delete consoleMock.debug;
 
-        expect(logger.debug('my message')).to.be.false;
+        expect(logger.debug('my message')).toBe(false);
     });
 
     it('should log an error request', () => {
-        expect(logger.error('my message')).to.be.true;
-        expect(consoleMock.error).to.have.been.calledWith('my message');
+        expect(logger.error('my message')).toBe(true);
+        expect(consoleMock.error).toBeCalledWith('my message');
     });
 
     it('should not log when error does not exist', () => {
         delete consoleMock.error;
 
-        expect(logger.error('my message')).to.be.false;
+        expect(logger.error('my message')).toBe(false);
     });
 
     describe('getLogger', () => {
         it('should return a logger', () => {
-            expect(Logger.getLogger()).to.be.instanceof(Logger);
+            expect(Logger.getLogger()).toBeInstanceOf(Logger);
         });
 
         it('should create a singleton and return that', () => {
-            expect(Logger.getLogger()).to.equal(Logger.getLogger());
+            expect(Logger.getLogger()).toBe(Logger.getLogger());
         });
     });
 });

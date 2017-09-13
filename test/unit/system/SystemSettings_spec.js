@@ -1,267 +1,241 @@
+import MockApi from '../../../src/api/Api';
+
+jest.mock('../../../src/api/Api');
+
 const settingsFixture = {
     keyLastSuccessfulResourceTablesUpdate: 'Tue Mar 10 12:24:00 CET 2015',
 };
 
 describe('settings.System', () => {
-    const Api = require('../../../src/api/Api').default;
     const SystemSettings = require('../../../src/system/SystemSettings').default;
     let systemSettings;
-    let apiGet;
-    let apiPost;
-    let apiDelete;
-    let apiRequest;
+    let mockApi;
 
     beforeEach(() => {
-        systemSettings = new SystemSettings(new Api());
+        mockApi = MockApi.getApi();
+        MockApi.mockClear();
+        systemSettings = new SystemSettings(new MockApi());
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => SystemSettings()).to.throw('Cannot call a class as a function'); // eslint-disable-line
+        expect(() => SystemSettings()).toThrowError('Cannot call a class as a function'); // eslint-disable-line
     });
 
     it('should set an instance of Api onto the SystemSettings instance', () => {
-        expect(systemSettings.api).to.be.instanceof(Api);
+        expect(systemSettings.api).toBe(mockApi);
     });
 
     describe('all', () => {
         beforeEach(() => {
-            systemSettings.api.get = apiGet = sinon.stub().returns(Promise.resolve(settingsFixture));
+            systemSettings.api.get = mockApi.get = jest.fn().mockReturnValueOnce(Promise.resolve(settingsFixture));
         });
 
         it('should be a function', () => {
-            expect(systemSettings.all).to.be.instanceof(Function);
+            expect(systemSettings.all).toBeInstanceOf(Function);
         });
 
-        it('should call the api to get all the systemSettings', (done) => {
-            systemSettings.all().then(() => {
-                expect(apiGet.withArgs('systemSettings').callCount).to.equal(1);
-                done();
-            });
-        });
+        it('should call the api to get all the systemSettings', () => systemSettings.all().then(() => {
+            expect(mockApi.get).toHaveBeenCalledTimes(1);
+            expect(mockApi.get.mock.calls[0][0]).toEqual('systemSettings');
+        }));
 
-        it('should resolve the promise with the settings', (done) => {
-            systemSettings.all()
-                .then(settings => {
-                    expect(settings.keyLastSuccessfulResourceTablesUpdate).to.equal('Tue Mar 10 12:24:00 CET 2015');
-                    done();
-                });
-        });
+        it('should resolve the promise with the settings', () => systemSettings.all()
+                .then((settings) => {
+                    expect(settings.keyLastSuccessfulResourceTablesUpdate).toBe('Tue Mar 10 12:24:00 CET 2015');
+                }));
 
-        it('should only call the API once', (done) => {
-            systemSettings.all().then(() => systemSettings.all())
+        it('should only call the API once', () => systemSettings.all().then(() => systemSettings.all())
                 .then(() => {
-                    expect(systemSettings.settings).to.deep.equal(settingsFixture);
-                    expect(apiGet.callCount).to.equal(1);
-                    done();
-                })
-                .catch(err => done(err));
-        });
+                    expect(systemSettings.settings).toEqual(settingsFixture);
+                    expect(mockApi.get).toHaveBeenCalledTimes(1);
+                }));
     });
 
     describe('get', () => {
         beforeEach(() => {
-            systemSettings = new SystemSettings(new Api());
-            systemSettings.api.get = sinon.stub().returns(Promise.resolve(settingsFixture['keyLastSuccessfulResourceTablesUpdate']));
+            systemSettings = new SystemSettings(new MockApi());
+            // systemSettings.api.get = jest.fn().mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
         });
 
         it('should be a function', () => {
-            expect(systemSettings.get).to.be.instanceof(Function);
+            expect(systemSettings.get).toBeInstanceOf(Function);
         });
 
         it('should return a Promise', () => {
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+
             const result = systemSettings.get('keyLastSuccessfulResourceTablesUpdate');
 
-            expect(result).to.be.instanceof(Promise);
+            expect(result).toBeInstanceOf(Promise);
         });
 
         it('should reject the promise with an error if no key has been specified', (done) => {
             systemSettings.get()
-                .catch(error => {
-                    expect(error).to.be.instanceof(TypeError);
-                    expect(error.message).to.equal('A "key" parameter should be specified when calling get() on systemSettings');
+                .catch((error) => {
+                    expect(error).toBeInstanceOf(TypeError);
+                    expect(error.message).toBe(
+                        'A "key" parameter should be specified when calling get() on systemSettings'
+                    );
                 })
                 .then(done);
         });
 
         it('should call the api to get the value', () => {
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+
             systemSettings.get('keyLastSuccessfulResourceTablesUpdate');
 
-            expect(systemSettings.api.get).to.be.calledWith('systemSettings/keyLastSuccessfulResourceTablesUpdate');
+            expect(systemSettings.api.get.mock.calls[0][0]).toBe('systemSettings/keyLastSuccessfulResourceTablesUpdate');
         });
 
-        it('should return the value from the promise', (done) => {
-            systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
+        it('should return the value from the promise', () => {
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+
+            return systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
                 .then((value) => {
-                    expect(value).to.equal('Tue Mar 10 12:24:00 CET 2015');
-                })
-                .then(done);
-        });
-
-        it('should try to transform the response to json if possible', (done) => {
-            systemSettings.api.get = sinon.stub().returns(Promise.resolve('{"mydataKey": "myDataValue"}'));
-
-            systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
-                .then((value) => {
-                    expect(value).to.deep.equal({ mydataKey: 'myDataValue' });
-                })
-                .then(done);
-        });
-
-        it('should reject the promise if the value is empty', (done) => {
-            systemSettings.api.get = sinon.stub().returns(Promise.resolve(''));
-
-            systemSettings.get('keyThatDefinitelyDoesNotExist')
-                .then(() => {
-                    done(new Error('Promise resolved'));
-                })
-                .catch((error) => {
-                    expect(error.message).to.equal('The requested systemSetting has no value or does not exist.');
-                    done();
+                    expect(value).toBe('Tue Mar 10 12:24:00 CET 2015');
                 });
         });
 
-        it('should call the API for every operation when there\'s no cache', (done) => {
-            systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
-                .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
-                .then(() => {
-                    expect(systemSettings.api.get.callCount).to.equal(2);
-                    done();
-                })
-                .catch(err => done(err));
+        it('should try to transform the response to json if possible', () => {
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve('{"mydataKey": "myDataValue"}'));
+
+            return systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
+                .then((value) => {
+                    expect(value).toEqual({ mydataKey: 'myDataValue' });
+                });
         });
 
-        it('should only call the API once when there is a cache', (done) => {
-            systemSettings.api.get.returns(Promise.resolve(settingsFixture));
+        it('should reject the promise if the value is empty', () => {
+            systemSettings.api.get.mockReturnValueOnce(Promise.resolve());
 
-            systemSettings.all()
+            return systemSettings.get('keyThatDefinitelyDoesNotExist')
+                .then(
+                    () => Promise.reject('Promise resolved'),
+                    (error) => {
+                        expect(error.message).toBe('The requested systemSetting has no value or does not exist.');
+                    });
+        });
+
+        it('should call the API for every operation when there\'s no cache', () => {
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate))
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+
+            return systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
+                .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
+                .then(() => {
+                    expect(systemSettings.api.get).toHaveBeenCalledTimes(2);
+                });
+        });
+
+        it('should only call the API once when there is a cache', () => {
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve(settingsFixture))
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate))
+                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+
+            return systemSettings.all()
                 .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
                 .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
-                .then(value => {
-                    expect(value).to.equal(settingsFixture['keyLastSuccessfulResourceTablesUpdate']);
-                    expect(systemSettings.api.get.callCount).to.equal(1);
-                    done();
-                })
-                .catch(err => done(err));
+                .then((value) => {
+                    expect(value).toBe(settingsFixture.keyLastSuccessfulResourceTablesUpdate);
+                    expect(systemSettings.api.get).toHaveBeenCalledTimes(1);
+                });
         });
 
         it('should also return a promise when serving cached values', () => {
-            systemSettings.api.get.returns(Promise.resolve(settingsFixture));
+            systemSettings.api.get.mockReturnValueOnce(Promise.resolve(settingsFixture));
 
             return systemSettings.all()
                 .then(() => {
-                    expect(systemSettings.get('keyLastSuccessfulResourceTablesUpdate')).to.be.instanceof(Promise);
+                    expect(systemSettings.get('keyLastSuccessfulResourceTablesUpdate')).toBeInstanceOf(Promise);
                 });
         });
     });
 
     describe('.set', () => {
         beforeEach(() => {
-            systemSettings.api.get = apiGet = sinon.stub();
-            systemSettings.api.post = apiPost = sinon.stub();
-            systemSettings.api.delete = apiDelete = sinon.stub();
+            systemSettings = new SystemSettings(new MockApi());
 
-            apiGet.returns(Promise.resolve(settingsFixture));
-            apiPost.returns(Promise.resolve());
-            apiDelete.returns(Promise.resolve());
+            mockApi.get.mockReturnValue(Promise.resolve(settingsFixture));
+            mockApi.post.mockReturnValue(Promise.resolve());
+            mockApi.delete.mockReturnValue(Promise.resolve());
         });
 
-        afterEach(() => {
-            systemSettings = new SystemSettings(new Api());
-        });
-
-        it('should POST to the API', (done) => {
-            systemSettings.set('mySetting', 'my value')
+        it('should POST to the API', () => systemSettings.set('mySetting', 'my value')
                 .then(() => {
-                    expect(apiGet.callCount).to.equal(0);
-                    expect(apiPost.callCount).to.equal(1);
-                    expect(apiDelete.callCount).to.equal(0);
-                    done();
-                })
-                .catch(err => {
-                    done(new Error(err));
-                });
-        });
+                    expect(mockApi.get).toHaveBeenCalledTimes(0);
+                    expect(mockApi.post).toHaveBeenCalledTimes(1);
+                    expect(mockApi.delete).toHaveBeenCalledTimes(0);
+                }));
 
-        it('should DELETE if the value is null or an empty string', (done) => {
-            systemSettings.set('mySetting', '')
+        it('should DELETE if the value is null or an empty string', () => systemSettings.set('mySetting', '')
                 .then(() => {
-                    expect(apiGet.callCount).to.equal(0);
-                    expect(apiPost.callCount).to.equal(0);
-                    expect(apiDelete.callCount).to.equal(1);
-                    done();
-                })
-                .catch(err => {
-                    done(new Error(err));
-                });
-        });
+                    expect(mockApi.get).toHaveBeenCalledTimes(0);
+                    expect(mockApi.post).toHaveBeenCalledTimes(0);
+                    expect(mockApi.delete).toHaveBeenCalledTimes(1);
+                }));
 
-        it('should not alter the value', (done) => {
+        it('should not alter the value', () => {
             const value = { type: 'object', value: 'some value' };
-            systemSettings.set('mySetting', value)
-                .then(() => {
-                    expect(apiGet.callCount).to.equal(0);
-                    expect(apiPost.callCount).to.equal(1);
-                    expect(apiDelete.callCount).to.equal(0);
 
-                    expect(apiPost).to.be.calledWith('systemSettings/mySetting', value);
-                    done();
-                })
-                .catch(err => {
-                    done(new Error(err));
+            return systemSettings.set('mySetting', value)
+                .then(() => {
+                    expect(mockApi.get).toHaveBeenCalledTimes(0);
+                    expect(mockApi.post).toHaveBeenCalledTimes(1);
+                    expect(mockApi.delete).toHaveBeenCalledTimes(0);
+
+                    expect(mockApi.post.mock.calls[0][0]).toBe('systemSettings/mySetting');
+                    expect(mockApi.post.mock.calls[0][1]).toBe(value);
                 });
         });
 
-        it('should add a "Content-Type: text/plain" header to the request', done => {
+        it('should add a "Content-Type: text/plain" header to the request', () => {
             const value = 'test';
-            systemSettings.set('mySetting', value)
-                .then(() => {
-                    expect(apiGet.callCount).to.equal(0);
-                    expect(apiPost.callCount).to.equal(1);
-                    expect(apiDelete.callCount).to.equal(0);
 
-                    expect(apiPost).to.be.calledWith('systemSettings/mySetting', value, { headers: { 'Content-Type': 'text/plain' }});
-                    done();
-                })
-                .catch(err => {
-                    done(new Error(err));
+            return systemSettings.set('mySetting', value)
+                .then(() => {
+                    expect(mockApi.get).toHaveBeenCalledTimes(0);
+                    expect(mockApi.post).toHaveBeenCalledTimes(1);
+                    expect(mockApi.delete).toHaveBeenCalledTimes(0);
+
+                    expect(mockApi.post).toBeCalledWith('systemSettings/mySetting', value, { headers: { 'Content-Type': 'text/plain' } });
                 });
         });
 
-        it('should clear the settings cache', done => {
-            systemSettings.all()
+        it('should clear the settings cache', () => systemSettings.all()
                 .then(() => systemSettings.set('test', 'value'))
                 .then(() => systemSettings.all())
                 .then(() => {
-                    expect(apiGet.callCount).to.equal(2);
-                    expect(apiPost.callCount).to.equal(1);
-                    done();
-                })
-                .catch(err => done(err));
-        });
+                    expect(mockApi.get).toHaveBeenCalledTimes(2);
+                    expect(mockApi.post).toHaveBeenCalledTimes(1);
+                }));
     });
 
     describe('.set API request', () => {
         beforeEach(() => {
-            systemSettings.api.request = apiRequest = sinon.stub();
+            systemSettings.api.request = mockApi.request = jest.fn();
 
-            apiRequest.returns(Promise.resolve());
+            mockApi.request.mockReturnValueOnce(Promise.resolve());
         });
 
         afterEach(() => {
-            systemSettings = new SystemSettings(new Api());
+            systemSettings = new SystemSettings(new MockApi());
         });
 
-        it('should not encode the value as JSON', done => {
+        it('should not encode the value as JSON', () => {
             const value = 'test';
-            systemSettings.set('mySetting', value)
-                .then(() => {
-                    expect(apiRequest.callCount).to.equal(1);
-                    expect(apiRequest).to.have.been.calledWith('POST', '/api/systemSettings/mySetting', value);
 
-                    done();
-                })
-                .catch(err => {
-                    done(new Error(err));
+            return systemSettings.set('mySetting', value)
+                .then(() => {
+                    expect(mockApi.post).toHaveBeenCalledTimes(1);
+                    expect(mockApi.post.mock.calls[0][0]).toBe('systemSettings/mySetting');
+                    expect(mockApi.post.mock.calls[0][1]).toBe(value);
                 });
         });
     });

@@ -1,17 +1,15 @@
 import fixtures from '../../../fixtures/fixtures';
-import proxyquire from 'proxyquire';
 import * as check from '../../../../src/lib/check';
 
 const mockModelDefinitions = {};
-const ModelDefinition = proxyquire
-    .noCallThru()
-    .load('../../../../src/model/ModelDefinition', {
-        './ModelDefinitions': {
-            getModelDefinitions: function () {
-                return mockModelDefinitions;
-            },
+
+jest.mock('../../../../src/model/ModelDefinitions', () => ({
+    getModelDefinitions() {
+        return mockModelDefinitions;
     },
-}).default;
+}));
+
+const ModelDefinition = require('../../../../src/model/ModelDefinition').default;
 
 describe('getJSONForProperties', () => {
     describe('for legendSet', () => {
@@ -22,8 +20,8 @@ describe('getJSONForProperties', () => {
         let legendSetSchemaDefinition;
 
         beforeEach(() => {
-            checkTypeStub = sinon.stub(check, 'checkType');
-            checkTypeStub.returns(true);
+            checkTypeStub = jest.spyOn(check, 'checkType')
+                .mockReturnValue(true);
 
             getJSONForProperties = require('../../../../src/model/helpers/json').getJSONForProperties;
 
@@ -36,26 +34,26 @@ describe('getJSONForProperties', () => {
         });
 
         afterEach(() => {
-            checkTypeStub.restore();
+            checkTypeStub.mockRestore();
         });
 
         it('should embed the legends in the payload', () => {
             const model = legendSetSchemaDefinition.create(legendSet);
 
-            expect(getJSONForProperties(model, ['legends']).legends).to.have.length(6);
-            expect(getJSONForProperties(model, ['legends']).legends).to.deep.equal(legendSet.legends);
+            expect(getJSONForProperties(model, ['legends']).legends).toHaveLength(6);
+            expect(getJSONForProperties(model, ['legends']).legends).toEqual(legendSet.legends);
         });
 
         it('should not throw on userGroupAcceses', () => {
             const model = legendSetSchemaDefinition.create(legendSet);
 
-            expect(getJSONForProperties(model, ['userGroupAccesses']).userGroupAccesses).to.have.length(1);
+            expect(getJSONForProperties(model, ['userGroupAccesses']).userGroupAccesses).toHaveLength(1);
         });
 
         it('should maintain the full structure of the userGroupAccesses', () => {
             const model = legendSetSchemaDefinition.create(legendSet);
 
-            expect(getJSONForProperties(model, ['userGroupAccesses']).userGroupAccesses).to.deep.equal([
+            expect(getJSONForProperties(model, ['userGroupAccesses']).userGroupAccesses).toEqual([
                 {
                     access: 'rw------',
                     userGroupUid: 'wl5cDMuUhmF',
@@ -69,7 +67,7 @@ describe('getJSONForProperties', () => {
             const legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
             const model = legendSetSchemaDefinition.create(legendSet);
 
-            expect(getJSONForProperties(model, ['userAccesses']).userAccesses).to.deep.equal([
+            expect(getJSONForProperties(model, ['userAccesses']).userAccesses).toEqual([
                 {
                     access: 'rw------',
                     userUid: 'UgDpalMTGDr',
@@ -89,7 +87,7 @@ describe('getJSONForProperties', () => {
                 firstName: 'John',
             };
 
-            expect(getJSONForProperties(model, ['user']).user).to.deep.equal({
+            expect(getJSONForProperties(model, ['user']).user).toEqual({
                 id: 'xE7jOejl9FI',
             });
         });

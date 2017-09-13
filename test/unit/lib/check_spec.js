@@ -1,138 +1,136 @@
 import check from '../../../src/lib/check.js';
 
 describe('Check', () => {
-    'use strict';
-
     describe('isDefined', () => {
         it('should return when the parameter is defined', () => {
-            expect(check.isDefined({})).to.be.true;
+            expect(check.isDefined({})).toBe(true);
         });
 
         it('should return false when the parameter is not defined', () => {
-            expect(check.isDefined(undefined)).to.be.false;
+            expect(check.isDefined(undefined)).toBe(false);
         });
     });
 
     describe('isType', () => {
         it('should return true if the value is of the correct type', () => {
-            expect(check.isType('Mark', 'string')).to.be.true;
+            expect(check.isType('Mark', 'string')).toBe(true);
         });
 
         it('should return false when the value is not of the right type', () => {
-            expect(check.isType({}, 'string')).to.be.false;
+            expect(check.isType({}, 'string')).toBe(false);
         });
 
         it('should return true when the value is an instance of', () => {
-            expect(check.isType([], Object)).to.be.true;
+            expect(check.isType([], Object)).toBe(true);
         });
 
         it('should return false when the object is not an instance', () => {
-            expect(check.isType('', Object)).to.be.false;
+            expect(check.isType('', Object)).toBe(false);
         });
     });
 
     describe('isString', () => {
         it('should return true for a string', () => {
-            expect(check.isString('Mark')).to.be.true;
+            expect(check.isString('Mark')).toBe(true);
         });
 
         it('should return false for an array', () => {
-            expect(check.isString([])).to.be.false;
+            expect(check.isString([])).toBe(false);
         });
     });
 
     describe('isInteger', () => {
         it('should return for 1', () => {
-            expect(check.isInteger(1)).to.be.true;
+            expect(check.isInteger(1)).toBe(true);
         });
 
         it('should return false for 0.1', () => {
-            expect(check.isInteger(0.1)).to.be.false;
+            expect(check.isInteger(0.1)).toBe(false);
         });
 
         it('should return false for NaN', () => {
-            expect(check.isInteger(NaN)).to.be.false;
+            expect(check.isInteger(NaN)).toBe(false);
         });
 
         it('should return false for an array', () => {
-            expect(check.isInteger([])).to.be.false;
+            expect(check.isInteger([])).toBe(false);
         });
 
         it('should return false for an object', () => {
-            expect(check.isInteger({})).to.be.false;
+            expect(check.isInteger({})).toBe(false);
         });
 
         it('should return false for Infinity', () => {
-            expect(check.isInteger(Infinity)).to.be.false;
+            expect(check.isInteger(Infinity)).toBe(false);
         });
 
         it('should return false for empty string', () => {
-            expect(check.isInteger('')).to.be.false;
+            expect(check.isInteger('')).toBe(false);
         });
 
         it('should return false for white space strings', () => {
-            expect(check.isInteger(' ')).to.be.false;
-            expect(check.isInteger('\t')).to.be.false;
-            expect(check.isInteger('\n')).to.be.false;
-            expect(check.isInteger('\n\r')).to.be.false;
+            expect(check.isInteger(' ')).toBe(false);
+            expect(check.isInteger('\t')).toBe(false);
+            expect(check.isInteger('\n')).toBe(false);
+            expect(check.isInteger('\n\r')).toBe(false);
         });
     });
 
     describe('isNumeric', () => {
         it('should return true for 1', () => {
-            expect(check.isNumeric(1)).to.be.true;
+            expect(check.isNumeric(1)).toBe(true);
         });
 
         it('should return true for 1.1', () => {
-            expect(check.isNumeric(1.1)).to.be.true;
+            expect(check.isNumeric(1.1)).toBe(true);
         });
 
         it('should return true for negative 1', () => {
-            expect(check.isNumeric(-1)).to.be.true;
+            expect(check.isNumeric(-1)).toBe(true);
         });
 
         it('should return true for negative 1.1', () => {
-            expect(check.isNumeric(-1.1)).to.be.true;
+            expect(check.isNumeric(-1.1)).toBe(true);
         });
 
         it('should return true for 0', () => {
-            expect(check.isNumeric(0)).to.be.true;
+            expect(check.isNumeric(0)).toBe(true);
         });
 
         it('should return false for NaN', () => {
-            expect(check.isNumeric(NaN)).to.be.false;
+            expect(check.isNumeric(NaN)).toBe(false);
         });
 
         it('should return false for an array', () => {
-            expect(check.isNumeric([])).to.be.false;
+            expect(check.isNumeric([])).toBe(false);
         });
 
         it('should return false for an object', () => {
-            expect(check.isNumeric({})).to.be.false;
+            expect(check.isNumeric({})).toBe(false);
         });
 
         it('should return false for Infinity', () => {
-            expect(check.isNumeric(Infinity)).to.be.false;
+            expect(check.isNumeric(Infinity)).toBe(false);
         });
 
         it('should return false for empty string', () => {
-            expect(check.isNumeric('')).to.be.false;
+            expect(check.isNumeric('')).toBe(false);
         });
 
         it('should return false for white space strings', () => {
-            expect(check.isNumeric(' ')).to.be.false;
-            expect(check.isNumeric('\t')).to.be.false;
-            expect(check.isNumeric('\n')).to.be.false;
-            expect(check.isNumeric('\n\r')).to.be.false;
+            expect(check.isNumeric(' ')).toBe(false);
+            expect(check.isNumeric('\t')).toBe(false);
+            expect(check.isNumeric('\n')).toBe(false);
+            expect(check.isNumeric('\n\r')).toBe(false);
         });
 
         it('should concider Infinity not to be numeric', () => {
-            expect(check.isNumeric(Infinity)).to.be.false;
+            expect(check.isNumeric(Infinity)).toBe(false);
         });
     });
 
     describe('isArray', () => {
-        var sinon = require('sinon');
+        const sinon = require('sinon');
 
         beforeEach(() => {
             sinon.spy(Array, 'isArray');
@@ -145,43 +143,43 @@ describe('Check', () => {
         it('should call Array.isArray', () => {
             check.isArray([]);
 
-            expect(Array.isArray.calledOnce).to.be.true;
+            expect(Array.isArray.calledOnce).toBe(true);
         });
     });
 
     describe('contains', () => {
         it('should be a function', () => {
-            expect(check.contains).to.be.instanceof(Function);
+            expect(check.contains).toBeInstanceOf(Function);
         });
 
         it('should return true when an item is contained in the array', () => {
-            var list = [3, 4, 2, 6, 7];
+            const list = [3, 4, 2, 6, 7];
 
-            expect(check.contains(2, list)).to.be.true;
+            expect(check.contains(2, list)).toBe(true);
         });
 
         it('should return false when an item is not in the list', () => {
-            var list = [3, 4, 2, 6, 7];
+            const list = [3, 4, 2, 6, 7];
 
-            expect(check.contains(9, list)).to.be.false;
+            expect(check.contains(9, list)).toBe(false);
         });
 
         it('should return false if the list is not an array', () => {
-            expect(check.contains(1, 'two')).to.be.false;
+            expect(check.contains(1, 'two')).toBe(false);
         });
 
         it('should return false when the item is undefined', () => {
-            expect(check.contains(undefined, [])).to.be.false;
+            expect(check.contains(undefined, [])).toBe(false);
         });
 
         it('should return true when undefined is in the list', () => {
-            expect(check.contains(undefined, [undefined])).to.be.true;
+            expect(check.contains(undefined, [undefined])).toBe(true);
         });
     });
 
     describe('isValidUid', () => {
         it('should return true when the value is a valid uid', () => {
-            expect(check.isValidUid('q2egwkkrfco')).to.be.true;
+            expect(check.isValidUid('q2egwkkrfco')).toBe(true);
         });
     });
 });

@@ -1,32 +1,21 @@
 import { generateSixMonthlyPeriodsForYear } from '../../../../src/period/generators/six-monthly';
 
 describe('Six-monthly period', () => {
-    const firstOfJanuary2017 = 1483228800000;
-    let clock;
-
-    beforeEach(() => {
-        clock = sinon.useFakeTimers(firstOfJanuary2017);
-    });
-
-    afterEach(() => {
-        clock.restore();
-    });
-
     describe('generateSixMonthlyPeriodsForYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateSixMonthlyPeriodsForYear(-10)).to.throw();
+            expect(() => generateSixMonthlyPeriodsForYear(-10)).toThrowError();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateSixMonthlyPeriodsForYear(new Date())).to.throw();
+            expect(() => generateSixMonthlyPeriodsForYear(new Date())).toThrowError();
         });
 
         it('should generate two quarterly periods', () => {
-            expect(generateSixMonthlyPeriodsForYear(2017)).to.have.length(2);
+            expect(generateSixMonthlyPeriodsForYear(2017)).toHaveLength(2);
         });
 
         it('should generate the correct two six-monthly periods', () => {
-            expect(generateSixMonthlyPeriodsForYear(2017)).to.deep.equal([
+            expect(generateSixMonthlyPeriodsForYear(2017)).toEqual([
                 {
                     startDate: '2017-01-01',
                     endDate: '2017-06-30',
@@ -42,7 +31,7 @@ describe('Six-monthly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateSixMonthlyPeriodsForYear()).to.deep.equal(generateSixMonthlyPeriodsForYear(2017));
+            expect(generateSixMonthlyPeriodsForYear()).toEqual(generateSixMonthlyPeriodsForYear(2017));
         });
     });
 });

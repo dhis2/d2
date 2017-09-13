@@ -15,15 +15,15 @@ describe('generators', () => {
     describe('createPeriodGeneratorsForLocale()', () => {
         describe('daily', () => {
             beforeEach(() => {
-                sinon.spy(daily, 'generateDailyPeriodsForYear');
+                jest.spyOn(daily, 'generateDailyPeriodsForYear');
             });
 
             afterEach(() => {
-                daily.generateDailyPeriodsForYear.restore();
+                daily.generateDailyPeriodsForYear.mockRestore();
             });
 
             it('should have the daily period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateDailyPeriodsForYear).to.be.a('function');
+                expect(typeof createPeriodGeneratorsForLocale('nl').generateDailyPeriodsForYear).toBe('function');
             });
 
             it('should call the the daily generator with the correct locale', () => {
@@ -31,7 +31,7 @@ describe('generators', () => {
 
                 generators.generateDailyPeriodsForYear(2017);
 
-                expect(daily.generateDailyPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(daily.generateDailyPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -39,21 +39,21 @@ describe('generators', () => {
 
                 generators.generateDailyPeriodsForYear(2017);
 
-                expect(generators.generateDailyPeriodsForYear(2017)).to.deep.equal(daily.generateDailyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateDailyPeriodsForYear(2017)).toEqual(daily.generateDailyPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('weekly', () => {
             beforeEach(() => {
-                sinon.spy(weekly, 'generateWeeklyPeriodsForYear');
+                jest.spyOn(weekly, 'generateWeeklyPeriodsForYear');
             });
 
             afterEach(() => {
-                weekly.generateWeeklyPeriodsForYear.restore();
+                weekly.generateWeeklyPeriodsForYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateWeeklyPeriodsForYear).to.be.a('function');
+                expect(typeof createPeriodGeneratorsForLocale('nl').generateWeeklyPeriodsForYear).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -61,7 +61,7 @@ describe('generators', () => {
 
                 generators.generateWeeklyPeriodsForYear(2017);
 
-                expect(weekly.generateWeeklyPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(weekly.generateWeeklyPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -69,21 +69,21 @@ describe('generators', () => {
 
                 generators.generateWeeklyPeriodsForYear(2017);
 
-                expect(generators.generateWeeklyPeriodsForYear(2017)).to.deep.equal(weekly.generateWeeklyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateWeeklyPeriodsForYear(2017)).toEqual(weekly.generateWeeklyPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('monthly', () => {
             beforeEach(() => {
-                sinon.spy(monthly, 'generateMonthlyPeriodsForYear');
+                jest.spyOn(monthly, 'generateMonthlyPeriodsForYear');
             });
 
             afterEach(() => {
-                monthly.generateMonthlyPeriodsForYear.restore();
+                monthly.generateMonthlyPeriodsForYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateMonthlyPeriodsForYear).to.be.a('function');
+                expect(typeof createPeriodGeneratorsForLocale('nl').generateMonthlyPeriodsForYear).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -91,7 +91,7 @@ describe('generators', () => {
 
                 generators.generateMonthlyPeriodsForYear(2017);
 
-                expect(monthly.generateMonthlyPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(monthly.generateMonthlyPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -99,21 +99,23 @@ describe('generators', () => {
 
                 generators.generateMonthlyPeriodsForYear(2017);
 
-                expect(generators.generateMonthlyPeriodsForYear(2017)).to.deep.equal(monthly.generateMonthlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateMonthlyPeriodsForYear(2017)).toEqual(monthly.generateMonthlyPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('bi-monthly', () => {
             beforeEach(() => {
-                sinon.spy(bimonthly, 'generateBiMonthlyPeriodsForYear');
+                jest.spyOn(bimonthly, 'generateBiMonthlyPeriodsForYear');
             });
 
             afterEach(() => {
-                bimonthly.generateBiMonthlyPeriodsForYear.restore();
+                bimonthly.generateBiMonthlyPeriodsForYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateBiMonthlyPeriodsForYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateBiMonthlyPeriodsForYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -121,7 +123,7 @@ describe('generators', () => {
 
                 generators.generateBiMonthlyPeriodsForYear(2017);
 
-                expect(bimonthly.generateBiMonthlyPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(bimonthly.generateBiMonthlyPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -129,21 +131,23 @@ describe('generators', () => {
 
                 generators.generateBiMonthlyPeriodsForYear(2017);
 
-                expect(generators.generateBiMonthlyPeriodsForYear(2017)).to.deep.equal(bimonthly.generateBiMonthlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateBiMonthlyPeriodsForYear(2017)).toEqual(bimonthly.generateBiMonthlyPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('quarterly', () => {
             beforeEach(() => {
-                sinon.spy(quarterly, 'generateQuarterlyPeriodsForYear');
+                jest.spyOn(quarterly, 'generateQuarterlyPeriodsForYear');
             });
 
             afterEach(() => {
-                quarterly.generateQuarterlyPeriodsForYear.restore();
+                quarterly.generateQuarterlyPeriodsForYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateQuarterlyPeriodsForYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateQuarterlyPeriodsForYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -151,7 +155,7 @@ describe('generators', () => {
 
                 generators.generateQuarterlyPeriodsForYear(2017);
 
-                expect(quarterly.generateQuarterlyPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(quarterly.generateQuarterlyPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -159,21 +163,23 @@ describe('generators', () => {
 
                 generators.generateQuarterlyPeriodsForYear(2017);
 
-                expect(generators.generateQuarterlyPeriodsForYear(2017)).to.deep.equal(quarterly.generateQuarterlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateQuarterlyPeriodsForYear(2017)).toEqual(quarterly.generateQuarterlyPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('six-monthly', () => {
             beforeEach(() => {
-                sinon.spy(sixmonthly, 'generateSixMonthlyPeriodsForYear');
+                jest.spyOn(sixmonthly, 'generateSixMonthlyPeriodsForYear');
             });
 
             afterEach(() => {
-                sixmonthly.generateSixMonthlyPeriodsForYear.restore();
+                sixmonthly.generateSixMonthlyPeriodsForYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -181,7 +187,7 @@ describe('generators', () => {
 
                 generators.generateSixMonthlyPeriodsForYear(2017);
 
-                expect(sixmonthly.generateSixMonthlyPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(sixmonthly.generateSixMonthlyPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -189,21 +195,23 @@ describe('generators', () => {
 
                 generators.generateSixMonthlyPeriodsForYear(2017);
 
-                expect(generators.generateSixMonthlyPeriodsForYear(2017)).to.deep.equal(sixmonthly.generateSixMonthlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateSixMonthlyPeriodsForYear(2017)).toEqual(sixmonthly.generateSixMonthlyPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('six-monthly-april', () => {
             beforeEach(() => {
-                sinon.spy(sixmonthlyapril, 'generateSixMonthlyAprilPeriodsForYear');
+                jest.spyOn(sixmonthlyapril, 'generateSixMonthlyAprilPeriodsForYear');
             });
 
             afterEach(() => {
-                sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear.restore();
+                sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -211,7 +219,7 @@ describe('generators', () => {
 
                 generators.generateSixMonthlyAprilPeriodsForYear(2017);
 
-                expect(sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear).to.be.calledWith(2017, 'nl');
+                expect(sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear).toBeCalledWith(2017, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -219,21 +227,21 @@ describe('generators', () => {
 
                 generators.generateSixMonthlyAprilPeriodsForYear(2017);
 
-                expect(generators.generateSixMonthlyAprilPeriodsForYear(2017)).to.deep.equal(sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear(2017, 'nl'));
+                expect(generators.generateSixMonthlyAprilPeriodsForYear(2017)).toEqual(sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear(2017, 'nl'));
             });
         });
 
         describe('yearly', () => {
             beforeEach(() => {
-                sinon.spy(yearly, 'generateYearlyPeriodsUpToYear');
+                jest.spyOn(yearly, 'generateYearlyPeriodsUpToYear');
             });
 
             afterEach(() => {
-                yearly.generateYearlyPeriodsUpToYear.restore();
+                yearly.generateYearlyPeriodsUpToYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateYearlyPeriodsUpToYear).to.be.a('function');
+                expect(typeof createPeriodGeneratorsForLocale('nl').generateYearlyPeriodsUpToYear).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -241,7 +249,7 @@ describe('generators', () => {
 
                 generators.generateYearlyPeriodsUpToYear(2017);
 
-                expect(yearly.generateYearlyPeriodsUpToYear).to.be.calledWith(2017, undefined, 'nl');
+                expect(yearly.generateYearlyPeriodsUpToYear).toBeCalledWith(2017, undefined, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -249,21 +257,21 @@ describe('generators', () => {
 
                 generators.generateYearlyPeriodsUpToYear(2017);
 
-                expect(generators.generateYearlyPeriodsUpToYear(2017, 10)).to.deep.equal(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
+                expect(generators.generateYearlyPeriodsUpToYear(2017, 10)).toEqual(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
             });
         });
 
         describe('yearly', () => {
             beforeEach(() => {
-                sinon.spy(yearly, 'generateYearlyPeriodsUpToYear');
+                jest.spyOn(yearly, 'generateYearlyPeriodsUpToYear');
             });
 
             afterEach(() => {
-                yearly.generateYearlyPeriodsUpToYear.restore();
+                yearly.generateYearlyPeriodsUpToYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateYearlyPeriodsUpToYear).to.be.a('function');
+                expect(typeof createPeriodGeneratorsForLocale('nl').generateYearlyPeriodsUpToYear).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -271,7 +279,7 @@ describe('generators', () => {
 
                 generators.generateYearlyPeriodsUpToYear(2017);
 
-                expect(yearly.generateYearlyPeriodsUpToYear).to.be.calledWith(2017, undefined, 'nl');
+                expect(yearly.generateYearlyPeriodsUpToYear).toBeCalledWith(2017, undefined, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -279,21 +287,23 @@ describe('generators', () => {
 
                 generators.generateYearlyPeriodsUpToYear(2017);
 
-                expect(generators.generateYearlyPeriodsUpToYear(2017, 10)).to.deep.equal(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
+                expect(generators.generateYearlyPeriodsUpToYear(2017, 10)).toEqual(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
             });
         });
 
         describe('financial-october', () => {
             beforeEach(() => {
-                sinon.spy(financialoctober, 'generateFinancialOctoberPeriodsUpToYear');
+                jest.spyOn(financialoctober, 'generateFinancialOctoberPeriodsUpToYear');
             });
 
             afterEach(() => {
-                financialoctober.generateFinancialOctoberPeriodsUpToYear.restore();
+                financialoctober.generateFinancialOctoberPeriodsUpToYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateFinancialOctoberPeriodsUpToYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialOctoberPeriodsUpToYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -301,7 +311,7 @@ describe('generators', () => {
 
                 generators.generateFinancialOctoberPeriodsUpToYear(2017);
 
-                expect(financialoctober.generateFinancialOctoberPeriodsUpToYear).to.be.calledWith(2017, undefined, 'nl');
+                expect(financialoctober.generateFinancialOctoberPeriodsUpToYear).toBeCalledWith(2017, undefined, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -309,21 +319,23 @@ describe('generators', () => {
 
                 generators.generateFinancialOctoberPeriodsUpToYear(2017);
 
-                expect(generators.generateFinancialOctoberPeriodsUpToYear(2017, 5)).to.deep.equal(financialoctober.generateFinancialOctoberPeriodsUpToYear(2017, 5, 'nl'));
+                expect(generators.generateFinancialOctoberPeriodsUpToYear(2017, 5)).toEqual(financialoctober.generateFinancialOctoberPeriodsUpToYear(2017, 5, 'nl'));
             });
         });
 
         describe('financial-july', () => {
             beforeEach(() => {
-                sinon.spy(financialjuly, 'generateFinancialJulyPeriodsUpToYear');
+                jest.spyOn(financialjuly, 'generateFinancialJulyPeriodsUpToYear');
             });
 
             afterEach(() => {
-                financialjuly.generateFinancialJulyPeriodsUpToYear.restore();
+                financialjuly.generateFinancialJulyPeriodsUpToYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateFinancialJulyPeriodsUpToYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialJulyPeriodsUpToYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -331,7 +343,7 @@ describe('generators', () => {
 
                 generators.generateFinancialJulyPeriodsUpToYear(2017);
 
-                expect(financialjuly.generateFinancialJulyPeriodsUpToYear).to.be.calledWith(2017, undefined, 'nl');
+                expect(financialjuly.generateFinancialJulyPeriodsUpToYear).toBeCalledWith(2017, undefined, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -339,21 +351,23 @@ describe('generators', () => {
 
                 generators.generateFinancialJulyPeriodsUpToYear(2017);
 
-                expect(generators.generateFinancialJulyPeriodsUpToYear(2017, 5)).to.deep.equal(financialjuly.generateFinancialJulyPeriodsUpToYear(2017, 5, 'nl'));
+                expect(generators.generateFinancialJulyPeriodsUpToYear(2017, 5)).toEqual(financialjuly.generateFinancialJulyPeriodsUpToYear(2017, 5, 'nl'));
             });
         });
 
         describe('financial-april', () => {
             beforeEach(() => {
-                sinon.spy(financialapril, 'generateFinancialAprilPeriodsUpToYear');
+                jest.spyOn(financialapril, 'generateFinancialAprilPeriodsUpToYear');
             });
 
             afterEach(() => {
-                financialapril.generateFinancialAprilPeriodsUpToYear.restore();
+                financialapril.generateFinancialAprilPeriodsUpToYear.mockRestore();
             });
 
             it('should have the weekly period generator', () => {
-                expect(createPeriodGeneratorsForLocale('nl').generateFinancialAprilPeriodsUpToYear).to.be.a('function');
+                expect(
+                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialAprilPeriodsUpToYear
+                ).toBe('function');
             });
 
             it('should call the weekly generator with the correct locale', () => {
@@ -361,7 +375,7 @@ describe('generators', () => {
 
                 generators.generateFinancialAprilPeriodsUpToYear(2017);
 
-                expect(financialapril.generateFinancialAprilPeriodsUpToYear).to.be.calledWith(2017, undefined, 'nl');
+                expect(financialapril.generateFinancialAprilPeriodsUpToYear).toBeCalledWith(2017, undefined, 'nl');
             });
 
             it('should return the same result as when calling the generator directly', () => {
@@ -369,14 +383,14 @@ describe('generators', () => {
 
                 generators.generateFinancialAprilPeriodsUpToYear(2017);
 
-                expect(generators.generateFinancialAprilPeriodsUpToYear(2017, 5)).to.deep.equal(financialapril.generateFinancialAprilPeriodsUpToYear(2017, 5, 'nl'));
+                expect(generators.generateFinancialAprilPeriodsUpToYear(2017, 5)).toEqual(financialapril.generateFinancialAprilPeriodsUpToYear(2017, 5, 'nl'));
             });
         });
     });
 
     describe('default values', () => {
         beforeEach(() => {
-            sinon.spy(daily, 'generateDailyPeriodsForYear');
+            jest.spyOn(daily, 'generateDailyPeriodsForYear');
         });
 
         it('should use the default locale when no locale is passed', () => {
@@ -384,7 +398,7 @@ describe('generators', () => {
 
             generators.generateDailyPeriodsForYear(2017);
 
-            expect(daily.generateDailyPeriodsForYear).to.be.calledWith(2017, 'en');
+            expect(daily.generateDailyPeriodsForYear).toBeCalledWith(2017, 'en');
         });
     });
 });

@@ -2,7 +2,7 @@ import fixtures from '../../fixtures/fixtures';
 import CurrentUser from '../../../src/current-user/CurrentUser';
 import UserAuthorities from '../../../src/current-user/UserAuthorities';
 const UserSettings = require('../../../src/current-user/UserSettings').default;
-import {noCreateAllowedFor} from '../../../src/defaultConfig';
+import { noCreateAllowedFor } from '../../../src/defaultConfig';
 
 describe('CurrentUser', () => {
     let currentUser;
@@ -13,7 +13,7 @@ describe('CurrentUser', () => {
     beforeEach(() => {
         modelDefinitions = {
             userGroup: {
-                list: stub().returns(Promise.resolve([])),
+                list: jest.fn().mockReturnValue(Promise.resolve([])),
                 authorities: [
                     {
                         type: 'CREATE_PUBLIC',
@@ -22,10 +22,10 @@ describe('CurrentUser', () => {
                 ],
             },
             userRole: {
-                list: stub().returns(Promise.resolve([])),
+                list: jest.fn().mockReturnValue(Promise.resolve([])),
             },
             organisationUnit: {
-                list: stub().returns(Promise.resolve([])),
+                list: jest.fn().mockReturnValue(Promise.resolve([])),
                 authorities: [
                     {
                         type: 'CREATE',
@@ -66,7 +66,7 @@ describe('CurrentUser', () => {
         noCreateAllowedFor.add('categoryOptionCombo');
 
         userData = fixtures.get('/me');
-        spy(UserAuthorities, 'create');
+        jest.spyOn(UserAuthorities, 'create');
         mockUserAuthorities = [
             'F_ORGANISATIONUNIT_ADD',
             'F_ORGANISATIONUNIT_DELETE',
@@ -78,196 +78,196 @@ describe('CurrentUser', () => {
     });
 
     it('should be an instance of CurrentUser', () => {
-        expect(currentUser).to.be.instanceof(CurrentUser);
+        expect(currentUser).toBeInstanceOf(CurrentUser);
     });
 
     it('should contain an instance of UserSettings', () => {
-        expect(currentUser.userSettings).to.be.instanceOf(UserSettings);
+        expect(currentUser.userSettings).toBeInstanceOf(UserSettings);
     });
 
     it('should have an authorities property', () => {
-        expect(currentUser.authorities).to.be.instanceof(UserAuthorities);
+        expect(currentUser.authorities).toBeInstanceOf(UserAuthorities);
     });
 
     describe('create', () => {
         it('should call create on UserAuthorities with the user authorities array', () => {
-            expect(UserAuthorities.create).to.be.calledWith(mockUserAuthorities);
+            expect(UserAuthorities.create).toBeCalledWith(mockUserAuthorities);
         });
     });
 
     describe('properties', () => {
         it('should have set the properties from the data object', () => {
-            expect(currentUser.name).to.equal('John Traore');
-            expect(currentUser.jobTitle).to.equal('Super user');
+            expect(currentUser.name).toBe('John Traore');
+            expect(currentUser.jobTitle).toBe('Super user');
         });
 
         it('should not override the authorities property', () => {
             currentUser = CurrentUser.create({ authorities: [] }, ['ALL'], modelDefinitions);
-            expect(currentUser.authorities).to.be.instanceof(UserAuthorities);
+            expect(currentUser.authorities).toBeInstanceOf(UserAuthorities);
         });
     });
 
     describe('userCredentials', () => {
         it('should set the userCredentials properties onto the currentUser object', () => {
-            expect(currentUser.username).to.equal('admin');
+            expect(currentUser.username).toBe('admin');
         });
 
         it('should not set the userCredentials property onto the currentUser', () => {
-            expect(currentUser.userCredentials).to.be.undefined;
+            expect(currentUser.userCredentials).toBeUndefined();
         });
 
         it('should not modify the passed data object', () => {
-            expect(userData.userCredentials).to.not.be.undefined;
+            expect(userData.userCredentials).toBeDefined();
         });
 
         it('should keep the created date of the orignal user object', () => {
-            expect(currentUser.created).to.equal('2013-04-18T15:15:08.407+0000');
+            expect(currentUser.created).toBe('2013-04-18T15:15:08.407+0000');
         });
     });
 
     describe('reference and collection properties', () => {
         it('userGroups should not exist', () => {
-            expect(currentUser.userGroups).to.be.undefined;
+            expect(currentUser.userGroups).toBeUndefined();
         });
 
         it('userRoles should not exist', () => {
-            expect(currentUser.userRoles).to.be.undefined;
+            expect(currentUser.userRoles).toBeUndefined();
         });
 
         it('organisationUnits should not exist', () => {
-            expect(currentUser.organisationUnits).to.be.undefined;
+            expect(currentUser.organisationUnits).toBeUndefined();
         });
 
         it('dataViewOrganisationUnits should not exist', () => {
-            expect(currentUser.dataViewOrganisationUnits).to.be.undefined;
+            expect(currentUser.dataViewOrganisationUnits).toBeUndefined();
         });
     });
 
     describe('getUserGroups', () => {
         it('should return a promise', () => {
-            expect(currentUser.getUserGroups()).to.be.instanceof(Promise);
+            expect(currentUser.getUserGroups()).toBeInstanceOf(Promise);
         });
 
         it('should be called with the userGroup ids', () => {
             currentUser.getUserGroups();
 
-            expect(modelDefinitions.userGroup.list).to.be.calledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
+            expect(modelDefinitions.userGroup.list).toBeCalledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
         });
     });
 
     describe('getUserRoles', () => {
         it('should return a promise', () => {
-            expect(currentUser.getUserRoles()).to.be.instanceof(Promise);
+            expect(currentUser.getUserRoles()).toBeInstanceOf(Promise);
         });
 
         it('should be called with the userRole ids', () => {
             currentUser.getUserRoles();
 
-            expect(modelDefinitions.userRole.list).to.be.calledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
+            expect(modelDefinitions.userRole.list).toBeCalledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
         });
     });
 
     describe('getOrganisationUnits', () => {
         it('should return a promise', () => {
-            expect(currentUser.getOrganisationUnits()).to.be.instanceof(Promise);
+            expect(currentUser.getOrganisationUnits()).toBeInstanceOf(Promise);
         });
 
         it('should be called with organisationUnit ids', () => {
             currentUser.getOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[ImspTQPwCqd]'] });
+            expect(modelDefinitions.organisationUnit.list).toBeCalledWith({ fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[ImspTQPwCqd]'] });
         });
     });
 
     describe('getDataViewOrganisationUnits', () => {
         it('should return a promise', () => {
-            expect(currentUser.getDataViewOrganisationUnits()).to.be.instanceof(Promise);
+            expect(currentUser.getDataViewOrganisationUnits()).toBeInstanceOf(Promise);
         });
 
         it('should be called with organisationUnit ids', () => {
             currentUser.getDataViewOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).to.be.calledWith({ fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[]'] });
+            expect(modelDefinitions.organisationUnit.list).toBeCalledWith({ fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[]'] });
         });
     });
 
     describe('canCreate', () => {
         it('should return false if the no model is passed', () => {
-            expect(currentUser.canCreate()).to.equal(false);
+            expect(currentUser.canCreate()).toBe(false);
         });
 
         it('should return false for userRole', () => {
-            expect(currentUser.canCreate(modelDefinitions.userRole)).to.be.false;
+            expect(currentUser.canCreate(modelDefinitions.userRole)).toBe(false);
         });
 
         it('should return true for organisationUnit', () => {
-            expect(currentUser.canCreate(modelDefinitions.organisationUnit)).to.be.true;
+            expect(currentUser.canCreate(modelDefinitions.organisationUnit)).toBe(true);
         });
 
         it('should return for userGroup', () => {
-            expect(currentUser.canCreate(modelDefinitions.userGroup)).to.be.true;
+            expect(currentUser.canCreate(modelDefinitions.userGroup)).toBe(true);
         });
 
         it('should return false when the modelDefinition is in the noCreateAllowedFor list', () => {
-            expect(currentUser.canCreate(modelDefinitions.categoryOptionCombo)).to.be.false;
+            expect(currentUser.canCreate(modelDefinitions.categoryOptionCombo)).toBe(false);
         });
     });
 
     describe('canDelete', () => {
         it('should return false if the no model is passed', () => {
-            expect(currentUser.canDelete()).to.equal(false);
+            expect(currentUser.canDelete()).toBe(false);
         });
 
         it('should return false for userGroup', () => {
-            expect(currentUser.canDelete(modelDefinitions.userGroup)).to.be.false;
+            expect(currentUser.canDelete(modelDefinitions.userGroup)).toBe(false);
         });
 
         it('should return true for organisationUnit', () => {
-            expect(currentUser.canDelete(modelDefinitions.organisationUnit)).to.be.true;
+            expect(currentUser.canDelete(modelDefinitions.organisationUnit)).toBe(true);
         });
     });
 
     describe('canUpdate', () => {
         it('should return false if no model is passed', () => {
-            expect(currentUser.canUpdate()).to.equal(false);
+            expect(currentUser.canUpdate()).toBe(false);
         });
 
         it('should return false for userRole', () => {
-            expect(currentUser.canCreate(modelDefinitions.userRole)).to.be.false;
+            expect(currentUser.canCreate(modelDefinitions.userRole)).toBe(false);
         });
 
         it('should return true for userGroup', () => {
-            expect(currentUser.canUpdate(modelDefinitions.userGroup)).to.be.true;
+            expect(currentUser.canUpdate(modelDefinitions.userGroup)).toBe(true);
         });
 
         it('should return true for organisationUnitLevel', () => {
-            expect(currentUser.canUpdate(modelDefinitions.organisationUnitLevel)).to.be.true;
+            expect(currentUser.canUpdate(modelDefinitions.organisationUnitLevel)).toBe(true);
         });
     });
 
     describe('canCreatePublic', () => {
         it('should return false if no model is passed', () => {
-            expect(currentUser.canCreatePublic()).to.equal(false);
+            expect(currentUser.canCreatePublic()).toBe(false);
         });
 
         it('should return false for userGroup', () => {
-            expect(currentUser.canCreatePublic(modelDefinitions.userGroup)).to.be.true;
+            expect(currentUser.canCreatePublic(modelDefinitions.userGroup)).toBe(true);
         });
 
         it('should return false for userGroup even when the user has the authority due to the presence in the ignore list', () => {
             noCreateAllowedFor.add('userGroup');
 
-            expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).to.be.false;
+            expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).toBe(false);
         });
     });
 
     describe('canCreatePrivate', () => {
         it('should return false if no model is passed', () => {
-            expect(currentUser.canCreatePrivate()).to.equal(false);
+            expect(currentUser.canCreatePrivate()).toBe(false);
         });
 
         it('should return false for userGroup', () => {
-            expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).to.be.false;
+            expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).toBe(false);
         });
     });
 });

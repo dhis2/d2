@@ -11,29 +11,29 @@ describe('Utils', () => {
                 utils.throwError('MyMessage');
             }
 
-            expect(shouldThrow).to.throw('MyMessage');
+            expect(shouldThrow).toThrowError('MyMessage');
         });
     });
 
     describe('pick', () => {
-        var object = {
+        const object = {
             name: 'Mark',
             users: [
                 'mark', 'this', 'color',
-            ]
+            ],
         };
 
         it('should return the value of the property', () => {
-            expect(utils.pick('name')(object)).to.equal('Mark');
-            expect(utils.pick('users')(object)).to.equal(object.users);
+            expect(utils.pick('name')(object)).toBe('Mark');
+            expect(utils.pick('users')(object)).toBe(object.users);
         });
 
         it('should return undefined if the property does not exist', () => {
-            expect(utils.pick('groups')(object)).to.be.undefined;
+            expect(utils.pick('groups')(object)).toBeUndefined();
         });
 
         it('should return undefined if the object is undefined', () => {
-            expect(utils.pick('name')(undefined)).to.be.undefined;
+            expect(utils.pick('name')(undefined)).toBeUndefined();
         });
     });
 });

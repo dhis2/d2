@@ -12,10 +12,10 @@ describe('ProgramNotificationTemplate defaults', () => {
     });
 
     it('should have `version` set to 0', () => {
-        expect(programNotificationTemplate.notificationTrigger).to.equal('COMPLETION');
+        expect(programNotificationTemplate.notificationTrigger).toBe('COMPLETION');
     });
 
     it('should have `completedEventExpiryDays` set to 0', () => {
-        expect(programNotificationTemplate.notificationRecipient).to.equal('USERS_AT_ORGANISATION_UNIT');
+        expect(programNotificationTemplate.notificationRecipient).toBe('USERS_AT_ORGANISATION_UNIT');
     });
 });

@@ -1,44 +1,38 @@
 import fixtures from '../../fixtures/fixtures';
-import Api from '../../../src/api/Api';
+import MockApi from '../../../src/api/Api';
 
-const proxyquire = require('proxyquire').noCallThru();
-
-const apiMock = {
-    jquery: {
-        ajax: sinon.stub(),
-    },
-};
+jest.mock('../../../src/api/Api');
 
 describe('System', () => {
     const System = require('../../../src/system/System').default;
     const SystemConfiguration = require('../../../src/system/SystemConfiguration').default;
     const SystemSettings = require('../../../src/system/SystemSettings').default;
     let system;
+    let apiMock;
 
     beforeEach(() => {
-        sinon.stub(Api, 'getApi').returns(apiMock);
-
+        apiMock = new MockApi();
         system = new System(new SystemSettings(), new SystemConfiguration());
     });
 
     afterEach(() => {
-        Api.getApi.restore();
+        MockApi.mockReset();
     });
 
     it('should be an instance of System', () => {
-        expect(system).to.be.instanceOf(System);
+        expect(system).toBeInstanceOf(System);
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => System()).to.throw('Cannot call a class as a function');
+        expect(() => System()).toThrowError('Cannot call a class as a function');
     });
 
     it('should contain an instance of SystemConfiguration', () => {
-        expect(system.configuration).to.be.instanceOf(SystemConfiguration);
+        expect(system.configuration).toBeInstanceOf(SystemConfiguration);
     });
 
     it('should contain an instance of SystemSettings', () => {
-        expect(system.settings).to.be.instanceOf(SystemSettings);
+        expect(system.settings).toBeInstanceOf(SystemSettings);
     });
 
     describe('loadInstalledApps()', () => {
@@ -94,32 +88,28 @@ describe('System', () => {
                 },
             ];
 
-            apiMock.get = stub().returns(Promise.resolve(appsFromApi));
+            apiMock.get = jest.fn().mockReturnValue(Promise.resolve(appsFromApi));
         });
 
-        it('should set the list of installed apps onto the Settings object', () => {
-            return system.loadInstalledApps()
+        it('should set the list of installed apps onto the Settings object', () => system.loadInstalledApps()
                 .then(() => {
-                    expect(system.installedApps).to.deep.equal(appsFromApi);
-                });
-        });
+                    expect(system.installedApps).toEqual(appsFromApi);
+                }));
 
         it('should reject the promise if the request fails', () => {
-            apiMock.get = stub().returns(Promise.reject('Apps can not be loaded'));
+            apiMock.get = jest.fn().mockReturnValue(Promise.reject('Apps can not be loaded'));
 
             return system.loadInstalledApps()
                 .catch(error => error)
                 .then((message) => {
-                    expect(message).to.equal('Apps can not be loaded');
+                    expect(message).toBe('Apps can not be loaded');
                 });
         });
 
-        it('should resolve with the returned list of apps', () => {
-            return system.loadInstalledApps()
-                .then(apps => {
-                    expect(apps).to.deep.equal(appsFromApi);
-                });
-        });
+        it('should resolve with the returned list of apps', () => system.loadInstalledApps()
+                .then((apps) => {
+                    expect(apps).toEqual(appsFromApi);
+                }));
     });
 
     describe('uploadApp()', () => {
@@ -127,10 +117,11 @@ describe('System', () => {
         let formData;
 
         beforeEach(() => {
-            apiMock.post = stub().returns(Promise.resolve());
+            jest.spyOn(apiMock, 'post')
+                .mockReturnValue(Promise.resolve());
 
             // Fake FormData object
-            appendSpy = spy();
+            appendSpy = jest.fn();
             formData = {
                 append: appendSpy,
             };
@@ -145,7 +136,7 @@ describe('System', () => {
         });
 
         it('should be a function on the system object', () => {
-            expect(system.uploadApp).to.be.a('function');
+            expect(typeof system.uploadApp).toBe('function');
         });
 
         it('should call the post with the correct options', () => {
@@ -157,13 +148,13 @@ describe('System', () => {
 
             system.uploadApp('ZipFile');
 
-            expect(apiMock.post).to.be.calledWith('apps', formData, xhrOptions);
+            expect(apiMock.post).toBeCalledWith('apps', formData, xhrOptions);
         });
 
         it('should call append on the formData object to add the file to upload', () => {
             system.uploadApp('ZipFile');
 
-            expect(formData.append).to.be.calledWith('file', 'ZipFile');
+            expect(formData.append).toBeCalledWith('file', 'ZipFile');
         });
 
         describe('xhr', () => {
@@ -171,7 +162,7 @@ describe('System', () => {
             let xhrMock;
 
             beforeEach(() => {
-                progressCallbackSpy = spy();
+                progressCallbackSpy = jest.fn();
                 xhrMock = {
                     upload: {},
                 };
@@ -187,21 +178,21 @@ describe('System', () => {
             it('should pass custom XMLHttpRequest Object with an on progress callback as an option', () => {
                 system.uploadApp('ZipFile', progressCallbackSpy);
 
-                expect(apiMock.post.getCall(0).args[2].xhr).to.be.a('function');
-                expect(apiMock.post.getCall(0).args[2].xhr.call()).to.equal(xhrMock);
+                expect(typeof apiMock.post.mock.calls[0][2].xhr).toBe('function');
+                expect(apiMock.post.mock.calls[0][2].xhr.call()).toBe(xhrMock);
             });
 
             it('should define the onprogress function onto the upload object of the xhr', () => {
                 system.uploadApp('ZipFile', progressCallbackSpy);
 
-                expect(xhrMock.upload.onprogress).to.be.a('function');
+                expect(typeof xhrMock.upload.onprogress).toBe('function');
             });
 
             it('should not call the callback if the progress can not be computed', () => {
                 system.uploadApp('ZipFile', progressCallbackSpy);
                 xhrMock.upload.onprogress({});
 
-                expect(progressCallbackSpy).not.to.be.called;
+                expect(progressCallbackSpy).not.toBeCalled();
             });
 
             it('should call the callback spy if the progress can be computed', () => {
@@ -212,7 +203,7 @@ describe('System', () => {
                     total: 50,
                 });
 
-                expect(progressCallbackSpy).to.be.calledWith(0.2);
+                expect(progressCallbackSpy).toBeCalledWith(0.2);
             });
         });
     });
@@ -223,22 +214,22 @@ describe('System', () => {
                 version: '2.22',
             });
 
-            apiMock.get = stub()
-                .returns(Promise.resolve(fixtures.get('/appStore')));
+            jest.spyOn(apiMock, 'get')
+                .mockReturnValue(Promise.resolve(fixtures.get('/appStore')));
         });
 
         it('should be a function on the system object', () => {
-            expect(system.loadAppStore).to.be.a('function');
+            expect(typeof system.loadAppStore).toBe('function');
         });
 
         it('should return a promise', () => {
-            expect(system.loadAppStore()).to.be.instanceof(Promise);
+            expect(system.loadAppStore()).toBeInstanceOf(Promise);
         });
 
         it('should request the api for the appStore', () => {
             system.loadAppStore();
 
-            expect(apiMock.get).to.be.calledWith('appStore');
+            expect(apiMock.get).toBeCalledWith('appStore');
         });
 
         it('should return the compatible apps from the api', () => {
@@ -249,7 +240,7 @@ describe('System', () => {
 
             return system.loadAppStore()
                 .then((apps) => {
-                    expect(apps).to.deep.equal(expectedApps);
+                    expect(apps).toEqual(expectedApps);
                 });
         });
 
@@ -259,50 +250,48 @@ describe('System', () => {
             returnedApps.apps = [
                 {
                     versions: [
-                        {min_platform_version: '2.13', max_platform_version: '2.20'},
-                        {min_platform_version: '2.20'},
+                        { min_platform_version: '2.13', max_platform_version: '2.20' },
+                        { min_platform_version: '2.20' },
                     ],
                 },
                 {
                     versions: [
-                        {min_platform_version: '2.25', max_platform_version: '2.26'},
-                        {min_platform_version: '2.26'},
+                        { min_platform_version: '2.25', max_platform_version: '2.26' },
+                        { min_platform_version: '2.26' },
                     ],
                 },
                 {
                     versions: [
-                        {min_platform_version: '2.21'},
+                        { min_platform_version: '2.21' },
                     ],
                 },
                 {
                     versions: [
-                        {max_platform_version: '2.19'},
+                        { max_platform_version: '2.19' },
                     ],
                 },
             ];
 
-            apiMock.get.returns(Promise.resolve(returnedApps));
+            apiMock.get.mockReturnValue(Promise.resolve(returnedApps));
 
             return system.loadAppStore()
                 .then((apps) => {
-                    expect(apps.apps.length).to.equal(2);
+                    expect(apps.apps.length).toBe(2);
                 });
         });
 
-        it('should return all the apps when compatibility flag is set to false', () => {
-            return system.loadAppStore(false)
+        it('should return all the apps when compatibility flag is set to false', () => system.loadAppStore(false)
                 .then((apps) => {
-                    expect(apps.apps.length).to.equal(fixtures.get('/appStore').apps.length);
-                });
-        });
+                    expect(apps.apps.length).toBe(fixtures.get('/appStore').apps.length);
+                }));
 
         it('should reject the promise when the request fails', () => {
-            apiMock.get.returns(Promise.reject('Request for appStore failed'));
+            apiMock.get.mockReturnValue(Promise.reject('Request for appStore failed'));
 
             return system.loadAppStore()
                 .catch(error => error)
-                .then(error => {
-                    expect(error).to.equal('Request for appStore failed');
+                .then((error) => {
+                    expect(error).toBe('Request for appStore failed');
                 });
         });
 
@@ -311,64 +300,58 @@ describe('System', () => {
 
             return system.loadAppStore()
                 .catch(error => error)
-                .then(error => {
-                    expect(error.message).to.equal('Cannot read property \'major\' of undefined');
+                .then((error) => {
+                    expect(error.message).toBe('Cannot read property \'major\' of undefined');
                 });
         });
     });
 
     describe('installAppVersion()', () => {
         beforeEach(() => {
-            apiMock.post.returns(Promise.resolve(''));
+            apiMock.post.mockReturnValue(Promise.resolve(''));
         });
 
         it('should be a function on the system object', () => {
-            expect(system.installAppVersion).to.be.a('function');
+            expect(typeof system.installAppVersion).toBe('function');
         });
 
         it('should reject the promise when the request fails', () => {
-            apiMock.post.returns(Promise.reject('Request for installation failed'));
+            apiMock.post.mockReturnValue(Promise.reject('Request for installation failed'));
 
             return system.installAppVersion('PyYnjVl5iGt')
                 .catch(error => error)
-                .then(errorMessage => {
-                    expect(errorMessage).to.equal('Request for installation failed');
+                .then((errorMessage) => {
+                    expect(errorMessage).toBe('Request for installation failed');
                 });
         });
 
-        it('should call the api with the correct url', () => {
-            return system.installAppVersion('PyYnjVl5iGt')
+        it('should call the api with the correct url', () => system.installAppVersion('PyYnjVl5iGt')
                 .then(() => {
-                    expect(apiMock.post).to.be.calledWith('appStore/PyYnjVl5iGt');
-                });
-        });
+                    expect(apiMock.post).toBeCalledWith('appStore/PyYnjVl5iGt', '', { dataType: 'text' });
+                }));
 
-        it('should resolve the promise without a value', () => {
-            return system.installAppVersion('PyYnjVl5iGt')
+        it('should resolve the promise without a value', () => system.installAppVersion('PyYnjVl5iGt')
                 .then((response) => {
-                    expect(response).to.be.undefined;
-                });
-        });
+                    expect(response).toBeUndefined();
+                }));
     });
 
     describe('uninstallApp()', () => {
         beforeEach(() => {
-            apiMock.delete = stub().returns(Promise.resolve({}));
+            apiMock.delete = jest.fn().mockReturnValue(Promise.resolve({}));
         });
 
         it('should be a function on the system object', () => {
-            expect(system.uninstallApp).to.be.a('function');
+            expect(typeof system.uninstallApp).toBe('function');
         });
 
-        it('should call the api.delete method with the correct url', () => {
-            return system.uninstallApp('PyYnjVl5iGt')
+        it('should call the api.delete method with the correct url', () => system.uninstallApp('PyYnjVl5iGt')
                 .then(() => {
-                    expect(apiMock.delete).to.be.calledWith('apps/PyYnjVl5iGt');
-                });
-        });
+                    expect(apiMock.delete).toBeCalledWith('apps/PyYnjVl5iGt');
+                }));
 
         it('should resolve the request even when the api request fails', () => {
-            apiMock.delete = stub().returns(Promise.reject({}));
+            apiMock.delete = jest.fn().mockReturnValue(Promise.reject({}));
 
             return system.uninstallApp('PyYnjVl5iGt');
         });
@@ -376,46 +359,45 @@ describe('System', () => {
 
     describe('reloadApps()', () => {
         beforeEach(() => {
-            apiMock.update = stub().returns(Promise.resolve());
+            jest.spyOn(apiMock, 'update')
+                .mockReturnValue(Promise.resolve());
+
+            jest.spyOn(system, 'loadInstalledApps')
+                .mockReturnValueOnce(Promise.resolve());
         });
 
         it('should be a function on the system object', () => {
-            expect(system.reloadApps).to.be.a('function');
+            expect(typeof system.reloadApps).toBe('function');
         });
 
-        it('should call the update method on the api', () => {
-            return system.reloadApps()
+        it('should call the update method on the api', () => system.reloadApps()
                 .then(() => {
-                   expect(apiMock.update).to.be.calledWith('apps');
-                });
-        });
+                    expect(apiMock.update.mock.calls[0][0]).toBe('apps');
+                }));
 
-        it('should call system.loadInstalledApps on success ', () => {
-            spy(system, 'loadInstalledApps');
-
-            return system.reloadApps()
+        it('should call system.loadInstalledApps on success ', () => system.reloadApps()
                 .then(() => {
-                    expect(system.loadInstalledApps).to.be.called;
-                });
-        });
+                    expect(system.loadInstalledApps).toBeCalled();
+                }));
 
         it('should chain the promise from loadInstalledApps', () => {
             const loadInstalledAppsPromise = Promise.resolve('Apps loaded');
 
-            stub(system, 'loadInstalledApps').returns(loadInstalledAppsPromise);
+            system.loadInstalledApps.mockReset();
+            system.loadInstalledApps.mockReturnValue(loadInstalledAppsPromise);
 
             return system.reloadApps()
-                .then((message) => expect(message).to.equal('Apps loaded'));
+                .then(message => expect(message).toBe('Apps loaded'));
         });
 
         it('should not call loadInstalledApps when the update request fails', () => {
-            apiMock.update.returns(Promise.reject());
-            spy(system, 'loadInstalledApps');
+            apiMock.update.mockReturnValue(Promise.reject());
+            jest.spyOn(system, 'loadInstalledApps');
 
             return system.reloadApps()
                 .catch(message => message)
                 .then(() => {
-                    expect(system.loadInstalledApps).not.to.be.called;
+                    expect(system.loadInstalledApps).not.toBeCalled();
                 });
         });
     });
@@ -438,42 +420,42 @@ describe('System', () => {
         });
 
         it('should be a function on the system class', () => {
-            expect(System.compareVersions).to.be.a('function');
+            expect(typeof System.compareVersions).toBe('function');
         });
 
         it('should return 0 for equal versions', () => {
-            expect(System.compareVersions(systemVersion, appVersion)).to.equal(0);
+            expect(System.compareVersions(systemVersion, appVersion)).toBe(0);
         });
 
         it('should return 1 for a larger major system version', () => {
             systemVersion.major = 3;
 
-            expect(System.compareVersions(systemVersion, appVersion)).to.equal(1);
+            expect(System.compareVersions(systemVersion, appVersion)).toBe(1);
         });
 
         it('should return 1 for a larger minor version', () => {
             systemVersion.minor = 24;
 
-            expect(System.compareVersions(systemVersion, appVersion)).to.equal(1);
+            expect(System.compareVersions(systemVersion, appVersion)).toBe(1);
         });
 
         it('should return 1 when the app is a snapshot version', () => {
             systemVersion.snapshot = false;
             appVersion.snapshot = true;
 
-            expect(System.compareVersions(systemVersion, appVersion)).to.equal(1);
+            expect(System.compareVersions(systemVersion, appVersion)).toBe(1);
         });
 
         it('should return -1 when the app is not a snapshot', () => {
             systemVersion.snapshot = true;
             appVersion.snapshot = false;
 
-            expect(System.compareVersions(systemVersion, appVersion)).to.equal(-1);
+            expect(System.compareVersions(systemVersion, appVersion)).toBe(-1);
         });
 
         it('should do correct comparison when a string is passed as a version', () => {
-            expect(System.compareVersions('2.15', '2.16')).to.equal(-1);
-            expect(System.compareVersions('2.20-SNAPSHOT', '2.16')).to.equal(4);
+            expect(System.compareVersions('2.15', '2.16')).toBe(-1);
+            expect(System.compareVersions('2.20-SNAPSHOT', '2.16')).toBe(4);
         });
     });
 
@@ -482,7 +464,7 @@ describe('System', () => {
         let systemVersion;
 
         beforeEach(() => {
-            stub(System, 'compareVersions');
+            jest.spyOn(System, 'compareVersions');
 
             appVersion = {
                 min_platform_version: '2.22',
@@ -492,15 +474,15 @@ describe('System', () => {
         });
 
         afterEach(() => {
-            System.compareVersions.restore();
+            System.compareVersions.mockRestore();
         });
 
         it('should return false when the app is not new enough', () => {
-            expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.false;
+            expect(System.isVersionCompatible(systemVersion, appVersion)).toBe(false);
         });
 
         it('should return false when the app is too old', () => {
-            expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.false;
+            expect(System.isVersionCompatible(systemVersion, appVersion)).toBe(false);
         });
 
         it('should return true when the system version is within the app version range', () => {
@@ -513,20 +495,20 @@ describe('System', () => {
         it('should return true when no version bounds are given', () => {
             appVersion = {};
 
-            expect(System.isVersionCompatible(systemVersion, appVersion)).to.be.true;
+            expect(System.isVersionCompatible(systemVersion, appVersion)).toBe(true);
         });
 
         it('should return false when the version is not compatible', () => {
             expect(System.isVersionCompatible('2.22', {
                 min_platform_version: '2.17',
                 max_platform_version: '2.20',
-            })).to.be.false;
+            })).toBe(false);
         });
     });
 
     describe('getSystem', () => {
         it('should return the same instance on consecutive requests', () => {
-            expect(System.getSystem()).to.equal(System.getSystem());
+            expect(System.getSystem()).toBe(System.getSystem());
         });
     });
 });

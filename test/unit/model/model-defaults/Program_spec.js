@@ -10,14 +10,14 @@ describe('Program defaults', () => {
     });
 
     it('should have `version` set to 0', () => {
-        expect(program.version).to.equal(0);
+        expect(program.version).toBe(0);
     });
 
     it('should have `completedEventExpiryDays` set to 0', () => {
-        expect(program.completeEventsExpiryDays).to.equal(0);
+        expect(program.completeEventsExpiryDays).toBe(0);
     });
 
     it('should have `expiryDays` set to 0', () => {
-        expect(program.expiryDays).to.equal(0);
+        expect(program.expiryDays).toBe(0);
     });
 });

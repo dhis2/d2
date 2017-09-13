@@ -1,9 +1,7 @@
 import ModelDefinitions from '../../../src/model/ModelDefinitions.js';
 
 describe('D2 models', () => {
-    'use strict';
-
-    var models;
+    let models;
 
     class ModelDefinition {
         constructor(name, plural) {
@@ -17,28 +15,28 @@ describe('D2 models', () => {
     });
 
     it('should be an object', () => {
-        expect(models).to.be.instanceof(Object);
+        expect(models).toBeInstanceOf(Object);
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinitions()).to.throw('Cannot call a class as a function');
+        expect(() => ModelDefinitions()).toThrowError('Cannot call a class as a function');
     });
 
     describe('add method', () => {
-        var dataElementModelDefinition;
+        let dataElementModelDefinition;
 
         beforeEach(() => {
             dataElementModelDefinition = new ModelDefinition('dataElement');
         });
 
         it('should be a function', () => {
-            expect(models.add).to.be.instanceof(Function);
+            expect(models.add).toBeInstanceOf(Function);
         });
 
         it('should add a property to the models object', () => {
             models.add(dataElementModelDefinition);
 
-            expect(models.dataElement).to.be.instanceof(ModelDefinition);
+            expect(models.dataElement).toBeInstanceOf(ModelDefinition);
         });
 
         it('should throw an error when trying to add something that already exists', () => {
@@ -47,7 +45,7 @@ describe('D2 models', () => {
             }
             models.add(dataElementModelDefinition);
 
-            expect(shouldThrow).to.throw('Model dataElement already exists');
+            expect(shouldThrow).toThrowError('Model dataElement already exists');
         });
 
         it('should reject a ModelDefinition that does not have a name property', () => {
@@ -56,7 +54,7 @@ describe('D2 models', () => {
             }
             models.add(dataElementModelDefinition);
 
-            expect(shouldThrow).to.throw('Name should be set on the passed ModelDefinition to add one');
+            expect(shouldThrow).toThrowError('Name should be set on the passed ModelDefinition to add one');
         });
 
         it('should add the plural version to the object', () => {
@@ -64,8 +62,8 @@ describe('D2 models', () => {
 
             models.add(indicatorDefinition);
 
-            expect(models.indicator).to.be.instanceof(ModelDefinition);
-            expect(models.indicator).to.equal(models.indicators);
+            expect(models.indicator).toBeInstanceOf(ModelDefinition);
+            expect(models.indicator).toBe(models.indicators);
         });
     });
 
@@ -78,31 +76,31 @@ describe('D2 models', () => {
         });
 
         it('should should be a function', () => {
-            expect(models.mapThroughDefinitions).to.be.instanceof(Function);
+            expect(models.mapThroughDefinitions).toBeInstanceOf(Function);
         });
 
         it('should return an array of ModelDefinitions', () => {
-            var expectedArray = [{ name: 'dataElement' }, { name: 'dataValue' }, { name: 'user' }, { name: 'userGroup' }];
+            const expectedArray = [{ name: 'dataElement' }, { name: 'dataValue' }, { name: 'user' }, { name: 'userGroup' }];
             function returnValue(item) {
                 return item;
             }
 
-            expect(models.mapThroughDefinitions(returnValue)).to.deep.equal(expectedArray);
+            expect(models.mapThroughDefinitions(returnValue)).toEqual(expectedArray);
         });
 
         it('should throw if the transformer passed is not a function', () => {
-            expect(() => models.mapThroughDefinitions('')).to.throw('Expected transformer to have type function');
-            expect(() => models.mapThroughDefinitions({})).to.throw('Expected transformer to have type function');
+            expect(() => models.mapThroughDefinitions('')).toThrowError('Expected transformer to have type function');
+            expect(() => models.mapThroughDefinitions({})).toThrowError('Expected transformer to have type function');
         });
 
         it('should not map through properties that are the plural versions', () => {
-            const iterator = spy();
+            const iterator = jest.fn();
 
             models.add({ name: 'indicator', plural: 'indicators' });
 
             models.mapThroughDefinitions(iterator);
 
-            expect(iterator).to.have.callCount(5);
+            expect(iterator).toHaveBeenCalledTimes(5);
         });
     });
 });

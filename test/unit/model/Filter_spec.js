@@ -4,7 +4,7 @@ import Filter from '../../../src/model/Filter';
 describe('Filter', () => {
     describe('getFilter', () => {
         it('should create an instance of filter', () => {
-            expect(Filter.getFilter()).to.be.instanceof(Filter);
+            expect(Filter.getFilter()).toBeInstanceOf(Filter);
         });
     });
 
@@ -18,82 +18,82 @@ describe('Filter', () => {
         });
 
         it('should have a comparator', () => {
-            expect(filter.comparator).to.not.be.undefined;
+            expect(filter.comparator).toBeDefined();
         });
 
         it('the comparator should default to like', () => {
-            expect(filter.comparator).to.equal('like');
+            expect(filter.comparator).toBe('like');
         });
 
         it('should set the default properyName to name', () => {
-            expect(filter.propertyName).to.equal('name');
+            expect(filter.propertyName).toBe('name');
         });
 
         describe('comparators', () => {
             it('should have an like  method', () => {
-                expect(filter.like).to.be.instanceof(Function);
+                expect(filter.like).toBeInstanceOf(Function);
             });
 
             it('should have an ilike method', () => {
-                expect(filter.ilike).to.be.instanceof(Function);
+                expect(filter.ilike).toBeInstanceOf(Function);
             });
 
             it('should have an equals method', () => {
-                expect(filter.equals).to.be.instanceof(Function);
+                expect(filter.equals).toBeInstanceOf(Function);
             });
 
             it('should set the correct comparator', () => {
                 filter.equals('ANC');
 
-                expect(filter.comparator).to.equal('eq');
+                expect(filter.comparator).toBe('eq');
             });
 
             it('should set the passed filterValue onto the filter', () => {
                 filter.equals('ANC');
 
-                expect(filter.filterValue).to.equal('ANC');
+                expect(filter.filterValue).toBe('ANC');
             });
 
             it('should throw an error when no filterValue is provided', () => {
-                expect(() => filter.equals()).to.throw('filterValue should be provided');
+                expect(() => filter.equals()).toThrowError('filterValue should be provided');
             });
 
             it('should return call the getReturn method on filters', () => {
-                let modelDefinitionFake = {};
-                filters.getReturn = sinon.stub().returns(modelDefinitionFake);
+                const modelDefinitionFake = {};
+                filters.getReturn = jest.fn().mockReturnValue(modelDefinitionFake);
 
                 filter.equals('ANC');
 
-                expect(filters.getReturn).to.be.called;
-                expect(filter.equals('ANC')).to.equal(modelDefinitionFake);
+                expect(filters.getReturn).toBeCalled();
+                expect(filter.equals('ANC')).toBe(modelDefinitionFake);
             });
 
             it('should call add on the Filters instance with itself as parameter', () => {
-                filters.add = sinon.spy();
+                filters.add = jest.fn();
 
                 filter.on('year').equals('2013');
 
-                expect(filters.add).to.be.calledWith(filter);
+                expect(filters.add).toBeCalledWith(filter);
             });
         });
 
         describe('on', () => {
             it('should be a function', () => {
-                expect(filter.on).to.be.instanceof(Function);
+                expect(filter.on).toBeInstanceOf(Function);
             });
 
             it('should return itself for chaining', () => {
-                expect(filter.on('name')).to.equal(filter);
+                expect(filter.on('name')).toBe(filter);
             });
 
             it('should throw an error when the propertyName is undefined', () => {
-                expect(() => filter.on()).to.throw('Property name to filter on should be provided');
+                expect(() => filter.on()).toThrowError('Property name to filter on should be provided');
             });
 
             it('should set the propertyName onto the filter', () => {
                 filter.on('year');
 
-                expect(filter.propertyName).to.equal('year');
+                expect(filter.propertyName).toBe('year');
             });
         });
 
@@ -103,11 +103,11 @@ describe('Filter', () => {
             });
 
             it('should be a function', () => {
-                expect(filter.getQueryParamFormat).to.be.instanceof(Function);
+                expect(filter.getQueryParamFormat).toBeInstanceOf(Function);
             });
 
             it('should return the filter value in the expected query format', () => {
-                expect(filter.getQueryParamFormat()).to.equal('code:eq:Partner_343');
+                expect(filter.getQueryParamFormat()).toBe('code:eq:Partner_343');
             });
         });
     });

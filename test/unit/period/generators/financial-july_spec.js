@@ -1,34 +1,23 @@
 import { generateFinancialJulyPeriodsUpToYear } from '../../../../src/period/generators/financial-july';
 
 describe('Financial July period', () => {
-    const firstOfJanuary2017 = 1483228800000;
-    let clock;
-
-    beforeEach(() => {
-        clock = sinon.useFakeTimers(firstOfJanuary2017);
-    });
-
-    afterEach(() => {
-        clock.restore();
-    });
-
     describe('generateFinancialJulyPeriodsUpToYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateFinancialJulyPeriodsUpToYear(-10)).to.throw();
+            expect(() => generateFinancialJulyPeriodsUpToYear(-10)).toThrowError();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateFinancialJulyPeriodsUpToYear(new Date())).to.throw();
+            expect(() => generateFinancialJulyPeriodsUpToYear(new Date())).toThrowError();
         });
 
         it('should generate 10 yearly periods when no numberOfYears was passed', () => {
-            expect(generateFinancialJulyPeriodsUpToYear(2017)).to.have.length(10);
+            expect(generateFinancialJulyPeriodsUpToYear(2017)).toHaveLength(10);
         });
 
         it('should generate periods for 10 years with the last one being the current year', () => {
             const tenYearlyPeriods = generateFinancialJulyPeriodsUpToYear(2017);
 
-            expect(tenYearlyPeriods).to.deep.equal([
+            expect(tenYearlyPeriods).toEqual([
                 {
                     endDate: '2009-06-30',
                     startDate: '2008-07-01',
@@ -86,7 +75,7 @@ describe('Financial July period', () => {
         it('should respect the number of years parameter and generate that number of years including the current one', () => {
             const fiveYearlyPeriods = generateFinancialJulyPeriodsUpToYear(2017, 5);
 
-            expect(fiveYearlyPeriods).to.deep.equal([
+            expect(fiveYearlyPeriods).toEqual([
                 {
                     endDate: '2014-06-30',
                     startDate: '2013-07-01',
@@ -117,18 +106,18 @@ describe('Financial July period', () => {
         });
 
         it('should throw an error when the numberOfYears is not a positive integer', () => {
-            expect(() => generateFinancialJulyPeriodsUpToYear(2017, 'a')).to.throw();
-            expect(() => generateFinancialJulyPeriodsUpToYear(2017, 1.2)).to.throw();
-            expect(() => generateFinancialJulyPeriodsUpToYear(2017, true)).to.throw();
-            expect(() => generateFinancialJulyPeriodsUpToYear(2017, -1)).to.throw();
-            expect(() => generateFinancialJulyPeriodsUpToYear(2017, 0)).to.throw();
-            expect(() => generateFinancialJulyPeriodsUpToYear(2017, Infinity)).to.throw();
+            expect(() => generateFinancialJulyPeriodsUpToYear(2017, 'a')).toThrowError();
+            expect(() => generateFinancialJulyPeriodsUpToYear(2017, 1.2)).toThrowError();
+            expect(() => generateFinancialJulyPeriodsUpToYear(2017, true)).toThrowError();
+            expect(() => generateFinancialJulyPeriodsUpToYear(2017, -1)).toThrowError();
+            expect(() => generateFinancialJulyPeriodsUpToYear(2017, 0)).toThrowError();
+            expect(() => generateFinancialJulyPeriodsUpToYear(2017, Infinity)).toThrowError();
         });
 
         it('should generate the yearly periods for 2021 and 2022', () => {
             const fiveYearlyPeriods = generateFinancialJulyPeriodsUpToYear(2022, 2);
 
-            expect(fiveYearlyPeriods).to.deep.equal([
+            expect(fiveYearlyPeriods).toEqual([
                 {
                     endDate: '2022-06-30',
                     startDate: '2021-07-01',
@@ -144,7 +133,7 @@ describe('Financial July period', () => {
         });
 
         it('should generate use the current year when no year has been given', () => {
-            expect(generateFinancialJulyPeriodsUpToYear()).to.deep.equal(generateFinancialJulyPeriodsUpToYear(2017));
+            expect(generateFinancialJulyPeriodsUpToYear()).toEqual(generateFinancialJulyPeriodsUpToYear(2017));
         });
     });
 });

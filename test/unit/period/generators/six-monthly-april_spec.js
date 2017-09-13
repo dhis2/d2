@@ -1,28 +1,17 @@
 import { generateSixMonthlyAprilPeriodsForYear } from '../../../../src/period/generators/six-monthly-april';
 
 describe('Six-monthly-april period', () => {
-    const firstOfJanuary2017 = 1483228800000;
-    let clock;
-
-    beforeEach(() => {
-        clock = sinon.useFakeTimers(firstOfJanuary2017);
-    });
-
-    afterEach(() => {
-        clock.restore();
-    });
-
     describe('generateSixMonthlyAprilPeriodsForYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateSixMonthlyAprilPeriodsForYear(-10)).to.throw();
+            expect(() => generateSixMonthlyAprilPeriodsForYear(-10)).toThrowError();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateSixMonthlyAprilPeriodsForYear(new Date())).to.throw();
+            expect(() => generateSixMonthlyAprilPeriodsForYear(new Date())).toThrowError();
         });
 
         it('should generate the correct six monthly april periods for 2017', () => {
-            expect(generateSixMonthlyAprilPeriodsForYear(2017)).to.deep.equal([
+            expect(generateSixMonthlyAprilPeriodsForYear(2017)).toEqual([
                 {
                     startDate: '2017-04-01',
                     endDate: '2017-09-30',
@@ -41,7 +30,7 @@ describe('Six-monthly-april period', () => {
         });
 
         it('should generate the correct six monthly april periods for 2014', () => {
-            expect(generateSixMonthlyAprilPeriodsForYear(2014)).to.deep.equal([
+            expect(generateSixMonthlyAprilPeriodsForYear(2014)).toEqual([
                 {
                     startDate: '2014-04-01',
                     endDate: '2014-09-30',
@@ -60,7 +49,7 @@ describe('Six-monthly-april period', () => {
         });
 
         it('should use the current year when no year has been given', () => {
-            expect(generateSixMonthlyAprilPeriodsForYear()).to.deep.equal(generateSixMonthlyAprilPeriodsForYear(2017));
+            expect(generateSixMonthlyAprilPeriodsForYear()).toEqual(generateSixMonthlyAprilPeriodsForYear(2017));
         });
     });
 });

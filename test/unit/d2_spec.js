@@ -1,23 +1,15 @@
-import '../setup/setup.js'; // Import for global beforeEach / afterEach
+import Api from '../../src/api/Api';
 import fixtures from '../fixtures/fixtures';
+import I18n from '../../src/i18n/I18n';
 import DataStore from '../../src/datastore/DataStore';
+import Logger from '../../src/logger/Logger';
 
-// TODO: The Config class should probably be mocked
+jest.mock('../../src/logger/Logger');
+jest.mock('../../src/api/Api');
+jest.mock('../../src/i18n/I18n');
+
+
 describe('D2', () => {
-    const proxyquire = require('proxyquire');
-    let apiMock;
-    let i18nStub;
-    let I18n;
-    const loggerMock = {
-        error: sinon.spy(),
-    };
-    const loggerMockObject = {
-        getLogger: () => {
-            return loggerMock;
-        },
-    };
-
-    // TODO: Make this mock a bit more dynamic so we can test for different ModelDefinition
     // jscs:disable
     const ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
@@ -26,10 +18,13 @@ describe('D2', () => {
     };
     // jscs:enable
     const ModelDefinitionMock = {
-        createFromSchema: sinon.stub().returns(new ModelDefinition()),
+        createFromSchema: jest.fn().mockReturnValue(new ModelDefinition()),
         prototype: {},
     };
     let d2;
+    let apiMock;
+    let loggerMock;
+    let i18nMock;
 
     beforeEach(() => {
         ModelDefinitionMock.createFromSchema.callCount = 0;
@@ -43,40 +38,45 @@ describe('D2', () => {
         };
 
         apiMock = {
-            get: stub(),
-            setBaseUrl: spy(),
+            get: jest.fn()
+                // First init round
+                .mockReturnValueOnce(Promise.resolve(schemasResponse))
+                .mockReturnValueOnce(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
+                .mockReturnValueOnce(Promise.resolve({}))
+                .mockReturnValueOnce(Promise.resolve([]))
+                .mockReturnValueOnce(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))))
+                .mockReturnValueOnce(Promise.resolve({ version: '2.21' }))
+                .mockReturnValueOnce(Promise.resolve({ apps: [] }))
+
+                // Second init round
+                .mockReturnValueOnce(new Promise(resolve => resolve(schemasResponse)))
+                .mockReturnValueOnce(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
+                .mockReturnValueOnce(Promise.resolve({}))
+                .mockReturnValueOnce(Promise.resolve([]))
+                .mockReturnValueOnce(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))))
+                .mockReturnValueOnce(Promise.resolve({ version: '2.21' }))
+                .mockReturnValueOnce(Promise.resolve({ apps: [] })),
+            setBaseUrl: jest.fn(),
             getApi() {
                 return this;
             },
-            setDefaultHeaders: spy(),
+            setDefaultHeaders: jest.fn(),
         };
 
-        apiMock.get
-            // First init round
-            .onCall(0).returns(Promise.resolve(schemasResponse))
-            .onCall(1).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
-            .onCall(2).returns(Promise.resolve({}))
-            .onCall(3).returns(Promise.resolve([]))
-            .onCall(4).returns(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))))
-            .onCall(5).returns(Promise.resolve({ version: '2.21' }))
-            .onCall(6).returns(Promise.resolve({ apps: [] }))
+        loggerMock = {
+            error: jest.fn(),
+        };
 
-            // Second init round
-            .onCall(7).returns(new Promise(resolve => resolve(schemasResponse)))
-            .onCall(8).returns(new Promise(resolve => resolve(fixtures.get('/api/attributes'))))
-            .onCall(9).returns(Promise.resolve({}))
-            .onCall(10).returns(Promise.resolve([]))
-            .onCall(11).returns(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))))
-            .onCall(12).returns(Promise.resolve({ version: '2.21' }))
-            .onCall(13).returns(Promise.resolve({ apps: [] }));
+        i18nMock = {
+            addSource: jest.fn(),
+            addStrings: jest.fn(),
+            load: jest.fn()
+                .mockReturnValue(Promise.resolve()),
+        };
 
-
-        function apiMocker() {
-            return apiMock;
-        }
-        apiMockClass = apiMocker;
-
-        apiMockClass.getApi = () => apiMock;
+        Logger.getLogger = Logger.getLogger.mockReturnValue(loggerMock);
+        Api.getApi = Api.getApi.mockReturnValue(apiMock);
+        I18n.getI18n = I18n.getI18n.mockReturnValue(i18nMock);
 
         // jscs:disable
         const ModelDefinitionsMock = function ModelDefinitions() {
@@ -91,47 +91,21 @@ describe('D2', () => {
                 this[schema.name] = schema;
             },
         };
-        ModelDefinitionsMock.getModelDefinitions = sinon.stub().returns(new ModelDefinitionsMock());
-
-        const jQueryMock = {
-            ajax: stub(),
-        };
-
-        proxyquire('../../src/d2', {
-            './model/models': {
-                ModelDefinitions: ModelDefinitionsMock,
-                ModelDefinition: ModelDefinitionMock,
-            },
-            './api/Api': apiMockClass,
-            './external/jquery': jQueryMock,
-            './logger/Logger': loggerMockObject,
-        });
-
-        proxyquire('../../src/i18n/I18n', {
-            './api/Api': apiMockClass,
-        });
-
-        I18n = require('../../src/i18n/I18n').default;
-        i18nStub = {
-            addSource: spy(),
-            addStrings: spy(),
-            load: stub().returns(Promise.resolve()),
-        };
-        stub(I18n, 'getI18n').returns(i18nStub);
+        ModelDefinitionsMock.getModelDefinitions = jest.fn().mockReturnValue(new ModelDefinitionsMock());
 
         d2 = require('../../src/d2').default;
     });
 
     afterEach(() => {
-        I18n.getI18n.restore();
+
     });
 
     it('should have an init function', () => {
-        expect(d2.init).to.be.a('function');
+        expect(typeof d2.init).toBe('function');
     });
 
     it('should have a getInstance function', () => {
-        expect(d2.getInstance).to.be.a('function');
+        expect(typeof d2.getInstance).toBe('function');
     });
 
     describe('init', () => {
@@ -139,7 +113,7 @@ describe('D2', () => {
             d2.init(undefined, apiMock);
             d2.getInstance()
                 .then(() => {
-                    expect(i18nStub.load).to.be.calledOnce;
+                    expect(i18nMock.load).toHaveBeenCalledTimes(1);
                     done();
                 })
                 .catch(done);
@@ -148,7 +122,7 @@ describe('D2', () => {
 
     describe('config', () => {
         it('should have a default baseUrl in the config', () => {
-            expect(d2.config.baseUrl).to.equal('/api');
+            expect(d2.config.baseUrl).toBe('/api');
         });
 
         it('should use the baseUrl from the pre-init config', (done) => {
@@ -157,7 +131,7 @@ describe('D2', () => {
             d2.init(undefined, apiMock);
             d2.getInstance()
                 .then(() => {
-                    expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
+                    expect(apiMock.setBaseUrl).toHaveBeenCalledWith('/dhis/api');
                     done();
                 })
                 .catch(done);
@@ -169,7 +143,7 @@ describe('D2', () => {
             d2.init({ baseUrl: '/demo/api' }, apiMock);
             d2.getInstance()
                 .then(() => {
-                    expect(apiMock.setBaseUrl).to.be.calledWith('/demo/api');
+                    expect(apiMock.setBaseUrl).toHaveBeenCalledWith('/demo/api');
                     done();
                 })
                 .catch(done);
@@ -179,12 +153,12 @@ describe('D2', () => {
             d2.config.baseUrl = '/dhis/api';
             d2.config.headers = {
                 Authorization: new Buffer('admin:district').toString('base64'),
-            }
+            };
 
             d2.init({ baseUrl: '/demo/api' }, apiMock);
             d2.getInstance()
                 .then(() => {
-                    expect(apiMock.setDefaultHeaders).to.be.calledWith({ Authorization: 'YWRtaW46ZGlzdHJpY3Q=' });
+                    expect(apiMock.setDefaultHeaders).toHaveBeenCalledWith({ Authorization: 'YWRtaW46ZGlzdHJpY3Q=' });
                     done();
                 })
                 .catch(done);
@@ -198,7 +172,7 @@ describe('D2', () => {
             d2.init(undefined, apiMock);
             d2.getInstance()
                 .then(() => {
-                    expect(i18nStub.addSource).to.have.callCount(3);
+                    expect(i18nMock.addSource).toHaveBeenCalledTimes(3);
                     done();
                 })
                 .catch((e) => {
@@ -213,7 +187,7 @@ describe('D2', () => {
             d2.init(undefined, apiMock);
             d2.getInstance()
                 .then(() => {
-                    expect(i18nStub.addStrings).to.be.calledWith(['name', 'yes']);
+                    expect(i18nMock.addStrings).toHaveBeenCalledWith(['name', 'yes']);
                     done();
                 })
                 .catch((e) => {
@@ -224,13 +198,13 @@ describe('D2', () => {
 
     describe('getInstance', () => {
         it('should return a promise', () => {
-            expect(d2.getInstance()).to.be.instanceof(Promise);
+            expect(d2.getInstance()).toBeInstanceOf(Promise);
         });
 
         it('should return the d2 instance after init', (done) => {
             Promise.all([d2.init({ baseUrl: '/dhis/api' }, apiMock), d2.getInstance()])
                 .then(([d2FromInit, d2FromFactory]) => {
-                    expect(d2FromInit).to.equal(d2FromFactory);
+                    expect(d2FromInit).toBe(d2FromFactory);
                     done();
                 })
                 .catch(done);
@@ -241,7 +215,7 @@ describe('D2', () => {
 
             Promise.all([d2.getInstance(), d2.getInstance()])
                 .then(([firstCallResult, secondCallResult]) => {
-                    expect(firstCallResult).to.equal(secondCallResult);
+                    expect(firstCallResult).toBe(secondCallResult);
                     done();
                 })
                 .catch(done);
@@ -258,27 +232,27 @@ describe('D2', () => {
                 return Promise.all([first, instanceAfterSecondInit]);
             })
             .then(([first, second]) => {
-                expect(first).not.to.equal(second);
+                expect(first).not.toBe(second);
                 done();
             })
             .catch(done);
         });
 
         it('should return a promise when calling getInstance before init', () => {
-            expect(d2.getInstance()).to.be.instanceof(Promise);
+            expect(d2.getInstance()).toBeInstanceOf(Promise);
         });
     });
 
     it('should set the base url onto the api', () => {
         d2.init({ baseUrl: '/dhis/api' }, apiMock);
 
-        expect(apiMock.setBaseUrl).to.have.been.calledWith('/dhis/api');
+        expect(apiMock.setBaseUrl).toHaveBeenCalledWith('/dhis/api');
     });
 
     it('should set the baseUrl to the default /api', () => {
         d2.init({}, apiMock);
 
-        expect(apiMock.setBaseUrl).to.have.been.called;
+        expect(apiMock.setBaseUrl).toBeCalled();
     });
 
     it('should throw an error when the passed config is not an object', () => {
@@ -287,11 +261,11 @@ describe('D2', () => {
         }
 
         function shouldThrowOnFunction() {
-            d2.init(() => {return true;});
+            d2.init(() => true);
         }
 
-        expect(shouldThrowOnString).to.throw('Expected Config parameter to have type object');
-        expect(shouldThrowOnFunction).to.throw('Expected Config parameter to have type object');
+        expect(shouldThrowOnString).toThrowError('Expected Config parameter to have type object');
+        expect(shouldThrowOnFunction).toThrowError('Expected Config parameter to have type object');
     });
 
     it('should not throw an error when no config is passed', () => {
@@ -299,39 +273,33 @@ describe('D2', () => {
             d2.init(undefined, apiMock);
         }
 
-        expect(shouldNotThrow).to.not.throw();
+        expect(shouldNotThrow).not.toThrowError();
     });
 
-    it('should call the api', (done) => {
-        d2.init({ baseUrl: '/dhis/api' }, apiMock)
+    it('should call the api', () => d2.init({ baseUrl: '/dhis/api' }, apiMock)
             .then(() => {
-                expect(apiMock.get).to.have.been.calledWith('schemas');
-                done();
-            })
-            .catch(done);
-    });
+                const schemasFieldFiltering = 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]';
 
-    it('should log the error when schemas can not be requested', (done) => {
-        apiMock.get.onCall(0).returns(Promise.reject(new Error('Failed')));
+                expect(apiMock.get).toHaveBeenCalledWith('schemas', { fields: schemasFieldFiltering });
+            }));
 
-        d2.init({ baseUrl: '/dhis/api' }, apiMock, loggerMock)
+    it('should log the error when schemas can not be requested', () => {
+        apiMock.get = jest.fn().mockReturnValueOnce(Promise.reject(new Error('Failed')));
+
+        return d2.init({ baseUrl: '/dhis/api' }, apiMock, loggerMock)
             .then(
+                () => Promise.reject('No error occurred'),
                 () => {
-                    done('No error occurred');
-                },
-                () => {
-                    expect(loggerMock.error.callCount).to.equal(1);
-                    expect(loggerMock.error.withArgs('Unable to get schemas from the api').callCount).to.equal(1);
-                    done();
+                    expect(loggerMock.error).toHaveBeenCalledTimes(1);
+                    expect(loggerMock.error).toHaveBeenCalledWith('Unable to get schemas from the api', '{}', new Error('Failed'));
                 }
-            )
-            .catch(done);
+            );
     });
 
     it('should return an object with the api object', (done) => {
         d2.init({ baseUrl: '/dhis/api' }, apiMock)
-            .then(newD2 => {
-                expect(newD2.Api.getApi()).to.equal(apiMock);
+            .then((newD2) => {
+                expect(newD2.Api.getApi()).toBe(apiMock);
                 done();
             })
             .catch(done);
@@ -340,7 +308,7 @@ describe('D2', () => {
     it('should call the api for all startup calls', (done) => {
         d2.init({ baseUrl: '/dhis/api' }, apiMock)
             .then(() => {
-                expect(apiMock.get).to.be.callCount(7);
+                expect(apiMock.get).toHaveBeenCalledTimes(7);
                 done();
             })
             .catch(done);
@@ -349,10 +317,10 @@ describe('D2', () => {
     it('should query the api for all the attributes', (done) => {
         d2.init({ baseUrl: '/dhis/api' }, apiMock)
             .then(() => {
-                const attributeCall = apiMock.get.getCall(1);
+                const attributeCallArgs = apiMock.get.mock.calls[1];
                 /* 0: Url, 1: Data, 1: Query params, 2: Request options */
-                expect(attributeCall.args[0]).to.equal('attributes');
-                expect(attributeCall.args[1]).to.deep.equal({ fields: ':all,optionSet[:all,options[:all]]', paging: false });
+                expect(attributeCallArgs[0]).toBe('attributes');
+                expect(attributeCallArgs[1]).toEqual({ fields: ':all,optionSet[:all,options[:all]]', paging: false });
                 done();
             })
             .catch(done);
@@ -361,8 +329,8 @@ describe('D2', () => {
     describe('creation of ModelDefinitions', () => {
         it('should add the model definitions object to the d2 object', (done) => {
             d2.init(undefined, apiMock)
-                .then(newD2 => {
-                    expect(newD2.models).to.not.be.undefined;
+                .then((newD2) => {
+                    expect(newD2.models).toBeDefined();
                     // expect(newD2.models.modelsMockList).to.equal(true);
                     done();
                 })
@@ -386,7 +354,7 @@ describe('D2', () => {
         xit('should call the ModelDefinition.createFromSchema with the schema', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
-                    expect(ModelDefinitionMock.createFromSchema).to.have.been.calledWith(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
+                    expect(ModelDefinitionMock.createFromSchema).toHaveBeenCalledWith(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
                     done();
                 })
                 .catch(done);
@@ -395,8 +363,8 @@ describe('D2', () => {
 
         it('should add the ModelDefinitions to the models list', (done) => {
             d2.init(undefined, apiMock)
-                .then(newD2 => {
-                    expect(newD2.models.dataElement).to.not.be.undefined;
+                .then((newD2) => {
+                    expect(newD2.models.dataElement).toBeDefined();
                     done();
                 })
                 .catch(done);
@@ -408,8 +376,8 @@ describe('D2', () => {
             d2.init(undefined, apiMock);
 
             return d2.getInstance()
-                .then(newD2 => {
-                    expect(newD2.currentUser).to.not.be.undefined;
+                .then((newD2) => {
+                    expect(newD2.currentUser).toBeDefined();
                 });
         });
     });
@@ -418,15 +386,15 @@ describe('D2', () => {
         it('should have only loaded a single schema', () => {
             apiMock.get
                 // First init round
-                .onCall(0).returns(Promise.resolve(fixtures.get('/api/schemas/user')));
+                .mockReturnValueOnce(Promise.resolve(fixtures.get('/api/schemas/user')));
 
             d2.init({
                 schemas: ['user'],
             }, apiMock);
 
             return d2.getInstance()
-                .then(newD2 => {
-                    expect(apiMock.get).to.have.been.calledWith('schemas/user', {
+                .then((newD2) => {
+                    expect(apiMock.get).toHaveBeenCalledWith('schemas/user', {
                         fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]',
                     });
                 });
@@ -434,57 +402,39 @@ describe('D2', () => {
     });
 
     describe('DataStore', () => {
-        it('should have a dataStore object on the instance', () => {
-            return d2.init(undefined, apiMock)
-                .then(d2Instance => {
-                    expect(d2Instance.dataStore).to.be.instanceof(DataStore);
-                });
-        });
+        it('should have a dataStore object on the instance', () => d2.init(undefined, apiMock)
+                .then((d2Instance) => {
+                    expect(d2Instance.dataStore).toBeInstanceOf(DataStore);
+                }));
     });
 
     describe('getUserSettings', () => {
         it('should be a function', () => {
-            expect(d2.getUserSettings).to.be.a('function');
+            expect(typeof d2.getUserSettings).toBe('function');
         });
 
-        it('should return an object with the uiLocale', (done) => {
-            apiMock.get.onFirstCall().returns(new Promise(resolve => resolve(fixtures.get('/api/userSettings'))));
+        it('should return an object with the uiLocale', () => {
+            apiMock.get = jest.fn().mockReturnValueOnce(Promise.resolve(fixtures.get('/api/userSettings')));
 
-            d2.getUserSettings(apiMock)
-                .then(settings => {
-                    expect(settings.keyUiLocale).to.equal('fr');
-                    done();
-                })
-                .catch(done);
+            return d2.getUserSettings(apiMock)
+                .then((settings) => {
+                    expect(settings.keyUiLocale).toBe('fr');
+                });
         });
 
         it('should call the api for keyUiLocale', () => {
             d2.getUserSettings(apiMock);
 
-            expect(apiMock.get).to.be.called;
+            expect(apiMock.get).toBeCalled();
         });
-
-        // FIXME: Impossible to test due to the global firstRun flag
-/*
-        xit('should preset the baseUrl from the config', (done) => {
-            d2.config.baseUrl = '/dhis/api';
-
-            d2.getUserSettings(apiMock)
-                .then(() => {
-                    expect(apiMock.setBaseUrl).to.be.calledWith('/dhis/api');
-                    done();
-                })
-                .catch(done);
-        });
-*/
 
         it('should use the default base url when the set baseUrl is not valid', (done) => {
             d2.config.baseUrl = undefined;
 
             d2.getUserSettings(apiMock)
                 .then(() => {
-                    expect(apiMock.setBaseUrl).not.to.be.called;
-                    expect(apiMock.get).to.be.calledWith('userSettings');
+                    expect(apiMock.setBaseUrl).not.toBeCalled();
+                    expect(apiMock.get).toHaveBeenCalledWith('userSettings');
                     done();
                 })
                 .catch(done);
@@ -493,19 +443,19 @@ describe('D2', () => {
 
     describe('getManifest', () => {
         it('should be a function', () => {
-            expect(d2.getManifest).to.be.a('function');
+            expect(typeof d2.getManifest).toBe('function');
         });
 
         it('should return a promise', () => {
-            expect(d2.getManifest('manifest.webapp', apiMock)).to.be.instanceof(Promise);
+            expect(d2.getManifest('manifest.webapp', apiMock)).toBeInstanceOf(Promise);
         });
 
         it('should request the manifest.webapp', (done) => {
-            apiMock.get.onFirstCall().returns(Promise.resolve({}));
+            apiMock.get.mockReturnValueOnce(Promise.resolve({}));
 
             d2.getManifest('manifest.webapp', apiMock)
                 .then(() => {
-                    expect(apiMock.get).to.be.calledWith('manifest.webapp');
+                    expect(apiMock.get).toHaveBeenCalledWith('manifest.webapp');
                     done();
                 })
                 .catch(done);
@@ -516,11 +466,11 @@ describe('D2', () => {
                 name: 'MyApp',
             };
 
-            apiMock.get.onFirstCall().returns(Promise.resolve(expectedManifest));
+            apiMock.get = jest.fn().mockReturnValueOnce(Promise.resolve(expectedManifest));
 
             d2.getManifest('manifest.webapp', apiMock)
                 .then((manifest) => {
-                    expect(manifest.name).to.equal(expectedManifest.name);
+                    expect(manifest.name).toBe(expectedManifest.name);
                     done();
                 })
                 .catch(done);
@@ -536,11 +486,11 @@ describe('D2', () => {
                 },
             };
 
-            apiMock.get.onFirstCall().returns(Promise.resolve(expectedManifest));
+            apiMock.get = jest.fn().mockReturnValueOnce(Promise.resolve(expectedManifest));
 
             d2.getManifest('manifest.webapp', apiMock)
                 .then((manifest) => {
-                    expect(manifest.getBaseUrl()).to.equal('http://localhost:8080');
+                    expect(manifest.getBaseUrl()).toBe('http://localhost:8080');
                     done();
                 })
                 .catch(done);

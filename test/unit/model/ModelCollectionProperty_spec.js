@@ -10,7 +10,7 @@ describe('ModelCollectionProperty', () => {
     let mcp;
     let testModels = [];
 
-    before(() => {
+    beforeEach(() => {
         // ModelCollectionProperty = require('../../../src/model/ModelCollectionProperty').default;
 
         mockParentModel = {
@@ -33,58 +33,58 @@ describe('ModelCollectionProperty', () => {
     });
 
     it('Should be an object', () => {
-        expect(ModelCollectionProperty).to.be.instanceof(Object);
+        expect(ModelCollectionProperty).toBeInstanceOf(Object);
     });
 
     it('Should not be callable as a function', () => {
-        expect(() => ModelCollectionProperty()).to.throw();
+        expect(() => ModelCollectionProperty()).toThrowError();
     });
 
     describe('create()', () => {
         it('Supplies the default API implementation', () => {
-            expect(mcp.api).to.deep.equal(Api.getApi());
+            expect(mcp.api).toEqual(Api.getApi());
         });
 
         it('Sets the dirty flag to false', () => {
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
         });
 
         it('Creates empty Sets for added and removed elements', () => {
-            expect(mcp.added).to.be.instanceof(Set);
-            expect(mcp.removed).to.be.instanceof(Set);
-            expect(mcp.added).to.be.empty;
-            expect(mcp.removed).to.be.empty;
+            expect(mcp.added).toBeInstanceOf(Set);
+            expect(mcp.removed).toBeInstanceOf(Set);
+            expect(mcp.added.size).toBe(0);
+            expect(mcp.removed.size).toBe(0);
         });
 
         it('Sets the correct parentModel', () => {
-            expect(mcp.parentModel).to.deep.equal(mockParentModel);
+            expect(mcp.parentModel).toEqual(mockParentModel);
         });
     });
 
     describe('add()', () => {
         it('Registers added elements', () => {
             testModels.forEach(model => mcp.add(model));
-            expect(mcp.added.size).to.equal(testModels.length);
+            expect(mcp.added.size).toBe(testModels.length);
         });
 
         it('Only registers each added element once', () => {
             testModels.forEach(model => mcp.add(model));
             testModels.forEach(model => mcp.add(model));
-            expect(mcp.added.size).to.equal(testModels.length);
+            expect(mcp.added.size).toBe(testModels.length);
         });
 
         it('Updates the dirty flag', () => {
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
             mcp.add(testModels[0]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
         });
 
         it('Sets the dirty flag to false when an element is added and then removed', () => {
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
             mcp.add(testModels[0]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
             mcp.remove(testModels[0]);
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
         });
     });
 
@@ -95,92 +95,92 @@ describe('ModelCollectionProperty', () => {
         });
 
         it('Registers removed elements', () => {
-            expect(mcp.removed.size).to.equal(0);
+            expect(mcp.removed.size).toBe(0);
             mcp.remove(testModels[0]);
-            expect(mcp.removed.size).to.equal(1);
+            expect(mcp.removed.size).toBe(1);
             mcp.remove(testModels[1]);
-            expect(mcp.removed.size).to.equal(2);
+            expect(mcp.removed.size).toBe(2);
             mcp.remove(testModels[2]);
-            expect(mcp.removed.size).to.equal(3);
+            expect(mcp.removed.size).toBe(3);
         });
 
         it('Only registers each removed element once', () => {
-            expect(mcp.removed.size).to.equal(0);
+            expect(mcp.removed.size).toBe(0);
             mcp.remove(testModels[0]);
-            expect(mcp.removed.size).to.equal(1);
+            expect(mcp.removed.size).toBe(1);
             mcp.remove(testModels[0]);
-            expect(mcp.removed.size).to.equal(1);
+            expect(mcp.removed.size).toBe(1);
         });
 
         it('Updates the dirty flag', () => {
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
             mcp.remove(testModels[0]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
         });
 
         it('Sets the dirty flag to false when an element is removed and re-added', () => {
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
             mcp.remove(testModels[0]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
             mcp.add(testModels[0]);
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
         });
     });
 
     describe('updateDirty()', () => {
         it('Updates the dirty flag correctly', () => {
-            expect(mcp.updateDirty()).to.be.false;
+            expect(mcp.updateDirty()).toBe(false);
             mcp.added.add({ id: 'not a real model' });
-            expect(mcp.updateDirty()).to.be.true;
+            expect(mcp.updateDirty()).toBe(true);
         });
 
         it('Returns the updated value of the dirty flag', () => {
             mcp.added.add({ id: 'not a real model' });
-            expect(mcp.updateDirty()).to.equal(mcp.dirty);
+            expect(mcp.updateDirty()).toBe(mcp.dirty);
         });
     });
 
     describe('resetDirtyState()', () => {
         it('Clears all added and removed elements', () => {
             mcp.added.add(testModels[0]);
-            mcp.removed.add({ id: 'bah '});
-            expect(mcp.added.size).to.equal(1);
-            expect(mcp.removed.size).to.equal(1);
+            mcp.removed.add({ id: 'bah ' });
+            expect(mcp.added.size).toBe(1);
+            expect(mcp.removed.size).toBe(1);
 
             mcp.resetDirtyState();
-            expect(mcp.added.size).to.equal(0);
-            expect(mcp.removed.size).to.equal(0);
+            expect(mcp.added.size).toBe(0);
+            expect(mcp.removed.size).toBe(0);
         });
 
         it('Sets the dirty flag to false', () => {
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
             mcp.add(testModels[0]);
-            mcp.removed.add({ id: 'bah '});
-            expect(mcp.updateDirty()).to.be.true;
+            mcp.removed.add({ id: 'bah ' });
+            expect(mcp.updateDirty()).toBe(true);
             mcp.resetDirtyState();
-            expect(mcp.dirty).to.be.false;
+            expect(mcp.dirty).toBe(false);
         });
     });
 
     describe('isDirty()', () => {
         it('Returns the current value of the dirty flag', () => {
-            expect(mcp.isDirty()).to.equal(mcp.dirty);
+            expect(mcp.isDirty()).toBe(mcp.dirty);
             mcp.add(testModels[0]);
-            expect(mcp.isDirty()).to.be.true;
-            expect(mcp.isDirty()).to.equal(mcp.dirty);
+            expect(mcp.isDirty()).toBe(true);
+            expect(mcp.isDirty()).toBe(mcp.dirty);
         });
 
         it('Does not update the dirty flag', () => {
-            expect(mcp.isDirty()).to.be.false;
+            expect(mcp.isDirty()).toBe(false);
             mcp.added.add(testModels[0]);
-            expect(mcp.isDirty()).to.be.false;
+            expect(mcp.isDirty()).toBe(false);
         });
     });
 
     describe('save()', () => {
-        let api = {
-            get: sinon.stub().returns(Promise.resolve()),
-            post: sinon.stub().returns(Promise.resolve()),
+        const api = {
+            get: jest.fn().mockReturnValue(Promise.resolve()),
+            post: jest.fn().mockReturnValue(Promise.resolve()),
         };
 
         beforeEach(() => {
@@ -188,47 +188,47 @@ describe('ModelCollectionProperty', () => {
         });
 
         afterEach(() => {
-            api.get.resetHistory();
-            api.post.resetHistory();
+            api.get.mockClear();
+            api.post.mockClear();
         });
 
-        it('Does nothing when the collection not dirty', done => {
+        it('Does nothing when the collection not dirty', (done) => {
             mcp.save()
                 .then(() => {
-                    expect(api.post.callCount).to.equal(0);
+                    expect(api.post).toHaveBeenCalledTimes(0);
                     done();
                 }).catch(e => done(e));
         });
 
-        it('Sends additions and removals in a single request', done => {
+        it('Sends additions and removals in a single request', (done) => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
             mcp.save()
                 .then(() => {
-                    expect(api.get).to.not.be.called;
-                    expect(api.post).to.be.calledOnce;
+                    expect(api.get).not.toHaveBeenCalled();
+                    expect(api.post).toHaveBeenCalledTimes(1);
                     done();
                 }).catch(e => done(e));
         });
 
-        it('Uses the correct URL for requests', done => {
+        it('Uses the correct URL for requests', (done) => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
             mcp.save()
                 .then(() => {
-                    expect(api.get).to.not.be.called;
-                    expect(api.post).to.be.calledOnce;
-                    expect(api.post).to.be.calledWith('my.dhis/instance/dataElements');
+                    expect(api.get).not.toHaveBeenCalled();
+                    expect(api.post).toHaveBeenCalledTimes(1);
+                    expect(api.post).toBeCalledWith('my.dhis/instance/dataElements', {"additions": [{"id": "dataEleme02"}], "deletions": [{"id": "dataEleme01"}]});
                     done();
                 }).catch(e => done(e));
         });
 
-        it('Sends the correct additions and removals', done => {
+        it('Sends the correct additions and removals', (done) => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
             mcp.save()
                 .then(() => {
-                    expect(api.post).to.be.calledWith('my.dhis/instance/dataElements', {
+                    expect(api.post).toBeCalledWith('my.dhis/instance/dataElements', {
                         additions: [{ id: testModels[1].id }],
                         deletions: [{ id: testModels[0].id }],
                     });
@@ -236,33 +236,33 @@ describe('ModelCollectionProperty', () => {
                 }).catch(e => done(e));
         });
 
-        it('Resets the dirty flag', done => {
+        it('Resets the dirty flag', (done) => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
             mcp.save()
                 .then(() => {
-                    expect(mcp.dirty).to.be.false;
+                    expect(mcp.dirty).toBe(false);
                     done();
                 }).catch(e => done(e));
         });
 
-        it('Does not throw when the API fails', done => {
-            api.post.returns(Promise.reject());
+        it('Does not throw when the API fails', (done) => {
+            api.post.mockReturnValue(Promise.reject());
             mcp.add(testModels[1]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
             expect(() => {
                 mcp.save().then(() => done()).catch(() => done());
-            }).to.not.throw();
+            }).not.toThrowError();
         });
 
-        it('Rejects the promise when the API fails', done => {
-            api.post.returns(Promise.reject());
+        it('Rejects the promise when the API fails', (done) => {
+            api.post.mockReturnValue(Promise.reject());
             mcp.add(testModels[1]);
-            expect(mcp.dirty).to.be.true;
+            expect(mcp.dirty).toBe(true);
             expect(() => {
                 mcp.save().then(() => done('API failure was accepted silently')).catch(() => done());
-            }).to.not.throw();
+            }).not.toThrowError();
         });
     });
 });

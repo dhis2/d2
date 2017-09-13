@@ -1,39 +1,48 @@
-let proxyquire = require('proxyquire').noCallThru();
-proxyquire('../../../src/api/Api', {
-    '../../../src/external/jquery': {},
-});
+import MockLogger from '../../../src/logger/Logger';
+import MockApi from '../../../src/api/Api';
+import ModelValidation from '../../../src/model/ModelValidation';
+
+jest.mock('../../../src/logger/Logger', () => class Logger {
+    static getLogger() {
+        return new Logger();
+    }
+    });
+jest.mock('../../../src/api/Api');
+jest.mock('../../../src/model/helpers/json', () => ({
+    getOwnedPropertyJSON() {
+        return { id: 'R4dd3wwdwdw', name: 'ANC' };
+    },
+}));
 
 describe('ModelValidations', () => {
-    const ModelValidation = require('../../../src/model/ModelValidation').default;
-    const Logger = require('../../../src/logger/Logger').default;
-    const Api = require('../../../src/api/Api').default;
-
-    let api;
+    let mockApi;
     let modelValidation;
 
     beforeEach(() => {
-        api = Api.getApi();
-        let logger;
-        logger = stub(new Logger({}));
+        mockApi = MockApi.getApi();
 
-        modelValidation = new ModelValidation(logger);
+        modelValidation = new ModelValidation(new MockLogger({}));
+    });
+
+    afterEach(() => {
+        MockApi.mockReset();
     });
 
     it('should create a ModelValidation object', () => {
-        expect(modelValidation).to.be.instanceof(ModelValidation);
+        expect(modelValidation).toBeInstanceOf(ModelValidation);
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelValidation()).to.throw('Cannot call a class as a function');
+        expect(() => ModelValidation()).toThrowError('Cannot call a class as a function');
     });
 
     describe('getModelValidation', () => {
         it('should return a ModelValidation object', () => {
-            expect(ModelValidation.getModelValidation()).to.be.instanceof(ModelValidation);
+            expect(ModelValidation.getModelValidation()).toBeInstanceOf(ModelValidation);
         });
 
         it('should create a singleton and return that', () => {
-            expect(ModelValidation.getModelValidation()).to.equal(ModelValidation.getModelValidation());
+            expect(ModelValidation.getModelValidation()).toBe(ModelValidation.getModelValidation());
         });
     });
 
@@ -41,60 +50,68 @@ describe('ModelValidations', () => {
         let modelMock;
 
         beforeEach(() => {
-            Api.getApi().post = sinon.stub().returns(Promise.resolve({
-                'httpStatus': 'OK',
-                'httpStatusCode': 200,
-                'status': 'OK',
-                'response': {
-                    'responseType': 'ValidationViolations',
-                },
-            }));
             modelMock = {
                 modelDefinition: {
                     name: 'dataElement',
-                    getOwnedPropertyJSON: sinon.stub()
-                        .returns({ id: 'R4dd3wwdwdw', name: 'ANC' }),
-                    getOwnedPropertyNames: sinon.stub()
-                        .returns(['id', 'name']),
+                    getOwnedPropertyJSON: jest.fn()
+                        .mockReturnValueOnce({ id: 'R4dd3wwdwdw', name: 'ANC' }),
+                    getOwnedPropertyNames: jest.fn()
+                        .mockReturnValueOnce(['id', 'name']),
                     modelValidations: {
                         id: {},
                         name: {},
                     },
                 },
                 dataValues: { id: 'R4dd3wwdwdw', name: 'ANC' },
-                getCollectionChildrenPropertyNames: stub().returns([]),
-                getReferenceProperties: stub().returns([]),
+                getCollectionChildrenPropertyNames: jest.fn().mockReturnValueOnce([]),
+                getReferenceProperties: jest.fn().mockReturnValueOnce([]),
             };
         });
 
         it('should be a function', () => {
-            expect(modelValidation.validateAgainstSchema).to.be.instanceof(Function);
+            expect(modelValidation.validateAgainstSchema).toBeInstanceOf(Function);
         });
 
         it('should return a promise', () => {
-            expect(modelValidation.validateAgainstSchema(modelMock)).to.be.instanceof(Promise);
+            mockApi.post.mockReturnValueOnce(Promise.resolve({}));
+
+            expect(modelValidation.validateAgainstSchema(modelMock)).toBeInstanceOf(Promise);
         });
 
-        it('should return a rejected promise if the model.modelDefinition.name is not present', (done) => {
-            modelValidation.validateAgainstSchema()
-                .catch(message => {
-                    expect(message).to.equal('model.modelDefinition.name can not be found');
-                    done();
-                });
-        });
+        it('should return a rejected promise if the model.modelDefinition.name is not present', () => modelValidation.validateAgainstSchema()
+                .catch((message) => {
+                    expect(message).toBe('model.modelDefinition.name can not be found');
+                }));
 
-        it('should call the post method on the Api', (done) => {
-            modelValidation.validateAgainstSchema(modelMock)
+        it('should call the post method on the Api', () => {
+            mockApi.post.mockReturnValueOnce(Promise.resolve({
+                httpStatus: 'OK',
+                httpStatusCode: 200,
+                status: 'OK',
+                response: {
+                    responseType: 'ValidationViolations',
+                },
+            }));
+
+            return modelValidation.validateAgainstSchema(modelMock)
                 .then(() => {
-                    expect(api.post).to.be.called;
-                    done();
+                    expect(mockApi.post).toBeCalled();
                 });
         });
 
         it('should call the post method on the api with the modeldata', () => {
+            mockApi.post.mockReturnValueOnce(Promise.resolve({
+                httpStatus: 'OK',
+                httpStatusCode: 200,
+                status: 'OK',
+                response: {
+                    responseType: 'ValidationViolations',
+                },
+            }));
+
             return modelValidation.validateAgainstSchema(modelMock)
                 .then(() => {
-                    expect(api.post).to.be.calledWith(
+                    expect(mockApi.post).toBeCalledWith(
                         'schemas/dataElement',
                         { id: 'R4dd3wwdwdw', name: 'ANC' }
                     );
@@ -103,44 +120,44 @@ describe('ModelValidations', () => {
 
         it('should return the validationViolations array from the webmessage', () => {
             const schemaValidationResult = {
-                'httpStatus': 'Bad Request',
-                'httpStatusCode': 400,
-                'status': 'ERROR',
-                'response': {
-                    'responseType': 'ErrorReports',
-                    'errorReports': [
+                httpStatus: 'Bad Request',
+                httpStatusCode: 400,
+                status: 'ERROR',
+                response: {
+                    responseType: 'ErrorReports',
+                    errorReports: [
                         {
-                            'message': 'Missing required property `domainType`.',
-                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
-                            'errorKlass': 'org.hisp.dhis.dataelement.DataElementDomain',
-                            'errorCode': 'E4000'
+                            message: 'Missing required property `domainType`.',
+                            mainKlass: 'org.hisp.dhis.dataelement.DataElement',
+                            errorKlass: 'org.hisp.dhis.dataelement.DataElementDomain',
+                            errorCode: 'E4000',
                         },
                         {
-                            'message': 'Missing required property `categoryCombo`.',
-                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
-                            'errorKlass': 'org.hisp.dhis.dataelement.DataElementCategoryCombo',
-                            'errorCode': 'E4000'
+                            message: 'Missing required property `categoryCombo`.',
+                            mainKlass: 'org.hisp.dhis.dataelement.DataElement',
+                            errorKlass: 'org.hisp.dhis.dataelement.DataElementCategoryCombo',
+                            errorCode: 'E4000',
                         },
                         {
-                            'message': 'Missing required property `name`.',
-                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
-                            'errorKlass': 'java.lang.String',
-                            'errorCode': 'E4000'
+                            message: 'Missing required property `name`.',
+                            mainKlass: 'org.hisp.dhis.dataelement.DataElement',
+                            errorKlass: 'java.lang.String',
+                            errorCode: 'E4000',
                         },
                         {
-                            'message': 'Missing required property `shortName`.',
-                            'mainKlass': 'org.hisp.dhis.dataelement.DataElement',
-                            'errorKlass': 'java.lang.String',
-                            'errorCode': 'E4000'
-                        }
-                    ]
-                }
+                            message: 'Missing required property `shortName`.',
+                            mainKlass: 'org.hisp.dhis.dataelement.DataElement',
+                            errorKlass: 'java.lang.String',
+                            errorCode: 'E4000',
+                        },
+                    ],
+                },
             };
-            Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
+            mockApi.post.mockReturnValueOnce(Promise.reject(schemaValidationResult));
 
             return modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
-                    expect(validationMessages).to.equal(schemaValidationResult.response.errorReports);
+                    expect(validationMessages).toBe(schemaValidationResult.response.errorReports);
                 });
         });
 
@@ -153,18 +170,27 @@ describe('ModelValidations', () => {
                     errorReports: [{ message: 'Required property missing.', property: 'name' }],
                 },
             };
-            Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
+            mockApi.post.mockReturnValueOnce(Promise.reject(schemaValidationResult));
 
             return modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
-                    expect(validationMessages).to.deep.equal([{ message: 'Required property missing.', property: 'name' }]);
+                    expect(validationMessages).toEqual([{ message: 'Required property missing.', property: 'name' }]);
                 });
         });
 
         it('should return an empty array when the validation passed', (done) => {
+            mockApi.post.mockReturnValueOnce(Promise.resolve({
+                httpStatus: 'OK',
+                httpStatusCode: 200,
+                status: 'OK',
+                response: {
+                    responseType: 'ValidationViolations',
+                },
+            }));
+
             modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
-                    expect(validationMessages).to.deep.equal([]);
+                    expect(validationMessages).toEqual([]);
                     done();
                 })
                 .catch(done);
@@ -177,27 +203,27 @@ describe('ModelValidations', () => {
                 status: 'ERROR',
                 response: {},
             };
-            Api.getApi().post = sinon.stub().returns(Promise.reject(schemaValidationResult));
+            mockApi.post.mockReturnValueOnce(Promise.reject(schemaValidationResult));
 
             return modelValidation.validateAgainstSchema(modelMock)
                 .catch((errorMessage) => {
-                    expect(errorMessage.message).to.equal('Response was not a WebMessage with the expected format');
+                    expect(errorMessage.message).toBe('Response was not a WebMessage with the expected format');
                 });
         });
 
         it('should reject the promise if the server gives a successful statuscode but the webmessage status is not the `OK` string', () => {
-            Api.getApi().post = sinon.stub().returns(Promise.resolve({data: 'someData'}));
+            mockApi.post.mockReturnValueOnce(Promise.resolve({ data: 'someData' }));
 
             return modelValidation.validateAgainstSchema(modelMock)
                 .catch((errorMessage) => {
-                    expect(errorMessage.message).to.equal('Response was not a WebMessage with the expected format')
+                    expect(errorMessage.message).toBe('Response was not a WebMessage with the expected format');
                 });
         });
     });
 
     describe('client side validation', () => {
-       it('is deprecated and should throw an error', () => {
-           expect(modelValidation.validate).to.throw(Error);
-       });
+        it('is deprecated and should throw an error', () => {
+            expect(modelValidation.validate).toThrowError(Error);
+        });
     });
 });

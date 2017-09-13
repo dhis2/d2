@@ -1,34 +1,23 @@
 import { generateFinancialAprilPeriodsUpToYear } from '../../../../src/period/generators/financial-april';
 
 describe('Financial April period', () => {
-    const firstOfJanuary2017 = 1483228800000;
-    let clock;
-
-    beforeEach(() => {
-        clock = sinon.useFakeTimers(firstOfJanuary2017);
-    });
-
-    afterEach(() => {
-        clock.restore();
-    });
-
     describe('generateFinancialAprilPeriodsUpToYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateFinancialAprilPeriodsUpToYear(-10)).to.throw();
+            expect(() => generateFinancialAprilPeriodsUpToYear(-10)).toThrowError();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateFinancialAprilPeriodsUpToYear(new Date())).to.throw();
+            expect(() => generateFinancialAprilPeriodsUpToYear(new Date())).toThrowError();
         });
 
         it('should generate 10 yearly periods when no numberOfYears was passed', () => {
-            expect(generateFinancialAprilPeriodsUpToYear(2017)).to.have.length(10);
+            expect(generateFinancialAprilPeriodsUpToYear(2017)).toHaveLength(10);
         });
 
         it('should generate periods for 10 years with the last one being the current year', () => {
             const tenYearlyPeriods = generateFinancialAprilPeriodsUpToYear(2017);
 
-            expect(tenYearlyPeriods).to.deep.equal([
+            expect(tenYearlyPeriods).toEqual([
                 {
                     endDate: '2009-03-31',
                     startDate: '2008-04-01',
@@ -86,7 +75,7 @@ describe('Financial April period', () => {
         it('should respect the number of years parameter and generate that number of years including the current one', () => {
             const fiveYearlyPeriods = generateFinancialAprilPeriodsUpToYear(2017, 5);
 
-            expect(fiveYearlyPeriods).to.deep.equal([
+            expect(fiveYearlyPeriods).toEqual([
                 {
                     endDate: '2014-03-31',
                     startDate: '2013-04-01',
@@ -117,18 +106,18 @@ describe('Financial April period', () => {
         });
 
         it('should throw an error when the numberOfYears is not a positive integer', () => {
-            expect(() => generateFinancialAprilPeriodsUpToYear(2017, 'a')).to.throw();
-            expect(() => generateFinancialAprilPeriodsUpToYear(2017, 1.2)).to.throw();
-            expect(() => generateFinancialAprilPeriodsUpToYear(2017, true)).to.throw();
-            expect(() => generateFinancialAprilPeriodsUpToYear(2017, -1)).to.throw();
-            expect(() => generateFinancialAprilPeriodsUpToYear(2017, 0)).to.throw();
-            expect(() => generateFinancialAprilPeriodsUpToYear(2017, Infinity)).to.throw();
+            expect(() => generateFinancialAprilPeriodsUpToYear(2017, 'a')).toThrowError();
+            expect(() => generateFinancialAprilPeriodsUpToYear(2017, 1.2)).toThrowError();
+            expect(() => generateFinancialAprilPeriodsUpToYear(2017, true)).toThrowError();
+            expect(() => generateFinancialAprilPeriodsUpToYear(2017, -1)).toThrowError();
+            expect(() => generateFinancialAprilPeriodsUpToYear(2017, 0)).toThrowError();
+            expect(() => generateFinancialAprilPeriodsUpToYear(2017, Infinity)).toThrowError();
         });
 
         it('should generate the yearly periods for 2021 and 2022', () => {
             const fiveYearlyPeriods = generateFinancialAprilPeriodsUpToYear(2022, 2);
 
-            expect(fiveYearlyPeriods).to.deep.equal([
+            expect(fiveYearlyPeriods).toEqual([
                 {
                     endDate: '2022-03-31',
                     startDate: '2021-04-01',
@@ -144,7 +133,7 @@ describe('Financial April period', () => {
         });
 
         it('should generate use the current year when no year has been given', () => {
-            expect(generateFinancialAprilPeriodsUpToYear()).to.deep.equal(generateFinancialAprilPeriodsUpToYear(2017));
+            expect(generateFinancialAprilPeriodsUpToYear()).toEqual(generateFinancialAprilPeriodsUpToYear(2017));
         });
     });
 });

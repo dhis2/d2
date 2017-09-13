@@ -1,32 +1,21 @@
 import { generateQuarterlyPeriodsForYear } from '../../../../src/period/generators/quarterly';
 
 describe('Quarterly period', () => {
-    const firstOfJanuary2017 = 1483228800000;
-    let clock;
-
-    beforeEach(() => {
-        clock = sinon.useFakeTimers(firstOfJanuary2017);
-    });
-
-    afterEach(() => {
-        clock.restore();
-    });
-
     describe('generateQuarterlyPeriodsForYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateQuarterlyPeriodsForYear(-10)).to.throw();
+            expect(() => generateQuarterlyPeriodsForYear(-10)).toThrowError();
         });
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateQuarterlyPeriodsForYear(new Date())).to.throw();
+            expect(() => generateQuarterlyPeriodsForYear(new Date())).toThrowError();
         });
 
         it('should generate 4 periods for a year', () => {
-            expect(generateQuarterlyPeriodsForYear(2017)).to.have.length(4);
+            expect(generateQuarterlyPeriodsForYear(2017)).toHaveLength(4);
         });
 
         it('should generate the correct quarter periods', () => {
-            expect(generateQuarterlyPeriodsForYear(2017)).to.deep.equal([
+            expect(generateQuarterlyPeriodsForYear(2017)).toEqual([
                 {
                     startDate: '2017-01-01',
                     endDate: '2017-03-31',
@@ -52,7 +41,7 @@ describe('Quarterly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateQuarterlyPeriodsForYear()).to.deep.equal(generateQuarterlyPeriodsForYear(2017));
+            expect(generateQuarterlyPeriodsForYear()).toEqual(generateQuarterlyPeriodsForYear(2017));
         });
     });
 });
