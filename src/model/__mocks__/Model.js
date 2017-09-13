@@ -1,9 +1,7 @@
-export default class Model {
-    constructor(modelDefinition) {}
-}
+export default class Model {}
 
-Model.create = jest.fn((modelDefinition,...args) => {
-    const model = new Model(modelDefinition,...args);
+Model.create = jest.fn((modelDefinition) => {
+    const model = new Model();
 
     Object.defineProperty(model, 'modelDefinition', {
         value: modelDefinition,
@@ -18,9 +16,8 @@ Model.create = jest.fn((modelDefinition,...args) => {
     const propertyDescriptors = Object
         .keys(modelDefinition.modelProperties)
         .reduce((descriptors, propertyName) => {
-            descriptors[propertyName] = {
+            descriptors[propertyName] = { // eslint-disable-line no-param-reassign
                 set(value) {
-                    console.log(propertyName, value);
                     this.dataValues[propertyName] = value;
                 },
 
