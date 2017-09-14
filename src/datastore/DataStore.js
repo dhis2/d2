@@ -51,19 +51,19 @@ class DataStore {
         }
 
         return this.api.get([this.endPoint, namespace].join('/'))
-                    .then((response) => {
-                        if (response && isArray(response)) {
-                            return new DataStoreNamespace(namespace, response);
-                        }
-                        throw new Error('The requested namespace has no keys or does not exist.');
-                    }).catch((e) => {
-                        if (e.httpStatusCode === 404) {
-                            // If namespace does not exist, provide an instance of DataStoreNamespace
-                            // so it's possible to interact with the namespace.
-                            return new DataStoreNamespace(namespace);
-                        }
-                        throw e;
-                    });
+            .then((response) => {
+                if (response && isArray(response)) {
+                    return new DataStoreNamespace(namespace, response);
+                }
+                throw new Error('The requested namespace has no keys or does not exist.');
+            }).catch((e) => {
+                if (e.httpStatusCode === 404) {
+                    // If namespace does not exist, provide an instance of DataStoreNamespace
+                    // so it's possible to interact with the namespace.
+                    return new DataStoreNamespace(namespace);
+                }
+                throw e;
+            });
     }
 
 

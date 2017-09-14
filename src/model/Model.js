@@ -18,7 +18,6 @@ import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase';
  * has the properties that the model should have.
  */
 class Model {
-
     /**
      * @constructor
      *

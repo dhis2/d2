@@ -30,7 +30,7 @@ export function generateWeeklyPeriodsForYear(year = getCurrentYear()) { // eslin
 
         periods.push(period);
 
-      // Go to the start of the next week +7 days
+        // Go to the start of the next week +7 days
         startDate = addDays(7, startDate);
     }
 

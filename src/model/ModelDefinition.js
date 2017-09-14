@@ -150,7 +150,7 @@ class ModelDefinition {
 
         translatableProperties.set(this, (schema.properties || [])
             .filter(prop => prop.translationKey)
-            .map(({ name, translationKey }) => ({ name, translationKey }))
+            .map(({ name, translationKey }) => ({ name, translationKey })),
         );
 
         // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
@@ -208,7 +208,7 @@ class ModelDefinition {
                                 .create(
                                     model,
                                     models[referenceType],
-                                    data[modelProperty].map(d => models[referenceType].create(d))
+                                    data[modelProperty].map(d => models[referenceType].create(d)),
                                 );
                         }
                     }
@@ -325,7 +325,7 @@ class ModelDefinition {
             .then(responseData => ModelCollection.create(
                 this,
                 responseData[this.plural].map(data => this.create(data)),
-                Object.assign(responseData.pager || {}, { query: params })
+                Object.assign(responseData.pager || {}, { query: params }),
             ));
     }
 
@@ -476,7 +476,7 @@ class ModelDefinition {
                     current[attributeDefinition.name] = attributeDefinition; // eslint-disable-line no-param-reassign
                     return current;
                 }, {}),
-            schema.authorities
+            schema.authorities,
         ));
     }
 }

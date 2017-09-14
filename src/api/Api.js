@@ -82,7 +82,7 @@ class Api {
                         'Deprecation warning: Setting `contentType` for API POST requests is deprecated, and support ' +
                         'may be removed in the next major release of D2. In stead you may set the  `Content-Type` ' +
                         'header explicitly. If no `Content-Type` header is specified, the browser will try to ' +
-                        'determine one for you.\nRequest:', 'POST', requestUrl, e.stack
+                        'determine one for you.\nRequest:', 'POST', requestUrl, e.stack,
                     );
                 }
 
@@ -183,7 +183,7 @@ class Api {
                     console.warn( // eslint-disable-line
                         'Deprecation warning: Setting `dataType` for API requests is deprecated, and support may be ' +
                         'removed in the next major release of D2. In stead you should set the  `Accept` header ' +
-                        'directly.\nRequest:', resultOptions.method, requestUrl, e.stack
+                        'directly.\nRequest:', resultOptions.method, requestUrl, e.stack,
                     );
                 }
 
@@ -224,7 +224,7 @@ class Api {
                             if (!process.env || process.env.npm_lifecycle_event !== 'test') {
                                 console.warn( // eslint-disable-line
                                     `API request failed with status ${response.status} ${response.statusText}\n`,
-                                    `Request: ${requestOptions.method} ${requestUrl}`
+                                    `Request: ${requestOptions.method} ${requestUrl}`,
                                 );
                             }
                             reject(parseResponseData(text));
