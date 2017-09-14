@@ -10,7 +10,7 @@
     "test": "TZ=UTC jest",
     "test-watch": "npm run test -- --watch",
     "prebuild": "npm run lint && npm run validate && npm run test",
-    "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
+    "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "lint": "./node_modules/eslint/bin/eslint.js src",
     "travis": "npm run coverage && npm run build"
