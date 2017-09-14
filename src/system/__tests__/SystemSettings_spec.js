@@ -202,7 +202,8 @@ describe('settings.System', () => {
                     expect(mockApi.post).toHaveBeenCalledTimes(1);
                     expect(mockApi.delete).toHaveBeenCalledTimes(0);
 
-                    expect(mockApi.post).toBeCalledWith('systemSettings/mySetting', value, { headers: { 'Content-Type': 'text/plain' } });
+                    const requestOptions = { headers: { 'Content-Type': 'text/plain' } };
+                    expect(mockApi.post).toBeCalledWith('systemSettings/mySetting', value, requestOptions);
                 });
         });
 
