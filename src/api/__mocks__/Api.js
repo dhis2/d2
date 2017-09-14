@@ -10,8 +10,14 @@ function mockInit() {
     };
 }
 
+function values(object) {
+    return Object
+        .keys(object)
+        .map(key => object[key]);
+}
+
 function mockClear() {
-    Object.values(apiMock)
+    values(apiMock)
         .filter(property => typeof property === 'function')
         .forEach(spyFn => spyFn.mockClear());
 }
