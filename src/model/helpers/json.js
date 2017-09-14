@@ -22,6 +22,7 @@ function isReferenceProperty(collection) {
     return property => collection.indexOf(property) >= 0;
 }
 
+// TODO: Misnamed as it does not actually return JSON
 export function getJSONForProperties(model, properties, keepFullModels = false) {
     const objectToSave = {};
     const collectionPropertiesNames = model
@@ -88,6 +89,7 @@ export function getJSONForProperties(model, properties, keepFullModels = false) 
     return objectToSave;
 }
 
+// TODO: Misnamed as it does not actually return JSON
 export function getOwnedPropertyJSON(model) {
     const ownedProperties = model.modelDefinition.getOwnedPropertyNames();
 

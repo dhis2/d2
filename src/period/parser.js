@@ -75,12 +75,17 @@ const weeklyMatcherParser = (match, locale = 'en') => {
     };
 };
 
+const isValidDailyPeriod = (month, year, day) =>
+    month > 11 || month < 0 ||
+    day > 31 || day < 1 ||
+    year < 1000 || year > 5000;
+
 const regexMatchToPeriod = {
     Daily: (match, locale = 'en') => {
         const year = parseInt(match[1], 10);
         const month = parseInt(match[2], 10) - 1;
         const day = parseInt(match[3], 10);
-        if (month > 11 || month < 0 || day > 31 || day < 1 || year < 1000 || year > 5000) {
+        if (isValidDailyPeriod(month, year, day)) {
             throw new Error('Invalid Daily period');
         }
         const date = new Date(match[1], match[2] - 1, match[3]);
