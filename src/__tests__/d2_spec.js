@@ -28,7 +28,6 @@ describe('D2', () => {
 
     beforeEach(() => {
         ModelDefinitionMock.createFromSchema.callCount = 0;
-        let apiMockClass;
         const schemasResponse = {
             schemas: [
                 fixtures.get('/api/schemas/dataElement'),
@@ -93,7 +92,9 @@ describe('D2', () => {
         };
         ModelDefinitionsMock.getModelDefinitions = jest.fn().mockReturnValue(new ModelDefinitionsMock());
 
-        d2 = require('../d2').default;
+        // Import after we have set all the mock values
+        // TODO: should probably use jest.mock and use a regular ES6 import
+        d2 = require('../d2').default; // eslint-disable-line global-require
     });
 
     afterEach(() => {
@@ -231,11 +232,11 @@ describe('D2', () => {
 
                 return Promise.all([first, instanceAfterSecondInit]);
             })
-            .then(([first, second]) => {
-                expect(first).not.toBe(second);
-                done();
-            })
-            .catch(done);
+                .then(([first, second]) => {
+                    expect(first).not.toBe(second);
+                    done();
+                })
+                .catch(done);
         });
 
         it('should return a promise when calling getInstance before init', () => {
@@ -277,11 +278,11 @@ describe('D2', () => {
     });
 
     it('should call the api', () => d2.init({ baseUrl: '/dhis/api' }, apiMock)
-            .then(() => {
-                const schemasFieldFiltering = 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]';
+        .then(() => {
+            const schemasFieldFiltering = 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]';
 
-                expect(apiMock.get).toHaveBeenCalledWith('schemas', { fields: schemasFieldFiltering });
-            }));
+            expect(apiMock.get).toHaveBeenCalledWith('schemas', { fields: schemasFieldFiltering });
+        }));
 
     it('should log the error when schemas can not be requested', () => {
         apiMock.get = jest.fn().mockReturnValueOnce(Promise.reject(new Error('Failed')));
@@ -292,7 +293,7 @@ describe('D2', () => {
                 () => {
                     expect(loggerMock.error).toHaveBeenCalledTimes(1);
                     expect(loggerMock.error).toHaveBeenCalledWith('Unable to get schemas from the api', '{}', new Error('Failed'));
-                }
+                },
             );
     });
 
@@ -338,7 +339,7 @@ describe('D2', () => {
         });
 
         // FIXME: Test fails because the the ModelDefinitions class is a singleton
-/*
+        /*
         xit('should create a ModelDefinition for each of the schemas', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
@@ -350,7 +351,7 @@ describe('D2', () => {
         });
 */
 
-/*
+        /*
         xit('should call the ModelDefinition.createFromSchema with the schema', (done) => {
             d2.init(undefined, apiMock)
                 .then(() => {
@@ -393,7 +394,7 @@ describe('D2', () => {
             }, apiMock);
 
             return d2.getInstance()
-                .then((newD2) => {
+                .then(() => {
                     expect(apiMock.get).toHaveBeenCalledWith('schemas/user', {
                         fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]',
                     });
@@ -403,9 +404,9 @@ describe('D2', () => {
 
     describe('DataStore', () => {
         it('should have a dataStore object on the instance', () => d2.init(undefined, apiMock)
-                .then((d2Instance) => {
-                    expect(d2Instance.dataStore).toBeInstanceOf(DataStore);
-                }));
+            .then((d2Instance) => {
+                expect(d2Instance.dataStore).toBeInstanceOf(DataStore);
+            }));
     });
 
     describe('getUserSettings', () => {

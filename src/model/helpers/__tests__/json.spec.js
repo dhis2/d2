@@ -1,6 +1,7 @@
 import fixtures from '../../../__fixtures__/fixtures';
 import * as check from '../../../lib/check';
 import ModelDefinition from '../../ModelDefinition';
+import { getJSONForProperties } from '../json';
 
 const mockModelDefinitions = {};
 
@@ -15,14 +16,11 @@ describe('getJSONForProperties', () => {
         let checkTypeStub;
         let legendSetSchema;
         let legendSet;
-        let getJSONForProperties;
         let legendSetSchemaDefinition;
 
         beforeEach(() => {
             checkTypeStub = jest.spyOn(check, 'checkType')
                 .mockReturnValue(true);
-
-            getJSONForProperties = require('../../helpers/json').getJSONForProperties;
 
             legendSetSchema = fixtures.get('/api/schemas/legendSet');
 
@@ -63,7 +61,7 @@ describe('getJSONForProperties', () => {
         });
 
         it('should maintain the full structure of the userAccesses', () => {
-            const legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
+            legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
             const model = legendSetSchemaDefinition.create(legendSet);
 
             expect(getJSONForProperties(model, ['userAccesses']).userAccesses).toEqual([
@@ -77,7 +75,7 @@ describe('getJSONForProperties', () => {
         });
 
         it('should only use the ID of the user object', () => {
-            const legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
+            legendSetSchemaDefinition = ModelDefinition.createFromSchema(legendSetSchema);
             const model = legendSetSchemaDefinition.create(legendSet);
 
             model.user = {

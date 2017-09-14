@@ -35,7 +35,7 @@ export function getJSONForProperties(model, properties, keepFullModels = false) 
         .filter(propertyName => properties.indexOf(propertyName) >= 0)
         .filter(propertyName => (
             model.dataValues[propertyName] !== undefined &&
-            model.dataValues[propertyName] !== null)
+            model.dataValues[propertyName] !== null),
         );
 
     // Handle plain values

@@ -1,5 +1,5 @@
-import { isValidUid, generateUid } from '../uid';
 import { range } from 'lodash';
+import { isValidUid, generateUid } from '../uid';
 
 describe('Uid generation', () => {
     describe('isValidUid()', () => {

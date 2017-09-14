@@ -83,35 +83,35 @@ describe('Api', () => {
     });
 
     describe('request()', () => {
-        it('should handle responses in plain text format', done => {
+        it('should handle responses in plain text format', (done) => {
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: true,
                 text: () => Promise.resolve('this is not valid json'),
             }));
 
             api.get('text')
-                .then(result => {
+                .then((result) => {
                     expect(result).toBe('this is not valid json');
                     done();
                 })
                 .catch(done);
         });
 
-        it('should handle responses in JSON format', done => {
+        it('should handle responses in JSON format', (done) => {
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: true,
                 text: () => Promise.resolve('"this is a JSON string"'),
             }));
 
             api.get('json')
-                .then(result => {
+                .then((result) => {
                     expect(result).toBe('this is a JSON string');
                     done();
                 })
                 .catch(done);
         });
 
-        it('should handle complex JSON objects', done => {
+        it('should handle complex JSON objects', (done) => {
             const data = {
                 id: '12345',
                 name: 'bla bla',
@@ -127,19 +127,19 @@ describe('Api', () => {
             }));
 
             api.get('json')
-                .then(result => {
+                .then((result) => {
                     expect(result).toEqual(data);
                     done();
                 })
                 .catch(done);
         });
 
-        it('should report network errors', done => {
+        it('should report network errors', (done) => {
             fetchMock.mockReturnValueOnce(Promise.reject(new TypeError('Failed to fetch')));
 
             api.get('http://not.a.real.server/hi')
                 .then(done)
-                .catch(err => {
+                .catch((err) => {
                     expect(typeof err).toBe('string');
                     expect(err).toContain('failed');
                     done();
@@ -147,7 +147,7 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should report 404 errors', done => {
+        it('should report 404 errors', (done) => {
             const errorText = '{"httpStatus":"Not Found","httpStatusCode":404,"status":"ERROR","message":"DataElement with id 404 could not be found."}';
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: false,
@@ -157,7 +157,7 @@ describe('Api', () => {
 
             api.get('dataElements/404')
                 .then(() => { done(new Error('The request succeeded')); })
-                .catch(err => {
+                .catch((err) => {
                     expect(typeof err).toBe('object');
                     expect(err).toEqual(JSON.parse(errorText));
                     done();
@@ -165,7 +165,7 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should report 500 errors', done => {
+        it('should report 500 errors', (done) => {
             const errorText = '{"httpStatus":"Internal Server Error","httpStatusCode":500,"status":"ERROR","message":"object references an unsaved transient instance - save the transient instance before flushing: org.hisp.dhis.dataelement.CategoryOptionGroupSet"}';
             const data = '{"name":"District Funding Agency","orgUnitLevel":2,"categoryOptionGroupSet":{"id":"SooXFOUnciJ"}}';
             fetchMock.mockReturnValueOnce(Promise.resolve({
@@ -176,7 +176,7 @@ describe('Api', () => {
 
             api.post('dataApprovalLevels', data)
                 .then(() => { done(new Error('The request succeeded')); })
-                .catch(err => {
+                .catch((err) => {
                     expect(typeof err).toBe('object');
                     expect(err).toEqual(JSON.parse(errorText));
                     done();
@@ -184,27 +184,23 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should properly encode URIs', () => {
-           return api.get('some/endpoint?a=b&c=d|e', { f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}', u : '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:' })
-                .then(() => {
-                    expect(fetchMock).toHaveBeenCalledWith(
-                        '/api/some/endpoint?a=b&c=d|e&f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
-                        baseFetchOptions
-                    );
-                });
-        });
+        it('should properly encode URIs', () => api.get('some/endpoint?a=b&c=d|e', { f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}', u: '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:' })
+            .then(() => {
+                expect(fetchMock).toHaveBeenCalledWith(
+                    '/api/some/endpoint?a=b&c=d|e&f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
+                    baseFetchOptions,
+                );
+            }));
 
-        it('should not break URIs when encoding', () => {
-            return api.get('test?a=b=c&df,gh')
-                .then(() => {
-                    expect(fetchMock).toHaveBeenCalledWith(
-                        '/api/test?a=b=c&df,gh',
-                        baseFetchOptions,
-                    );
-                });
-        });
+        it('should not break URIs when encoding', () => api.get('test?a=b=c&df,gh')
+            .then(() => {
+                expect(fetchMock).toHaveBeenCalledWith(
+                    '/api/test?a=b=c&df,gh',
+                    baseFetchOptions,
+                );
+            }));
 
-        it('should encode data as JSON', done => {
+        it('should encode data as JSON', (done) => {
             const data = { name: 'Name', code: 'Code_01' };
             api.post('jsonData', data)
                 .then(() => {
@@ -214,7 +210,7 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should not encode text/plain data as JSON', done => {
+        it('should not encode text/plain data as JSON', (done) => {
             const data = 'my data';
             api.post('textData', data, { headers: { 'Content-Type': 'text/plain' } })
                 .then(() => {
@@ -226,14 +222,6 @@ describe('Api', () => {
     });
 
     describe('get', () => {
-        let requestFailedHandler;
-        let requestSuccessHandler;
-
-        beforeEach(() => {
-            requestSuccessHandler = jest.fn();
-            requestFailedHandler = jest.fn();
-        });
-
         it('should be a method', () => {
             expect(api.get).toBeInstanceOf(Function);
         });
@@ -291,7 +279,7 @@ describe('Api', () => {
             fetchMock.mockReturnValueOnce(Promise.reject());
 
             api.get('/api/dataElements', { fields: 'id,name' })
-                .then(() => { throw new Error('Request did not fail') })
+                .then(() => { throw new Error('Request did not fail'); })
                 .catch(() => done())
                 .catch(done);
         });
@@ -310,7 +298,7 @@ describe('Api', () => {
 
             api.get('/api/dataElements/sdfsf', { fields: 'id,name' })
                 .then(() => { done('The request did not fail'); })
-                .catch((err) => { expect(err).toEqual(errorJson); done() });
+                .catch((err) => { expect(err).toEqual(errorJson); done(); });
         });
 
         it('should call the success resolve handler', (done) => {
@@ -369,7 +357,7 @@ describe('Api', () => {
                     method: 'POST',
                     headers: new Headers({ 'Content-Type': 'application/json' }),
                     body: JSON.stringify(fixtures.get('/singleUserOwnerFields')),
-                })
+                }),
             );
         });
 
@@ -382,7 +370,7 @@ describe('Api', () => {
                     method: 'POST',
                     headers: new Headers({ 'content-type': 'text/plain' }),
                     body: 'string=test',
-                })
+                }),
             );
         });
 
@@ -395,7 +383,7 @@ describe('Api', () => {
                     method: 'POST',
                     headers: new Headers({ 'content-type': 'text/plain' }),
                     body: JSON.stringify(0),
-                })
+                }),
             );
         });
 
@@ -416,7 +404,7 @@ describe('Api', () => {
                     },
                     method: 'POST',
                     mode: 'cors',
-                }
+                },
             );
         });
 
@@ -466,7 +454,7 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should not try to determine the type of data if no data is provided', done => {
+        it('should not try to determine the type of data if no data is provided', (done) => {
             api.post('no/data')
                 .then(() => {
                     done();
@@ -569,7 +557,7 @@ describe('Api', () => {
                 cache: 'default',
                 credentials: 'include',
                 headers: {
-                    map: {'content-type': 'application/json'},
+                    map: { 'content-type': 'application/json' },
                 },
                 method: 'PUT',
                 mode: 'cors',
@@ -582,7 +570,7 @@ describe('Api', () => {
     describe('defaultHeaders', () => {
         it('should use the set default headers for the request', () => {
             api.setDefaultHeaders({
-                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q='
+                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=',
             });
 
             api.get('/me');
@@ -591,23 +579,23 @@ describe('Api', () => {
                 '/api/me',
                 Object.assign(baseFetchOptions, {
                     method: 'GET',
-                    headers: new Headers({ 'Authorization': 'Basic YWRtaW46ZGlzdHJpY3Q=' }),
+                    headers: new Headers({ Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=' }),
                 }),
             );
         });
 
         it('should not use the defaultHeaders if specific header has been passed', () => {
             api.setDefaultHeaders({
-                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q='
+                Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=',
             });
 
-            api.get('/me', undefined, { headers: { 'Authorization': 'Bearer ASDW212331sss' } });
+            api.get('/me', undefined, { headers: { Authorization: 'Bearer ASDW212331sss' } });
 
             expect(fetchMock).toBeCalledWith(
                 '/api/me',
                 Object.assign(baseFetchOptions, {
                     method: 'GET',
-                    headers: new Headers({ 'Authorization': 'Bearer ASDW212331sss' }),
+                    headers: new Headers({ Authorization: 'Bearer ASDW212331sss' }),
                 }),
             );
         });
@@ -618,7 +606,7 @@ describe('Api', () => {
                 'Custom-Header': 'Some header data',
             });
 
-            api.get('/me', undefined, { headers: { 'Authorization': 'Bearer ASDW212331sss' } });
+            api.get('/me', undefined, { headers: { Authorization: 'Bearer ASDW212331sss' } });
 
             expect(fetchMock).toBeCalledWith(
                 '/api/me',

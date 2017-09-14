@@ -218,7 +218,7 @@ describe('ModelCollectionProperty', () => {
                 .then(() => {
                     expect(api.get).not.toHaveBeenCalled();
                     expect(api.post).toHaveBeenCalledTimes(1);
-                    expect(api.post).toBeCalledWith('my.dhis/instance/dataElements', {"additions": [{"id": "dataEleme02"}], "deletions": [{"id": "dataEleme01"}]});
+                    expect(api.post).toBeCalledWith('my.dhis/instance/dataElements', { additions: [{ id: 'dataEleme02' }], deletions: [{ id: 'dataEleme01' }] });
                     done();
                 }).catch(e => done(e));
         });

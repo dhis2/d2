@@ -6,12 +6,10 @@ describe('Config', () => {
     });
 
     describe('processConfigForD2', () => {
-        let mockConfig;
         let mockD2;
         let mockApi;
 
         beforeEach(() => {
-            mockConfig = {};
             mockApi = {
                 setBaseUrl: jest.fn(),
             };

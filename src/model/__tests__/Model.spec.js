@@ -1,5 +1,6 @@
 import fixtures from '../../__fixtures__/fixtures';
 import Model from '../Model';
+import ModelDefinition from '../ModelDefinition';
 
 describe('Model', () => {
     let model;
@@ -140,7 +141,6 @@ describe('Model', () => {
         let dataElementModel;
 
         beforeEach(() => {
-            const ModelDefinition = require('../ModelDefinition').default;
             const dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
 
             dataElementModel = Model.create(dataElementModelDefinition);
@@ -165,14 +165,12 @@ describe('Model', () => {
         let dataElementModel;
 
         beforeEach(() => {
-            const ModelDefinition = require('../ModelDefinition').default;
             const dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
 
             dataElementModel = Model.create(dataElementModelDefinition);
         });
 
         it('should not create the property when there are no attributes', () => {
-            const ModelDefinition = require('../ModelDefinition').default;
             const dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
 
             dataElementModel = Model.create(dataElementModelDefinition);
@@ -300,7 +298,7 @@ describe('Model', () => {
         });
 
         it('should not be able to set attributes to something else', () => {
-            const changeAttributesProperty = () => dataElementModel.attributes = 'something else';
+            const changeAttributesProperty = () => { dataElementModel.attributes = 'something else'; };
 
             expect(changeAttributesProperty).toThrow();
             expect(dataElementModel.attributes).not.toBe('something else');

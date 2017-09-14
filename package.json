@@ -12,8 +12,7 @@
     "prebuild": "npm run lint && npm run validate && npm run test",
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
-    "lint": "eslint src --global jest",
-    "__lint_tests__": " && eslint --env node,mocha --global expect,sinon test/unit --fix",
+    "lint": "./node_modules/eslint/bin/eslint.js src",
     "travis": "npm run coverage && npm run build"
   },
   "repository": {
@@ -45,11 +44,8 @@
     "canonical-path": "0.0.2",
     "codeclimate-test-reporter": "^0.4.1",
     "documentation": "^4.0.0-rc.1",
-    "eslint": "^3.18.0",
-    "eslint-config-dhis2": "^2.0.0",
-    "eslint-plugin-react": "^7.0.1",
     "esprima": "^3.1.3",
-    "exports-loader": "^0.6.4",
+    "eslint-config-dhis2": "3",
     "form-data": "^2.1.2",
     "jest": "^21.0.2",
     "karma-cli": "^1.0.1",

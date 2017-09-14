@@ -92,9 +92,9 @@ describe('System', () => {
         });
 
         it('should set the list of installed apps onto the Settings object', () => system.loadInstalledApps()
-                .then(() => {
-                    expect(system.installedApps).toEqual(appsFromApi);
-                }));
+            .then(() => {
+                expect(system.installedApps).toEqual(appsFromApi);
+            }));
 
         it('should reject the promise if the request fails', () => {
             apiMock.get = jest.fn().mockReturnValue(Promise.reject('Apps can not be loaded'));
@@ -107,9 +107,9 @@ describe('System', () => {
         });
 
         it('should resolve with the returned list of apps', () => system.loadInstalledApps()
-                .then((apps) => {
-                    expect(apps).toEqual(appsFromApi);
-                }));
+            .then((apps) => {
+                expect(apps).toEqual(appsFromApi);
+            }));
     });
 
     describe('uploadApp()', () => {
@@ -281,9 +281,9 @@ describe('System', () => {
         });
 
         it('should return all the apps when compatibility flag is set to false', () => system.loadAppStore(false)
-                .then((apps) => {
-                    expect(apps.apps.length).toBe(fixtures.get('/appStore').apps.length);
-                }));
+            .then((apps) => {
+                expect(apps.apps.length).toBe(fixtures.get('/appStore').apps.length);
+            }));
 
         it('should reject the promise when the request fails', () => {
             apiMock.get.mockReturnValue(Promise.reject('Request for appStore failed'));
@@ -326,14 +326,14 @@ describe('System', () => {
         });
 
         it('should call the api with the correct url', () => system.installAppVersion('PyYnjVl5iGt')
-                .then(() => {
-                    expect(apiMock.post).toBeCalledWith('appStore/PyYnjVl5iGt', '', { dataType: 'text' });
-                }));
+            .then(() => {
+                expect(apiMock.post).toBeCalledWith('appStore/PyYnjVl5iGt', '', { dataType: 'text' });
+            }));
 
         it('should resolve the promise without a value', () => system.installAppVersion('PyYnjVl5iGt')
-                .then((response) => {
-                    expect(response).toBeUndefined();
-                }));
+            .then((response) => {
+                expect(response).toBeUndefined();
+            }));
     });
 
     describe('uninstallApp()', () => {
@@ -346,9 +346,9 @@ describe('System', () => {
         });
 
         it('should call the api.delete method with the correct url', () => system.uninstallApp('PyYnjVl5iGt')
-                .then(() => {
-                    expect(apiMock.delete).toBeCalledWith('apps/PyYnjVl5iGt');
-                }));
+            .then(() => {
+                expect(apiMock.delete).toBeCalledWith('apps/PyYnjVl5iGt');
+            }));
 
         it('should resolve the request even when the api request fails', () => {
             apiMock.delete = jest.fn().mockReturnValue(Promise.reject({}));
@@ -371,14 +371,14 @@ describe('System', () => {
         });
 
         it('should call the update method on the api', () => system.reloadApps()
-                .then(() => {
-                    expect(apiMock.update.mock.calls[0][0]).toBe('apps');
-                }));
+            .then(() => {
+                expect(apiMock.update.mock.calls[0][0]).toBe('apps');
+            }));
 
         it('should call system.loadInstalledApps on success ', () => system.reloadApps()
-                .then(() => {
-                    expect(system.loadInstalledApps).toBeCalled();
-                }));
+            .then(() => {
+                expect(system.loadInstalledApps).toBeCalled();
+            }));
 
         it('should chain the promise from loadInstalledApps', () => {
             const loadInstalledAppsPromise = Promise.resolve('Apps loaded');

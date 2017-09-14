@@ -115,6 +115,7 @@ describe('System.configuration', () => {
                 if (url === 'configuration') {
                     return Promise.resolve(mockConfiguration);
                 }
+                return Promise.reject();
             });
             mockApi.post.mockReturnValue(Promise.resolve());
             mockApi.delete.mockReturnValue(Promise.resolve());
@@ -179,10 +180,8 @@ describe('System.configuration', () => {
             });
 
             it('should return the correct feedback recipient user group', () => {
-                configuration.get('feedbackRecipients').then((res) => {
+                return configuration.get('feedbackRecipients').then((res) => {
                     expect(res).toBe(mockConfiguration.feedbackRecipients);
-                }, (err) => {
-                    done(err);
                 });
             });
 
@@ -291,10 +290,10 @@ describe('System.configuration', () => {
             });
 
             it('should convert CORS string to an array', () => configuration.set('corsWhitelist', mockCorsWhitelistText)
-                    .then(() => {
-                        expect(mockApi.post.mock.calls[0][0]).toBe('configuration/corsWhitelist');
-                        expect(mockApi.post.mock.calls[0][1]).toEqual(mockConfiguration.corsWhitelist);
-                    }));
+                .then(() => {
+                    expect(mockApi.post.mock.calls[0][0]).toBe('configuration/corsWhitelist');
+                    expect(mockApi.post.mock.calls[0][1]).toEqual(mockConfiguration.corsWhitelist);
+                }));
 
             it('should post new settings to the API', () => {
                 mockApi.post.mockClear();

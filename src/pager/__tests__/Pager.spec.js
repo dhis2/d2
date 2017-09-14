@@ -11,7 +11,9 @@ describe('Pager', () => {
     describe('instance without data', () => {
         let pager;
 
-        beforeEach(() => pager = new Pager());
+        beforeEach(() => {
+            pager = new Pager();
+        });
 
         it('should set the page to first', () => {
             expect(pager.page).toBe(1);
@@ -181,9 +183,9 @@ describe('Pager', () => {
             });
 
             it('should return a rejected promise if there are no more previous pages', () => pager.getPreviousPage()
-                    .catch((message) => {
-                        expect(message).toBe('There is no previous page for this collection');
-                    }));
+                .catch((message) => {
+                    expect(message).toBe('There is no previous page for this collection');
+                }));
 
             it('should call the list method with the current page number - 1', () => {
                 pager.page = 3;
@@ -215,7 +217,7 @@ describe('Pager', () => {
 
         describe('should throw error when there is no page handler', () => {
             it('should throw an error when no handler is specified', (done) => {
-                const pager = new Pager(pagerFixtureOne);
+                pager = new Pager(pagerFixtureOne);
 
                 pager.getNextPage()
                     .then(done)

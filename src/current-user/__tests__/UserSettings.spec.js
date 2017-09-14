@@ -149,7 +149,7 @@ describe('CurrentUser.userSettings', () => {
     describe('set', () => {
         beforeEach(() => {
             userSettings.api.get
-                .mockReturnValue(Promise.resolve(userSettingsFixture))
+                .mockReturnValue(Promise.resolve(userSettingsFixture));
             userSettings.api.post
                 .mockReturnValueOnce(Promise.resolve());
             userSettings.api.delete
@@ -160,34 +160,28 @@ describe('CurrentUser.userSettings', () => {
             userSettings = new UserSettings();
         });
 
-        it('should POST to the API', () => {
-            return userSettings.set('mySetting', 'my value')
-                .then(() => {
-                    expect(userSettings.api.get).toHaveBeenCalledTimes(0);
-                    expect(userSettings.api.post).toHaveBeenCalledTimes(1);
-                    expect(userSettings.api.delete).toHaveBeenCalledTimes(0);
-                });
-        });
+        it('should POST to the API', () => userSettings.set('mySetting', 'my value')
+            .then(() => {
+                expect(userSettings.api.get).toHaveBeenCalledTimes(0);
+                expect(userSettings.api.post).toHaveBeenCalledTimes(1);
+                expect(userSettings.api.delete).toHaveBeenCalledTimes(0);
+            }));
 
-        it('should DELETE if the value is null or an empty string', () => {
-            return userSettings.set('mySetting', '')
-                .then(() => {
-                    expect(userSettings.api.get).toHaveBeenCalledTimes(0);
-                    expect(userSettings.api.post).toHaveBeenCalledTimes(0);
-                    expect(userSettings.api.delete).toHaveBeenCalledTimes(1);
-                });
-        });
+        it('should DELETE if the value is null or an empty string', () => userSettings.set('mySetting', '')
+            .then(() => {
+                expect(userSettings.api.get).toHaveBeenCalledTimes(0);
+                expect(userSettings.api.post).toHaveBeenCalledTimes(0);
+                expect(userSettings.api.delete).toHaveBeenCalledTimes(1);
+            }));
 
-        it('should clear out the cache', () => {
-            return userSettings.all()
-                .then(() => userSettings.all())
-                .then(() => userSettings.set('a', 'b'))
-                .then(() => userSettings.all())
-                .then(() => userSettings.all())
-                .then(() => {
-                    expect(userSettings.api.post).toHaveBeenCalledTimes(1);
-                    expect(userSettings.api.get).toHaveBeenCalledTimes(2);
-                });
-        });
+        it('should clear out the cache', () => userSettings.all()
+            .then(() => userSettings.all())
+            .then(() => userSettings.set('a', 'b'))
+            .then(() => userSettings.all())
+            .then(() => userSettings.all())
+            .then(() => {
+                expect(userSettings.api.post).toHaveBeenCalledTimes(1);
+                expect(userSettings.api.get).toHaveBeenCalledTimes(2);
+            }));
     });
 });

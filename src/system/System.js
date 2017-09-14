@@ -230,13 +230,13 @@ class System {
     static isVersionCompatible(systemVersion, appVersion) {
         const isNewEnough = (
             appVersion.min_platform_version ?
-            System.compareVersions(systemVersion, appVersion.min_platform_version) >= 0 :
-            true
+                System.compareVersions(systemVersion, appVersion.min_platform_version) >= 0 :
+                true
         );
         const isNotTooOld = (
             appVersion.max_platform_version ?
-            System.compareVersions(systemVersion, appVersion.max_platform_version) <= 0 :
-            true
+                System.compareVersions(systemVersion, appVersion.max_platform_version) <= 0 :
+                true
         );
 
         return isNewEnough && isNotTooOld;

@@ -158,8 +158,8 @@ class ModelBase {
             getJSONForProperties(
                 this,
                 Object.keys(this.modelDefinition.modelValidations),
-                true
-            )
+                true,
+            ),
         );
 
         if (this.isDirty()) {
@@ -191,7 +191,7 @@ class ModelBase {
             .filter(
                 propertyName => this[propertyName] &&
                 hasModelValidationForProperty(this, propertyName) &&
-                this.modelDefinition.modelValidations[propertyName].owner
+                this.modelDefinition.modelValidations[propertyName].owner,
             )
             .map(propertyName => this[propertyName]);
     }
@@ -203,7 +203,7 @@ class ModelBase {
                 this.modelDefinition &&
                 this.modelDefinition.modelValidations &&
                 this.modelDefinition.modelValidations[propertyName] &&
-                this.modelDefinition.modelValidations[propertyName].type === 'COLLECTION'
+                this.modelDefinition.modelValidations[propertyName].type === 'COLLECTION',
             );
     }
 
@@ -215,7 +215,7 @@ class ModelBase {
                 this.modelDefinition.modelValidations &&
                 this.modelDefinition.modelValidations[propertyName] &&
                 this.modelDefinition.modelValidations[propertyName].type === 'REFERENCE' &&
-                this.modelDefinition.modelValidations[propertyName].embeddedObject === false
+                this.modelDefinition.modelValidations[propertyName].embeddedObject === false,
             );
     }
 

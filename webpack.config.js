@@ -6,7 +6,7 @@ const WrapperPlugin = require('wrapper-webpack-plugin');
  */
 const isFileInSrcFolder = (path) => {
     return (new RegExp(`${__dirname}\/src`)).test(path);
-}
+};
 
 module.exports = {
     entry: './src/d2.js',

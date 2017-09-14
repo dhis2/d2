@@ -76,7 +76,7 @@ describe('ModelCollection', () => {
         });
 
         it('should throw error when trying to set the size', () => {
-            expect(() => modelCollection.size = 0).toThrowError();
+            expect(() => { modelCollection.size = 0; }).toThrowError();
         });
     });
 
@@ -137,9 +137,9 @@ describe('ModelCollection', () => {
     describe('instance', () => {
         let modelDefinition;
         let modelCollection;
-        let mockyModel1,
-            mockyModel2,
-            mockyModel3;
+        let mockyModel1;
+        let mockyModel2;
+        let mockyModel3;
 
         beforeEach(() => {
             modelDefinition = new ModelDefinition(mockSchema, []);
@@ -210,7 +210,7 @@ describe('ModelCollection', () => {
             });
 
             it('should not accept an object that was created based on a local class', () => {
-                class Model {
+                class Model { // eslint-disable-line no-shadow
                     constructor(id) {
                         this.id = id;
                     }

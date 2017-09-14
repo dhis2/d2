@@ -96,8 +96,8 @@ export default class CurrentUser {
             Object.assign(
                 { fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]' },
                 listOptions,
-                { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] }
-            )
+                { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] },
+            ),
         );
     }
 
@@ -108,8 +108,8 @@ export default class CurrentUser {
             Object.assign(
                 { fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]' },
                 listOptions,
-                { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] }
-            )
+                { filter: [`id:in:[${organisationUnitsIds.join(',')}]`] },
+            ),
         );
     }
 
@@ -123,7 +123,7 @@ export default class CurrentUser {
             .filter(authority => authorityType.some(authToHave => authToHave === authority.type))
             // Check the left over schema authority types
             .some(schemaAuthority => schemaAuthority.authorities
-                .some(authorityToCheckFor => this.authorities.has(authorityToCheckFor)) // Check if one of the schema authorities are available in the users authorities
+                .some(authorityToCheckFor => this.authorities.has(authorityToCheckFor)), // Check if one of the schema authorities are available in the users authorities
             );
     }
 
@@ -166,7 +166,7 @@ export default class CurrentUser {
             userData,
             UserAuthorities.create(authorities),
             modelDefinitions,
-            new UserSettings(userSettings)
+            new UserSettings(userSettings),
         );
     }
 }

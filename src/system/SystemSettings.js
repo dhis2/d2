@@ -39,7 +39,10 @@ class SystemSettings {
         return this.settings
             ? Promise.resolve(this.settings)
             : this.api.get('systemSettings')
-                .then((settings) => { this.settings = settings; return Promise.resolve(this.settings); });
+                .then((settings) => {
+                    this.settings = settings;
+                    return Promise.resolve(this.settings);
+                });
     }
 
     /**

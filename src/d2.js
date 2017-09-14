@@ -219,7 +219,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
                 responses.currentUser,
                 responses.authorities,
                 d2.models,
-                responses.userSettings
+                responses.userSettings,
             );
             d2.system.setSystemInfo(responses.systemInfo);
             d2.system.setInstalledApps(responses.apps);

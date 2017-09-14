@@ -24,7 +24,7 @@ describe('DataStoreNamespace', () => {
 
     it('should throw an error if not called with a string', () => {
         expect(() => new DataStoreNamespace()).toThrowError(
-            'DataStoreNamespaces must be called with a string to identify the Namespace'
+            'DataStoreNamespaces must be called with a string to identify the Namespace',
         );
     });
 
@@ -80,7 +80,7 @@ describe('DataStoreNamespace', () => {
         });
 
         it('should call API with correct parameters', (done) => {
-            namespace.get('key1').then((val) => {
+            namespace.get('key1').then(() => {
                 expect(apiMock.get).toBeCalledWith('dataStore/DHIS/key1');
                 done();
             }).catch(e => done(e));
@@ -109,7 +109,7 @@ describe('DataStoreNamespace', () => {
         });
 
         it('should call api.get() with correct parameters', (done) => {
-            namespace.getMetaData(key).then((res) => {
+            namespace.getMetaData(key).then(() => {
                 expect(apiMock.get).toBeCalledWith(`dataStore/DHIS/${key}/metaData`);
                 done();
             }).catch(e => done(e));

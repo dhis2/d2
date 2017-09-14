@@ -61,7 +61,7 @@ describe('Internationalisation (I18n)', () => {
     });
 
     it('should use the passed Api object', () => {
-        const mockApi = jest.fn();
+        mockApi = jest.fn();
 
         i18n = new I18n([], mockApi);
 

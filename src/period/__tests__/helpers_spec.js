@@ -21,8 +21,6 @@ describe('Period helpers', () => {
     });
 
     describe('filterFuturePeriods()', () => {
-        const firstOfJanuary2017 = 1483228800000;
-        let clock;
         const periods = [
             {
                 endDate: '2015-12-31',
@@ -53,12 +51,12 @@ describe('Period helpers', () => {
         ];
 
         beforeEach(() => {
-            const _Date = global.Date;
+            const DateGlobal = global.Date;
             const now = new Date('Mon July 11 2017 17:09:35 GMT+0200 (CEST)');
 
             jest.spyOn(global, 'Date')
                 // Return our own fake `now` when no dateString was passed
-                .mockImplementation(dateString => dateString ? new _Date(dateString) : now);
+                .mockImplementation(dateString => (dateString ? new DateGlobal(dateString) : now));
         });
 
         afterEach(() => {

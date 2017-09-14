@@ -114,7 +114,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateBiMonthlyPeriodsForYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateBiMonthlyPeriodsForYear,
                 ).toBe('function');
             });
 
@@ -146,7 +146,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateQuarterlyPeriodsForYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateQuarterlyPeriodsForYear,
                 ).toBe('function');
             });
 
@@ -178,7 +178,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear,
                 ).toBe('function');
             });
 
@@ -210,7 +210,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateSixMonthlyPeriodsForYear,
                 ).toBe('function');
             });
 
@@ -302,7 +302,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialOctoberPeriodsUpToYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialOctoberPeriodsUpToYear,
                 ).toBe('function');
             });
 
@@ -334,7 +334,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialJulyPeriodsUpToYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialJulyPeriodsUpToYear,
                 ).toBe('function');
             });
 
@@ -366,7 +366,7 @@ describe('generators', () => {
 
             it('should have the weekly period generator', () => {
                 expect(
-                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialAprilPeriodsUpToYear
+                    typeof createPeriodGeneratorsForLocale('nl').generateFinancialAprilPeriodsUpToYear,
                 ).toBe('function');
             });
 

@@ -8,5 +8,29 @@
     },
     "rules": {
         "class-methods-use-this": ["warn"]
-    }
+    },
+    "overrides": [
+        {
+            "files": ["src/**/__tests__/**/*.js", "src/**/__mocks__/**/*.js"],
+            "globals": {
+                "expect": false,
+                "it": false,
+                "describe": false,
+                "beforeEach": false,
+                "afterEach": false,
+                "jest": false,
+                "Headers": false,
+                "FormData": false
+            },
+            "rules": {
+                "arrow-body-style": ["ignore"]
+            }
+        },
+        {
+            "files": "src/__fixtures__/fixtures.js",
+            "rules": {
+                "global-require": ["ignore"]
+            }
+        }
+    ]
 }

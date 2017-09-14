@@ -12,8 +12,8 @@ describe('settings.System', () => {
     let mockApi;
 
     beforeEach(() => {
+        MockApi.mockReset();
         mockApi = MockApi.getApi();
-        MockApi.mockClear();
         systemSettings = new SystemSettings(new MockApi());
     });
 
@@ -27,7 +27,8 @@ describe('settings.System', () => {
 
     describe('all', () => {
         beforeEach(() => {
-            systemSettings.api.get = mockApi.get = jest.fn().mockReturnValueOnce(Promise.resolve(settingsFixture));
+            systemSettings.api.get
+                .mockReturnValueOnce(Promise.resolve(settingsFixture));
         });
 
         it('should be a function', () => {
@@ -40,21 +41,20 @@ describe('settings.System', () => {
         }));
 
         it('should resolve the promise with the settings', () => systemSettings.all()
-                .then((settings) => {
-                    expect(settings.keyLastSuccessfulResourceTablesUpdate).toBe('Tue Mar 10 12:24:00 CET 2015');
-                }));
+            .then((settings) => {
+                expect(settings.keyLastSuccessfulResourceTablesUpdate).toBe('Tue Mar 10 12:24:00 CET 2015');
+            }));
 
         it('should only call the API once', () => systemSettings.all().then(() => systemSettings.all())
-                .then(() => {
-                    expect(systemSettings.settings).toEqual(settingsFixture);
-                    expect(mockApi.get).toHaveBeenCalledTimes(1);
-                }));
+            .then(() => {
+                expect(systemSettings.settings).toEqual(settingsFixture);
+                expect(mockApi.get).toHaveBeenCalledTimes(1);
+            }));
     });
 
     describe('get', () => {
         beforeEach(() => {
-            systemSettings = new SystemSettings(new MockApi());
-            // systemSettings.api.get = jest.fn().mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+            systemSettings = new SystemSettings(MockApi.getApi());
         });
 
         it('should be a function', () => {
@@ -75,7 +75,7 @@ describe('settings.System', () => {
                 .catch((error) => {
                     expect(error).toBeInstanceOf(TypeError);
                     expect(error.message).toBe(
-                        'A "key" parameter should be specified when calling get() on systemSettings'
+                        'A "key" parameter should be specified when calling get() on systemSettings',
                     );
                 })
                 .then(done);
@@ -135,9 +135,7 @@ describe('settings.System', () => {
 
         it('should only call the API once when there is a cache', () => {
             systemSettings.api.get
-                .mockReturnValueOnce(Promise.resolve(settingsFixture))
-                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate))
-                .mockReturnValueOnce(Promise.resolve(settingsFixture.keyLastSuccessfulResourceTablesUpdate));
+                .mockReturnValueOnce(Promise.resolve(settingsFixture));
 
             return systemSettings.all()
                 .then(() => systemSettings.get('keyLastSuccessfulResourceTablesUpdate'))
@@ -168,18 +166,18 @@ describe('settings.System', () => {
         });
 
         it('should POST to the API', () => systemSettings.set('mySetting', 'my value')
-                .then(() => {
-                    expect(mockApi.get).toHaveBeenCalledTimes(0);
-                    expect(mockApi.post).toHaveBeenCalledTimes(1);
-                    expect(mockApi.delete).toHaveBeenCalledTimes(0);
-                }));
+            .then(() => {
+                expect(mockApi.get).toHaveBeenCalledTimes(0);
+                expect(mockApi.post).toHaveBeenCalledTimes(1);
+                expect(mockApi.delete).toHaveBeenCalledTimes(0);
+            }));
 
         it('should DELETE if the value is null or an empty string', () => systemSettings.set('mySetting', '')
-                .then(() => {
-                    expect(mockApi.get).toHaveBeenCalledTimes(0);
-                    expect(mockApi.post).toHaveBeenCalledTimes(0);
-                    expect(mockApi.delete).toHaveBeenCalledTimes(1);
-                }));
+            .then(() => {
+                expect(mockApi.get).toHaveBeenCalledTimes(0);
+                expect(mockApi.post).toHaveBeenCalledTimes(0);
+                expect(mockApi.delete).toHaveBeenCalledTimes(1);
+            }));
 
         it('should not alter the value', () => {
             const value = { type: 'object', value: 'some value' };
@@ -209,19 +207,18 @@ describe('settings.System', () => {
         });
 
         it('should clear the settings cache', () => systemSettings.all()
-                .then(() => systemSettings.set('test', 'value'))
-                .then(() => systemSettings.all())
-                .then(() => {
-                    expect(mockApi.get).toHaveBeenCalledTimes(2);
-                    expect(mockApi.post).toHaveBeenCalledTimes(1);
-                }));
+            .then(() => systemSettings.set('test', 'value'))
+            .then(() => systemSettings.all())
+            .then(() => {
+                expect(mockApi.get).toHaveBeenCalledTimes(2);
+                expect(mockApi.post).toHaveBeenCalledTimes(1);
+            }));
     });
 
     describe('.set API request', () => {
         beforeEach(() => {
-            systemSettings.api.request = mockApi.request = jest.fn();
-
-            mockApi.request.mockReturnValueOnce(Promise.resolve());
+            systemSettings.api.post
+                .mockReturnValueOnce(Promise.resolve());
         });
 
         afterEach(() => {

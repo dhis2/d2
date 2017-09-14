@@ -37,14 +37,14 @@ describe('ModelDefinition', () => {
 
     it('should throw an error when a name is not specified', () => {
         function shouldThrow() {
-            new ModelDefinition();
+            return new ModelDefinition();
         }
         expect(shouldThrow).toThrowError('Value should be provided');
     });
 
     it('should throw an error when plural is not specified', () => {
         function shouldThrow() {
-            new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement' });
+            return new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement' });
         }
         expect(shouldThrow).toThrowError('Plural should be provided');
     });
@@ -202,10 +202,8 @@ describe('ModelDefinition', () => {
 
             it('should throw an error when a type is not found', () => {
                 const schema = fixtures.get('/api/schemas/dataElement');
-                let dataElementModelDefinition;
-
                 function shouldThrow() {
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(schema);
+                    ModelDefinition.createFromSchema(schema);
                 }
 
                 schema.properties.push({
@@ -440,7 +438,6 @@ describe('ModelDefinition', () => {
 
             describe('collection reference', () => {
                 let indicatorGroupModelDefinition;
-                let modelValidations;
 
                 beforeEach(() => {
                     indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/indicatorGroup'));
@@ -458,7 +455,6 @@ describe('ModelDefinition', () => {
 
             describe('embedded object property', () => {
                 let indicatorGroupModelDefinition;
-                let modelValidations;
 
                 beforeEach(() => {
                     indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/legendSet'));
@@ -487,10 +483,10 @@ describe('ModelDefinition', () => {
             let dataSetModelDefinition;
 
             beforeEach(() => {
-                UserModelDefinition = require('../ModelDefinition').default.specialClasses.user;
+                UserModelDefinition = ModelDefinition.specialClasses.user;
                 userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
 
-                DataSetModelDefinition = require('../ModelDefinition').default.specialClasses.dataSet;
+                DataSetModelDefinition = ModelDefinition.specialClasses.dataSet;
                 dataSetModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataSet'));
             });
 
@@ -548,7 +544,6 @@ describe('ModelDefinition', () => {
         describe('collection properties', () => {
             let orgunitModelDefinition;
             let userModelDefinition;
-            let model;
 
             beforeEach(() => {
                 userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
@@ -569,7 +564,7 @@ describe('ModelDefinition', () => {
 
             describe('with data', () => {
                 beforeEach(() => {
-                    model = userModelDefinition.create({
+                    userModelDefinition.create({
                         organisationUnits: [
                             { name: 'Kenya', id: 'FTRrcoaog83' },
                             { name: 'Oslo', id: 'P3jJH5Tu5VC' },
@@ -582,28 +577,13 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should create a ModelCollectionProperty with the correct values', () => {
-                    // const modelDefinitionForCollection = ModelCollectionProperty.create.mock.calls[0][1];
-                    // const modelCollectionData = ModelCollectionProperty.create.mock.calls[0][2];
-                    // const passedModelInstance = ModelCollectionProperty.create.mock.calls[0][0];
-
                     expect(ModelCollectionProperty.create.mock.calls[0]).toMatchSnapshot();
-
-                    // // First argument to ModelCollectionPrototype.create
-                    // expect(passedModelInstance).toBe(model);
-                    //
-                    // // Second argument to ModelCollectionProperty.create
-                    // expect(modelDefinitionForCollection.name).toBe(orgunitModelDefinition.name);
-                    // expect(modelDefinitionForCollection.plural).toBe(orgunitModelDefinition.plural);
-                    //
-                    // // Third argument to ModelCollectionProperty.create
-                    // expect(modelCollectionData[0]).toEqual(orgunitModelDefinition.create({ name: 'Kenya', id: 'FTRrcoaog83' }));
-                    // expect(modelCollectionData[1]).toEqual(orgunitModelDefinition.create({ name: 'Oslo', id: 'P3jJH5Tu5VC' }));
                 });
             });
 
             describe('without data', () => {
                 beforeEach(() => {
-                    model = userModelDefinition.create();
+                    userModelDefinition.create();
                 });
 
                 it('should create a ModelCollectionProperty.create for a collection of objects', () => {
@@ -663,12 +643,10 @@ describe('ModelDefinition', () => {
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements/d4343fsss', { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' });
         });
 
-        it('should set the data onto the model when it is available', () => {
-            return dataElementModelDefinition.get('d4343fsss')
-                .then((dataElementModel) => {
-                    expect(dataElementModel.name).toBe('BS_COLL (N, DSD) TARGET: Blood Units Donated');
-                });
-        });
+        it('should set the data onto the model when it is available', () => dataElementModelDefinition.get('d4343fsss')
+            .then((dataElementModel) => {
+                expect(dataElementModel.name).toBe('BS_COLL (N, DSD) TARGET: Blood Units Donated');
+            }));
 
         it('should reject the promise with the message when the request fails', () => {
             ModelDefinition.prototype.api.get = jest.fn()
@@ -707,16 +685,14 @@ describe('ModelDefinition', () => {
                     });
             });
 
-            it('should call the api with the in filter', (done) => {
+            it('should call the api with the in filter', () => {
                 const dataElementsResult = fixtures.get('/api/dataElements');
                 ModelDefinition.prototype.api.get = jest.fn().mockReturnValue(Promise.resolve(dataElementsResult));
 
-                dataElementModelDefinition.get(['id1', 'id2'])
-                    .then((dataElementCollection) => {
+                return dataElementModelDefinition.get(['id1', 'id2'])
+                    .then(() => {
                         expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { filter: ['id:in:[id1,id2]'], fields: ':all' });
-                        done();
-                    })
-                    .catch(done);
+                    });
             });
         });
     });
@@ -755,25 +731,22 @@ describe('ModelDefinition', () => {
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
         });
 
-        it('should return a model collection object', () => {
-            return dataElementModelDefinition.list()
-                .then((dataElementCollection) => {
-                    expect(dataElementCollection).toBeInstanceOf(ModelCollection);
-                });
-        });
+        it('should return a model collection object', () => dataElementModelDefinition.list()
+            .then((dataElementCollection) => {
+                expect(dataElementCollection).toBeInstanceOf(ModelCollection);
+            }));
 
-        it('should call the model collection constructor with the correct data', () => {
-            return dataElementModelDefinition.list()
-                .then(() => {
-                    const firstCallArguments = ModelCollection.create.mock.calls[0];
+        it('should call the model collection constructor with the correct data', () => dataElementModelDefinition.list()
+            .then(() => {
+                const firstCallArguments = ModelCollection.create.mock.calls[0];
 
-                    expect(firstCallArguments).toMatchSnapshot();
-                });
-        });
+                expect(firstCallArguments).toMatchSnapshot();
+            }));
 
         it('should call the api get method with the correct parameters after filters are set', () => {
             dataElementModelDefinition
-                .filter().on('name').like('John')
+                .filter()
+                .on('name').like('John')
                 .list();
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
@@ -796,8 +769,12 @@ describe('ModelDefinition', () => {
 
         it('should support multiple filters', () => {
             dataElementModelDefinition
-                .filter().on('name').like('John')
-                .filter().on('username').equals('admin')
+                .filter()
+                .on('name')
+                .like('John')
+                .filter()
+                .on('username')
+                .equals('admin')
                 .list();
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
@@ -881,7 +858,7 @@ describe('ModelDefinition', () => {
 
             userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
 
-            class Model {
+            class Model { // eslint-disable-line no-shadow
                 constructor() {
                     this.dataValues = {};
                     this[DIRTY_PROPERTY_LIST] = new Set([]);
@@ -1034,7 +1011,7 @@ describe('ModelDefinition', () => {
 
             userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
 
-            class Model {
+            class Model { // eslint-disable-line no-shadow
                 constructor() {
                     this.dataValues = {};
                     this.modelDefinition = userModelDefinition;
@@ -1176,12 +1153,11 @@ describe('ModelDefinition', () => {
 });
 
 describe('ModelDefinition subsclasses', () => {
-    let ModelDefinition;
     let getOnApiStub;
 
     beforeEach(() => {
-        getOnApiStub = jest.fn().mockReturnValue(Promise.resolve());
-        ModelDefinition = require('../ModelDefinition').default;
+        getOnApiStub = jest.fn()
+            .mockReturnValue(Promise.resolve());
 
         ModelDefinition.prototype.api = {
             get: getOnApiStub,
@@ -1200,8 +1176,8 @@ describe('ModelDefinition subsclasses', () => {
                 plural: 'users',
                 displayName: 'Users',
             },
-                {},
-                {}
+            {},
+            {},
             );
         });
 
@@ -1228,10 +1204,10 @@ describe('ModelDefinition subsclasses', () => {
                 plural: 'organisationUnits',
                 apiEndpoint: 'organisationUnits',
             },
-                {},
-                {},
-                {},
-                {},
+            {},
+            {},
+            {},
+            {},
             );
         });
 

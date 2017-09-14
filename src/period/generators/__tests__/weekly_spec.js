@@ -116,9 +116,9 @@ describe('Weekly period', () => {
         });
 
         it('should have 71 years in 400-year cycle with iso week 53', () => {
-            let count = 0,
-                i;
-            for (i = 0; i < 400; i++) {
+            let count = 0;
+
+            for (let i = 0; i < 400; i++) {
                 count += (generateWeeklyPeriodsForYear(2000 + i).length === 53) ? 1 : 0;
             }
 

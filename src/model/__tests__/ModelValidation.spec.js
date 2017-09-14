@@ -6,7 +6,7 @@ jest.mock('../../logger/Logger', () => class Logger {
     static getLogger() {
         return new Logger();
     }
-    });
+});
 jest.mock('../../api/Api');
 jest.mock('../helpers/json', () => ({
     getOwnedPropertyJSON() {
@@ -79,9 +79,9 @@ describe('ModelValidations', () => {
         });
 
         it('should return a rejected promise if the model.modelDefinition.name is not present', () => modelValidation.validateAgainstSchema()
-                .catch((message) => {
-                    expect(message).toBe('model.modelDefinition.name can not be found');
-                }));
+            .catch((message) => {
+                expect(message).toBe('model.modelDefinition.name can not be found');
+            }));
 
         it('should call the post method on the Api', () => {
             mockApi.post.mockReturnValueOnce(Promise.resolve({
@@ -113,7 +113,7 @@ describe('ModelValidations', () => {
                 .then(() => {
                     expect(mockApi.post).toBeCalledWith(
                         'schemas/dataElement',
-                        { id: 'R4dd3wwdwdw', name: 'ANC' }
+                        { id: 'R4dd3wwdwdw', name: 'ANC' },
                     );
                 });
         });

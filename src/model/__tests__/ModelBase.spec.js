@@ -1,22 +1,15 @@
 import ModelValidation from '../ModelValidation';
+import modelBase, { DIRTY_PROPERTY_LIST } from '../ModelBase';
 
 jest.mock('../ModelValidation');
 
 describe('ModelBase', () => {
     // TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
     let validateAgainstSchemaSpy;
-    let modelBaseModule;
-    let modelBase;
-    let DIRTY_PROPERTY_LIST;
 
     beforeEach(() => {
         validateAgainstSchemaSpy = ModelValidation.getModelValidation().validateAgainstSchema;
         validateAgainstSchemaSpy.mockReset();
-
-        modelBaseModule = require('../ModelBase');
-
-        modelBase = modelBaseModule.default;
-        DIRTY_PROPERTY_LIST = modelBaseModule.DIRTY_PROPERTY_LIST;
     });
 
     it('should have a save method', () => {
@@ -101,9 +94,9 @@ describe('ModelBase', () => {
             });
 
             it('should call the save on the model modelDefinition with itself as a parameter', () => model.save()
-                    .then(() => {
-                        expect(modelDefinition.save).toBeCalledWith(model);
-                    }));
+                .then(() => {
+                    expect(modelDefinition.save).toBeCalledWith(model);
+                }));
 
             it('should call validate before calling save', () => {
                 model.save();
@@ -319,8 +312,8 @@ describe('ModelBase', () => {
                 };
             }
 
-            static create(modelDefinition) {
-                const model = new Model(modelDefinition);
+            static create(modelDef) {
+                model = new Model(modelDef);
 
                 Object.defineProperty(model, 'id', {
                     get() {

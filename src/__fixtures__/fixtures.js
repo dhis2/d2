@@ -1,5 +1,5 @@
 export default (function () {
-    var fixtures = {};
+    const fixtures = {};
 
     function getFixture(fixtureName) {
         if (fixtures && fixtures[fixtureName]) {

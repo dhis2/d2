@@ -1,4 +1,4 @@
-import check from '../check';
+import * as check from '../check';
 
 describe('Check', () => {
     describe('isDefined', () => {
@@ -131,7 +131,7 @@ describe('Check', () => {
 
     describe('isArray', () => {
         beforeEach(() => {
-            jest.spyOn(Array, 'isArray')
+            jest.spyOn(Array, 'isArray');
         });
 
         afterEach(() => {

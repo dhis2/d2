@@ -11,7 +11,6 @@ import ModelCollection from './ModelCollection';
  * the Model that owns them.
  */
 class ModelCollectionProperty extends ModelCollection {
-
     /**
      * @constructor
      *
