@@ -7,7 +7,9 @@
 
 - `d2.system.loadAppStore` has changed in order to support the new
   [central app store](https://play.dhis2.org/appstore).
-
+- Support for `dataType` and `contentType` options have been removed.
+  These were added for compatibility with jQuery, and have been
+  deprecated since version 2.25.
 
 ## 27.0.0
 ###### _February 20th 2016_
