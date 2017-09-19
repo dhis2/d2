@@ -135,10 +135,8 @@ class System {
     loadAppStore(compatibleOnly = true) {
         return new Promise((resolve, reject) => {
             const api = Api.getApi();
-            api.get('appStore').then((appStoreData) => {
-                const appStore = Object.assign({}, appStoreData);
-
-                appStore.apps = appStore.apps
+            api.get('appStore')
+                .then(appStoreData => resolve(appStoreData
                     .map((appData) => {
                         const app = Object.assign({}, appData);
 
@@ -149,12 +147,9 @@ class System {
 
                         return app;
                     })
-                    .filter(appData => appData.versions.length > 0);
-
-                resolve(appStore);
-            }).catch((err) => {
-                reject(err);
-            });
+                    .filter(appData => appData.versions.length > 0)),
+                )
+                .catch(err => reject(err));
         });
     }
 
@@ -228,16 +223,11 @@ class System {
     /* eslint-enable */
 
     static isVersionCompatible(systemVersion, appVersion) {
-        const isNewEnough = (
-            appVersion.min_platform_version ?
-                System.compareVersions(systemVersion, appVersion.min_platform_version) >= 0 :
-                true
-        );
-        const isNotTooOld = (
-            appVersion.max_platform_version ?
-                System.compareVersions(systemVersion, appVersion.max_platform_version) <= 0 :
-                true
-        );
+        const minVersion = appVersion.minDhisVersion || appVersion.min_platform_version || null;
+        const maxVersion = appVersion.maxDhisVersion || appVersion.max_platform_version || null;
+
+        const isNewEnough = (minVersion ? System.compareVersions(systemVersion, minVersion) >= 0 : true);
+        const isNotTooOld = (maxVersion ? System.compareVersions(systemVersion, maxVersion) <= 0 : true);
 
         return isNewEnough && isNotTooOld;
     }
