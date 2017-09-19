@@ -387,27 +387,6 @@ describe('Api', () => {
             );
         });
 
-        it('should post the number zero with the deprecated dataType option', () => {
-            api.post('systemSettings/numberZero', 0, { dataType: 'text' });
-
-            expect(fetchMock).toBeCalledWith(
-                '/api/systemSettings/numberZero',
-                {
-                    body: '0',
-                    cache: 'default',
-                    credentials: 'include',
-                    headers: {
-                        map: {
-                            accept: 'text/plain',
-                            'content-type': 'application/json',
-                        },
-                    },
-                    method: 'POST',
-                    mode: 'cors',
-                },
-            );
-        });
-
         it('should send plain text boolean true values as "true"', () => {
             api.post('systemSettings/keyTrue', true);
 
