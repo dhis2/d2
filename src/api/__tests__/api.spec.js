@@ -48,6 +48,23 @@ describe('Api', () => {
         expect(() => Api(fetchMock)).toThrowError('Cannot call a class as a function'); // eslint-disable-line
     });
 
+    describe('when fetch is not supported', () => {
+        let wasFetch;
+
+        beforeEach(() => {
+            wasFetch = global.fetch;
+            delete global.fetch;
+        });
+
+        afterEach(() => {
+            global.fetch = wasFetch;
+        });
+
+        it('should throw', () => {
+            expect(() => new Api()).toThrowError();
+        });
+    });
+
     describe('getApi', () => {
         it('should have a method to get an instance of Api', () => {
             expect(Api.getApi).toBeInstanceOf(Function);
@@ -148,7 +165,14 @@ describe('Api', () => {
         });
 
         it('should report 404 errors', (done) => {
-            const errorText = '{"httpStatus":"Not Found","httpStatusCode":404,"status":"ERROR","message":"DataElement with id 404 could not be found."}';
+            const errorText = [
+                '{',
+                '"httpStatus":"Not Found",',
+                '"httpStatusCode":404,',
+                '"status":"ERROR",',
+                '"message":"DataElement with id 404 could not be found."',
+                '}',
+            ].join('');
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: false,
                 status: 404,
@@ -166,8 +190,23 @@ describe('Api', () => {
         });
 
         it('should report 500 errors', (done) => {
-            const errorText = '{"httpStatus":"Internal Server Error","httpStatusCode":500,"status":"ERROR","message":"object references an unsaved transient instance - save the transient instance before flushing: org.hisp.dhis.dataelement.CategoryOptionGroupSet"}';
-            const data = '{"name":"District Funding Agency","orgUnitLevel":2,"categoryOptionGroupSet":{"id":"SooXFOUnciJ"}}';
+            const errorText = [
+                '{',
+                '"httpStatus":"Internal Server Error",',
+                '"httpStatusCode":500,',
+                '"status":"ERROR",',
+                '"message":',
+                '"object references an unsaved transient instance - save the transient instance before flushing: ',
+                'org.hisp.dhis.dataelement.CategoryOptionGroupSet"',
+                '}',
+            ].join('');
+            const data = [
+                '{',
+                '"name":"District Funding Agency",',
+                '"orgUnitLevel":2,',
+                '"categoryOptionGroupSet":{"id":"SooXFOUnciJ"}',
+                '}',
+            ].join('');
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: false,
                 status: 500,
@@ -184,13 +223,21 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should properly encode URIs', () => api.get('some/endpoint?a=b&c=d|e', { f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}', u: '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:' })
-            .then(() => {
-                expect(fetchMock).toHaveBeenCalledWith(
-                    '/api/some/endpoint?a=b&c=d|e&f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
-                    baseFetchOptions,
-                );
-            }));
+        it('should properly encode URIs', () => api
+            .get('some/endpoint?a=b&c=d|e', {
+                f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}',
+                u: '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:',
+            })
+            .then(() => expect(fetchMock).toHaveBeenCalledWith([
+                '/api/some/endpoint?',
+                'a=b&',
+                'c=d|e&',
+                'f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&',
+                'u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
+            ].join(''),
+            baseFetchOptions,
+            )),
+        );
 
         it('should not break URIs when encoding', () => api.get('test?a=b=c&df,gh')
             .then(() => {
