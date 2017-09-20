@@ -72,29 +72,14 @@ class Api {
         options.headers = new Headers(options.headers || {}); // eslint-disable-line
 
         if (data !== undefined) {
-            // Pass data through JSON.stringify, unless options.contentType is 'text/plain' or false (meaning don't process)
-            // TODO: Deprecated - remove in v26
-            if (options.contentType) {
-                // Display a deprecation warning, except during test
-                if (!process.env || process.env.npm_lifecycle_event !== 'test') {
-                    const e = new Error();
-                    console.warn( // eslint-disable-line
-                        'Deprecation warning: Setting `contentType` for API POST requests is deprecated, and support ' +
-                        'may be removed in the next major release of D2. In stead you may set the  `Content-Type` ' +
-                        'header explicitly. If no `Content-Type` header is specified, the browser will try to ' +
-                        'determine one for you.\nRequest:', 'POST', requestUrl, e.stack,
-                    );
-                }
-
-                options.headers.set('Content-Type', 'text/plain');
-                delete options.contentType; // eslint-disable-line
-            } else if (data.constructor.name === 'FormData') {
+            if (data.constructor.name === 'FormData') {
                 // Ensure that the browser will set the correct Content-Type header for FormData, including boundary
                 options.headers.delete('Content-Type');
                 payload = data;
-            } else if (options.headers.get('Content-Type') === 'text/plain' ||
-                      options.headers.get('Content-Type') === 'text/css' ||
-                      options.headers.get('Content-Type') === 'text/javascript') {
+            } else if (
+                options.headers.has('Content-Type') &&
+                options.headers.get('Content-Type').toLocaleLowerCase().startsWith('text/')
+            ) {
                 payload = String(data);
             } else {
                 // Send JSON data by default
@@ -137,7 +122,10 @@ class Api {
             const encodedFilters = data.filter
                 .map(filter => filter.split(':').map(encodeURIComponent).join(':'));
 
-            query = `${customEncodeURIComponent(query)}${query.length ? '&' : ''}filter=${encodedFilters.join('&filter=')}`;
+            query = (
+                `${customEncodeURIComponent(query)}${query.length ? '&' : ''}` +
+                `filter=${encodedFilters.join('&filter=')}`
+            );
             delete data.filter; // eslint-disable-line no-param-reassign
         }
 
@@ -145,7 +133,10 @@ class Api {
         if (data && method === 'GET') {
             Object.keys(data)
                 .forEach((key) => {
-                    query = `${query}${(query.length > 0 ? '&' : '')}${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`;
+                    query = (
+                        `${query}${(query.length > 0 ? '&' : '')}` +
+                        `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
+                    );
                 });
         }
 
@@ -172,25 +163,6 @@ class Api {
                     headers.set('Content-Type', 'application/json');
                 }
                 resultOptions.body = requestData;
-            }
-
-            // Handle the dataType option used by jQuery.ajax, but throw a deprecation warning
-            // TODO: Remove in 2.26
-            if (mergeOptions.dataType) {
-                // Display a deprecation warning, except during test
-                if (!process.env || process.env.npm_lifecycle_event !== 'test') {
-                    const e = new Error();
-                    console.warn( // eslint-disable-line
-                        'Deprecation warning: Setting `dataType` for API requests is deprecated, and support may be ' +
-                        'removed in the next major release of D2. In stead you should set the  `Accept` header ' +
-                        'directly.\nRequest:', resultOptions.method, requestUrl, e.stack,
-                    );
-                }
-
-                if (mergeOptions.dataType === 'text') {
-                    headers.set('Accept', 'text/plain');
-                    delete resultOptions.dataType;
-                }
             }
 
             resultOptions.headers = headers;
