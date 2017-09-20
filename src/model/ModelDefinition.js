@@ -178,66 +178,30 @@ class ModelDefinition {
      */
     create(data) {
         const model = Model.create(this);
-        const validations = model.modelDefinition.modelValidations;
         const models = ModelDefinitions.getModelDefinitions();
-        const dataValues = Object.assign({}, data);
+        const dataValues = data ? Object.assign({}, data) : getDefaultValuesForModelType(model.modelDefinition.name);
 
-        if (data) {
-            // Set the data values onto the model directly
-            Object
-                .keys(model)
-                .forEach((modelProperty) => {
-                    const referenceType =
-                        (validations[modelProperty].hasOwnProperty('referenceType') &&
-                        validations[modelProperty].referenceType) ||
-                        (models.hasOwnProperty(modelProperty) && modelProperty);
+        Object
+            .keys(model)
+            .filter(shouldBeModelCollectionProperty(model, models))
+            .forEach((modelProperty) => { // collection properties
+                const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
+                console.log(referenceType);
+                dataValues[modelProperty] = ModelCollectionProperty.create(
+                    model,
+                    models[referenceType],
+                    (Array.isArray(dataValues[modelProperty]) ? dataValues[modelProperty] : []).map(d => models[referenceType].create(d)),
+                );
+                model.dataValues[modelProperty] = dataValues[modelProperty];
+            });
 
-                    // For collections of objects, create ModelCollectionProperties rather than plain arrays
-                    if (
-                        referenceType &&
-                        models.hasOwnProperty(referenceType) &&
-                        Array.isArray(data[modelProperty])
-                    ) {
-                        // Object properties that are not themselves instances of models need special handling because
-                        // we can't turn them into ModelCollectionProperties
-                        // TODO: Proper generic handling of translations
-                        if (modelProperty === 'translations' || modelProperty === 'greyedFields') {
-                            dataValues[modelProperty] = data[modelProperty];
-                        } else {
-                            dataValues[modelProperty] = ModelCollectionProperty
-                                .create(
-                                    model,
-                                    models[referenceType],
-                                    data[modelProperty].map(d => models[referenceType].create(d)),
-                                );
-                        }
-                    }
-                    model.dataValues[modelProperty] = dataValues[modelProperty];
-                });
-        } else {
-            // Create empty ModelCollectionProperties for models without data.
-            Object.keys(model)
-                .filter(shouldBeModelCollectionProperty(model, models))
-                .forEach((modelProperty) => {
-                    const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
+        Object
+            .keys(model)
+            .filter(modelProperty => !shouldBeModelCollectionProperty(model, models)(modelProperty))
+            .forEach((modelProperty) => {
+                model.dataValues[modelProperty] = dataValues[modelProperty];
+            });
 
-                    model.dataValues[modelProperty] = ModelCollectionProperty.create(model, models[referenceType], []);
-                });
-
-            // When no initial values are provided we are dealing with a new Model. For some properties there are
-            // implicit default values that should be set. DHIS2 has some default values for models that would implicitly
-            // be set when omitting sending a value on POST, we'll set these properties to their default values so they
-            // are reflected in read operations on the model and to make them more transparent.
-            const defaultValues = getDefaultValuesForModelType(model.modelDefinition.name);
-            const checkForModelProperty = shouldBeModelCollectionProperty(model, models);
-
-            Object
-                .keys(model)
-                .filter(modelProperty => !checkForModelProperty(modelProperty))
-                .forEach((modelProperty) => {
-                    model.dataValues[modelProperty] = defaultValues[modelProperty];
-                });
-        }
 
         return model;
     }

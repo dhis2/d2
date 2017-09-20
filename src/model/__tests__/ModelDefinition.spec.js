@@ -572,8 +572,8 @@ describe('ModelDefinition', () => {
                     });
                 });
 
-                it('should create a ModelCollectionProperty.create for a collection of objects', () => {
-                    expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(1);
+                it('should create a ModelCollectionProperty.create for a collection of objects 222', () => {
+                    expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(9);
                 });
 
                 it('should create a ModelCollectionProperty with the correct values', () => {
