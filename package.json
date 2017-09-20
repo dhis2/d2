@@ -67,5 +67,11 @@
   "nyc": {
     "sourceMap": false,
     "instrument": false
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/__fixtures__/"
+    ]
   }
 }
