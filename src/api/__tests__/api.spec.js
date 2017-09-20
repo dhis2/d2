@@ -53,11 +53,13 @@ describe('Api', () => {
 
         beforeEach(() => {
             wasFetch = (window || global).fetch;
-            delete (window || global).fetch;
+            if (window !== undefined) window.fetch = undefined;
+            if (global !== undefined) global.fetch = undefined;
         });
 
         afterEach(() => {
-            (window || global).fetch = wasFetch;
+            if (window !== undefined) window.fetch = wasFetch;
+            if (global !== undefined) global.fetch = wasFetch;
         });
 
         it('should throw', () => {
