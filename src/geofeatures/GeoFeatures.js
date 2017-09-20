@@ -42,16 +42,11 @@ class GeoFeatures {
         return new GeoFeatures(...args);
     }
 
-    static displayProperties = {
-        NAME: 'NAME',
-        SHORTNAME: 'SHORTNAME',
-    };
-
-    static userOrgUnits = {
-        PARENT: 'USER_ORGUNIT',
-        CHILDREN: 'USER_ORGUNIT_CHILDREN',
-        GRANDCHILDREN: 'USER_ORGUNIT_GRANDCHILDREN',
-    };
+    static DISPLAY_PROPERTY_NAME = 'NAME';
+    static DISPLAY_PROPERTY_SHORTNAME = 'SHORTNAME';
+    static USER_ORGUNIT = 'USER_ORGUNIT';
+    static USER_ORGUNIT_CHILDREN = 'USER_ORGUNIT_CHILDREN';
+    static USER_ORGUNIT_GRANDCHILDREN = 'USER_ORGUNIT_GRANDCHILDREN';
 }
 
 export default GeoFeatures;
