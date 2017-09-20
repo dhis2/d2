@@ -52,12 +52,12 @@ describe('Api', () => {
         let wasFetch;
 
         beforeEach(() => {
-            wasFetch = global.fetch;
-            delete global.fetch;
+            wasFetch = (window || global).fetch;
+            delete (window || global).fetch;
         });
 
         afterEach(() => {
-            global.fetch = wasFetch;
+            (window || global).fetch = wasFetch;
         });
 
         it('should throw', () => {
