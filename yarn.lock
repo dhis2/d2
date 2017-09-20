@@ -2024,8 +2024,8 @@ eslint-config-airbnb@^15.1.0:
     eslint-config-airbnb-base "^11.3.0"
 
 eslint-config-dhis2@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/eslint-config-dhis2/-/eslint-config-dhis2-3.0.2.tgz#265851eaf3299488c2ada2aa9ad55d3dd1916e75"
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/eslint-config-dhis2/-/eslint-config-dhis2-3.0.3.tgz#9a6096c3109df9c5a473a85907a9017463fb0425"
   dependencies:
     eslint "^4.6.1"
     eslint-config-airbnb "^15.1.0"
