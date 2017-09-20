@@ -1,22 +1,37 @@
 import Api from '../api/Api';
+import { isValidUid } from '../uid';
 
 class GeoFeatures {
-    constructor(orgUnits = [], userOrgUnits = [], displayProperty) {
+    constructor(orgUnits = [], displayProperty) {
         this.orgUnits = orgUnits;
-        this.userOrgUnits = userOrgUnits;
         this.displayName = displayProperty;
     }
 
     byOrgUnit(orgUnits) {
-        return new GeoFeatures([].concat(orgUnits), this.userOrgUnits, this.displayProperty);
+        if (!orgUnits) {
+            return this;
+        }
+
+        const orgUnitsArray = [].concat(orgUnits);
+
+        if (!orgUnitsArray.every(this.isValidOrgUnit)) {
+            throw new Error(`Invalid organisation unit(s): ${orgUnits}`);
+        }
+
+        return new GeoFeatures(orgUnitsArray, this.displayName);
     }
 
-    byUserOrgUnit(userOrgUnits) {
-        return new GeoFeatures(this.orgUnits, [].concat(userOrgUnits), this.displayProperty);
-    }
+    // TODO Check if value is property
+    displayProperty(displayName) {
+        if (!displayName) {
+            return this;
+        }
 
-    displayProperty(displayProperty) {
-        return new GeoFeatures(this.orgUnits, this.userOrgUnits, displayProperty);
+        if (!this.isValidDisplayName(displayName)) {
+            throw new Error(`Invalid display name: ${displayName}`);
+        }
+
+        return new GeoFeatures(this.orgUnits, this.userOrgUnits, displayName);
     }
 
     getAll() {
@@ -27,15 +42,43 @@ class GeoFeatures {
             params.ou = `ou:${this.orgUnits.join(';')}`;
         }
 
-        if (this.userOrgUnits.length) {
-            params.userOrgUnit = this.userOrgUnits.join(';');
-        }
-
         if (this.displayName) {
             params.displayProperty = this.displayName;
         }
 
         return api.get('geoFeatures', params);
+    }
+
+    isValidOrgUnit(orgUnit) {
+        return (
+            isValidUid(orgUnit) ||
+            this.isValidOrgUnitLevel(orgUnit) ||
+            this.isValidOrgUnitGroup(orgUnit) ||
+            this.isValidUserOrgUnit(orgUnit)
+        );
+    }
+
+    isValidOrgUnitLevel(level) {
+        return /^LEVEL-[0-9]+/.test(level);
+    }
+
+    isValidOrgUnitGroup(group) {
+        return isValidUid(group.match(/OU_GROUP-(.*)/)[1]);
+    }
+
+    isValidUserOrgUnit(orgUnit) {
+        return (
+            orgUnit === this.USER_ORGUNIT ||
+            orgUnit === this.USER_ORGUNIT_CHILDREN ||
+            orgUnit === this.USER_ORGUNIT_GRANDCHILDREN
+        );
+    }
+
+    isValidDisplayName(displayName) {
+        return (
+            displayName === this.DISPLAY_PROPERTY_NAME ||
+            displayName === this.DISPLAY_PROPERTY_SHORTNAME
+        );
     }
 
     static getGeoFeatures(...args) {
