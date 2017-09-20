@@ -1,57 +1,57 @@
 import Api from '../api/Api';
 
-/**
- * @class GeoFeatures
- * @description
- * GeoFeatures class that can be used to request organisation units with coordinates.
- */
 class GeoFeatures {
-    constructor(groups = [], levels = [], ous = []) {
-        this.levels = levels;
-        this.groups = groups;
-        this.ous = ous;
+    constructor(orgUnits = [], userOrgUnits = [], displayProperty) {
+        this.orgUnits = orgUnits;
+        this.userOrgUnits = userOrgUnits;
+        this.displayProperty = displayProperty;
     }
 
-    byLevel(levels) {
-        return new GeoFeatures(this.groups, [].concat(levels), this.ous);
+    byOrgUnit(orgUnits) {
+        return new GeoFeatures([].concat(orgUnits), this.userOrgUnits, this.displayProperty);
     }
 
-    byGroup(groups) {
-        return new GeoFeatures([].concat(groups), this.levels, this.ous);
+    byUserOrgUnit(userOrgUnits) {
+        return new GeoFeatures(this.orgUnits, [].concat(userOrgUnits), this.displayProperty);
     }
 
-    getFor(ous) {
-        return new GeoFeatures(this.groups, this.levels, [].concat(ous));
+    displayProperty(displayProperty) {
+        return new GeoFeatures(this.orgUnits, this.userOrgUnits, displayProperty);
     }
 
     getAll() {
         const api = Api.getApi();
-        const ouQueryPart = `ou:OU_GROUP-${this.groups.join(':')}`;
+        const params = {};
 
-        console.log('getAll', this.levels, this.groups, this.ous);
+        if (this.orgUnits.length) {
+            params.ou = `ou:${this.orgUnits.join(';')}`;
+        }
 
-        return api.get({
-            OU: ouQueryPart,
-        });
+        if (this.userOrgUnits.length) {
+            params.userOrgUnit = this.userOrgUnits.join(';');
+        }
+
+        if (this.displayProperty) {
+            params.displayProperty = this.displayProperty;
+        }
+
+        return api.get('geoFeatures', params);
     }
 
-    /**
-     * @method getDataStore
-     * @static
-     *
-     * @param groups
-     * @param levels
-     * @param ous
-     *
-     * @returns {GeoFeatures} A instance of the GeoFeatures class that can be used to request
-     * organisation units with coordinates.
-     *
-     * @description
-     * Create a GeoFeatures instance
-     */
     static getGeoFeatures(...args) {
         return new GeoFeatures(...args);
     }
+
+    static displayProperties = {
+        NAME: 'NAME',
+        SHORTNAME: 'SHORTNAME',
+    };
+
+    static userOrgUnits = {
+        PARENT: 'USER_ORGUNIT',
+        CHILDREN: 'USER_ORGUNIT_CHILDREN',
+        GRANDCHILDREN: 'USER_ORGUNIT_GRANDCHILDREN',
+    };
 }
 
 export default GeoFeatures;
