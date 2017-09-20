@@ -1,7 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-- latest
+- node
 script:
 - npm run travis
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] || travis_terminate 0'
