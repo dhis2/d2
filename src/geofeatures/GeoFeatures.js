@@ -4,7 +4,7 @@ class GeoFeatures {
     constructor(orgUnits = [], userOrgUnits = [], displayProperty) {
         this.orgUnits = orgUnits;
         this.userOrgUnits = userOrgUnits;
-        this.displayProperty = displayProperty;
+        this.displayName = displayProperty;
     }
 
     byOrgUnit(orgUnits) {
@@ -31,8 +31,8 @@ class GeoFeatures {
             params.userOrgUnit = this.userOrgUnits.join(';');
         }
 
-        if (this.displayProperty) {
-            params.displayProperty = this.displayProperty;
+        if (this.displayName) {
+            params.displayProperty = this.displayName;
         }
 
         return api.get('geoFeatures', params);
