@@ -572,7 +572,7 @@ describe('ModelDefinition', () => {
                     });
                 });
 
-                it('should create a ModelCollectionProperty.create for a collection of objects 222', () => {
+                it('should create a ModelCollectionProperty.create for a collection of objects', () => {
                     expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(9);
                 });
 

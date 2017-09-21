@@ -186,7 +186,6 @@ class ModelDefinition {
             .filter(shouldBeModelCollectionProperty(model, models))
             .forEach((modelProperty) => { // collection properties
                 const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
-                console.log(referenceType);
                 dataValues[modelProperty] = ModelCollectionProperty.create(
                     model,
                     models[referenceType],
