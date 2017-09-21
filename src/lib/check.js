@@ -44,7 +44,7 @@ export function isObject(value) {
 }
 
 export function isDefined(value) {
-    return value !== undefined;
+    return value != null;
 }
 
 export function isInteger(nVal) {
@@ -76,6 +76,12 @@ export function contains(item, list) {
 
 export function isValidUid(value) {
     return value && value.length === 11;
+}
+
+export const hasKeys = object => object && Object.keys(object).length > 0;
+
+export function areDefinedAndEqual(left, right) {
+    return isDefined(left) && isDefined(right) && right === left;
 }
 
 export default {

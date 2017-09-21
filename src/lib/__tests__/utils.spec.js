@@ -31,6 +31,27 @@ describe('Utils', () => {
         it('should return undefined if the object is undefined', () => {
             expect(utils.pick('name')(undefined)).toBeUndefined();
         });
+
+        it('should support property paths', () => {
+            const value = {
+                user: {
+                    name: 'Mark',
+                    settings: {
+                        disabled: false,
+                    },
+                },
+            };
+
+            expect(utils.pick('user.name')(value)).toBe('Mark');
+            expect(utils.pick('user.settings.disabled')(value)).toBe(false);
+        });
+
+        it('should not throw when a property in the path does not exist', () => {
+            const value = {};
+
+            expect(() => utils.pick('user.name')(value)).not.toThrow();
+            expect(() => utils.pick('user.settings.disabled')(value)).not.toThrow();
+        });
     });
 
     describe('updateAPIUrlWithBaseUrlVersionNumber()', () => {

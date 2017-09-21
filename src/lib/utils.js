@@ -1,5 +1,3 @@
-// TODO: Most of these functions should be moved out to d2-utilizr
-
 export function throwError(message) {
     throw new Error(message);
 }
@@ -31,13 +29,25 @@ export function copyOwnProperties(to, from) {
     return to;
 }
 
-export function pick(property) {
-    return (item) => {
-        if (item) {
-            return item[property];
-        }
-        return undefined;
-    };
+/**
+ * Curried get function to pick a property from an object
+ * Will safely pick a property from an object and guards against the infamous "can not read property of undefined".
+ *
+ * @param {String} propertyPath
+ * @returns Function
+ *
+ * get :: String -> Object -> Any
+ */
+export function pick(propertyPath) {
+    const propertiesToGet = propertyPath.split('.');
+
+    return item => propertiesToGet
+        .reduce((result, property) => {
+            if (result) {
+                return result[property];
+            }
+            return undefined;
+        }, item);
 }
 
 export class Deferred {
