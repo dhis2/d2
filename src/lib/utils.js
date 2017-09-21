@@ -34,6 +34,7 @@ export function copyOwnProperties(to, from) {
  * Will safely pick a property from an object and guards against the infamous "can not read property of undefined".
  *
  * @param {String} propertyPath
+ * @param {Any} defaultValue A default value to be returned when no value was found at the path
  * @returns Function
  *
  * get :: String -> Object -> Any
@@ -49,6 +50,12 @@ export function pick(propertyPath) {
             return undefined;
         }, item);
 }
+
+export const pickOr = (pathProperty, defaultValue) => (item) => {
+    const pathResult = pick(pathProperty)(item);
+
+    return pathResult !== undefined ? pathResult : defaultValue;
+};
 
 export class Deferred {
     constructor() {

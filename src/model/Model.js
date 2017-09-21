@@ -2,12 +2,16 @@
  * @module Model
  *
  * @requires lib/check
+ * @requires lib/utils
  * @requires model/ModelBase
  */
 
 import { checkType, hasKeys } from '../lib/check';
+import { pickOr } from '../lib/utils';
 import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase';
 import createPropertyDefinitionsForAttributes from './helpers/attibutes';
+
+const pickAttributeValues = pickOr('attributeValues', []);
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
@@ -83,7 +87,7 @@ class Model {
              */
             Object.defineProperty(this, 'attributes', { value: attributes });
 
-            const getAttributeValues = () => this.attributeValues;
+            const getAttributeValues = () => pickAttributeValues(this);
             const setAttributeValues = attributeValues => (this.attributeValues = attributeValues);
             const setDirty = () => (this.dirty = true);
             const attributeDefinitions = createPropertyDefinitionsForAttributes(
@@ -117,6 +121,7 @@ class Model {
     }
 }
 
+// Set the prototype of the Model class, this way we're able to extend from an single object
 Model.prototype = ModelBase;
 
 export default Model;

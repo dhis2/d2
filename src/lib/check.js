@@ -84,15 +84,6 @@ export function areDefinedAndEqual(left, right) {
     return isDefined(left) && isDefined(right) && right === left;
 }
 
-export default {
-    checkType,
-    checkDefined,
-    isArray,
-    isDefined,
-    isInteger,
-    isNumeric,
-    isString,
-    isType,
-    contains,
-    isValidUid,
-};
+export const toBe = (left, right) => left === right;
+export const toBeAny = values => left => values.some(right => toBe(left, right));
+export const isNullUndefinedOrEmptyString = toBeAny([undefined, null, '']);

@@ -1,4 +1,4 @@
-import { areDefinedAndEqual } from '../../lib/check';
+import { areDefinedAndEqual, isNullUndefinedOrEmptyString } from '../../lib/check';
 import { pick } from '../../lib/utils';
 
 const getValue = pick('value');
@@ -13,19 +13,11 @@ function createPropertyDefinitionsForAttributes(attributeProperties, getAttribut
                 get() {
                     const attributeValues = getAttributeValues();
 
-                    if (!Array.isArray(attributeValues)) {
-                        return undefined;
-                    }
-
                     return attributeValues
                         .filter(attributeValue => getAttributeValueAttributeName(attributeValue) === attributeName)
                         .reduce((current, attributeValue) => attributeValue.value, undefined);
                 },
                 set(value) {
-                    if (!getAttributeValues()) {
-                        setAttributeValues([]);
-                    }
-
                     const attributeValue = getAttributeValues()
                         .filter(av => av.attribute.name === attributeName)
                         .reduce((current, av) => av, undefined);
@@ -39,7 +31,7 @@ function createPropertyDefinitionsForAttributes(attributeProperties, getAttribut
                         // This is done because the server can not handle them properly when empty strings
                         // as values are sent. It will properly remove the attributeValue
                         // on the server side when they are not being send to the server at all.
-                        if (value === undefined || value === null || value === '') {
+                        if (isNullUndefinedOrEmptyString(value)) {
                             const remainingAttributeValues = getAttributeValues().filter(av => av !== attributeValue);
                             setAttributeValues(remainingAttributeValues);
                         }
@@ -47,13 +39,13 @@ function createPropertyDefinitionsForAttributes(attributeProperties, getAttribut
                         attributeValue.value = value;
                     } else {
                         // Add the new attribute value to the attributeValues collection
-                        getAttributeValues().push({
+                        setAttributeValues(getAttributeValues().concat({
                             value,
                             attribute: {
                                 id: attributeProperties[attributeName].id,
                                 name: attributeProperties[attributeName].name,
                             },
-                        });
+                        }));
                     }
 
                     // Set the model to be dirty

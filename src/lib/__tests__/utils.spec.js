@@ -66,4 +66,27 @@ describe('Utils', () => {
             }
         });
     });
+
+    describe('pickOr', () => {
+        it('should return the defaultValue if it was defined', () => {
+            const value = {};
+
+            expect(utils.pickOr('user.name', 'John')(value)).toBe('John');
+            expect(utils.pickOr('user.settings.disabled', true)(value)).toBe(true);
+        });
+
+        it('should return a null value over a default if it exists', () => {
+            const value = {
+                user: {
+                    name: null,
+                    settings: {
+                        disabled: false,
+                    },
+                },
+            };
+
+            expect(utils.pickOr('user.name', 'John')(value)).toBe(null);
+            expect(utils.pickOr('user.settings.disabled', true)(value)).toBe(false);
+        });
+    });
 });
