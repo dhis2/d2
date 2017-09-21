@@ -21,36 +21,48 @@ describe('GeoFeatures', () => {
             expect(geoFeatures.byOrgUnit()).toBeInstanceOf(GeoFeatures);
         });
 
-        /*
         it('should add LEVEL-3 to the orgUnits array', () => {
             geoFeatures = geoFeatures.byOrgUnit('LEVEL-3');
 
             expect(geoFeatures.orgUnits).toContain('LEVEL-3');
         });
-        */
 
-        /*
         it('should add LEVEL-3 and org unit to the orgUnits array', () => {
             geoFeatures = geoFeatures.byOrgUnit(['LEVEL-3', 'YuQRtpLP10I']);
 
             expect(geoFeatures.orgUnits).toEqual(['LEVEL-3', 'YuQRtpLP10I']);
         });
-        */
 
         it('should not add undefined to the orgUnits array', () => {
             geoFeatures = geoFeatures.byOrgUnit(undefined);
 
             expect(geoFeatures.orgUnits).not.toContain(undefined);
         });
-    });
 
-    /*
-    describe('byUserOrgUnit', () => {
-        it('should throw when called with invalid uid', () => {
-            expect(() => geoFeatures.byUserOrgUnit('invalid')).toThrow('User organisation units should be a valid uid');
+        it('should throw when invalid uid', () => {
+            expect(() => geoFeatures.byOrgUnit('invalid')).toThrow('Invalid organisation unit: invalid');
+        });
+
+        it('should throw when invalid org unit level format', () => {
+            expect(() => geoFeatures.byOrgUnit('LEVEL-1b')).toThrow('Invalid organisation unit: LEVEL-1b');
+        });
+
+        it('should throw when invalid org unit group format', () => {
+            expect(() => geoFeatures.byOrgUnit('OU_GROUP-invalid')).toThrow('Invalid organisation unit: OU_GROUP-invalid');
+        });
+
+        it('should throw when invalid user org unit', () => {
+            expect(() => geoFeatures.byOrgUnit('SHORTNAMES')).toThrow('Invalid organisation unit: SHORTNAMES');
         });
     });
-    */
+
+    describe('displayProperty', () => {
+        it('should throw when invalid displayProperty', () => {
+            expect(() => geoFeatures.displayProperty('invalid')).toThrow('Invalid display property: invalid');
+        });
+    });
+
+    // TODO: test with mutiple user org units
 
     describe('getAll', () => {
         let mockApi;
@@ -100,9 +112,6 @@ describe('GeoFeatures', () => {
             });
         });
         */
-
-        // TODO: test with mutiple user org units
-        // TODO: test with display Name
 
         it('should return an array of geoFeatures', () => {
             mockApi.get.mockReturnValue(Promise.resolve([

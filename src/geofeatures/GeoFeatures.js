@@ -14,21 +14,20 @@ class GeoFeatures {
 
         const orgUnitsArray = [].concat(orgUnits);
 
-        if (!orgUnitsArray.every(this.isValidOrgUnit)) {
-            throw new Error(`Invalid organisation unit(s): ${orgUnits}`);
+        if (!orgUnitsArray.every(GeoFeatures.isValidOrgUnit)) {
+            throw new Error(`Invalid organisation unit: ${orgUnits}`);
         }
 
         return new GeoFeatures(orgUnitsArray, this.displayName);
     }
 
-    // TODO Check if value is property
     displayProperty(displayName) {
         if (!displayName) {
             return this;
         }
 
-        if (!this.isValidDisplayName(displayName)) {
-            throw new Error(`Invalid display name: ${displayName}`);
+        if (!GeoFeatures.isValidDisplayName(displayName)) {
+            throw new Error(`Invalid display property: ${displayName}`);
         }
 
         return new GeoFeatures(this.orgUnits, this.userOrgUnits, displayName);
@@ -49,35 +48,36 @@ class GeoFeatures {
         return api.get('geoFeatures', params);
     }
 
-    isValidOrgUnit(orgUnit) {
+    static isValidOrgUnit(orgUnit) {
         return (
             isValidUid(orgUnit) ||
-            this.isValidOrgUnitLevel(orgUnit) ||
-            this.isValidOrgUnitGroup(orgUnit) ||
-            this.isValidUserOrgUnit(orgUnit)
+            GeoFeatures.isValidOrgUnitLevel(orgUnit) ||
+            GeoFeatures.isValidOrgUnitGroup(orgUnit) ||
+            GeoFeatures.isValidUserOrgUnit(orgUnit)
         );
     }
 
-    isValidOrgUnitLevel(level) {
-        return /^LEVEL-[0-9]+/.test(level);
+    static isValidOrgUnitLevel(level) {
+        return /^LEVEL-[0-9]+$/.test(level);
     }
 
-    isValidOrgUnitGroup(group) {
-        return isValidUid(group.match(/OU_GROUP-(.*)/)[1]);
+    static isValidOrgUnitGroup(group) {
+        const match = group.match(/OU_GROUP-(.*)$/);
+        return Array.isArray(match) && isValidUid(match[1]);
     }
 
-    isValidUserOrgUnit(orgUnit) {
+    static isValidUserOrgUnit(orgUnit) {
         return (
-            orgUnit === this.USER_ORGUNIT ||
-            orgUnit === this.USER_ORGUNIT_CHILDREN ||
-            orgUnit === this.USER_ORGUNIT_GRANDCHILDREN
+            orgUnit === GeoFeatures.USER_ORGUNIT ||
+            orgUnit === GeoFeatures.USER_ORGUNIT_CHILDREN ||
+            orgUnit === GeoFeatures.USER_ORGUNIT_GRANDCHILDREN
         );
     }
 
-    isValidDisplayName(displayName) {
+    static isValidDisplayName(displayName) {
         return (
-            displayName === this.DISPLAY_PROPERTY_NAME ||
-            displayName === this.DISPLAY_PROPERTY_SHORTNAME
+            displayName === GeoFeatures.DISPLAY_PROPERTY_NAME ||
+            displayName === GeoFeatures.DISPLAY_PROPERTY_SHORTNAME
         );
     }
 
