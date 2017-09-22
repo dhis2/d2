@@ -1,6 +1,12 @@
 import Api from '../api/Api';
 import { isValidUid } from '../uid';
 
+/**
+ * @class GeoFeatures
+ *
+ * @description
+ * GeoFeatures class used to request organisation unit coordinates from the web api.
+ */
 class GeoFeatures {
     constructor(orgUnits = [], displayProperty) {
         this.orgUnits = orgUnits;
@@ -30,7 +36,7 @@ class GeoFeatures {
             throw new Error(`Invalid display property: ${displayName}`);
         }
 
-        return new GeoFeatures(this.orgUnits, this.userOrgUnits, displayName);
+        return new GeoFeatures(this.orgUnits, displayName);
     }
 
     getAll() {
@@ -48,6 +54,15 @@ class GeoFeatures {
         return api.get('geoFeatures', params);
     }
 
+    /**
+     * @method isValidOrgUnit
+     * @static
+     *
+     * @returns {boolean} Object with the system interaction properties
+     *
+     * @description
+     * Get a new instance of the GeoFeatures object.
+     */
     static isValidOrgUnit(orgUnit) {
         return (
             isValidUid(orgUnit) ||
@@ -57,15 +72,42 @@ class GeoFeatures {
         );
     }
 
+    /**
+     * @method isValidOrgUnitLevel
+     * @static
+     *
+     * @returns {boolean} Object with the system interaction properties
+     *
+     * @description
+     * Get a new instance of the GeoFeatures object.
+     */
     static isValidOrgUnitLevel(level) {
         return /^LEVEL-[0-9]+$/.test(level);
     }
 
+    /**
+     * @method isValidOrgUnitGroup
+     * @static
+     *
+     * @returns {boolean} Object with the system interaction properties
+     *
+     * @description
+     * Get a new instance of the GeoFeatures object.
+     */
     static isValidOrgUnitGroup(group) {
         const match = group.match(/OU_GROUP-(.*)$/);
         return Array.isArray(match) && isValidUid(match[1]);
     }
 
+    /**
+     * @method isValidUserOrgUnit
+     * @static
+     *
+     * @returns {boolean} Object with the system interaction properties
+     *
+     * @description
+     * Get a new instance of the GeoFeatures object.
+     */
     static isValidUserOrgUnit(orgUnit) {
         return (
             orgUnit === GeoFeatures.USER_ORGUNIT ||
@@ -74,6 +116,15 @@ class GeoFeatures {
         );
     }
 
+    /**
+     * @method isValidDisplayName
+     * @static
+     *
+     * @returns {boolean} Object with the system interaction properties
+     *
+     * @description
+     * Get a new instance of the GeoFeatures object.
+     */
     static isValidDisplayName(displayName) {
         return (
             displayName === GeoFeatures.DISPLAY_PROPERTY_NAME ||
@@ -81,6 +132,15 @@ class GeoFeatures {
         );
     }
 
+    /**
+     * @method getGeoFeatures
+     * @static
+     *
+     * @returns {GeoFeatures} Object with the system interaction properties
+     *
+     * @description
+     * Get a new instance of the GeoFeatures object.
+     */
     static getGeoFeatures(...args) {
         return new GeoFeatures(...args);
     }

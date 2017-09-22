@@ -57,12 +57,24 @@ describe('GeoFeatures', () => {
     });
 
     describe('displayProperty', () => {
+        it('should return an instance of GeoFeatures', () => {
+            expect(geoFeatures.displayProperty()).toBeInstanceOf(GeoFeatures);
+        });
+
+        it('should set displayProperty to SHORTNAME', () => {
+            geoFeatures = geoFeatures.displayProperty('SHORTNAME');
+
+            expect(geoFeatures.displayName).toEqual('SHORTNAME');
+        });
+
+        it('should return the same instance when display property is undefined', () => {
+            expect(geoFeatures.displayProperty(undefined)).toBe(geoFeatures);
+        });
+
         it('should throw when invalid displayProperty', () => {
             expect(() => geoFeatures.displayProperty('invalid')).toThrow('Invalid display property: invalid');
         });
     });
-
-    // TODO: test with mutiple user org units
 
     describe('getAll', () => {
         let mockApi;
@@ -85,7 +97,7 @@ describe('GeoFeatures', () => {
             });
         });
 
-        it('should request geoFeature for multiple org units', () => { // TODO
+        it('should request geoFeature for multiple org units', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
             geoFeatures = geoFeatures
@@ -97,21 +109,20 @@ describe('GeoFeatures', () => {
             });
         });
 
-        /*
-        it('should request geoFeature for user org unit at a level', () => { // TODO
+        it('should request geoFeature using uid and SHORTNAME display property', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
             geoFeatures = geoFeatures
-                .byOrgUnit('LEVEL-2')
-                .byUserOrgUnit('YuQRtpLP10I')
+                .byOrgUnit('YuQRtpLP10I')
+                .displayProperty('SHORTNAME')
                 .getAll();
 
             expect(mockApi.get).toBeCalledWith('geoFeatures', {
-                ou: 'ou:LEVEL-2',
-                userOrgUnit: 'YuQRtpLP10I',
+                ou: 'ou:YuQRtpLP10I',
+                displayProperty: 'SHORTNAME',
             });
         });
-        */
+
 
         it('should return an array of geoFeatures', () => {
             mockApi.get.mockReturnValue(Promise.resolve([
