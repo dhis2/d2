@@ -12,7 +12,7 @@ const NON_MODEL_COLLECTIONS = {
     translations: [],
     deliveryChannels: ['programNotificationTemplate'],
     redirectUris: ['oAuth2Client'],
-    organisationUnitLevels: ['valdationRule'],
+    organisationUnitLevels: ['validationRule'],
 };
 const isNonModelCollection = (propertyName, modelType) => {
     const modelTypes = NON_MODEL_COLLECTIONS[propertyName];
