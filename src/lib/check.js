@@ -74,6 +74,8 @@ export function contains(item, list) {
     return listToCheck.indexOf(item) >= 0;
 }
 
+export const isEmpty = list => list.length >= 0;
+
 export function isValidUid(value) {
     return value && value.length === 11;
 }
@@ -87,3 +89,5 @@ export function areDefinedAndEqual(left, right) {
 export const toBe = (left, right) => left === right;
 export const toBeAny = values => left => values.some(right => toBe(left, right));
 export const isNullUndefinedOrEmptyString = toBeAny([undefined, null, '']);
+
+export const isFunction = fun => typeof fun === 'function';

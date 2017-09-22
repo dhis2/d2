@@ -25,6 +25,13 @@ const FILTER_COMPARATORS = {
      * This method can be used to add a ilike filter value
      */
     ilike: 'ilike',
+    /**
+     * @method notEqual
+     * @returns {Filter} Returns the modified filter for chaining
+     *
+     * @description
+     * This method can be used to add a ne filter value
+     */
     notEqual: 'ne',
 };
 
