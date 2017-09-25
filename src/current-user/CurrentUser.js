@@ -13,7 +13,15 @@ const propertiesToIgnore = new Set([
 
 /**
  * Authorities lookup map to be used for determining the list of authorities to check. See
- * @type {{READ: [string], CREATE: [string,string,string], CREATE_PUBLIC: [string], CREATE_PRIVATE: [string], DELETE: [string], UPDATE: [string], EXTERNALIZE: [string]}}
+ * @type {{
+ *  READ: [string],
+ *  CREATE: [string,string,string],
+ *  CREATE_PUBLIC: [string],
+ *  CREATE_PRIVATE: [string],
+ *  DELETE: [string],
+ *  UPDATE: [string],
+ *  EXTERNALIZE: [string]}
+ * }
  * @enum {string[]}
  * @readonly
  * @typedef {Object} AuthorityType
