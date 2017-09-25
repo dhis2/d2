@@ -141,7 +141,8 @@ describe('Model', () => {
         let dataElementModel;
 
         beforeEach(() => {
-            const dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+            const dataElementSchema = fixtures.get('/api/schemas/dataElement');
+            const dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
             dataElementModel = Model.create(dataElementModelDefinition);
         });
@@ -165,13 +166,17 @@ describe('Model', () => {
         let dataElementModel;
 
         beforeEach(() => {
-            const dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
+            const dataElementModelDefinition = ModelDefinition.createFromSchema(
+                fixtures.get('/api/schemas/dataElement'),
+                fixtures.get('/dataElementAttributes'),
+            );
 
             dataElementModel = Model.create(dataElementModelDefinition);
         });
 
         it('should not create the property when there are no attributes', () => {
-            const dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
+            const dataElementSchema = fixtures.get('/api/schemas/dataElement');
+            const dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
             dataElementModel = Model.create(dataElementModelDefinition);
 

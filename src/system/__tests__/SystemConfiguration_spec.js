@@ -248,7 +248,7 @@ describe('System.configuration', () => {
                     .then(() => {
                         done();
                     }).catch(() => {
-                        done('Attempting to change a configuration setting that don\'t exist should not result in a client side error');
+                        done('Invalid error failure');
                     });
             });
 

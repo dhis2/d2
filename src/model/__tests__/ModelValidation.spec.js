@@ -78,10 +78,12 @@ describe('ModelValidations', () => {
             expect(modelValidation.validateAgainstSchema(modelMock)).toBeInstanceOf(Promise);
         });
 
-        it('should return a rejected promise if the model.modelDefinition.name is not present', () => modelValidation.validateAgainstSchema()
-            .catch((message) => {
-                expect(message).toBe('model.modelDefinition.name can not be found');
-            }));
+        it('should return a rejected promise if the model.modelDefinition.name is not present', () => {
+            modelValidation.validateAgainstSchema()
+                .catch((message) => {
+                    expect(message).toBe('model.modelDefinition.name can not be found');
+                });
+        });
 
         it('should call the post method on the Api', () => {
             mockApi.post.mockReturnValueOnce(Promise.resolve({
@@ -211,19 +213,14 @@ describe('ModelValidations', () => {
                 });
         });
 
-        it('should reject the promise if the server gives a successful statuscode but the webmessage status is not the `OK` string', () => {
+        it('should reject the promise if the server gives a successful status code ' +
+            'but the web message status is not the `OK` string', () => {
             mockApi.post.mockReturnValueOnce(Promise.resolve({ data: 'someData' }));
 
             return modelValidation.validateAgainstSchema(modelMock)
                 .catch((errorMessage) => {
                     expect(errorMessage.message).toBe('Response was not a WebMessage with the expected format');
                 });
-        });
-    });
-
-    describe('client side validation', () => {
-        it('is deprecated and should throw an error', () => {
-            expect(modelValidation.validate).toThrowError(Error);
         });
     });
 });

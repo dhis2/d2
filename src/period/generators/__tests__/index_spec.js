@@ -39,7 +39,8 @@ describe('generators', () => {
 
                 generators.generateDailyPeriodsForYear(2017);
 
-                expect(generators.generateDailyPeriodsForYear(2017)).toEqual(daily.generateDailyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateDailyPeriodsForYear(2017))
+                    .toEqual(daily.generateDailyPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -69,7 +70,8 @@ describe('generators', () => {
 
                 generators.generateWeeklyPeriodsForYear(2017);
 
-                expect(generators.generateWeeklyPeriodsForYear(2017)).toEqual(weekly.generateWeeklyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateWeeklyPeriodsForYear(2017))
+                    .toEqual(weekly.generateWeeklyPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -99,7 +101,8 @@ describe('generators', () => {
 
                 generators.generateMonthlyPeriodsForYear(2017);
 
-                expect(generators.generateMonthlyPeriodsForYear(2017)).toEqual(monthly.generateMonthlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateMonthlyPeriodsForYear(2017))
+                    .toEqual(monthly.generateMonthlyPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -131,7 +134,8 @@ describe('generators', () => {
 
                 generators.generateBiMonthlyPeriodsForYear(2017);
 
-                expect(generators.generateBiMonthlyPeriodsForYear(2017)).toEqual(bimonthly.generateBiMonthlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateBiMonthlyPeriodsForYear(2017))
+                    .toEqual(bimonthly.generateBiMonthlyPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -163,7 +167,8 @@ describe('generators', () => {
 
                 generators.generateQuarterlyPeriodsForYear(2017);
 
-                expect(generators.generateQuarterlyPeriodsForYear(2017)).toEqual(quarterly.generateQuarterlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateQuarterlyPeriodsForYear(2017))
+                    .toEqual(quarterly.generateQuarterlyPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -195,7 +200,8 @@ describe('generators', () => {
 
                 generators.generateSixMonthlyPeriodsForYear(2017);
 
-                expect(generators.generateSixMonthlyPeriodsForYear(2017)).toEqual(sixmonthly.generateSixMonthlyPeriodsForYear(2017, 'nl'));
+                expect(generators.generateSixMonthlyPeriodsForYear(2017))
+                    .toEqual(sixmonthly.generateSixMonthlyPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -227,7 +233,8 @@ describe('generators', () => {
 
                 generators.generateSixMonthlyAprilPeriodsForYear(2017);
 
-                expect(generators.generateSixMonthlyAprilPeriodsForYear(2017)).toEqual(sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear(2017, 'nl'));
+                expect(generators.generateSixMonthlyAprilPeriodsForYear(2017))
+                    .toEqual(sixmonthlyapril.generateSixMonthlyAprilPeriodsForYear(2017, 'nl'));
             });
         });
 
@@ -257,7 +264,8 @@ describe('generators', () => {
 
                 generators.generateYearlyPeriodsUpToYear(2017);
 
-                expect(generators.generateYearlyPeriodsUpToYear(2017, 10)).toEqual(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
+                expect(generators.generateYearlyPeriodsUpToYear(2017, 10))
+                    .toEqual(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
             });
         });
 
@@ -287,7 +295,8 @@ describe('generators', () => {
 
                 generators.generateYearlyPeriodsUpToYear(2017);
 
-                expect(generators.generateYearlyPeriodsUpToYear(2017, 10)).toEqual(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
+                expect(generators.generateYearlyPeriodsUpToYear(2017, 10))
+                    .toEqual(yearly.generateYearlyPeriodsUpToYear(2017, 10, 'nl'));
             });
         });
 
@@ -319,7 +328,8 @@ describe('generators', () => {
 
                 generators.generateFinancialOctoberPeriodsUpToYear(2017);
 
-                expect(generators.generateFinancialOctoberPeriodsUpToYear(2017, 5)).toEqual(financialoctober.generateFinancialOctoberPeriodsUpToYear(2017, 5, 'nl'));
+                expect(generators.generateFinancialOctoberPeriodsUpToYear(2017, 5))
+                    .toEqual(financialoctober.generateFinancialOctoberPeriodsUpToYear(2017, 5, 'nl'));
             });
         });
 
@@ -351,7 +361,8 @@ describe('generators', () => {
 
                 generators.generateFinancialJulyPeriodsUpToYear(2017);
 
-                expect(generators.generateFinancialJulyPeriodsUpToYear(2017, 5)).toEqual(financialjuly.generateFinancialJulyPeriodsUpToYear(2017, 5, 'nl'));
+                expect(generators.generateFinancialJulyPeriodsUpToYear(2017, 5))
+                    .toEqual(financialjuly.generateFinancialJulyPeriodsUpToYear(2017, 5, 'nl'));
             });
         });
 
@@ -383,7 +394,8 @@ describe('generators', () => {
 
                 generators.generateFinancialAprilPeriodsUpToYear(2017);
 
-                expect(generators.generateFinancialAprilPeriodsUpToYear(2017, 5)).toEqual(financialapril.generateFinancialAprilPeriodsUpToYear(2017, 5, 'nl'));
+                expect(generators.generateFinancialAprilPeriodsUpToYear(2017, 5))
+                    .toEqual(financialapril.generateFinancialAprilPeriodsUpToYear(2017, 5, 'nl'));
             });
         });
     });

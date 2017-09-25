@@ -279,9 +279,12 @@ describe('D2', () => {
 
     it('should call the api', () => d2.init({ baseUrl: '/dhis/api' }, apiMock)
         .then(() => {
-            const schemasFieldFiltering = 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]';
+            const fields = 'apiEndpoint,name,displayName,authorities,singular,plural,' +
+                'shareable,metadata,klass,identifiableObject,translatable,' +
+                'properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,' +
+                'ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]';
 
-            expect(apiMock.get).toHaveBeenCalledWith('schemas', { fields: schemasFieldFiltering });
+            expect(apiMock.get).toHaveBeenCalledWith('schemas', { fields });
         }));
 
     it('should log the error when schemas can not be requested', () => {
@@ -292,7 +295,8 @@ describe('D2', () => {
                 () => Promise.reject('No error occurred'),
                 () => {
                     expect(loggerMock.error).toHaveBeenCalledTimes(1);
-                    expect(loggerMock.error).toHaveBeenCalledWith('Unable to get schemas from the api', '{}', new Error('Failed'));
+                    expect(loggerMock.error)
+                        .toHaveBeenCalledWith('Unable to get schemas from the api', '{}', new Error('Failed'));
                 },
             );
     });
@@ -396,7 +400,10 @@ describe('D2', () => {
             return d2.getInstance()
                 .then(() => {
                     expect(apiMock.get).toHaveBeenCalledWith('schemas/user', {
-                        fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,identifiableObject,translatable,properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]',
+                        fields: 'apiEndpoint,name,displayName,authorities,singular,plural,shareable,metadata,klass,' +
+                        'identifiableObject,translatable,' +
+                        'properties[href,writable,collection,collectionName,name,propertyType,persisted,required,min,' +
+                        'max,ordered,unique,constants,owner,itemPropertyType,translationKey,embeddedObject]',
                     });
                 });
         });

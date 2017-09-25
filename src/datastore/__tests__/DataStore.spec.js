@@ -80,7 +80,7 @@ describe('DataStore', () => {
             });
 
             it('should throw an error', (done) => {
-                return dataStore.get('some-invalid-namespace-that-no-exis-does').then(() => {
+                return dataStore.get('not-my-namespace').then(() => {
                     throw new Error('this should have failed');
                 }).catch(() => done());
             });
@@ -88,20 +88,25 @@ describe('DataStore', () => {
     });
 
     describe('getAll()', () => {
-        beforeEach(() => {
+        it('should return an array of namespaces', (done) => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(namespaces));
+            dataStore
+                .getAll()
+                .then((namespaceRes) => {
+                    expect(namespaces).toEqual(namespaceRes);
+                    done();
+                })
+                .catch(done);
         });
 
-        it('should return an array of namespaces', () => dataStore.getAll().then((namespaceRes) => {
-            expect(namespaces).toEqual(namespaceRes);
-        }));
-
-        it('should throw an error when there is no response', () => {
+        it('should throw an error when there is no response', (done) => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(null));
 
             return dataStore.getAll()
+                .then(done)
                 .catch((namespaceRes) => {
                     expect(namespaceRes.message).toBe('No namespaces exist.');
+                    done();
                 });
         });
     });

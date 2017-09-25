@@ -1,5 +1,6 @@
 import fixtures from '../../__fixtures__/fixtures';
 import Api from '../../api/Api';
+import Model from '../Model';
 import ModelDefinition from '../ModelDefinition';
 import ModelCollectionProperty from '../ModelCollectionProperty';
 
@@ -11,17 +12,17 @@ describe('ModelCollectionProperty', () => {
     let testModels = [];
 
     beforeEach(() => {
-        // ModelCollectionProperty = require('../ModelCollectionProperty').default;
-
         mockParentModel = {
+            id: 'parentModelId',
             plural: 'notArealModel',
             href: 'my.dhis/instance',
+            modelDefinition: {
+                apiEndpoint: 'http://my.base.url/api/parentModelEndpoint',
+            },
         };
         mockModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'));
-    });
 
-    beforeEach(() => {
-        mcp = ModelCollectionProperty.create(mockParentModel, mockModelDefinition, []);
+        mcp = ModelCollectionProperty.create(mockParentModel, mockModelDefinition, 'dataElementGroups', []);
 
         testModels.push(mockModelDefinition.create({ id: 'dataEleme01' }));
         testModels.push(mockModelDefinition.create({ id: 'dataEleme02' }));
@@ -91,7 +92,7 @@ describe('ModelCollectionProperty', () => {
     describe('remove()', () => {
         beforeEach(() => {
             // Create a new ModelCollectionProperty with existing values
-            mcp = ModelCollectionProperty.create(mockParentModel, mockModelDefinition, testModels);
+            mcp = ModelCollectionProperty.create(mockParentModel, mockModelDefinition, 'dataElementGroups', testModels);
         });
 
         it('Registers removed elements', () => {
@@ -184,7 +185,13 @@ describe('ModelCollectionProperty', () => {
         };
 
         beforeEach(() => {
-            mcp = new ModelCollectionProperty(mockParentModel, mockModelDefinition, [testModels[0]], api);
+            mcp = new ModelCollectionProperty(
+                mockParentModel,
+                mockModelDefinition,
+                'dataElementGroups',
+                [testModels[0]],
+                api,
+            );
         });
 
         afterEach(() => {
@@ -211,26 +218,16 @@ describe('ModelCollectionProperty', () => {
                 }).catch(e => done(e));
         });
 
-        it('Uses the correct URL for requests', (done) => {
+        it('Sends an API requests with the correct additions and removals, using the correct URL', (done) => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
             mcp.save()
                 .then(() => {
                     expect(api.get).not.toHaveBeenCalled();
                     expect(api.post).toHaveBeenCalledTimes(1);
-                    expect(api.post).toBeCalledWith('my.dhis/instance/dataElements', { additions: [{ id: 'dataEleme02' }], deletions: [{ id: 'dataEleme01' }] });
-                    done();
-                }).catch(e => done(e));
-        });
-
-        it('Sends the correct additions and removals', (done) => {
-            mcp.remove(testModels[0]);
-            mcp.add(testModels[1]);
-            mcp.save()
-                .then(() => {
                     expect(api.post).toBeCalledWith('my.dhis/instance/dataElements', {
-                        additions: [{ id: testModels[1].id }],
-                        deletions: [{ id: testModels[0].id }],
+                        additions: [{ id: 'dataEleme02' }],
+                        deletions: [{ id: 'dataEleme01' }],
                     });
                     done();
                 }).catch(e => done(e));
@@ -263,6 +260,156 @@ describe('ModelCollectionProperty', () => {
             expect(() => {
                 mcp.save().then(() => done('API failure was accepted silently')).catch(() => done());
             }).not.toThrowError();
+        });
+    });
+
+    describe('load()', () => {
+        let loadedWithValues;
+        let loadedWithoutValues;
+        let unloadedWithValues;
+        let unloadedWithoutValues;
+        let excludedByFieldFilters;
+
+        const api = {
+            get: jest.fn().mockReturnValue(Promise.resolve({
+                dataElementGroups: [
+                    { id: 'groupNo0001' },
+                    { id: 'groupNo0002' },
+                    { id: 'groupNo0003' },
+                ],
+            })),
+        };
+
+        const mockMcpPropName = 'dataElementGroups';
+
+        beforeEach(() => {
+            loadedWithValues = new ModelCollectionProperty(
+                mockParentModel,
+                mockModelDefinition,
+                mockMcpPropName,
+                [ // Loaded, actual values
+                    mockModelDefinition.create({ id: 'groupNo0001' }),
+                    mockModelDefinition.create({ id: 'groupNo0002' }),
+                    mockModelDefinition.create({ id: 'groupNo0003' }),
+                ],
+                api,
+            );
+
+            // A ModelCollectionProperty that has been fully loaded, but contains no values
+            loadedWithoutValues = new ModelCollectionProperty(
+                mockParentModel,
+                mockModelDefinition,
+                mockMcpPropName,
+                [], // Loaded, no values
+                api,
+            );
+
+            // A ModelCollectionProperty that has not yet been loaded, but contains values that can be lazy loaded
+            unloadedWithValues = new ModelCollectionProperty(
+                mockParentModel,
+                mockModelDefinition,
+                mockMcpPropName,
+                true, // Not loaded, has values (meaning the field was loaded with the '::isNotEmpty' transformer)
+                api,
+            );
+
+            unloadedWithoutValues = new ModelCollectionProperty(
+                mockParentModel,
+                mockModelDefinition,
+                mockMcpPropName,
+                false, // Not loaded, no values
+                api,
+            );
+
+            excludedByFieldFilters = new ModelCollectionProperty(
+                mockParentModel,
+                mockModelDefinition,
+                mockMcpPropName,
+                undefined, // Wtf?? This field was not included in the API query
+                api,
+            );
+        });
+
+        afterEach(() => {
+            api.get.mockClear();
+        });
+
+        it('Sets `hasUnloadedData` correctly', () => {
+            expect(loadedWithValues.hasUnloadedData).toBe(false);
+            expect(loadedWithoutValues.hasUnloadedData).toBe(false);
+            expect(unloadedWithValues.hasUnloadedData).toBe(true);
+            expect(unloadedWithoutValues.hasUnloadedData).toBe(false);
+        });
+
+        it('does not query the API when there are no unloaded values', (done) => {
+            Promise.all([
+                loadedWithValues.load(),
+                loadedWithoutValues.load(),
+                unloadedWithoutValues.load(),
+            ]).then(() => {
+                expect(api.get).not.toHaveBeenCalled();
+                done();
+            }).catch(err => done(err));
+        });
+
+        it('performs the correct API call for lazy loading', (done) => {
+            unloadedWithValues
+                .load()
+                .then(() => {
+                    expect(api.get).toHaveBeenCalledWith(
+                        [mockParentModel.modelDefinition.apiEndpoint, mockParentModel.id].join('/'), {
+                            fields: 'dataElementGroups[:all]',
+                            paging: false,
+                        },
+                    );
+                    done();
+                }).catch(err => done(err));
+        });
+
+        it('correctly merges request parameters when lazy loading', (done) => {
+            unloadedWithValues
+                .load({ paging: false, fields: 'id,displayName' })
+                .then(() => {
+                    expect(api.get).toHaveBeenCalledWith(
+                        [mockParentModel.modelDefinition.apiEndpoint, mockParentModel.id].join('/'), {
+                            fields: 'dataElementGroups[id,displayName]',
+                            paging: false,
+                        },
+                    );
+                    done();
+                })
+                .catch(err => done(err));
+        });
+
+        it('updates hasUnloadedData when data has been lazy loaded', (done) => {
+            expect(unloadedWithValues.hasUnloadedData).toBe(true);
+            unloadedWithValues.load().then(() => {
+                expect(unloadedWithValues.hasUnloadedData).toBe(false);
+                done();
+            }).catch(err => done(err));
+        });
+
+        it('creates models for lazy loaded objects', (done) => {
+            unloadedWithValues
+                .load()
+                .then(() => {
+                    expect(unloadedWithValues.valuesContainerMap.size).toBe(3);
+                    unloadedWithValues.toArray().forEach(value => expect(value).toBeInstanceOf(Model));
+                    done();
+                })
+                .catch(err => done(err));
+        });
+
+        it('supports lazy loading collection fields that were not included in the original API query', (done) => {
+            expect(excludedByFieldFilters.hasUnloadedData).toBe(true);
+
+            excludedByFieldFilters
+                .load()
+                .then(() => {
+                    expect(api.get).toHaveBeenCalled();
+                    expect(excludedByFieldFilters.hasUnloadedData).toBe(false);
+                    done();
+                }).catch(err => done(err));
         });
     });
 });

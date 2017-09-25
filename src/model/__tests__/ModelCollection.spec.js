@@ -49,6 +49,10 @@ describe('ModelCollection', () => {
             expect(Array.from(modelCollection.keys())[0]).toBe('q2egwkkrfco');
         });
 
+        it('should get the entries', () => {
+            expect(modelCollection.entries().next().value).toEqual([firstValue.id, firstValue]);
+        });
+
         it('should run the forEach with the correct values', () => {
             const forEachFunc = jest.fn();
 
@@ -111,17 +115,20 @@ describe('ModelCollection', () => {
 
         describe('throwIfContainsOtherThanModelObjects', () => {
             it('should throw when one of the the passed values in the array is not a Model', () => {
-                expect(() => ModelCollection.throwIfContainsOtherThanModelObjects([{}])).toThrowError('Values of a ModelCollection must be instances of Model');
+                expect(() => ModelCollection.throwIfContainsOtherThanModelObjects([{}]))
+                    .toThrowError('Values of a ModelCollection must be instances of Model');
             });
 
             it('should not throw when the passed value is a model', () => {
-                expect(() => ModelCollection.throwIfContainsOtherThanModelObjects([new Model(mockModelDefinition)])).not.toThrowError();
+                expect(() => ModelCollection.throwIfContainsOtherThanModelObjects([new Model(mockModelDefinition)]))
+                    .not.toThrowError();
             });
         });
 
         describe('throwIfContainsModelWithoutUid', () => {
             it('should throw when the passed array contains a modelWithoutId', () => {
-                expect(() => ModelCollection.throwIfContainsModelWithoutUid([new Model(mockModelDefinition)])).toThrowError('Can not add a Model without id to a ModelCollection');
+                expect(() => ModelCollection.throwIfContainsModelWithoutUid([new Model(mockModelDefinition)]))
+                    .toThrowError('Can not add a Model without id to a ModelCollection');
             });
 
             it('should accept models with valid UIDs', () => {
@@ -202,11 +209,13 @@ describe('ModelCollection', () => {
             });
 
             it('should not accept a number', () => {
-                expect(() => modelCollection.add(1)).toThrowError('Values of a ModelCollection must be instances of Model');
+                expect(() => modelCollection.add(1))
+                    .toThrowError('Values of a ModelCollection must be instances of Model');
             });
 
             it('should not accept an empty object', () => {
-                expect(() => modelCollection.add({})).toThrowError('Values of a ModelCollection must be instances of Model');
+                expect(() => modelCollection.add({}))
+                    .toThrowError('Values of a ModelCollection must be instances of Model');
             });
 
             it('should not accept an object that was created based on a local class', () => {
@@ -216,7 +225,8 @@ describe('ModelCollection', () => {
                     }
                 }
 
-                expect(() => modelCollection.add(new Model('q2egwkkrfco'))).toThrowError('Values of a ModelCollection must be instances of Model');
+                expect(() => modelCollection.add(new Model('q2egwkkrfco')))
+                    .toThrowError('Values of a ModelCollection must be instances of Model');
             });
 
             it('should accept an object that was create with Model as subclass', () => {
@@ -225,12 +235,14 @@ describe('ModelCollection', () => {
                 const myModel = new MyModel(mockModelDefinition);
                 myModel.id = 'q2egwkkrfco';
 
-                expect(() => modelCollection.add(myModel)).not.toThrowError('Values of a ModelCollection must be instances of Model');
+                expect(() => modelCollection.add(myModel))
+                    .not.toThrowError('Values of a ModelCollection must be instances of Model');
                 expect(modelCollection.size).toBe(1);
             });
 
             it('should throw if the id is not available', () => {
-                expect(() => modelCollection.add(new Model(mockModelDefinition))).toThrowError('Can not add a Model without id to a ModelCollection');
+                expect(() => modelCollection.add(new Model(mockModelDefinition)))
+                    .toThrowError('Can not add a Model without id to a ModelCollection');
             });
         });
 

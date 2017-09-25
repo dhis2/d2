@@ -914,7 +914,8 @@ Array [
     "plural": "organisationUnits",
     "translatable": false,
   },
-  Array [],
+  "teiSearchOrganisationUnits",
+  true,
 ]
 `;
 

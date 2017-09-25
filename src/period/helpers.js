@@ -39,7 +39,10 @@ export function getBiMonthlyId(date) {
 
 export function validateIfValueIsInteger(year) {
     if (!isInteger(year)) {
-        throw new Error('Generator should be called with an integer to identify the year. Perhaps you passed a Date object?');
+        throw new Error(
+            'Generator should be called with an integer to identify the year.' +
+            ' Perhaps you passed a Date object?',
+        );
     }
 
     if (year < 0) {

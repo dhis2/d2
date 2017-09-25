@@ -3,7 +3,9 @@ import { validateIfValueIsInteger, formatAsISODate, getCurrentYear } from '../he
 
 export function generateYearlyPeriodsUpToYear(year = getCurrentYear(), numberOfYears = 10) { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
-    if ((!isInteger(numberOfYears)) || numberOfYears < 1) { throw new Error('Yearly generator parameter `numberOfYears` should be an integer larger than 0.'); }
+    if ((!isInteger(numberOfYears)) || numberOfYears < 1) {
+        throw new Error('Yearly generator parameter `numberOfYears` should be an integer larger than 0.');
+    }
 
     const periods = [];
     const date = new Date(`31 Dec ${year}`);

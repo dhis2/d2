@@ -104,7 +104,7 @@ class System {
      * @param onProgress An optional callback that will be called whenever file upload progress info is available
      * @returns {Promise}
      */
-    uploadApp(zipFile, onProgress) {
+    uploadApp(zipFile, onProgress) { // eslint-disable-line class-methods-use-this
         const api = Api.getApi();
         const data = new FormData();
         let xhr;
@@ -159,7 +159,7 @@ class System {
      * @param uid The uid of the app version to install
      * @returns {Promise}
      */
-    installAppVersion(uid) {
+    installAppVersion(uid) { // eslint-disable-line class-methods-use-this
         const api = Api.getApi();
         return new Promise((resolve, reject) => {
             api.post(['appStore', uid].join('/'), '', { dataType: 'text' }).then(() => {
@@ -176,7 +176,7 @@ class System {
      * @param appKey The key of the app to remove
      * @returns {Promise}
      */
-    uninstallApp(appKey) {
+    uninstallApp(appKey) { // eslint-disable-line class-methods-use-this
         const api = Api.getApi();
 
         return api.delete(['apps', appKey].join('/'))
@@ -207,7 +207,7 @@ class System {
 
     // TODO: Document
     // Disable eslint complexity warning
-    /* eslint-disable */
+    /* eslint-disable complexity */
     static compareVersions(a, b) {
         const from = (typeof a === 'string' || a instanceof String) ? System.parseVersionString(a) : a;
         const to = (typeof b === 'string' || b instanceof String) ? System.parseVersionString(b) : b;
@@ -220,7 +220,6 @@ class System {
 
         return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1);
     }
-    /* eslint-enable */
 
     static isVersionCompatible(systemVersion, appVersion) {
         const minVersion = appVersion.minDhisVersion || appVersion.min_platform_version || null;
@@ -231,6 +230,7 @@ class System {
 
         return isNewEnough && isNotTooOld;
     }
+    /* eslint-enable */
 
     /**
      * @method getSystem

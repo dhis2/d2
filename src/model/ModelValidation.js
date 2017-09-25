@@ -13,17 +13,6 @@ class ModelValidation {
     }
 
     /**
-     * @deprecated
-     * @method validate
-     *
-     * @returns {{status: boolean, messages: Array}} Returns {status: true, messages: []}
-     */
-    validate() {
-        this.logger.warn('Client side model validation is deprecated');
-        throw new Error('Client side model validation is deprecated');
-    }
-
-    /**
      * @method validateAgainstSchema
      *
      * @param {Model} model The model that should be validated.
@@ -34,7 +23,7 @@ class ModelValidation {
      *
      * @note {warn} Currently only checks
      */
-    validateAgainstSchema(model) {
+    validateAgainstSchema(model) { // eslint-disable-line class-methods-use-this
         if (!(model && model.modelDefinition && model.modelDefinition.name)) {
             return Promise.reject('model.modelDefinition.name can not be found');
         }

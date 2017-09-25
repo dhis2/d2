@@ -70,7 +70,9 @@ class ModelDefinitions {
         checkType(transformer, 'function', 'transformer');
 
         return Object.keys(this)
-            .filter(modelDefinition => this.hasOwnProperty(modelDefinition) && !(this[modelDefinition].plural === modelDefinition))
+            .filter(modelDefinition => this.hasOwnProperty(modelDefinition)
+                && !(this[modelDefinition].plural === modelDefinition),
+            )
             .map(modelDefinition => transformer(this[modelDefinition]));
     }
 }

@@ -32,4 +32,17 @@ describe('Utils', () => {
             expect(utils.pick('name')(undefined)).toBeUndefined();
         });
     });
+
+    describe('updateAPIUrlWithBaseUrlVersionNumber()', () => {
+        const baseUrl = 'https://www.whitehouse.gov/secret/top/dhis/api';
+
+        it('works with unreasonable api versions', () => {
+            for (let i = 10; i < 99; i++) {
+                expect(utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://localhost:8080/dhis/api/dataSetElements/abcDEFghi3',
+                    `${baseUrl}/${i}`,
+                )).toBe(`https://localhost:8080/dhis/api/${i}/dataSetElements/abcDEFghi3`);
+            }
+        });
+    });
 });
