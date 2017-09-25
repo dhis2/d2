@@ -22,7 +22,7 @@ describe('Filter', () => {
         });
 
         it('the comparator should default to like', () => {
-            expect(filter.comparator).toBe('like');
+            expect(filter.comparator.operator).toBe('like');
         });
 
         it('should set the default properyName to name', () => {
@@ -42,10 +42,10 @@ describe('Filter', () => {
                 expect(filter.equals).toBeInstanceOf(Function);
             });
 
-            it('should set the correct comparator', () => {
+            it('should set the eq comparator', () => {
                 filter.equals('ANC');
 
-                expect(filter.comparator).toBe('eq');
+                expect(filter.comparator.operator).toBe('eq');
             });
 
             it('should set the passed filterValue onto the filter', () => {
@@ -74,6 +74,42 @@ describe('Filter', () => {
                 filter.on('year').equals('2013');
 
                 expect(filters.add).toBeCalledWith(filter);
+            });
+
+            it('should set the like comparator', () => {
+                filter.like('ANC');
+
+                expect(filter.comparator.operator).toBe('like');
+            });
+
+            it('should set the ilike comparator', () => {
+                filter.ilike('ANC');
+
+                expect(filter.comparator.operator).toBe('ilike');
+            });
+
+            it('should set the ^ilike comparator for startsWith', () => {
+                filter.startsWith('ANC');
+
+                expect(filter.comparator.operator).toBe('^ilike');
+            });
+
+            it('should set the $ilike comparator for notStartsWith', () => {
+                filter.endsWith('ANC');
+
+                expect(filter.comparator.operator).toBe('$ilike');
+            });
+
+            it('should set the null comparator for isNull', () => {
+                filter.isNull('ANC');
+
+                expect(filter.comparator.operator).toBe('null');
+            });
+
+            it('should set the in for the "in" operator', () => {
+                filter.in(['pHqPnELfXHB', 'DriPR3izKbg']);
+
+                expect(filter.comparator.operator).toBe('in');
             });
         });
 
@@ -108,6 +144,50 @@ describe('Filter', () => {
 
             it('should return the filter value in the expected query format', () => {
                 expect(filter.getQueryParamFormat()).toBe('code:eq:Partner_343');
+            });
+
+            it('should return the correct query format for the "in" operator', () => {
+                filter.on('id').in(['pHqPnELfXHB', 'DriPR3izKbg']);
+
+                expect(filter.getQueryParamFormat()).toBe('id:in:[pHqPnELfXHB,DriPR3izKbg]');
+            });
+        });
+
+        describe('negation', () => {
+            it('should negate like with a !', () => {
+                filter.on('name').not.like('ANC');
+
+                expect(filter.getQueryParamFormat()).toBe('name:!like:ANC');
+            });
+
+            it('should negate startsWith with a !', () => {
+                filter.on('name').not.startsWith('ANC');
+
+                expect(filter.getQueryParamFormat()).toBe('name:!^ilike:ANC');
+            });
+
+            it('should negate the filter when `not` is called', () => {
+                filter.on('name').not.equals('ANC');
+
+                expect(filter.getQueryParamFormat()).toBe('name:ne:ANC');
+            });
+
+            it('should flip greaterThan to the lessThanEqual filter when `not`is called', () => {
+                filter.on('name').not.greaterThan('ANC');
+
+                expect(filter.getQueryParamFormat()).toBe('name:le:ANC');
+            });
+
+            it('should flip greaterThan to the lessThanEqual filter when `not`is called', () => {
+                filter.on('name').not.greaterThan('ANC');
+
+                expect(filter.getQueryParamFormat()).toBe('name:le:ANC');
+            });
+
+            it('should correctly negate the "in" operator', () => {
+                filter.on('id').not.in(['pHqPnELfXHB', 'DriPR3izKbg']);
+
+                expect(filter.getQueryParamFormat()).toBe('id:!in:[pHqPnELfXHB,DriPR3izKbg]');
             });
         });
     });
