@@ -216,12 +216,13 @@ class ModelDefinition {
 
     clone() {
         const ModelDefinitionPrototype = Object.getPrototypeOf(this);
-        const priorFilters = this.filters.filters;
-        let clonedDefinition = Object.create(ModelDefinitionPrototype);
+        const priorFilters = this.filters.getFilterList();
+        const clonedDefinition = copyOwnProperties(
+            Object.create(ModelDefinitionPrototype),
+            this,
+        );
 
-        clonedDefinition = copyOwnProperties(clonedDefinition, this);
-        clonedDefinition.filters = Filters.getFilters(clonedDefinition);
-        clonedDefinition.filters.filters = priorFilters.map(filter => filter);
+        clonedDefinition.filters = Filters.getFilters(clonedDefinition, priorFilters);
 
         return clonedDefinition;
     }
@@ -283,7 +284,7 @@ class ModelDefinition {
     list(listParams = {}) {
         const { apiEndpoint, ...extraParams } = listParams;
         const params = Object.assign({ fields: ':all' }, extraParams);
-        const definedFilters = this.filters.getFilters();
+        const definedFilters = this.filters.getQueryFilterValues();
 
         if (!isDefined(params.filter)) {
             delete params.filter;

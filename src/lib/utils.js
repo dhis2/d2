@@ -104,3 +104,7 @@ export function customEncodeURIComponent(uri) {
     return encodeURIComponent(uri)
         .replace(whitelistRegExp, decodeURIComponent);
 }
+
+export function identity(value) {
+    return value;
+}

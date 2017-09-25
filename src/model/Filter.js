@@ -43,10 +43,11 @@ const FILTER_COMPARATORS = {
 class Filter {
     /**
      * @constructor
-     * @param {Filters} filters Filters list that this filter will be added to when it is completed.
+     * @param {Function} addFilterCallback Callback that will be used to notify Filters that the filter is completed
+     * so it can be added to the list of filters.
      */
-    constructor(filters) {
-        this.filters = filters;
+    constructor(addFilterCallback) {
+        this.addFilterCallback = addFilterCallback;
         this.propertyName = 'name';
         this.comparator = 'like';
         this.filterValue = undefined;
@@ -64,6 +65,14 @@ class Filter {
         return this;
     }
 
+    /**
+     * Utility function used to get the query parameter value in a DHIS2 metadata filter format that can be
+     * send to the api. This returned value is appended to the `filter=` part of the query.
+     *
+     * @note {warning} Usually not used directly and only used by Filters to create the query param values.
+     *
+     * @returns {string} The query param value to be appended to `filter=`
+     */
     getQueryParamFormat() {
         return [this.propertyName, this.comparator, this.filterValue].join(':');
     }
@@ -72,7 +81,7 @@ class Filter {
      * @method getFilter
      * @static
      *
-     * @param {Filters} filters Filters list that this filter will be added to when it is completed.
+     * @param {Function} addFilterCallback Callback to be called when the filter is completed.
      *
      * @returns {Filter} A instance of the Filter class that can be used to create
      * filters.
@@ -80,8 +89,8 @@ class Filter {
      * @description
      * Create a filter instance
      */
-    static getFilter(filters) {
-        return new Filter(filters);
+    static getFilter(addFilterCallback) {
+        return new Filter(addFilterCallback);
     }
 }
 
@@ -94,9 +103,7 @@ Object.keys(FILTER_COMPARATORS).forEach((filter) => {
             this.comparator = FILTER_COMPARATORS[filter];
             this.filterValue = filterValue;
 
-            this.filters.add(this);
-
-            return this.filters.getReturn();
+            return this.addFilterCallback(this);
         },
     });
 });

@@ -95,6 +95,14 @@ function isInNoCreateAllowedForList(modelDefinition) {
 }
 
 export default class CurrentUser {
+    /**
+     * Creates the CurrentUser.
+     *
+     * @param {{[string]: any}} userData Payload as returned from the api when requesting the currentUser object.
+     * @param {UserAuthorities} userAuthorities The UserAuthorities object for the currentUsers authorities.
+     * @param {ModelDefinition[]} modelDefinitions The modelDefinitions that need to be used for checking access.
+     * @param {UserSettings} settings The userSettings object to be set onto the current user object.
+     */
     constructor(userData, userAuthorities, modelDefinitions, settings) {
         Object.assign(this, getPropertiesForCurrentUserObject(userData));
 
