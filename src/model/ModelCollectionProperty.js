@@ -16,24 +16,36 @@ class ModelCollectionProperty extends ModelCollection {
      *
      * @param {Model} parentModel The `Model` of the parent of this `ModelCollectionProperty`
      * @param {ModelDefinition} modelDefinition The `ModelDefinition` that this `ModelCollection` property is for
-     * @param {Model[]} values Initial values that should be added to the collection property
+     * @param {String} propName The name of this property on the parent model
+     * @param {Model[]|boolean} values Initial values that should be added to the collection property
      * @param {Api} api The class to use for API calls
      *
      * @description
      *
      * Creates a new `ModelCollectionProperty` object. This is a subclass of `ModelCollection`, which adds logic
-     * for handling adding and removing elements to the collection and saving the changes to the API.
+     * for adding and removing elements to the collection and saving the changes to the API.
+     *
+     * If the value is `true` or `undefined` is specified instead of an array of data values, this indicates that the
+     * collection contains (or may contain) data that has not yet been loaded from the API.
      */
     constructor(parentModel, modelDefinition, propName, values, api) {
         super(modelDefinition, values, undefined);
 
+        // The name of this property on the parent object - necessary for loading values lazily
         this.propName = propName;
 
+        // Dirty bit - true if any models have been added to or removed from the collection
         this.dirty = false;
+
         // Keep track of added and removed elements
         this.added = new Set();
         this.removed = new Set();
 
+        // Using field transformers, it's possible to query the API for the presence of data without actually fetching
+        // the data. For instance this is used to determine if an organization unit has any children without actually
+        // loading the children. If yes, it will be displayed as an expandable branch within the tree.
+        // For more information, see the documentation about field transformers, specifically the isNotEmpty operator:
+        // https://docs.dhis2.org/master/en/developer/html/dhis2_developer_manual_full.html#webapi_field_transformers
         this.hasUnloadedData = (values === true) || (values === undefined);
 
         this.api = api;
