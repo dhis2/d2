@@ -152,7 +152,7 @@ describe('CurrentUser', () => {
             currentUser.getUserGroups();
 
             expect(modelDefinitions.userGroup.list)
-                .toBeCalledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
+                .toBeCalledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'], paging: false });
         });
     });
 
@@ -164,7 +164,7 @@ describe('CurrentUser', () => {
         it('should be called with the userRole ids', () => {
             currentUser.getUserRoles();
 
-            expect(modelDefinitions.userRole.list).toBeCalledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
+            expect(modelDefinitions.userRole.list).toBeCalledWith({ filter: ['id:in:[Ufph3mGRmMo]'], paging: false });
         });
     });
 
@@ -180,6 +180,7 @@ describe('CurrentUser', () => {
                 .toBeCalledWith({
                     fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
                     filter: ['id:in:[ImspTQPwCqd]'],
+                    paging: false,
                 });
         });
     });
@@ -196,6 +197,7 @@ describe('CurrentUser', () => {
                 .toBeCalledWith({
                     fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
                     filter: ['id:in:[]'],
+                    paging: false,
                 });
         });
     });
