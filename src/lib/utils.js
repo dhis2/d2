@@ -58,7 +58,7 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
-    const apiUrlWithVersionRexExp = /api\/(2[3-9])/;
+    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])/;
     const apiVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
 
     const baseUrlHasVersion = apiVersionMatch && apiVersionMatch[1];
