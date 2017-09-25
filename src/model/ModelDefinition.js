@@ -186,10 +186,19 @@ class ModelDefinition {
             .filter(shouldBeModelCollectionProperty(model, models))
             .forEach((modelProperty) => { // collection properties
                 const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
+                let values = [];
+
+                if (Array.isArray(dataValues[modelProperty])) {
+                    values = dataValues[modelProperty].map(value => models[referenceType].create(value));
+                } else if (dataValues[modelProperty] === true || dataValues[modelProperty] === undefined) {
+                    values = true;
+                }
+
                 dataValues[modelProperty] = ModelCollectionProperty.create(
                     model,
                     models[referenceType],
-                    (Array.isArray(dataValues[modelProperty]) ? dataValues[modelProperty] : []).map(d => models[referenceType].create(d)),
+                    modelProperty,
+                    values,
                 );
                 model.dataValues[modelProperty] = dataValues[modelProperty];
             });

@@ -24,14 +24,17 @@ class ModelCollectionProperty extends ModelCollection {
      * Creates a new `ModelCollectionProperty` object. This is a subclass of `ModelCollection`, which adds logic
      * for handling adding and removing elements to the collection and saving the changes to the API.
      */
-    constructor(parentModel, modelDefinition, values, api) {
+    constructor(parentModel, modelDefinition, propName, values, api) {
         super(modelDefinition, values, undefined);
 
-        // Dirty bit
+        this.propName = propName;
+
         this.dirty = false;
         // Keep track of added and removed elements
         this.added = new Set();
         this.removed = new Set();
+
+        this.hasUnloadedData = (values === true) || (values === undefined);
 
         this.api = api;
 
@@ -157,6 +160,27 @@ class ModelCollectionProperty extends ModelCollection {
             .catch(err => Promise.reject('Failed to alter collection:', err));
     }
 
+    load(options, forceReload = false) {
+        if (!this.hasUnloadedData && !forceReload) {
+            return Promise.resolve([]);
+        }
+
+        const url = [this.parentModel.modelDefinition.apiEndpoint, this.parentModel.id].join('/');
+        const requestOptions = Object.assign({
+            paging: false,
+        }, options, { fields: `${this.propName}[${(options && options.fields) || ':all'}]` });
+
+        return this.api.get(url, requestOptions)
+            .then(data => data[this.propName])
+            .then((values) => {
+                if (Array.isArray(values)) {
+                    values.forEach(value => this.valuesContainerMap.set(value.id, this.modelDefinition.create(value)));
+                }
+                this.hasUnloadedData = false;
+                return Promise.resolve(this);
+            });
+    }
+
     /**
      * @method create
      *
@@ -168,8 +192,8 @@ class ModelCollectionProperty extends ModelCollection {
      * @description
      * See `ModelCollectionProperty.constructor`.
      */
-    static create(parentModel, modelDefinition, values) {
-        return new ModelCollectionProperty(parentModel, modelDefinition, values, Api.getApi());
+    static create(parentModel, modelDefinition, propName, values) {
+        return new ModelCollectionProperty(parentModel, modelDefinition, propName, values, Api.getApi());
     }
 }
 
