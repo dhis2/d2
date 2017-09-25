@@ -91,3 +91,5 @@ export const toBeAny = values => left => values.some(right => toBe(left, right))
 export const isNullUndefinedOrEmptyString = toBeAny([undefined, null, '']);
 
 export const isFunction = fun => typeof fun === 'function';
+
+export const hasOwnProperty = (object, propertyName) => Object.prototype.hasOwnProperty.call(object, propertyName);

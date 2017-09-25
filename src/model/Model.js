@@ -55,6 +55,7 @@ class Model {
         Object.defineProperty(this, 'dirty', { writable: true, value: false });
 
         /**
+         * @private
          * @property {Object} dataValues Values object used to store the actual model values. Normally access to the
          * Model data will be done through accessor properties that are generated from the modelDefinition.
          *

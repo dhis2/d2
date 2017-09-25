@@ -1,16 +1,21 @@
 import ModelValidation from './ModelValidation';
-import { isValidUid } from '../lib/check';
+import { isValidUid, hasOwnProperty } from '../lib/check';
+import { pick } from '../lib/utils';
 import { getJSONForProperties } from './helpers/json';
 
 const modelValidator = ModelValidation.getModelValidation();
 
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
+const hasPropertyOnModelValidation = (property, model) => Boolean(
+    pick(`modelDefinition.modelValidations.${property}`)(model),
+);
+
 function hasModelValidationForProperty(model, property) {
-    return Boolean(model.modelDefinition &&
-        model.modelDefinition.modelValidations &&
-        model.modelDefinition.modelValidations[property] &&
-        Object.prototype.hasOwnProperty.call(model.modelDefinition.modelValidations, property));
+    return Boolean(
+        hasPropertyOnModelValidation(property, model) &&
+        hasOwnProperty(model.modelDefinition.modelValidations, property),
+    );
 }
 
 function updateModelFromResponseStatus(result) {
