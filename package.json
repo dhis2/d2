@@ -4,7 +4,7 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "documentation": "documentation build src/* --github --output docs --format html",
+    "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "coverage": "npm test -- --coverage",
     "validate": "npm ls --depth 0 || yarn list",
     "test": "TZ=UTC jest",
@@ -31,6 +31,8 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
+    "docdash": "^0.4.0",
+    "jsdoc": "^3.5.5",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
@@ -43,7 +45,6 @@
     "babel-preset-stage-2": "^6.18.0",
     "canonical-path": "0.0.2",
     "codeclimate-test-reporter": "^0.4.1",
-    "documentation": "^4.0.0-rc.1",
     "eslint-config-dhis2": "^3.0.2",
     "esprima": "^3.1.3",
     "form-data": "^2.1.2",

@@ -14,9 +14,7 @@ node_modules/*
 build/*
 dist/*
 lib/*
-docs/dist/*
-docs/app/highlight/styles/*
-!docs/app/highlight/styles/default.css
+docs/*
 
 bower_components
 coverage
