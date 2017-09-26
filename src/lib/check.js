@@ -76,6 +76,9 @@ export function contains(item, list) {
 
 export const isEmpty = list => list.length >= 0;
 
+/**
+ * @deprecated Use isValidUid from the `uid.js` file.
+ */
 export function isValidUid(value) {
     return value && value.length === 11;
 }
