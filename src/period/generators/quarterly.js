@@ -11,11 +11,12 @@ import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, getMonthName
  *   name: 'October - December 2017',
  *   id: '2017Q4',
  * }
- * </code>
  *
  * The id is an unofficial ISO 8601 style notation for quarters. The old period generator used to have
  * and `iso` field but as some of the notations are not official ISO 8601 notations this property has been removed.
  * In most cases the `id` property contained the same value so this can be used instead.
+ *
+ * @private
  *
  * @param {Integer} [year=new Date().getFullYear()] The year to generate the daily periods for.
  * @param {String} [locale='en-gb'] The locale to use when getting month names.

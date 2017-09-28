@@ -88,7 +88,7 @@ describe('Filters', () => {
         });
     });
 
-    describe('getFilters', () => {
+    describe('getQueryFilterValues', () => {
         let filters;
 
         beforeEach(() => {
@@ -96,36 +96,18 @@ describe('Filters', () => {
         });
 
         it('should be a function', () => {
-            expect(filters.getFilters).toBeInstanceOf(Function);
+            expect(filters.getQueryFilterValues).toBeInstanceOf(Function);
         });
 
         it('should return an empty array when no filters are set', () => {
-            expect(filters.getFilters()).toEqual([]);
+            expect(filters.getQueryFilterValues()).toEqual([]);
         });
 
         it('should return the set filters', () => {
             filters.on('code').equals('Partner_453');
             filters.on('name').like('John');
 
-            expect(filters.getFilters()).toEqual(['code:eq:Partner_453', 'name:like:John']);
-        });
-    });
-
-    describe('getReturn', () => {
-        let modelDefinitionFake;
-        let filters;
-
-        beforeEach(() => {
-            modelDefinitionFake = {};
-            filters = new Filters(modelDefinitionFake);
-        });
-
-        it('should be a function', () => {
-            expect(filters.getReturn).toBeInstanceOf(Function);
-        });
-
-        it('should return the modelDefinition', () => {
-            expect(filters.getReturn()).toBe(modelDefinitionFake);
+            expect(filters.getQueryFilterValues()).toEqual(['code:eq:Partner_453', 'name:like:John']);
         });
     });
 });

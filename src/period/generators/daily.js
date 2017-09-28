@@ -4,6 +4,7 @@ import { toLocaleDayFormat } from '../formatters';
 /**
  * Generate daily periods for the given year.
  *
+ * @private
  * @param {Integer} [year=getCurrentYear()] The year to generate the daily periods for.
  */
 export function generateDailyPeriodsForYear(year = getCurrentYear(), locale = 'en') { // eslint-disable-line import/prefer-default-export

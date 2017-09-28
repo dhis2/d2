@@ -1,5 +1,12 @@
+/**
+ * @module i18n
+ */
+
 import Api from '../api/Api';
 
+/**
+ * I18n class for dealing with translations
+ */
 class I18n {
     constructor(sources = [], api = Api.getApi()) {
         this.sources = sources;

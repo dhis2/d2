@@ -1,9 +1,9 @@
-/* global FormData, XMLHttpRequest */
 /**
- * @module System
+ * @module system
  *
- * @requires d2/system/SystemSettings
+ * @requires module:api/Api
  */
+
 import Api from '../api/Api';
 import SystemSettings from './SystemSettings';
 import SystemConfiguration from './SystemConfiguration';
@@ -15,6 +15,8 @@ import SystemConfiguration from './SystemConfiguration';
  * Represents the system that can be interacted with. There is a single instance of this pre-defined onto the d2
  * object after initialisation. This can be interacted with using its property objects to among other be used
  * to get and save systemSettings.
+ *
+ * @memberof module:system
  */
 class System {
     constructor(settings, configuration) {
@@ -233,14 +235,10 @@ class System {
     /* eslint-enable */
 
     /**
-     * @method getSystem
-     * @static
-     *
-     * @returns {System} Object with the system interaction properties
-     *
-     * @description
      * Get a new instance of the system object. This will function as a singleton, when a System object has been created
      * when requesting getSystem again the original version will be returned.
+     *
+     * @returns {System} Object with the system interaction properties
      */
     static getSystem() {
         if (!System.getSystem.system) {

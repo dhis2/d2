@@ -1,26 +1,28 @@
+/**
+ * @module datastore
+ */
+
 import { isArray } from '../lib/check';
 import DataStoreNamespace from './DataStoreNamespace';
 import Api from '../api/Api';
 
 /**
- * @class DataStore
- *
  * @description
  * Represents the dataStore that can be interacted with. This can be used to get instances of DataStoreNamespace, which
  * can be used to interact with the namespace API.
  *
- * Example usage:
- * ```js
+ * @example
  * import init from 'd2';
+ *
  * init({baseUrl: '/dhis/api'})
  *   .then((d2) => {
  *     d2.dataStore.get('namespace').then(namespace => {
  *          namespace.get('key').then(value => console.log(value))
  *      });
  *   });
- * ```
+ *
+ * @memberof module:datastore
  */
-
 class DataStore {
     constructor(api = Api.getApi()) {
         this.endPoint = 'dataStore';
@@ -29,6 +31,7 @@ class DataStore {
     }
 
     /**
+     * @description
      * Retrieves a list of keys for the given namespace, and returns an instance of DataStoreNamespace that
      * may be used to interact with this namespace. See {@link DataStoreNamespace}.
      *
@@ -88,7 +91,8 @@ class DataStore {
 
     /**
      * Deletes a namespace
-     * @param namespace to delete
+     *
+     * @param {string} namespace The namespace to delete
      * @returns {Promise} with the response from the API.
      */
     delete(namespace) {
@@ -96,7 +100,6 @@ class DataStore {
     }
 
     /**
-     * @method getDataStore
      * @static
      *
      * @returns {DataStore} Object with the dataStore interaction properties

@@ -2,14 +2,14 @@ import Api from '../api/Api';
 import { isString, isArray } from '../lib/check';
 
 /**
- * @class DataStoreNamespace
- *
  * @description
  * Represents a namespace in the dataStore that can be used to be used to interact with
  * the remote API.
  *
  * @property {Array} keys an array of the loaded keys.
  * @property {String} namespace Name of the namespace as on the server.
+ *
+ * @memberof module:datastore
  */
 class DataStoreNamespace {
     constructor(namespace, keys, api = Api.getApi()) {

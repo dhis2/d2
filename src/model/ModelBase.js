@@ -1,44 +1,24 @@
 import ModelValidation from './ModelValidation';
-import { isValidUid } from '../lib/check';
 import { getJSONForProperties } from './helpers/json';
+import {
+    hasModelValidationForProperty,
+    pickTypeFromModelValidation,
+    pickEmbeddedObjectFromModelValidation,
+    pickOwnerFromModelValidation,
+    updateModelFromResponseStatus,
+} from './helpers/models';
 
 const modelValidator = ModelValidation.getModelValidation();
 
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
-function hasModelValidationForProperty(model, property) {
-    return Boolean(model.modelDefinition &&
-        model.modelDefinition.modelValidations &&
-        model.modelDefinition.modelValidations[property] &&
-        Object.prototype.hasOwnProperty.call(model.modelDefinition.modelValidations, property));
-}
-
-function updateModelFromResponseStatus(result) {
-    if (result && result.httpStatus === 'Created' && result && isValidUid(result.response.uid)) {
-        this.dataValues.id = result.response.uid;
-        this.dataValues.href = [this.modelDefinition.apiEndpoint, this.dataValues.id].join('/');
-    }
-    this.dirty = false;
-    this.getDirtyChildren()
-        .forEach((value) => {
-            if (value.resetDirtyState) {
-                value.resetDirtyState();
-            } else {
-                value.dirty = false; // eslint-disable-line no-param-reassign
-            }
-        });
-
-    this[DIRTY_PROPERTY_LIST].clear();
-    return result;
-}
-
 /**
- * @class ModelBase
+ * Base class that supplies functionality to the Model classes
+ *
+ * @memberof module:model
  */
 class ModelBase {
     /**
-     * @method create
-     *
      * @returns {Promise} Returns a promise that resolves when the model has been saved or rejected with the result from
      * the `validate()` call.
      *
@@ -60,8 +40,6 @@ class ModelBase {
     }
 
     /**
-     * @method save
-     *
      * @returns {Promise} Returns a promise that resolves when the model has been saved
      * or rejects with the result from the `validate()` call.
      *
@@ -93,8 +71,6 @@ class ModelBase {
     }
 
     /**
-     * @method validate
-     *
      * @returns {Promise} Promise that resolves with an object with a status property that represents if the model
      * is valid or not the fields array will return the names of the fields that are invalid.
      *
@@ -111,6 +87,9 @@ class ModelBase {
      *    }
      * });
      * ```
+     *
+     * @deprecated The api now validates the object on save, so doing the additional request to validate the object
+     * is not very useful anymore as the validation on POST/PUT is more extensive than the /api/schemas validation.
      */
     validate() {
         return new Promise((resolve, reject) => {
@@ -169,70 +148,151 @@ class ModelBase {
         return modelClone;
     }
 
+    /**
+     * Deletes the object from the server.
+     *
+     * This will fire a DELETE request to have the object be removed from the system.
+     *
+     * @returns {Promise} Resolves when the object was successfully deleted.
+     */
     delete() {
         return this.modelDefinition.delete(this);
     }
 
+    /**
+     * Check if the model is in a dirty state and is a candidate to be saved.
+     *
+     * It will check for direct properties that have been changed and if any of the children have been changed.
+     *
+     * @param {boolean} includeChildren If set to false only the models direct properties will be checked.
+     * @returns {boolean} Returns true when the model is in a dirty state.
+     */
     isDirty(includeChildren = true) {
-        if (!(this.dirty || (includeChildren === true && this.hasDirtyChildren()))) {
-            return false;
-        }
-        return true;
+        return this.dirty || (includeChildren === true && this.hasDirtyChildren());
     }
 
+    /**
+     * Utility method to reset the dirty state of the object.
+     *
+     * This is called after a successful save operation was done.
+     *
+     * @returns {ModelBase} Returns itself for potential chaining
+     */
+    resetDirtyState() {
+        this.dirty = false;
+
+        // Also set it's children to be clean
+        this.getDirtyChildren()
+            .forEach((value) => {
+                if (value.resetDirtyState) {
+                    value.resetDirtyState();
+                } else {
+                    value.dirty = false; // eslint-disable-line no-param-reassign
+                }
+            });
+
+        this[DIRTY_PROPERTY_LIST].clear();
+
+        return this;
+    }
+
+    /**
+     * Returns a list of properties that have been changed.
+     *
+     * @returns {Array<string>} The names of the properties that were changed.
+     */
     getDirtyPropertyNames() {
         return Array.from(this[DIRTY_PROPERTY_LIST].values());
     }
 
-    // TODO: This name is very misleading and should probably be renamed (would be a breaking change)
+    /**
+     * This will return the properties that are marked as `owner: true` in the schema definition for the model.
+     *
+     * @returns {Array<any>} Returns an array of properties that are owned by the object
+     */
+    // TODO: This name is very misleading and should probably be renamed to something like `getOwnerProperties` (would be a breaking change)
     getCollectionChildren() {
-        // TODO: Can't be sure that this has a `modelDefinition` property
         return Object.keys(this)
-            .filter(
-                propertyName => this[propertyName] &&
+            .filter(propertyName =>
+                this[propertyName] &&
                 hasModelValidationForProperty(this, propertyName) &&
-                this.modelDefinition.modelValidations[propertyName].owner,
+                pickOwnerFromModelValidation(propertyName, this),
             )
             .map(propertyName => this[propertyName]);
     }
 
+    /**
+     * Gets the names of the properties that are collections on the object.
+     *
+     * These are usually the properties that contain ModelCollectionProperties.
+     *
+     * @returns {Array<string>} A list of property names that are marked as type `COLLECTION` in the schema.
+     */
     getCollectionChildrenPropertyNames() {
         return Object
             .keys(this)
-            .filter(propertyName =>
-                this.modelDefinition &&
-                this.modelDefinition.modelValidations &&
-                this.modelDefinition.modelValidations[propertyName] &&
-                this.modelDefinition.modelValidations[propertyName].type === 'COLLECTION',
-            );
+            .filter(propertyName => pickTypeFromModelValidation(propertyName, this) === 'COLLECTION');
     }
 
+    /**
+     * Gets the names of the properties that are references on the object.
+     *
+     * These are usually the properties that contain a Model of a different type. (e.g DataElement -> CategoryCombo)
+     *
+     * @returns {Array<string>} A list of property names that are marked as type `REFERENCE` in the schema.
+     */
     getReferenceProperties() {
         return Object
             .keys(this)
             .filter(propertyName =>
-                this.modelDefinition &&
-                this.modelDefinition.modelValidations &&
-                this.modelDefinition.modelValidations[propertyName] &&
-                this.modelDefinition.modelValidations[propertyName].type === 'REFERENCE' &&
-                this.modelDefinition.modelValidations[propertyName].embeddedObject === false,
+                pickTypeFromModelValidation(propertyName, this) === 'REFERENCE' &&
+                pickEmbeddedObjectFromModelValidation(propertyName, this) === false,
             );
     }
 
+    /**
+     * Gets the names of the properties that are embedded objects.
+     *
+     * These the properties that are not represented by a different Model, but are just plain objects that are
+     * embedded within the current object.
+     *
+     * @returns {Array<string>} A list of property names of embedded objects.
+     */
     getEmbeddedObjectCollectionPropertyNames() {
         return this.getCollectionChildrenPropertyNames()
-            .filter(propertyName => this.modelDefinition.modelValidations[propertyName].embeddedObject);
+            .filter(propertyName => pickEmbeddedObjectFromModelValidation(propertyName, this));
     }
 
+    /**
+     * Returns a list of child properties that are marked as dirty. This uses the `getCollectionChildren()` method
+     * to retrieve the children properties and then checks if they are marked as dirty.
+     *
+     * The method does not check if direct properties are dirty as those are tracked on the Model itself.
+     *
+     * @returns {Array<any>}
+     */
     getDirtyChildren() {
         return this.getCollectionChildren()
             .filter(property => property && (property.dirty === true));
     }
 
+    /**
+     * Check if any of the Model's child collections are dirty.
+     *
+     * @returns {boolean} True when one of the children is dirty.
+     */
     hasDirtyChildren() {
         return this.getDirtyChildren().length > 0;
     }
 
+    /**
+     * This method is generally intended to, by default, usefully serialize Model objects during JSON serialization.
+     *
+     * This method will take all the properties that are defined on the schema and create an object with the keys and
+     * values for those properties. This will remove any circular dependencies that could have occurred otherwise.
+     *
+     * @returns {Object}
+     */
     toJSON() {
         return getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations));
     }

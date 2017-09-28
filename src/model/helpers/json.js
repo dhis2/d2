@@ -1,10 +1,13 @@
-const isFunction = fun => typeof fun === 'function';
+import { isFunction, isEmpty, contains } from '../../lib/check';
+import { pick } from '../../lib/utils';
 
 /**
  * Map propertyName to modelType
  * The model with propertyName will be treated as a regular array
  * (no collection) if the combination of [propertyName, modelType] exists in the object
  * Empty arrays means it applies to any modelType.
+ *
+ * @private
  */
 const NON_MODEL_COLLECTIONS = {
     aggregationLevels: ['dataElement'],
@@ -14,12 +17,15 @@ const NON_MODEL_COLLECTIONS = {
     redirectUris: ['oAuth2Client'],
     organisationUnitLevels: ['validationRule'],
 };
+
 const isNonModelCollection = (propertyName, modelType) => {
     const modelTypes = NON_MODEL_COLLECTIONS[propertyName];
+
     if (!modelTypes) {
         return false;
     }
-    return (modelTypes.indexOf(modelType) > -1) || modelTypes.length < 1;
+
+    return contains(modelType, modelTypes) || isEmpty(modelTypes);
 };
 function isPlainValue(collection) {
     return function isPlainValueInCollection(property) {
@@ -89,7 +95,7 @@ export function getJSONForProperties(model, properties, keepFullModels = false) 
 
             // Transform an object collection to an array of objects with id properties
             objectToSave[propertyName] = values
-                .filter(value => value.id)
+                .filter(pick('id'))
                 // For any other types we return an object with just an id
                 .map((childModel) => {
                     if (keepFullModels && isFunction(childModel.clone)) {

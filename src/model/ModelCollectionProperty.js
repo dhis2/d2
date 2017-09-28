@@ -1,14 +1,12 @@
 import Api from '../api/Api';
 import ModelCollection from './ModelCollection';
 
-
 /**
- * @class ModelCollectionProperty
- *
- * @description
  * A ModelCollectionProperty instance is a ModelCollection that is a property of
  * a model instance. ModelCollectionProperties can be operated on independently of
  * the Model that owns them.
+ *
+ * @memberof module:model
  */
 class ModelCollectionProperty extends ModelCollection {
     /**
@@ -55,8 +53,6 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method add
-     *
      * @param {Model} value Model instance to add to the collection.
      * @returns {ModelCollectionProperty} Returns itself for chaining purposes.
      *
@@ -82,15 +78,12 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method remove
-     *
-     * @param {Model} value Model instance to remove from the collection.
-     * @returns {ModelCollectionProperty} Returns itself for chaining purposes.
-     *
-     * @description
      * If the collection contains an object with the same id as the `value` parameter, that object is removed
      * from the collection. Checks are then performed to keep track of what, if any, changes that have been
      * made to the collection.
+     *
+     * @param {Model} value Model instance to remove from the collection.
+     * @returns {ModelCollectionProperty} Returns itself for chaining purposes.
      */
     remove(value) {
         ModelCollection.throwIfContainsOtherThanModelObjects([value]);
@@ -109,12 +102,9 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method updateDirty
+     * Checks whether any changes have been made to the collection, and updates the dirty flag accordingly.
      *
      * @returns {boolean} True if the collection has changed, false otherwise.
-     *
-     * @description
-     * Checks whether any changes have been made to the collection, and updates the dirty flag accordingly.
      */
     updateDirty() {
         this.dirty = this.added.size > 0 || this.removed.size > 0;
@@ -122,9 +112,6 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method resetDirtyState
-     *
-     * @description
      * Sets dirty=false and resets the added and removed sets used for dirty state tracking.
      */
     resetDirtyState() {
@@ -134,7 +121,7 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method isDirty
+     * Checks if the collection property has been modified.
      *
      * @returns {boolean} true if any elements have been added to or removed from the collection
      */
@@ -143,14 +130,11 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method save
-     *
-     * @returns {Promise} A `Promise`
-     *
-     * @description
      * If any changes have been made to the collection, these changes will be submitted to the API. The returned
      * promise will resolve successfully when the changes have been saved to the API, and will be rejected if
      * either the changes weren't saved or if there were no changes to save.
+     *
+     * @returns {Promise} A `Promise`
      */
     save() {
         // Calling save when there's nothing to be saved is a no-op (not an error)
@@ -194,15 +178,12 @@ class ModelCollectionProperty extends ModelCollection {
     }
 
     /**
-     * @method create
+     * See `ModelCollectionProperty.constructor`.
      *
      * @param {Model} parentModel
      * @param {ModelDefinition} modelDefinition
      * @param {Model[]} values
      * @returns {ModelCollectionProperty}
-     *
-     * @description
-     * See `ModelCollectionProperty.constructor`.
      */
     static create(parentModel, modelDefinition, propName, values) {
         return new ModelCollectionProperty(parentModel, modelDefinition, propName, values, Api.getApi());

@@ -180,4 +180,43 @@ describe('Check', () => {
             expect(check.isValidUid('q2egwkkrfco')).toBe(true);
         });
     });
+
+    describe('toBe', () => {
+        it('should do strict equals', () => {
+            expect(check.toBe(undefined, undefined)).toBe(true);
+            expect(check.toBe(null, null)).toBe(true);
+            expect(check.toBe(null, undefined)).toBe(false);
+            expect(check.toBe({}, {})).toBe(false);
+            expect(check.toBe(expect, expect)).toBe(true);
+            expect(check.toBe('q2egwkkrfco', 'q2egwkkrfco')).toBe(true);
+        });
+    });
+
+    describe('toBeAny', () => {
+        it('should return true when the value exists in the values', () => {
+            expect(check.toBeAny([undefined, null, ''])(null)).toBe(true);
+            expect(check.toBeAny(['A', 'B', 'C'])('C')).toBe(true);
+        });
+
+        it('should return false when the value does not exist in the values', () => {
+            expect(check.toBeAny([undefined, null, ''])(0)).toBe(false);
+            expect(check.toBeAny(['A', 'B', 'C'])('D')).toBe(false);
+            expect(check.toBeAny(['A', 'B', 'C'])()).toBe(false);
+        });
+    });
+
+    describe('isNullUndefinedOrEmptyString', () => {
+        it('should return true when the passed value is either undefined, null, or empty string', () => {
+            expect(check.isNullUndefinedOrEmptyString(null)).toBe(true);
+            expect(check.isNullUndefinedOrEmptyString(undefined)).toBe(true);
+            expect(check.isNullUndefinedOrEmptyString('')).toBe(true);
+        });
+
+        it('should return false when the passed value that is not undefined, null, or empty string', () => {
+            expect(check.isNullUndefinedOrEmptyString('A')).toBe(false);
+            expect(check.isNullUndefinedOrEmptyString({ name: 'Stuff' })).toBe(false);
+            expect(check.isNullUndefinedOrEmptyString(' ')).toBe(false);
+            expect(check.isNullUndefinedOrEmptyString([])).toBe(false);
+        });
+    });
 });
