@@ -3,16 +3,28 @@ import { isValidUid } from '../uid';
 
 /**
  * @class GeoFeatures
- *
  * @description
- * GeoFeatures class used to request organisation unit coordinates from the web api.
+ * GeoFeatures class used to request organisation unit coordinates from the Web API.
  */
 class GeoFeatures {
-    constructor(orgUnits = [], displayProperty) {
+    /**
+     * @constructor
+     *
+     * @param {Array} orgUnits Organisation units (UID, level, group, user org. unit) to include in the response.
+     * @param {String} displayName The name property to display (NAME|SHORTNAME).
+     */
+    constructor(orgUnits = [], displayName) {
         this.orgUnits = orgUnits;
-        this.displayName = displayProperty;
+        this.displayName = displayName;
     }
 
+    /**
+     * @method byOrgUnit
+     *
+     * @param {Array} orgUnits Organisation units (UID, level, group, user org. unit) to include in the response.
+     *
+     * @returns {GeoFeatures}
+     */
     byOrgUnit(orgUnits) {
         if (!orgUnits) {
             return this;
@@ -27,6 +39,13 @@ class GeoFeatures {
         return new GeoFeatures(orgUnitsArray, this.displayName);
     }
 
+    /**
+     * @method byOrgUnit
+     *
+     * @param {String} displayName The name property to display (NAME|SHORTNAME).
+     *
+     * @returns {GeoFeatures}
+     */
     displayProperty(displayName) {
         if (!displayName) {
             return this;
@@ -39,6 +58,11 @@ class GeoFeatures {
         return new GeoFeatures(this.orgUnits, displayName);
     }
 
+    /**
+     * @method getAll
+     *
+     * @returns {Promise} with an array of geofeatures.
+     */
     getAll() {
         const api = Api.getApi();
         const params = {};
@@ -58,10 +82,10 @@ class GeoFeatures {
      * @method isValidOrgUnit
      * @static
      *
-     * @returns {boolean} Object with the system interaction properties
+     * @returns {boolean} True if the org. unit is valid
      *
      * @description
-     * Get a new instance of the GeoFeatures object.
+     * Checks if the org. unit is valid (UID, level, group, user org. unit)
      */
     static isValidOrgUnit(orgUnit) {
         return (
@@ -76,10 +100,10 @@ class GeoFeatures {
      * @method isValidOrgUnitLevel
      * @static
      *
-     * @returns {boolean} Object with the system interaction properties
+     * @returns {boolean} True if the org. unit level is valid
      *
      * @description
-     * Get a new instance of the GeoFeatures object.
+     * Checks if the org. unit level is valid.
      */
     static isValidOrgUnitLevel(level) {
         return /^LEVEL-[0-9]+$/.test(level);
@@ -89,10 +113,10 @@ class GeoFeatures {
      * @method isValidOrgUnitGroup
      * @static
      *
-     * @returns {boolean} Object with the system interaction properties
+     * @returns {boolean} True if the org. unit group is valid
      *
      * @description
-     * Get a new instance of the GeoFeatures object.
+     * Checks if the org. unit group is valid.
      */
     static isValidOrgUnitGroup(group) {
         const match = group.match(/OU_GROUP-(.*)$/);
@@ -103,10 +127,10 @@ class GeoFeatures {
      * @method isValidUserOrgUnit
      * @static
      *
-     * @returns {boolean} Object with the system interaction properties
+     * @returns {boolean} True if the user org. unit is valid
      *
      * @description
-     * Get a new instance of the GeoFeatures object.
+     * Checks if the user org. unit is valid.
      */
     static isValidUserOrgUnit(orgUnit) {
         return (
@@ -120,10 +144,10 @@ class GeoFeatures {
      * @method isValidDisplayName
      * @static
      *
-     * @returns {boolean} Object with the system interaction properties
+     * @returns {boolean} True if display name is valid
      *
      * @description
-     * Get a new instance of the GeoFeatures object.
+     * Checks if the display name is valid.
      */
     static isValidDisplayName(displayName) {
         return (
@@ -136,7 +160,7 @@ class GeoFeatures {
      * @method getGeoFeatures
      * @static
      *
-     * @returns {GeoFeatures} Object with the system interaction properties
+     * @returns {GeoFeatures} Object with interaction properties
      *
      * @description
      * Get a new instance of the GeoFeatures object.
