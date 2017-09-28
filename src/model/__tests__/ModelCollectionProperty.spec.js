@@ -325,7 +325,7 @@ describe('ModelCollectionProperty', () => {
                 mockParentModel,
                 mockModelDefinition,
                 mockMcpPropName,
-                undefined, // Wtf?? This field was not included in the API query
+                undefined, // This field was not included in the API query
                 api,
             );
         });
@@ -339,6 +339,7 @@ describe('ModelCollectionProperty', () => {
             expect(loadedWithoutValues.hasUnloadedData).toBe(false);
             expect(unloadedWithValues.hasUnloadedData).toBe(true);
             expect(unloadedWithoutValues.hasUnloadedData).toBe(false);
+            expect(excludedByFieldFilters.hasUnloadedData).toBe(true);
         });
 
         it('does not query the API when there are no unloaded values', (done) => {

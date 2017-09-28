@@ -915,7 +915,7 @@ Array [
     "translatable": false,
   },
   "teiSearchOrganisationUnits",
-  true,
+  undefined,
 ]
 `;
 

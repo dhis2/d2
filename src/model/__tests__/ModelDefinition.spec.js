@@ -24,7 +24,9 @@ describe('ModelDefinition', () => {
         mockModelCollectionCreate = jest.fn(ModelCollection, 'create');
         mockModelCollectionCreate.mockReturnValue(new ModelCollection(modelDefinition, [], {}));
         mockModelCollectionPropertyCreate = jest.fn(ModelCollectionProperty, 'create');
-        mockModelCollectionPropertyCreate.mockReturnValue(new ModelCollectionProperty({}, modelDefinition, '', []));
+        mockModelCollectionPropertyCreate.mockReturnValue(
+            new ModelCollectionProperty({}, modelDefinition, 'propName', [], undefined),
+        );
     });
 
     it('should not be allowed to be called without new', () => {
@@ -626,7 +628,7 @@ describe('ModelDefinition', () => {
                     expect(modelCollectionPropName).toEqual('teiSearchOrganisationUnits');
 
                     // Fourth argument to ModelCollectionProperty.create
-                    expect(modelCollectionData).toEqual(true);
+                    expect(modelCollectionData).toEqual(undefined);
                 });
             });
         });

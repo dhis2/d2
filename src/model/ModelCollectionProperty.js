@@ -174,7 +174,7 @@ class ModelCollectionProperty extends ModelCollection {
 
     load(options, forceReload = false) {
         if (!this.hasUnloadedData && !forceReload) {
-            return Promise.resolve([]);
+            return Promise.resolve(this);
         }
 
         const url = [this.parentModel.modelDefinition.apiEndpoint, this.parentModel.id].join('/');

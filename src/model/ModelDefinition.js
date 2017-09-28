@@ -184,14 +184,14 @@ class ModelDefinition {
         Object
             .keys(model)
             .filter(shouldBeModelCollectionProperty(model, models))
-            .forEach((modelProperty) => { // collection properties
+            .forEach((modelProperty) => {
                 const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
                 let values = [];
 
                 if (Array.isArray(dataValues[modelProperty])) {
                     values = dataValues[modelProperty].map(value => models[referenceType].create(value));
                 } else if (dataValues[modelProperty] === true || dataValues[modelProperty] === undefined) {
-                    values = true;
+                    values = dataValues[modelProperty];
                 }
 
                 dataValues[modelProperty] = ModelCollectionProperty.create(
