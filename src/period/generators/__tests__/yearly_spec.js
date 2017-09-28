@@ -72,7 +72,7 @@ describe('Yearly period', () => {
             ]);
         });
 
-        it('should respect the number of years parameter and generate that number of years including the current one', () => {
+        it('should respect the number of years parameter and generate the correct number of years', () => {
             const fiveYearlyPeriods = generateYearlyPeriodsUpToYear(2017, 5);
 
             expect(fiveYearlyPeriods).toEqual([

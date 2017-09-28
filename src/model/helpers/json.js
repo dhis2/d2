@@ -19,11 +19,7 @@ const isNonModelCollection = (propertyName, modelType) => {
     if (!modelTypes) {
         return false;
     }
-    if ((modelTypes.indexOf(modelType) > -1) || modelTypes.length < 1) {
-        return true;
-    }
-
-    return false;
+    return (modelTypes.indexOf(modelType) > -1) || modelTypes.length < 1;
 };
 function isPlainValue(collection) {
     return function isPlainValueInCollection(property) {

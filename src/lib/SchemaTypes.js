@@ -2,7 +2,7 @@ import { throwError } from './utils';
 import { isString } from './check';
 
 class SchemaTypes {
-    getTypes() {
+    getTypes() { // eslint-disable-line class-methods-use-this
         return [
             'TEXT',
             'NUMBER',

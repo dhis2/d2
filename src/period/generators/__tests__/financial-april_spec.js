@@ -72,7 +72,7 @@ describe('Financial April period', () => {
             ]);
         });
 
-        it('should respect the number of years parameter and generate that number of years including the current one', () => {
+        it('should respect the number of years parameter and generate the correct number of years', () => {
             const fiveYearlyPeriods = generateFinancialAprilPeriodsUpToYear(2017, 5);
 
             expect(fiveYearlyPeriods).toEqual([

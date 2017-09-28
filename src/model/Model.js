@@ -95,6 +95,7 @@ class Model {
                                 .filter(value => value.attribute.name === attributeName)
                                 .reduce((current, value) => value.value, undefined);
                         },
+                        /* eslint-disable complexity */
                         set: (value) => {
                             if (!this.attributeValues) { this.attributeValues = []; }
 
@@ -132,6 +133,7 @@ class Model {
                             // Set the model to be dirty
                             this.dirty = true;
                         },
+                        /* eslint-enable */
                     });
                 });
         }

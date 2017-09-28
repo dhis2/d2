@@ -164,7 +164,7 @@ class ModelDefinition {
     /**
      * @method create
      *
-     * @param {Object} [data] Datavalues that should be loaded into the model.
+     * @param {Object} [data] Data values that should be loaded into the model.
      *
      * @returns {Model} Returns the newly created model instance.
      *
@@ -184,12 +184,21 @@ class ModelDefinition {
         Object
             .keys(model)
             .filter(shouldBeModelCollectionProperty(model, models))
-            .forEach((modelProperty) => { // collection properties
+            .forEach((modelProperty) => {
                 const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
+                let values = [];
+
+                if (Array.isArray(dataValues[modelProperty])) {
+                    values = dataValues[modelProperty].map(value => models[referenceType].create(value));
+                } else if (dataValues[modelProperty] === true || dataValues[modelProperty] === undefined) {
+                    values = dataValues[modelProperty];
+                }
+
                 dataValues[modelProperty] = ModelCollectionProperty.create(
                     model,
                     models[referenceType],
-                    (Array.isArray(dataValues[modelProperty]) ? dataValues[modelProperty] : []).map(d => models[referenceType].create(d)),
+                    modelProperty,
+                    values,
                 );
                 model.dataValues[modelProperty] = dataValues[modelProperty];
             });
@@ -257,7 +266,7 @@ class ModelDefinition {
     /**
      * @method list
      *
-     * @param {Object} [extraParams={fields: ':all'}] Query parameters that should be passed to the GET query.
+     * @param {Object} [listParams={fields: ':all'}] Query parameters that should be passed to the GET query.
      * @returns {Promise} ModelCollection collection of models objects of the `ModelDefinition` type.
      *
      * @description

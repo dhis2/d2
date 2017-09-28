@@ -1,4 +1,4 @@
-export default (function () {
+export default (function x() {
     const fixtures = {};
 
     function getFixture(fixtureName) {

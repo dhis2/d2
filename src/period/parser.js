@@ -27,6 +27,7 @@ const periodTypeRegex = {
     FinancialOct: /^([0-9]{4})Oct$/,                    // YYYY"Oct"
 };
 
+/* eslint-disable complexity */
 const weeklyMatcherParser = (match, locale = 'en') => {
     let year = parseInt(match[1], 10);
     const weekType = match[2];
@@ -79,6 +80,7 @@ const isValidDailyPeriod = (month, year, day) =>
     month > 11 || month < 0 ||
     day > 31 || day < 1 ||
     year < 1000 || year > 5000;
+/* eslint-enable */
 
 const regexMatchToPeriod = {
     Daily: (match, locale = 'en') => {
@@ -223,7 +225,9 @@ const regexMatchToPeriod = {
 
 export function getPeriodFromPeriodId(periodId, locale = 'en') {
     const period = Object.keys(periodTypeRegex)
-        .filter(periodType => periodTypeRegex[periodType].test(periodId) && regexMatchToPeriod.hasOwnProperty(periodType))
+        .filter(periodType => periodTypeRegex[periodType].test(periodId)
+            && regexMatchToPeriod.hasOwnProperty(periodType),
+        )
         .map(periodType => regexMatchToPeriod[periodType](periodId.match(periodTypeRegex[periodType]), locale))[0];
 
     if (!period) {

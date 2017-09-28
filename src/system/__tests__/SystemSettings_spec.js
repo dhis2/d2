@@ -87,7 +87,8 @@ describe('settings.System', () => {
 
             systemSettings.get('keyLastSuccessfulResourceTablesUpdate');
 
-            expect(systemSettings.api.get.mock.calls[0][0]).toBe('systemSettings/keyLastSuccessfulResourceTablesUpdate');
+            expect(systemSettings.api.get.mock.calls[0][0])
+                .toBe('systemSettings/keyLastSuccessfulResourceTablesUpdate');
         });
 
         it('should return the value from the promise', () => {

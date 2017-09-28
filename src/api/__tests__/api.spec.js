@@ -154,7 +154,7 @@ describe('Api', () => {
         });
 
         it('should report network errors', (done) => {
-            fetchMock.mockReturnValueOnce(Promise.reject(new TypeError('Failed to fetch')));
+            fetchMock.mockReturnValueOnce(Promise.reject(new TypeError('Failed to fetch-o')));
 
             api.get('http://not.a.real.server/hi')
                 .then(done)
@@ -225,29 +225,36 @@ describe('Api', () => {
                 .catch(done);
         });
 
-        it('should properly encode URIs', () => api
-            .get('some/endpoint?a=b&c=d|e', {
+        it('should properly encode URIs', (done) => {
+            api.get('some/endpoint?a=b&c=d|e', {
                 f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}',
                 u: '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:',
             })
-            .then(() => expect(fetchMock).toHaveBeenCalledWith([
-                '/api/some/endpoint?',
-                'a=b&',
-                'c=d|e&',
-                'f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&',
-                'u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
-            ].join(''),
-            baseFetchOptions,
-            )),
-        );
-
-        it('should not break URIs when encoding', () => api.get('test?a=b=c&df,gh')
-            .then(() => {
-                expect(fetchMock).toHaveBeenCalledWith(
-                    '/api/test?a=b=c&df,gh',
+                .then(() => {
+                    expect(fetchMock).toHaveBeenCalledWith([
+                        '/api/some/endpoint?',
+                        'a=b&',
+                        'c=d|e&',
+                        'f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&',
+                        'u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
+                    ].join(''),
                     baseFetchOptions,
-                );
-            }));
+                    );
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should not break URIs when encoding', (done) => {
+            api.get('test?a=b=c&df,gh')
+                .then(() => {
+                    expect(fetchMock).toHaveBeenCalledWith(
+                        '/api/test?a=b=c&df,gh',
+                        baseFetchOptions,
+                    );
+                    done();
+                }).catch(done);
+        });
 
         it('should encode data as JSON', (done) => {
             const data = { name: 'Name', code: 'Code_01' };
@@ -570,7 +577,8 @@ describe('Api', () => {
             expect(fetchMock).toBeCalledWith('/api/some/fake/api/endpoint?mergeMode=REPLACE', fetchOptions);
         });
 
-        it('should add the mergeStrategy param to the url when useMergeStrategy is passed and the version is 2.22', () => {
+        it('should add the mergeStrategy param to the url when useMergeStrategy is passed ' +
+            'and the version is 2.22', () => {
             System.getSystem.mockReturnValueOnce({
                 version: {
                     major: 2,

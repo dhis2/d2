@@ -210,8 +210,10 @@ describe('Pager', () => {
             });
 
             it('should throw an error when the page is larger than the pagecount', () => {
-                expect(() => pager.goToPage(38)).toThrowError('PageNr can not be larger than the total page count of 37');
-                expect(() => pager.goToPage(100)).toThrowError('PageNr can not be larger than the total page count of 37');
+                expect(() => pager.goToPage(38))
+                    .toThrowError('PageNr can not be larger than the total page count of 37');
+                expect(() => pager.goToPage(100))
+                    .toThrowError('PageNr can not be larger than the total page count of 37');
             });
         });
 
