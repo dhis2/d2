@@ -15,9 +15,6 @@ class ModelValidation {
     }
 
     /**
-<<<<<<< a6dd3ee7954f897317ecd01cfd5984c5ec1b448e
-     * @method validateAgainstSchema
-=======
      * @deprecated Client side model validation is deprecated in favour of server side validation only.
      *
      * @returns {{status: boolean, messages: Array}} Returns {status: true, messages: []}
@@ -29,7 +26,6 @@ class ModelValidation {
 
     /**
      * Sends a POST request against the `api/schemas` endpoint to check if the model is valid.
->>>>>>> Last day bulk doc commit :)
      *
      * @param {Model} model The model that should be validated.
      * @returns {Array} Returns an array with validation messages if there are any.
