@@ -87,7 +87,7 @@ describe('GeoFeatures', () => {
             MockApi.mockReset();
         });
 
-        it('should request geoFeature for one org unit', () => {
+        it('should request geoFeature for one org. unit', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
             geoFeatures = geoFeatures.byOrgUnit('YuQRtpLP10I').getAll();
@@ -97,7 +97,7 @@ describe('GeoFeatures', () => {
             });
         });
 
-        it('should request geoFeature for multiple org units', () => {
+        it('should request geoFeature for multiple org. units', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
             geoFeatures = geoFeatures
@@ -139,6 +139,14 @@ describe('GeoFeatures', () => {
                     },
                 ]);
             });
+        });
+
+        it('should reject the promise with an error if a wrong org. unit has been requested', (done) => {
+            mockApi.get.mockReturnValue(Promise.reject());
+
+            return geoFeatures.byOrgUnit('LEVEL-20').getAll().then(() => {
+                throw new Error('this should have failed');
+            }).catch(() => done());
         });
     });
 });
