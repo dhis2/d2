@@ -27,11 +27,10 @@ function throwIfContainsModelWithoutUid(values) {
 }
 
 /**
- * @class ModelCollection
- *
- * @description
  * Collection of `Model` objects that can be interacted upon. Can contain a pager object to easily navigate
  * pages within the system.
+ *
+ * @memberof module:model
  */
 class ModelCollection {
     /**
@@ -88,17 +87,14 @@ class ModelCollection {
     }
 
     /**
-     * @method add
+     * Adds a Model instance to the collection. The model is checked if it is a correct instance of `Model` and if it has
+     * a valid id. A valid id is a uid string of 11 alphanumeric characters.
      *
      * @param {Model} value Model instance to add to the collection.
      * @returns {ModelCollection} Returns itself for chaining purposes.
      *
      * @throws {Error} When the passed value is not an instance of `Model`
      * @throws {Error} Throws error when the passed value does not have a valid id.
-     *
-     * @description
-     * Adds a Model instance to the collection. The model is checked if it is a correct instance of `Model` and if it has
-     * a valid id. A valid id is a uid string of 11 alphanumeric characters.
      */
     add(value) {
         throwIfContainsOtherThanModelObjects([value]);
@@ -109,13 +105,10 @@ class ModelCollection {
     }
 
     /**
-     * @method toArray
-     *
-     * @returns {Array} Returns the values of the collection as an array.
-     *
-     * @description
      * If working with the Map type object is inconvenient this method can be used to return the values
      * of the collection as an Array object.
+     *
+     * @returns {Array} Returns the values of the collection as an array.
      */
     toArray() {
         const resultArray = [];
@@ -140,12 +133,9 @@ class ModelCollection {
     }
 
     /**
-     * @method clear
+     * Clear the collection and remove all it's values.
      *
      * @returns {this} Returns itself for chaining purposes;
-     *
-     * @description
-     * Clear the collection and remove all it's values.
      */
     // TODO: Reset the pager?
     clear() {

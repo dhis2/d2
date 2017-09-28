@@ -4,7 +4,9 @@ import Api from '../api/Api';
 import { getOwnedPropertyJSON } from './helpers/json';
 
 /**
- * @class ModelValidation
+ * Handles validation of Model objects based on their modelDefinition.
+ *
+ * @memberof module:model
  */
 class ModelValidation {
     constructor(providedLogger) {
@@ -13,13 +15,24 @@ class ModelValidation {
     }
 
     /**
+<<<<<<< a6dd3ee7954f897317ecd01cfd5984c5ec1b448e
      * @method validateAgainstSchema
+=======
+     * @deprecated Client side model validation is deprecated in favour of server side validation only.
+     *
+     * @returns {{status: boolean, messages: Array}} Returns {status: true, messages: []}
+     */
+    validate() {
+        this.logger.warn('Client side model validation is deprecated');
+        throw new Error('Client side model validation is deprecated');
+    }
+
+    /**
+     * Sends a POST request against the `api/schemas` endpoint to check if the model is valid.
+>>>>>>> Last day bulk doc commit :)
      *
      * @param {Model} model The model that should be validated.
      * @returns {Array} Returns an array with validation messages if there are any.
-     *
-     * @description
-     * Sends a POST request against the `api/schemas` endpoint to check if the model is valid.
      *
      * @note {warn} Currently only checks
      */
@@ -50,14 +63,10 @@ class ModelValidation {
     }
 
     /**
-     * @method getModelValidation
-     * @static
-     *
-     * @returns {ModelValidation} New or memoized instance of `ModelInstance`
-     *
-     * @description
      * Returns the `ModelValidation` singleton. Creates a new one if it does not yet exist.
      * Grabs a logger instance by calling `Logger.getLogger`
+     *
+     * @returns {ModelValidation} New or memoized instance of `ModelInstance`
      */
     static getModelValidation() {
         if (this.modelValidation) {

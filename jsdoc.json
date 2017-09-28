@@ -10,5 +10,12 @@
     "destination": "docs/",
     "recurse": true,
     "verbose": true
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "docdash": {
+    "static": true,
+    "sort": true
   }
 }

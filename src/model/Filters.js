@@ -2,6 +2,12 @@ import { isType } from '../lib/check';
 import { identity } from '../lib/utils';
 import Filter from '../model/Filter';
 
+/**
+ * @description
+ * Collection class that contains filters that are to be applied when loading Model objects from the api.
+ *
+ * @memberof module:model
+ */
 class Filters {
     /**
      * Creates a new Filters instance.

@@ -1,3 +1,13 @@
+/**
+ * @module lib/check
+ */
+
+/**
+ *
+ * @param value
+ * @param name
+ * @returns {boolean}
+ */
 export function checkDefined(value, name) {
     if (value !== undefined) {
         return true;

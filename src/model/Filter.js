@@ -2,7 +2,8 @@ import { checkDefined } from '../lib/check';
 
 const FILTER_COMPARATORS = {
     /**
-     * @method equals
+     * @function equals
+     * @memberof module:model.Filter.prototype
      * @returns {Filter} Returns the modified filter for chaining
      *
      * @description
@@ -10,7 +11,8 @@ const FILTER_COMPARATORS = {
      */
     equals: 'eq',
     /**
-     * @method like
+     * @function like
+     * @memberof module:model.Filter.prototype
      * @returns {Filter} Returns the modified filter for chaining
      *
      * @description
@@ -18,7 +20,8 @@ const FILTER_COMPARATORS = {
      */
     like: 'like',
     /**
-     * @method ilike
+     * @function ilike
+     * @memberof module:model.Filter.prototype
      * @returns {Filter} Returns the modified filter for chaining
      *
      * @description
@@ -26,7 +29,8 @@ const FILTER_COMPARATORS = {
      */
     ilike: 'ilike',
     /**
-     * @method notEqual
+     * @function
+     * @memberof module:model.Filter.prototype
      * @returns {Filter} Returns the modified filter for chaining
      *
      * @description
@@ -36,9 +40,9 @@ const FILTER_COMPARATORS = {
 };
 
 /**
- * @class Filter
- * @description
  * Filter class that can be used to build api endpoint filters using a semi-natural language style.
+ *
+ * @memberof module:model
  */
 class Filter {
     /**
@@ -54,7 +58,6 @@ class Filter {
     }
 
     /**
-     * @method on
      * @param {String} propertyName Property name that the filter should be applied on.
      * @returns {Filter}
      */
@@ -69,6 +72,7 @@ class Filter {
      * Utility function used to get the query parameter value in a DHIS2 metadata filter format that can be
      * send to the api. This returned value is appended to the `filter=` part of the query.
      *
+     * @private
      * @note {warning} Usually not used directly and only used by Filters to create the query param values.
      *
      * @returns {string} The query param value to be appended to `filter=`
@@ -78,7 +82,6 @@ class Filter {
     }
 
     /**
-     * @method getFilter
      * @static
      *
      * @param {Function} addFilterCallback Callback to be called when the filter is completed.

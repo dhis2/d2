@@ -1,11 +1,3 @@
-/**
- * @module Model
- *
- * @requires lib/check
- * @requires lib/utils
- * @requires model/ModelBase
- */
-
 import { checkType, hasKeys } from '../lib/check';
 import { pickOr } from '../lib/utils';
 import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase';
@@ -15,12 +7,13 @@ const pickAttributeValues = pickOr('attributeValues', []);
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
- * @class Model
  * @extends ModelBase
  *
  * @description
  * A Model represents an object from the DHIS2 Api. A model is created based of a ModelDefinition. The ModelDefinition
  * has the properties that the model should have.
+ *
+ * @memberof module:model
  */
 class Model {
     /**
@@ -105,7 +98,6 @@ class Model {
     }
 
     /**
-     * @method create
      * @static
      *
      * @param {ModelDefinition} modelDefinition ModelDefinition from which the model should be created

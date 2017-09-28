@@ -1,6 +1,8 @@
 /**
  * List of modelDefinition names that should not allow create. Even when their schema authorities allows the user
  * to create them, the user should not be allowed to create these objects for some business logic reason.
+ *
+ * @private
  * @type {Set<string>}
  * @readonly
  */

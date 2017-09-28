@@ -1,19 +1,15 @@
-/**
- * @module System
- *
- * @requires lib/check
- * @requires api/Api
- */
-
 import { isString } from '../lib/check';
 import Api from '../api/Api';
-
 
 /**
  * @class SystemSettings
  *
  * @description
  * Handles communication with the systemSettings endpoint. Can be used to get or save systemSettings.
+ *
+ * @memberof module:system
+ * @requires lib/check
+ * @requires api/Api
  */
 // TODO: Return the values from the local cache if we have not updated it? We could
 class SystemSettings {
@@ -22,18 +18,15 @@ class SystemSettings {
     }
 
     /**
-     * @method all
+     * Loads all the system settings in the system and returns them as an object from the promise.
      *
      * @returns {Promise} Promise that resolves with the systemsettings object from the api.
      *
-     * @description
-     * Loads all the system settings in the system and returns them as an object from the promise.
-     * ```js
+     * @example
      * d2.system.settings.all()
      *  .then(systemSettings => {
      *    console.log('Analytics was last updated on: ' + systemSettings.keyLastSuccessfulResourceTablesUpdate);
      *  });
-     * ```
      */
     all() {
         return this.settings
@@ -46,18 +39,18 @@ class SystemSettings {
     }
 
     /**
-     * @method get
+     * Get a single systemSetting for the given key.
+     *
+     * This will use the cached value of the key if it has been previously loaded.
      *
      * @param {String} systemSettingsKey The identifier of the system setting that should be retrieved.
      * @returns {Promise} A promise that resolves with the value or will fail if the value is not available.
      *
-     * @description
-     * ```js
+     * @example
      * d2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')
      *  .then(systemSettingsValue => {
      *    console.log('Analytics was last updated on: ' + systemSettingsValue);
      *  });
-     * ```
      */
     get(systemSettingsKey) {
         if (this.settings && this.settings[systemSettingsKey]) {

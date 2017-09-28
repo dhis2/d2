@@ -13,12 +13,12 @@ const modelValidator = ModelValidation.getModelValidation();
 export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
 
 /**
- * @class ModelBase
+ * Base class that supplies functionality to the Model classes
+ *
+ * @memberof module:model
  */
 class ModelBase {
     /**
-     * @method create
-     *
      * @returns {Promise} Returns a promise that resolves when the model has been saved or rejected with the result from
      * the `validate()` call.
      *
@@ -40,8 +40,6 @@ class ModelBase {
     }
 
     /**
-     * @method save
-     *
      * @returns {Promise} Returns a promise that resolves when the model has been saved
      * or rejects with the result from the `validate()` call.
      *
@@ -73,8 +71,6 @@ class ModelBase {
     }
 
     /**
-     * @method validate
-     *
      * @returns {Promise} Promise that resolves with an object with a status property that represents if the model
      * is valid or not the fields array will return the names of the fields that are invalid.
      *
@@ -295,7 +291,7 @@ class ModelBase {
      * This method will take all the properties that are defined on the schema and create an object with the keys and
      * values for those properties. This will remove any circular dependencies that could have occurred otherwise.
      *
-     * @returns {{[propertyName]: any}}
+     * @returns {Object}
      */
     toJSON() {
         return getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations));

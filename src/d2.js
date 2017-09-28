@@ -1,7 +1,22 @@
+/**
+ * @module d2
+ *
+ * @description
+ * Module that contains the entry points for working with the d2 instance. Most of the api related functionality will be available through this package.
+ *
+ * The most important functions from the module are {@link module:d2.init|init} and {@link module:d2.init|getInstance} these are used to create and to get
+ * a hold of the initialized instance of {@link module:d2.init~d2|d2}. The initialized instance is the object that allows you access most of d2's functionality.
+ *
+ * @example
+ * import { init } from 'd2/lib/d2';
+ *
+ * init({ baseUrl: 'https://play.dhis2.org/demo/api/27/' })
+ *  .then(d2 => console.log(d2.currentUser.name));
+ */
 import 'whatwg-fetch';
 import { pick, Deferred, updateAPIUrlWithBaseUrlVersionNumber } from './lib/utils';
 import Logger from './logger/Logger';
-import model from './model/models';
+import model from './model';
 import Api from './api/Api';
 import System from './system/System';
 import I18n from './i18n/I18n';
@@ -16,22 +31,18 @@ let deferredD2Init = Deferred.create();
 const preInitConfig = Config.create();
 
 /**
- * @function getManifest
- *
- * @description
  * Utility function to load the app manifest.
  *
  * The manifest well be enhanced with a `getBaseUrl()` utility function that will return the base url of the DHIS2 instance.
  * This is a simple getter for the `activities.dhis.href` property on the manifest.
  *
- * ```js
+ * @example
  * import { getManifest } from 'd2/lib/d2';
  *
  * getManifest()
  *   .then(manifest => {
  *      console.log(manifest.getBaseUrl());
  *   });
- * ```
  *
  * @param {string} url The location of the manifest. Generally this is located in the root of your app folder. (e.g. './manifest.webapp)
  * @param {Api} [ApiClass] An implementation of the Api class that will be used to fetch the manifest.
@@ -60,11 +71,14 @@ export function getManifest(url, ApiClass = Api) {
  *
  * @description
  * The object that is the result of the promise will have the following properties
- * ```js
- * {
- *   "uiLocale": "en" // The users locale, that can be used for translations)
- * }
- * ```
+ *
+ * @example
+ * import {getUserSettings} from 'd2/lib/d2';
+ *
+ * getUserSettings()
+ *  .then(userSettings => {
+ *      console.log(userSettings);
+ *  });
  */
 export function getUserSettings(ApiClass = Api) {
     const api = ApiClass.getApi();
@@ -107,28 +121,24 @@ function getModelRequests(api, schemaNames) {
 }
 
 /**
- * @function init
+ * Init function that used to initialise {@link module:d2.init~d2|d2}. This will load the schemas from the DHIS2 api and configure your {@link module:d2.init~d2|d2} instance.
  *
- * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.
- * See the description for more information on the available settings.
- * @returns {Promise} A promise that resolves with the intialized d2 object. Which is an object that exposes `model`, `models` and `Api`
- *
- * @description
- * Init function that used to initialise D2. This will load the schemas from the DHIS2 api and configure your D2 instance.
- *
- * The `config` object that can be passed into D2 can have the following properties:
+ * The `config` object that can be passed into init can have the following properties:
  *
  * baseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain
  * for example http://localhost/dhis/ you should set the base url to `/dhis/api`
  *
- * ```js
+ * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.
+ * See the description for more information on the available settings.
+ * @returns {Promise.<D2>} A promise that resolves with the intialized {@link init~d2|d2} object.
+ *
+ * @example
  * import init from 'd2';
  *
  * init({baseUrl: '/dhis/api'})
  *   .then((d2) => {
  *     console.log(d2.model.dataElement.list());
  *   });
- * ```
  */
 export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
     const api = ApiClass.getApi();
@@ -139,12 +149,71 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
         api.setDefaultHeaders(config.headers);
     }
 
+    /**
+     * @namespace
+     */
     const d2 = {
+        /**
+         * @description
+         * This is the entry point for the modelDefinitions that were loaded. To start interacting with the metadata api
+         * you would pick a modelDefinition from this object to interact with.
+         *
+         * @type {Object.<string, ModelDefinition>}
+         * @instance
+         */
         models: undefined,
-        model,
+        /**
+         * Collection of the {@link module:model} classes
+         *
+         * @deprecated There is probably no point to expose this.
+         * @instance
+         */
+        model, // TODO: Remove (Breaking)
+        /**
+         * Api class that is used throughout the api interaction. This can be used to get hold of the module:Api singleton.
+         *
+         * @example
+         * d2.Api.getApi()      // Returns the api object
+         *  .get('resources')   // Do a get request for /api/resources
+         *  .then(resources => {
+         *      console.log(resources);
+         *  });
+         *
+         * @see {@link module:api~Api#getApi}
+         *
+         * @instance
+         */
         Api: ApiClass,
+        /**
+         * System instance to interact with system information like system settings, system info etc.
+         *
+         * @example
+         * console.log(d2.system.version.major); // 2 for DHIS 2.27
+         *
+         * @see {@link module:system/System~System|System}
+         * @instance
+         */
         system: System.getSystem(),
+        /**
+         * I18n instance with the loaded translations.
+         *
+         * Usually used for retrieving translations for a given key using `getTranslation(key: string)`
+         *
+         * @example
+         * d2.i18n.getTranslation('success'); // Returns "Success" for the english locale
+         *
+         * @see {@link module:i18n~I18n#getTranslation|getTranslation}
+         *
+         * @instance
+         */
         i18n: I18n.getI18n(),
+        /**
+         * Instance of the DataStore class for interaction with the dataStore api.
+         *
+         * @see {@link module:datastore/DataStore~DataStore|DataStore}
+         *
+         * @instance
+         */
         dataStore: DataStore.getDataStore(),
     };
 
@@ -215,6 +284,29 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
                     }
                 });
 
+            /**
+             * An instance of {@link module:current-user/CurrentUser~CurrentUser|CurrentUser}
+             *
+             * The currentUser can be used to retrieve data related to the currentUser.
+             *
+             * These things primarily include:
+             * - currentUser properties retrieved from `/api/me`
+             * - Lazily request collections related to the user such as
+             *      - userRoles
+             *      - userGroups
+             *      - organisationUnits
+             *      - dataViewOrganisationUnits
+             * - authorities
+             * - userSettings
+             * - utility methods for ACL
+             *
+             * @example
+             * d2.currentUser.canCreate(d2.models.dataElement); // Returns true when the user can create either a private/public dataElement
+             * d2.currentUser.canCreate(d2.models.organisationUnit); // Returns true the user can create an organisationUnit
+             *
+             * @see {@link module:current-user/CurrentUser~CurrentUser|CurrentUser}
+             * @instance
+             */
             d2.currentUser = CurrentUser.create(
                 responses.currentUser,
                 responses.authorities,
@@ -236,15 +328,12 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
 }
 
 /**
- * @function getInstance
- *
- * @returns {Promise} A promise to an initialized d2 instance.
- *
- * @description
  * This function can be used to retrieve the `singleton` instance of d2. The instance is being created by calling
  * the `init` method.
  *
- * ```js
+ * @returns {Promise.<D2>} A promise to the initialized {@link module:d2.init~d2|d2} instance.
+ *
+ * @example
  * import {init, getInstance} from 'd2';
  *
  * init({baseUrl: '/dhis2/api/'});
@@ -253,20 +342,15 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
  *      d2.models.dataElement.list();
  *      // and all your other d2 magic.
  *   });
- * ```
  */
 export function getInstance() {
     return deferredD2Init.promise;
 }
 
-// Alias preInitConfig to be able to `import {config} from 'd2';`
 /**
- * @property config
- *
- * @description
  * Can be used to set config options before initialisation of d2.
  *
- * ```js
+ * @example
  * import {config, init} from 'd2';
  *
  * config.baseUrl = '/demo/api';
@@ -280,10 +364,9 @@ export function getInstance() {
  *         d2.i18n.getTranslation(systemSettingsKey);
  *       });
  *   });
- *
- * ```
+ *   @type Config
  */
-export const config = preInitConfig;
+export const config = preInitConfig; // Alias preInitConfig to be able to `import {config} from 'd2';`
 
 export default {
     init,

@@ -4,7 +4,7 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json",
+    "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
     "coverage": "npm test -- --coverage",
     "validate": "npm ls --depth 0 || yarn list",
     "test": "TZ=UTC jest",

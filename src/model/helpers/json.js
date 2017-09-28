@@ -6,6 +6,8 @@ import { pick } from '../../lib/utils';
  * The model with propertyName will be treated as a regular array
  * (no collection) if the combination of [propertyName, modelType] exists in the object
  * Empty arrays means it applies to any modelType.
+ *
+ * @private
  */
 const NON_MODEL_COLLECTIONS = {
     aggregationLevels: ['dataElement'],

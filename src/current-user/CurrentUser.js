@@ -1,3 +1,6 @@
+/**
+ * @module current-user
+ */
 import UserAuthorities from './UserAuthorities';
 import UserSettings from './UserSettings';
 import { noCreateAllowedFor } from '../defaultConfig';
@@ -12,19 +15,13 @@ const propertiesToIgnore = new Set([
 ]);
 
 /**
- * Authorities lookup map to be used for determining the list of authorities to check. See
- * @type {{
- *  READ: [string],
- *  CREATE: [string,string,string],
- *  CREATE_PUBLIC: [string],
- *  CREATE_PRIVATE: [string],
- *  DELETE: [string],
- *  UPDATE: [string],
- *  EXTERNALIZE: [string]}
- * }
- * @enum {string[]}
+ * Authorities lookup map to be used for determining the list of authorities to check.
+ *
+ * @private
+ * @type {Object.<string, string[]>}
  * @readonly
  * @typedef {Object} AuthorityType
+ * @memberof module:current-user
  */
 const authTypes = {
     READ: ['READ'],
@@ -41,7 +38,8 @@ const authTypes = {
  * add convenience methods for these properties. (e.g. the `userGroups` property on the currentUser object becomes
  * `getUserGroups()`
  *
- * @type {{[string]: Symbol}}
+ * @private
+ * @type {Object.<string, Symbol>}
  */
 const propertySymbols = Array
     .from(propertiesToIgnore)
@@ -57,8 +55,9 @@ const propertySymbols = Array
  *
  * What would originally be `currentUser.userCredentials.username` would just be `currentUser.username`
  *
+ * @private
  * @param {Object} currentUserObject The user payload as it is received from the api. https://play.dhis2.org/demo/api/27/me
- * @returns {{[string]: any}} A map with propertyName/propertyValue pairs.
+ * @returns {Object} A map with propertyName/propertyValue pairs.
  */
 function getPropertiesForCurrentUserObject(currentUserObject) {
     let properties;
@@ -87,6 +86,7 @@ function getPropertiesForCurrentUserObject(currentUserObject) {
 /**
  * Checks the noCreateAllowedFor list if the object can be created.
  *
+ * @private
  * @param {ModelDefinition} modelDefinition The modelDefinition to check for.
  * @returns {boolean} True when it exists in the list, false otherwise.
  */
@@ -94,11 +94,16 @@ function isInNoCreateAllowedForList(modelDefinition) {
     return Boolean(modelDefinition && noCreateAllowedFor.has(modelDefinition.name));
 }
 
-export default class CurrentUser {
+/**
+ * Represents the current logged in user
+ *
+ * @memberof module:current-user
+ */
+class CurrentUser {
     /**
      * Creates the CurrentUser.
      *
-     * @param {{[string]: any}} userData Payload as returned from the api when requesting the currentUser object.
+     * @param {Object} userData Payload as returned from the api when requesting the currentUser object.
      * @param {UserAuthorities} userAuthorities The UserAuthorities object for the currentUsers authorities.
      * @param {ModelDefinition[]} modelDefinitions The modelDefinitions that need to be used for checking access.
      * @param {UserSettings} settings The userSettings object to be set onto the current user object.
@@ -335,10 +340,10 @@ export default class CurrentUser {
     /**
      * Factory method for creating a CurrentUser instance
      *
-     * @param {{[string]: any}} userData Payload as returned from the api when requesting the currentUser object.
+     * @param {Object} userData Payload as returned from the api when requesting the currentUser object.
      * @param {string[]} authorities A list of authorities that the currentUser has.
      * @param {ModelDefinition[]} modelDefinitions The modelDefinitions that need to be used for checking access.
-     * @param {{[string]: any}} userSettings Payload as returned from the api when request the userSettings
+     * @param {Object} userSettings Payload as returned from the api when request the userSettings
      * @returns {CurrentUser} The created CurrentUser object based on the data given.
      */
     static create(userData, authorities, modelDefinitions, userSettings) {
@@ -350,3 +355,5 @@ export default class CurrentUser {
         );
     }
 }
+
+export default CurrentUser;
