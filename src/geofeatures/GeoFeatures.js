@@ -61,21 +61,23 @@ class GeoFeatures {
     /**
      * @method getAll
      *
+     * @param {Object} params Extra URL params to pass to the Web API endpoint.
+     *
      * @returns {Promise} with an array of geofeatures.
      */
-    getAll() {
+    getAll(params = {}) {
         const api = Api.getApi();
-        const params = {};
+        const urlParams = params;
 
         if (this.orgUnits.length) {
-            params.ou = `ou:${this.orgUnits.join(';')}`;
+            urlParams.ou = `ou:${this.orgUnits.join(';')}`;
         }
 
         if (this.displayName) {
-            params.displayProperty = this.displayName;
+            urlParams.displayProperty = this.displayName;
         }
 
-        return api.get('geoFeatures', params);
+        return api.get('geoFeatures', urlParams);
     }
 
     /**

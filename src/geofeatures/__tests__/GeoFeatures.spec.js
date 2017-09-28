@@ -123,6 +123,20 @@ describe('GeoFeatures', () => {
             });
         });
 
+        it('should request geoFeature using uid and extra URL parameter', () => {
+            mockApi.get.mockReturnValue(Promise.resolve([]));
+
+            geoFeatures = geoFeatures
+                .byOrgUnit('YuQRtpLP10I')
+                .getAll({
+                    includeGroupSets: true,
+                });
+
+            expect(mockApi.get).toBeCalledWith('geoFeatures', {
+                ou: 'ou:YuQRtpLP10I',
+                includeGroupSets: true,
+            });
+        });
 
         it('should return an array of geoFeatures', () => {
             mockApi.get.mockReturnValue(Promise.resolve([
