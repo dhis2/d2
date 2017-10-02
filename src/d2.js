@@ -24,6 +24,7 @@ import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
 import { fieldsForSchemas } from './model/config';
 import DataStore from './datastore/DataStore';
+import UserDataStore from './datastore/UserDataStore';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -208,13 +209,15 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
          */
         i18n: I18n.getI18n(),
         /**
-         * Instance of the DataStore class for interaction with the dataStore api.
+         * Instance of the BaseStore class for interaction with the dataStore api.
          *
-         * @see {@link module:datastore/DataStore~DataStore|DataStore}
+         * @see {@link module:datastore/BaseStore~DataStore|DataStore}
          *
          * @instance
          */
         dataStore: DataStore.getDataStore(),
+
+        userDataStore: UserDataStore.getUserDataStore(),
     };
 
     // Process the config in a the config class to keep all config calls together.

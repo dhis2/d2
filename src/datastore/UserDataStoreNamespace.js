@@ -1,5 +1,6 @@
 import Api from '../api/Api';
 import BaseStoreNamespace from './BaseStoreNamespace';
+
 /**
  * @description
  * Represents a namespace in the dataStore that can be used to be used to interact with
@@ -10,19 +11,10 @@ import BaseStoreNamespace from './BaseStoreNamespace';
  *
  * @memberof module:datastore
  */
-class DataStoreNamespace extends BaseStoreNamespace {
-    constructor(namespace, keys, api = Api.getApi(), endPoint = 'dataStore') {
+class UserDataStoreNamespace extends BaseStoreNamespace {
+    constructor(namespace, keys, api = Api.getApi(), endPoint = 'userDataStore') {
         super(namespace, keys, api, endPoint);
     }
-
-    /**
-     * Retrieves metaData of given key in current namespace.
-     * @param key to retrieve metaData for
-     */
-    getMetaData(key) {
-        return this.api.get(
-            [this.endPoint, this.namespace, key, 'metaData'].join('/'),
-        );
-    }
 }
-export default DataStoreNamespace;
+
+export default UserDataStoreNamespace;

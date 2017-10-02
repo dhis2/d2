@@ -126,7 +126,7 @@ describe('DataStore', () => {
     });
 
     describe('getDataStore', () => {
-        it('should return an instance of DataStore', () => {
+        it('should return an instance of UserDataStore', () => {
             expect(DataStore.getDataStore()).toBeInstanceOf(DataStore);
         });
 

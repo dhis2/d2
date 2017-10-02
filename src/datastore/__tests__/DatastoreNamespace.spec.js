@@ -24,7 +24,7 @@ describe('DataStoreNamespace', () => {
 
     it('should throw an error if not called with a string', () => {
         expect(() => new DataStoreNamespace()).toThrowError(
-            'DataStoreNamespaces must be called with a string to identify the Namespace',
+            'BaseStoreNamespace must be called with a string to identify the Namespace',
         );
     });
 

@@ -3,13 +3,11 @@
  */
 
 import { isArray } from '../lib/check';
-import BaseStore from './BaseStore';
-import DataStoreNamespace from './DataStoreNamespace';
 import Api from '../api/Api';
 
 /**
  * @description
- * Represents the dataStore that can be interacted with. This can be used to get instances of UserDataStoreNamespace, which
+ * Represents a datastore that can be interacted with. This can be used to get instances of UserDataStoreNamespace, which
  * can be used to interact with the namespace API.
  *
  * @example
@@ -23,13 +21,16 @@ import Api from '../api/Api';
  *   });
  *
  * @memberof module:datastore
+ * @abstract
  */
-class DataStore extends BaseStore {
+class BaseStore {
     constructor(api = Api.getApi(), endPoint = 'dataStore') {
-        super(api, endPoint, api, endPoint);
+        this.endPoint = endPoint;
+        this.api = api;
     }
 
     /**
+     * @abstract
      * @description
      * Retrieves a list of keys for the given namespace, and returns an instance of UserDataStoreNamespace that
      * may be used to interact with this namespace. See {@link DataStoreNamespace}.
@@ -49,45 +50,34 @@ class DataStore extends BaseStore {
      *  Default true
      * @returns {Promise<DataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
-    get(namespace, autoLoad = true) {
-        if (!autoLoad) {
-            return new Promise((resolve) => {
-                resolve(new DataStoreNamespace(namespace));
-            });
-        }
+    get(namespace, autoLoad = true) { // eslint-disable-line no-unused-vars, class-methods-use-this
+        throw new Error('Must be implemented by subclass.');
+    }
 
-        return this.api.get([this.endPoint, namespace].join('/'))
+
+    /**
+     * Retrieves a list of all namespaces on the server.
+     * @returns {Promise} with an array of namespaces.
+     */
+    getAll() {
+        return this.api.get(this.endPoint)
             .then((response) => {
                 if (response && isArray(response)) {
-                    return new DataStoreNamespace(namespace, response);
+                    return response;
                 }
-                throw new Error('The requested namespace has no keys or does not exist.');
-            }).catch((e) => {
-                if (e.httpStatusCode === 404) {
-                    // If namespace does not exist, provide an instance of UserDataStoreNamespace
-                    // so it's possible to interact with the namespace.
-                    return new DataStoreNamespace(namespace);
-                }
-                throw e;
+                throw new Error('No namespaces exist.');
             });
     }
 
     /**
-     * @static
+     * Deletes a namespace
      *
-     * @returns {DataStore} Object with the dataStore interaction properties
-     *
-     * @description
-     * Get a new instance of the dataStore object. This will function as a singleton, when a BaseStore object has been created
-     * when requesting getDataStore again the original version will be returned.
+     * @param {string} namespace The namespace to delete
+     * @returns {Promise} the response body from the {@link module:api.Api#get API}.
      */
-    static getDataStore() {
-        if (!DataStore.getDataStore.dataStore) {
-            DataStore.getDataStore.dataStore = new DataStore();
-        }
-
-        return DataStore.getDataStore.dataStore;
+    delete(namespace) {
+        return this.api.delete([this.endPoint, namespace].join('/'));
     }
 }
 
-export default DataStore;
+export default BaseStore;

@@ -4,7 +4,7 @@
 
 import { isArray } from '../lib/check';
 import BaseStore from './BaseStore';
-import DataStoreNamespace from './DataStoreNamespace';
+import UserDataStoreNamespace from './UserDataStoreNamespace';
 import Api from '../api/Api';
 
 /**
@@ -24,9 +24,9 @@ import Api from '../api/Api';
  *
  * @memberof module:datastore
  */
-class DataStore extends BaseStore {
+class UserDataStore extends BaseStore {
     constructor(api = Api.getApi(), endPoint = 'dataStore') {
-        super(api, endPoint, api, endPoint);
+        super(api, endPoint);
     }
 
     /**
@@ -52,21 +52,21 @@ class DataStore extends BaseStore {
     get(namespace, autoLoad = true) {
         if (!autoLoad) {
             return new Promise((resolve) => {
-                resolve(new DataStoreNamespace(namespace));
+                resolve(new UserDataStoreNamespace(namespace, null, this.api, this.endPoint));
             });
         }
 
         return this.api.get([this.endPoint, namespace].join('/'))
             .then((response) => {
                 if (response && isArray(response)) {
-                    return new DataStoreNamespace(namespace, response);
+                    return new UserDataStoreNamespace(namespace, response, this.api, this.endPoint);
                 }
                 throw new Error('The requested namespace has no keys or does not exist.');
             }).catch((e) => {
                 if (e.httpStatusCode === 404) {
                     // If namespace does not exist, provide an instance of UserDataStoreNamespace
                     // so it's possible to interact with the namespace.
-                    return new DataStoreNamespace(namespace);
+                    return new UserDataStoreNamespace(namespace, null, this.api, this.endPoint);
                 }
                 throw e;
             });
@@ -75,19 +75,20 @@ class DataStore extends BaseStore {
     /**
      * @static
      *
-     * @returns {DataStore} Object with the dataStore interaction properties
+     * @returns {UserDataStore} Object with the userDataStore interaction properties
      *
      * @description
-     * Get a new instance of the dataStore object. This will function as a singleton, when a BaseStore object has been created
-     * when requesting getDataStore again the original version will be returned.
+     * Get a new instance of the userDataStore object. This will function as a singleton - when a UserDataStore object has been created
+     * when requesting getUserDataStore again, the original version will be returned.
      */
-    static getDataStore() {
-        if (!DataStore.getDataStore.dataStore) {
-            DataStore.getDataStore.dataStore = new DataStore();
+
+    static getUserDataStore() {
+        if (!UserDataStore.getUserDataStore.dataStore) {
+            UserDataStore.getUserDataStore.dataStore = new UserDataStore(Api.getApi(), 'userDataStore');
         }
 
-        return DataStore.getDataStore.dataStore;
+        return UserDataStore.getUserDataStore.dataStore;
     }
 }
 
-export default DataStore;
+export default UserDataStore;
