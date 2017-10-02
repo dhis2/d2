@@ -12,6 +12,24 @@ jest.mock('../../ModelDefinitions', () => ({
 }));
 
 describe('getJSONForProperties', () => {
+    describe('for validationRule', () => {
+        let validationRuleSchema;
+        let validationRuleModelDefinition;
+
+        beforeEach(() => {
+            validationRuleSchema = fixtures.get('/api/schemas/validationRule');
+
+            validationRuleModelDefinition = ModelDefinition.createFromSchema(validationRuleSchema);
+            mockModelDefinitions.validationRule = validationRuleModelDefinition;
+        });
+
+        it('does fancy stuffs', () => {
+            const model = validationRuleModelDefinition.create({ id: 'a0123456789', organisationUnitLevels: [1, 2] });
+
+            expect(getJSONForProperties(model, ['organisationUnitLevels'])).toEqual({ organisationUnitLevels: [1, 2] });
+        });
+    });
+
     describe('for legendSet', () => {
         let checkTypeStub;
         let legendSetSchema;

@@ -151,7 +151,8 @@ describe('CurrentUser', () => {
         it('should be called with the userGroup ids', () => {
             currentUser.getUserGroups();
 
-            expect(modelDefinitions.userGroup.list).toBeCalledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'] });
+            expect(modelDefinitions.userGroup.list)
+                .toBeCalledWith({ filter: ['id:in:[vAvEltyXGbD,wl5cDMuUhmF,QYrzIjSfI8z,jvrEwEJ2yZn]'], paging: false });
         });
     });
 
@@ -163,7 +164,7 @@ describe('CurrentUser', () => {
         it('should be called with the userRole ids', () => {
             currentUser.getUserRoles();
 
-            expect(modelDefinitions.userRole.list).toBeCalledWith({ filter: ['id:in:[Ufph3mGRmMo]'] });
+            expect(modelDefinitions.userRole.list).toBeCalledWith({ filter: ['id:in:[Ufph3mGRmMo]'], paging: false });
         });
     });
 
@@ -175,7 +176,12 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).toBeCalledWith({ fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[ImspTQPwCqd]'] });
+            expect(modelDefinitions.organisationUnit.list)
+                .toBeCalledWith({
+                    fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
+                    filter: ['id:in:[ImspTQPwCqd]'],
+                    paging: false,
+                });
         });
     });
 
@@ -187,7 +193,12 @@ describe('CurrentUser', () => {
         it('should be called with organisationUnit ids', () => {
             currentUser.getDataViewOrganisationUnits();
 
-            expect(modelDefinitions.organisationUnit.list).toBeCalledWith({ fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]', filter: ['id:in:[]'] });
+            expect(modelDefinitions.organisationUnit.list)
+                .toBeCalledWith({
+                    fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
+                    filter: ['id:in:[]'],
+                    paging: false,
+                });
         });
     });
 
@@ -254,7 +265,8 @@ describe('CurrentUser', () => {
             expect(currentUser.canCreatePublic(modelDefinitions.userGroup)).toBe(true);
         });
 
-        it('should return false for userGroup even when the user has the authority due to the presence in the ignore list', () => {
+        it('should return false for userGroup ' +
+            'even when the user has the authority due to the presence in the ignore list', () => {
             noCreateAllowedFor.add('userGroup');
 
             expect(currentUser.canCreatePrivate(modelDefinitions.userGroup)).toBe(false);

@@ -1,13 +1,9 @@
-/**
- * @module System
- *
- * @requires lib/check
- * @requires api/Api
- */
 import Api from '../api/Api';
 
 /**
  * Handles communication with the configuration endpoint. Can be used to get or set configuration options.
+ *
+ * @memberof module:system
  */
 class SystemConfiguration {
     constructor(api = Api.getApi()) {
@@ -21,7 +17,7 @@ class SystemConfiguration {
      * Fetches all system configuration settings from the API and caches them so that future
      * calls to this function won't call the API again.
      *
-     * @param {boolean=false} ignoreCache If set to true, calls the API regardless of cache status
+     * @param {boolean} [ignoreCache=false] If set to true, calls the API regardless of cache status
      * @returns {Promise} Promise that resolves with all the individual configuration options from the api.
      */
     all(ignoreCache) {
@@ -42,7 +38,7 @@ class SystemConfiguration {
      * This is a convenience method that works exactly the same as calling `configuration.all()[name]`.
      *
      * @param key {String}
-     * @param {boolean=false} ignoreCache If set to true, calls the API regardless of cache status
+     * @param {boolean} [ignoreCache=false] If set to true, calls the API regardless of cache status
      * @returns {Promise}
      */
     get(key, ignoreCache) {

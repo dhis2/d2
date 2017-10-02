@@ -80,7 +80,12 @@ describe('D2 models', () => {
         });
 
         it('should return an array of ModelDefinitions', () => {
-            const expectedArray = [{ name: 'dataElement' }, { name: 'dataValue' }, { name: 'user' }, { name: 'userGroup' }];
+            const expectedArray = [
+                { name: 'dataElement' },
+                { name: 'dataValue' },
+                { name: 'user' },
+                { name: 'userGroup' },
+            ];
             function returnValue(item) {
                 return item;
             }

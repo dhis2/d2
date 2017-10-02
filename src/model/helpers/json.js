@@ -1,13 +1,32 @@
-const isFunction = fun => typeof fun === 'function';
+import { isFunction, isEmpty, contains } from '../../lib/check';
+import { pick } from '../../lib/utils';
 
-const NON_MODEL_COLLECTIONS = new Set([
-    'aggregationLevels',
-    'grantTypes',
-    'translations',
-    'deliveryChannels',
-    'redirectUris',
-]);
+/**
+ * Map propertyName to modelType
+ * The model with propertyName will be treated as a regular array
+ * (no collection) if the combination of [propertyName, modelType] exists in the object
+ * Empty arrays means it applies to any modelType.
+ *
+ * @private
+ */
+const NON_MODEL_COLLECTIONS = {
+    aggregationLevels: ['dataElement'],
+    grantTypes: ['oAuth2Client'],
+    translations: [],
+    deliveryChannels: ['programNotificationTemplate'],
+    redirectUris: ['oAuth2Client'],
+    organisationUnitLevels: ['validationRule'],
+};
 
+const isNonModelCollection = (propertyName, modelType) => {
+    const modelTypes = NON_MODEL_COLLECTIONS[propertyName];
+
+    if (!modelTypes) {
+        return false;
+    }
+
+    return contains(modelType, modelTypes) || isEmpty(modelTypes);
+};
 function isPlainValue(collection) {
     return function isPlainValueInCollection(property) {
         return collection.indexOf(property) === -1;
@@ -60,7 +79,7 @@ export function getJSONForProperties(model, properties, keepFullModels = false) 
         .forEach((propertyName) => {
             // TODO: This is not the proper way to do this. We should check if the array contains Models
             // These objects are not marked as embedded objects but they behave like they are
-            if (NON_MODEL_COLLECTIONS.has(propertyName)) {
+            if (isNonModelCollection(propertyName, model.modelDefinition.name)) {
                 objectToSave[propertyName] = Array.from(model.dataValues[propertyName]);
                 return;
             }
@@ -76,7 +95,7 @@ export function getJSONForProperties(model, properties, keepFullModels = false) 
 
             // Transform an object collection to an array of objects with id properties
             objectToSave[propertyName] = values
-                .filter(value => value.id)
+                .filter(pick('id'))
                 // For any other types we return an object with just an id
                 .map((childModel) => {
                     if (keepFullModels && isFunction(childModel.clone)) {

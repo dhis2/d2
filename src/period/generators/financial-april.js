@@ -3,7 +3,9 @@ import { validateIfValueIsInteger, formatAsISODate, getCurrentYear, getMonthName
 
 export function generateFinancialAprilPeriodsUpToYear(year = getCurrentYear(), numberOfYears = 10, locale = 'en') { // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year);
-    if ((!isInteger(numberOfYears)) || numberOfYears < 1) { throw new Error('FinancialApril generator parameter `numberOfYears` should be an integer larger than 0.'); }
+    if ((!isInteger(numberOfYears)) || numberOfYears < 1) {
+        throw new Error('FinancialApril generator parameter `numberOfYears` should be an integer larger than 0.');
+    }
 
     const periods = [];
     const date = new Date(year + 1, 2, 31);

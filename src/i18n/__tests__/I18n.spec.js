@@ -13,6 +13,7 @@ describe('Internationalisation (I18n)', () => {
         no: 'Nope',
         system_settings_in_french: 'Paramètres du système',
         // 'escapes': 'Characters may be escaped! Even\nnewlines?!?',
+        string_with_variable: 'Some times $$variable$$ are useful',
     };
 
     const mockUnicode = 'Param\\u00e8tres du syst\\u00e8me';
@@ -231,7 +232,9 @@ describe('Internationalisation (I18n)', () => {
 
         it('should not add the strings if no responses were returned', () => {
             i18n.addStrings(['string_that_has_no_translation']);
-            mockApi.post.mockReturnValueOnce(Promise.resolve({ string_that_has_no_translation: 'string_that_has_no_translation' }));
+            mockApi.post.mockReturnValueOnce(Promise.resolve({
+                string_that_has_no_translation: 'string_that_has_no_translation',
+            }));
 
             return i18n.load()
                 .then(() => expect(i18n.translations.string_that_has_no_translation).toBeUndefined());
@@ -269,9 +272,10 @@ describe('Internationalisation (I18n)', () => {
 
             it('decodes unicode entities from properties files', () => i18n.load().then(() => {
                 expect(mockApi.get).toHaveBeenCalledTimes(0);
-                expect(mockApi.post).toHaveBeenCalledTimes(0);
+                expect(mockApi.post).toHaveBeenCalledTimes(1);
                 expect(mockApi.request).toHaveBeenCalledTimes(1);
-                expect(i18n.getTranslation('system_settings_in_french')).toEqual(mockTranslations.system_settings_in_french);
+                expect(i18n.getTranslation('system_settings_in_french'))
+                    .toEqual(mockTranslations.system_settings_in_french);
                 expect(i18n.getTranslation('system_settings_in_french')).not.toEqual(mockUnicode);
             }));
 
@@ -284,6 +288,17 @@ describe('Internationalisation (I18n)', () => {
                         done(e);
                     }
                 });
+            });
+
+            it('replaces $$variable$$ in translations', (done) => {
+                i18n.load().then(() => {
+                    const sub1 = i18n.getTranslation('string_with_variable', { variable: 'tests' });
+                    const sub2 = i18n.getTranslation('string_with_variable', { variable: 'FUNNY TRANSLATIONS' });
+
+                    expect(sub1).toBe('Some times tests are useful');
+                    expect(sub2).toBe('Some times FUNNY TRANSLATIONS are useful');
+                    done();
+                }).catch(done);
             });
         });
 

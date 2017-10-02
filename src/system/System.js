@@ -1,9 +1,9 @@
-/* global FormData, XMLHttpRequest */
 /**
- * @module System
+ * @module system
  *
- * @requires d2/system/SystemSettings
+ * @requires module:api/Api
  */
+
 import Api from '../api/Api';
 import SystemSettings from './SystemSettings';
 import SystemConfiguration from './SystemConfiguration';
@@ -15,6 +15,8 @@ import SystemConfiguration from './SystemConfiguration';
  * Represents the system that can be interacted with. There is a single instance of this pre-defined onto the d2
  * object after initialisation. This can be interacted with using its property objects to among other be used
  * to get and save systemSettings.
+ *
+ * @memberof module:system
  */
 class System {
     constructor(settings, configuration) {
@@ -104,7 +106,7 @@ class System {
      * @param onProgress An optional callback that will be called whenever file upload progress info is available
      * @returns {Promise}
      */
-    uploadApp(zipFile, onProgress) {
+    uploadApp(zipFile, onProgress) { // eslint-disable-line class-methods-use-this
         const api = Api.getApi();
         const data = new FormData();
         let xhr;
@@ -135,10 +137,8 @@ class System {
     loadAppStore(compatibleOnly = true) {
         return new Promise((resolve, reject) => {
             const api = Api.getApi();
-            api.get('appStore').then((appStoreData) => {
-                const appStore = Object.assign({}, appStoreData);
-
-                appStore.apps = appStore.apps
+            api.get('appStore')
+                .then(appStoreData => resolve(appStoreData
                     .map((appData) => {
                         const app = Object.assign({}, appData);
 
@@ -149,12 +149,9 @@ class System {
 
                         return app;
                     })
-                    .filter(appData => appData.versions.length > 0);
-
-                resolve(appStore);
-            }).catch((err) => {
-                reject(err);
-            });
+                    .filter(appData => appData.versions.length > 0)),
+                )
+                .catch(err => reject(err));
         });
     }
 
@@ -164,7 +161,7 @@ class System {
      * @param uid The uid of the app version to install
      * @returns {Promise}
      */
-    installAppVersion(uid) {
+    installAppVersion(uid) { // eslint-disable-line class-methods-use-this
         const api = Api.getApi();
         return new Promise((resolve, reject) => {
             api.post(['appStore', uid].join('/'), '', { dataType: 'text' }).then(() => {
@@ -181,7 +178,7 @@ class System {
      * @param appKey The key of the app to remove
      * @returns {Promise}
      */
-    uninstallApp(appKey) {
+    uninstallApp(appKey) { // eslint-disable-line class-methods-use-this
         const api = Api.getApi();
 
         return api.delete(['apps', appKey].join('/'))
@@ -212,7 +209,7 @@ class System {
 
     // TODO: Document
     // Disable eslint complexity warning
-    /* eslint-disable */
+    /* eslint-disable complexity */
     static compareVersions(a, b) {
         const from = (typeof a === 'string' || a instanceof String) ? System.parseVersionString(a) : a;
         const to = (typeof b === 'string' || b instanceof String) ? System.parseVersionString(b) : b;
@@ -225,32 +222,23 @@ class System {
 
         return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1);
     }
-    /* eslint-enable */
 
     static isVersionCompatible(systemVersion, appVersion) {
-        const isNewEnough = (
-            appVersion.min_platform_version ?
-                System.compareVersions(systemVersion, appVersion.min_platform_version) >= 0 :
-                true
-        );
-        const isNotTooOld = (
-            appVersion.max_platform_version ?
-                System.compareVersions(systemVersion, appVersion.max_platform_version) <= 0 :
-                true
-        );
+        const minVersion = appVersion.minDhisVersion || appVersion.min_platform_version || null;
+        const maxVersion = appVersion.maxDhisVersion || appVersion.max_platform_version || null;
+
+        const isNewEnough = (minVersion ? System.compareVersions(systemVersion, minVersion) >= 0 : true);
+        const isNotTooOld = (maxVersion ? System.compareVersions(systemVersion, maxVersion) <= 0 : true);
 
         return isNewEnough && isNotTooOld;
     }
+    /* eslint-enable */
 
     /**
-     * @method getSystem
-     * @static
-     *
-     * @returns {System} Object with the system interaction properties
-     *
-     * @description
      * Get a new instance of the system object. This will function as a singleton, when a System object has been created
      * when requesting getSystem again the original version will be returned.
+     *
+     * @returns {System} Object with the system interaction properties
      */
     static getSystem() {
         if (!System.getSystem.system) {

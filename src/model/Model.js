@@ -1,21 +1,19 @@
-/**
- * @module Model
- *
- * @requires lib/check
- * @requires model/ModelBase
- */
-
-import { checkType } from '../lib/check';
+import { checkType, hasKeys } from '../lib/check';
+import { pickOr } from '../lib/utils';
 import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase';
+import createPropertyDefinitionsForAttributes from './helpers/attibutes';
+
+const pickAttributeValues = pickOr('attributeValues', []);
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
- * @class Model
  * @extends ModelBase
  *
  * @description
  * A Model represents an object from the DHIS2 Api. A model is created based of a ModelDefinition. The ModelDefinition
  * has the properties that the model should have.
+ *
+ * @memberof module:model
  */
 class Model {
     /**
@@ -39,12 +37,7 @@ class Model {
          * creating the model. This property is not enumerable or writable and will therefore not show up when looping
          * over the object properties.
          */
-        Object.defineProperty(this, 'modelDefinition', {
-            enumerable: false,
-            configurable: false,
-            writable: false,
-            value: modelDefinition,
-        });
+        Object.defineProperty(this, 'modelDefinition', { value: modelDefinition });
 
         /**
          * @property {Boolean} dirty Represents the state of the model. When the model is concidered `dirty`
@@ -52,97 +45,59 @@ class Model {
          * This property is not enumerable or writable and will therefore not show up when looping
          * over the object properties.
          */
-        Object.defineProperty(this, 'dirty', {
-            enumerable: false,
-            configurable: false,
-            writable: true,
-            value: false,
-        });
+        Object.defineProperty(this, 'dirty', { writable: true, value: false });
 
         /**
+         * @private
          * @property {Object} dataValues Values object used to store the actual model values. Normally access to the
          * Model data will be done through accessor properties that are generated from the modelDefinition.
          *
          * @note {warning} This should not be accessed directly.
          */
-        Object.defineProperty(this, 'dataValues', {
-            enumerable: false,
-            configurable: true,
-            writable: true,
-            value: {},
-        });
+        Object.defineProperty(this, 'dataValues', { configurable: true, writable: true, value: {} });
 
-        const hasKeys = object => object && !!Object.keys(object).length;
+        /**
+         * Attach the modelDefinition modelProperties (the properties from the schema) onto the Model.
+         *
+         * For a data element model the modelProperties would be the following
+         * https://play.dhis2.org/demo/api/schemas/dataElement.json?fields=properties
+         */
+        Object.defineProperties(this, modelDefinition.modelProperties);
+
         const attributes = {};
         const attributeProperties = modelDefinition.attributeProperties;
         if (hasKeys(attributeProperties)) {
-            Object.defineProperty(this, 'attributes', {
-                enumerable: false,
-                value: attributes,
-            });
+            /**
+             * @property {Object} attributes The attributes objects contains references to custom attributes defined
+             * on the metadata object.
+             *
+             * @description
+             * These properties are generated based of the attributes that are created for the the specific schema.
+             * As these properties are not defined on the schemas they're put on a separate attributes object.
+             * When there are no attributes defined for the object type, the attributes property will not be attached
+             * to the model.
+             *
+             * @see https://docs.dhis2.org/2.27/en/user/html/dhis2_user_manual_en_full.html#manage_attribute
+             */
+            Object.defineProperty(this, 'attributes', { value: attributes });
 
-            Object
-                .keys(attributeProperties)
-                .forEach((attributeName) => {
-                    Object.defineProperty(attributes, attributeName, {
-                        enumerable: true,
-                        get: () => {
-                            if (!Array.isArray(this.attributeValues)) {
-                                return undefined;
-                            }
+            const getAttributeValues = () => pickAttributeValues(this);
+            const setAttributeValues = attributeValues => (this.attributeValues = attributeValues);
+            const setDirty = () => (this.dirty = true);
+            const attributeDefinitions = createPropertyDefinitionsForAttributes(
+                attributeProperties,
+                getAttributeValues,
+                setAttributeValues,
+                setDirty,
+            );
 
-                            return this.attributeValues
-                                .filter(value => value.attribute.name === attributeName)
-                                .reduce((current, value) => value.value, undefined);
-                        },
-                        set: (value) => {
-                            if (!this.attributeValues) { this.attributeValues = []; }
-
-                            const attributeValue = this.attributeValues
-                                .filter(av => av.attribute.name === attributeName)
-                                .reduce((current, av) => av, undefined);
-
-                            // Don't do anything if the value stayed the same
-                            if (attributeValue && attributeValue.value === value) {
-                                return;
-                            }
-
-                            if (attributeValue) {
-                                // Remove the attributeValue from the array of attributeValues on the object
-                                // This is done because the server can not handle them properly when empty strings
-                                // as values are sent. It will properly remove the attributeValue
-                                // on the server side when they are not being send to the server at all.
-                                if (value === undefined || value === null || value === '') {
-                                    this.attributeValues = this.attributeValues
-                                        .filter(av => av !== attributeValue);
-                                }
-
-                                attributeValue.value = value;
-                            } else {
-                                // Add the new attribute value to the attributeValues collection
-                                this.attributeValues.push({
-                                    value,
-                                    attribute: {
-                                        id: attributeProperties[attributeName].id,
-                                        name: attributeProperties[attributeName].name,
-                                    },
-                                });
-                            }
-
-                            // Set the model to be dirty
-                            this.dirty = true;
-                        },
-                    });
-                });
+            Object.defineProperties(attributes, attributeDefinitions);
         }
-
-        Object.defineProperties(this, modelDefinition.modelProperties);
 
         this[DIRTY_PROPERTY_LIST] = new Set([]);
     }
 
     /**
-     * @method create
      * @static
      *
      * @param {ModelDefinition} modelDefinition ModelDefinition from which the model should be created
@@ -159,6 +114,7 @@ class Model {
     }
 }
 
+// Set the prototype of the Model class, this way we're able to extend from an single object
 Model.prototype = ModelBase;
 
 export default Model;

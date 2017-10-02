@@ -16,11 +16,17 @@ describe('ModelDefinition', () => {
     let mockModelCollectionPropertyCreate;
 
     beforeEach(() => {
-        modelDefinition = new ModelDefinition({ displayName: 'Data Elements', singular: 'dataElement', plural: 'dataElements' });
+        modelDefinition = new ModelDefinition({
+            displayName: 'Data Elements',
+            singular: 'dataElement',
+            plural: 'dataElements',
+        });
         mockModelCollectionCreate = jest.fn(ModelCollection, 'create');
         mockModelCollectionCreate.mockReturnValue(new ModelCollection(modelDefinition, [], {}));
         mockModelCollectionPropertyCreate = jest.fn(ModelCollectionProperty, 'create');
-        mockModelCollectionPropertyCreate.mockReturnValue(new ModelCollectionProperty({}, modelDefinition, []));
+        mockModelCollectionPropertyCreate.mockReturnValue(
+            new ModelCollectionProperty({}, modelDefinition, 'propName', [], undefined),
+        );
     });
 
     it('should not be allowed to be called without new', () => {
@@ -110,7 +116,10 @@ describe('ModelDefinition', () => {
         let dataElementModelDefinition;
 
         beforeEach(() => {
-            dataElementModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/dataElement'), fixtures.get('/api/attributes').attributes);
+            dataElementModelDefinition = ModelDefinition.createFromSchema(
+                fixtures.get('/api/schemas/dataElement'),
+                fixtures.get('/api/attributes').attributes,
+            );
         });
 
         it('should be a method on ModelDefinition', () => {
@@ -211,7 +220,8 @@ describe('ModelDefinition', () => {
                     propertyType: 'uio.some.unknown.type',
                 });
 
-                expect(shouldThrow).toThrowError('Type from schema "uio.some.unknown.type" not found available type list.');
+                expect(shouldThrow)
+                    .toThrowError('Type from schema "uio.some.unknown.type" not found available type list.');
             });
 
             it('should not add properties that do not have a name', () => {
@@ -417,7 +427,10 @@ describe('ModelDefinition', () => {
                     const dataElementSchemaFixture = fixtures.get('/api/schemas/dataElement');
                     dataElementSchemaFixture.properties[0].ordered = false;
 
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, fixtures.get('/api/attributes').attributes);
+                    dataElementModelDefinition = ModelDefinition.createFromSchema(
+                        dataElementSchemaFixture,
+                        fixtures.get('/api/attributes').attributes,
+                    );
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 
@@ -428,7 +441,10 @@ describe('ModelDefinition', () => {
                     const dataElementSchemaFixture = fixtures.get('/api/schemas/dataElement');
                     dataElementSchemaFixture.properties[0].ordered = true;
 
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchemaFixture, fixtures.get('/api/attributes').attributes);
+                    dataElementModelDefinition = ModelDefinition.createFromSchema(
+                        dataElementSchemaFixture,
+                        fixtures.get('/api/attributes').attributes,
+                    );
 
                     modelValidations = dataElementModelDefinition.modelValidations;
 
@@ -440,7 +456,8 @@ describe('ModelDefinition', () => {
                 let indicatorGroupModelDefinition;
 
                 beforeEach(() => {
-                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/indicatorGroup'));
+                    const indicatorGroupSchema = fixtures.get('/api/schemas/indicatorGroup');
+                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(indicatorGroupSchema);
                     modelValidations = indicatorGroupModelDefinition.modelValidations;
                 });
 
@@ -457,7 +474,8 @@ describe('ModelDefinition', () => {
                 let indicatorGroupModelDefinition;
 
                 beforeEach(() => {
-                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/legendSet'));
+                    const legendSetSchema = fixtures.get('/api/schemas/legendSet');
+                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(legendSetSchema);
                     modelValidations = indicatorGroupModelDefinition.modelValidations;
                 });
 
@@ -529,7 +547,8 @@ describe('ModelDefinition', () => {
         });
 
         describe('with default values', () => {
-            const organisationUnitGroupSetModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/organisationUnitGroupSet'));
+            const orgUnitGroupSchema = fixtures.get('/api/schemas/organisationUnitGroupSet');
+            const organisationUnitGroupSetModelDefinition = ModelDefinition.createFromSchema(orgUnitGroupSchema);
             let model;
 
             beforeEach(() => {
@@ -546,8 +565,9 @@ describe('ModelDefinition', () => {
             let userModelDefinition;
 
             beforeEach(() => {
+                const orgUnitSchema = fixtures.get('/api/schemas/organisationUnit');
                 userModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/user'));
-                orgunitModelDefinition = ModelDefinition.createFromSchema(fixtures.get('/api/schemas/organisationUnit'));
+                orgunitModelDefinition = ModelDefinition.createFromSchema(orgUnitSchema);
 
                 // TODO: Mock the ModelDefinitions singleton, so we can get rid of this logic
                 if (!ModelDefinitions.getModelDefinitions().user) {
@@ -573,7 +593,7 @@ describe('ModelDefinition', () => {
                 });
 
                 it('should create a ModelCollectionProperty.create for a collection of objects', () => {
-                    expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(1);
+                    expect(ModelCollectionProperty.create).toHaveBeenCalledTimes(9);
                 });
 
                 it('should create a ModelCollectionProperty with the correct values', () => {
@@ -593,7 +613,8 @@ describe('ModelDefinition', () => {
                 it('should create a ModelCollectionProperty without data', () => {
                     const passedModelInstance = ModelCollectionProperty.create.mock.calls[0][0];
                     const modelDefinitionForCollection = ModelCollectionProperty.create.mock.calls[0][1];
-                    const modelCollectionData = ModelCollectionProperty.create.mock.calls[0][2];
+                    const modelCollectionPropName = ModelCollectionProperty.create.mock.calls[0][2];
+                    const modelCollectionData = ModelCollectionProperty.create.mock.calls[0][3];
 
                     // First argument to ModelCollectionPrototype.create
                     expect(passedModelInstance).toMatchSnapshot();
@@ -603,7 +624,11 @@ describe('ModelDefinition', () => {
                     expect(modelDefinitionForCollection.plural).toBe(orgunitModelDefinition.plural);
 
                     // Third argument to ModelCollectionProperty.create
-                    expect(modelCollectionData).toEqual([]);
+                    // teiSearchOrganisationUnits is the first collection property on the user model
+                    expect(modelCollectionPropName).toEqual('teiSearchOrganisationUnits');
+
+                    // Fourth argument to ModelCollectionProperty.create
+                    expect(modelCollectionData).toEqual(undefined);
                 });
             });
         });
@@ -956,7 +981,8 @@ describe('ModelDefinition', () => {
 
                 userModelDefinition.save(model);
 
-                expect(apiUpdateStub.mock.calls[0][1].organisationUnits).toEqual([{ id: 'FTRrcoaog83' }, { id: 'P3jJH5Tu5VC' }]);
+                expect(apiUpdateStub.mock.calls[0][1].organisationUnits)
+                    .toEqual([{ id: 'FTRrcoaog83' }, { id: 'P3jJH5Tu5VC' }]);
             });
 
             it('should not add invalid objects that do not have an id', () => {
@@ -1108,12 +1134,14 @@ describe('ModelDefinition', () => {
         });
 
         it('should return the translatable properties', () => {
-            expect(dataElementModelDefinition.getTranslatableProperties()).toEqual(['description', 'formName', 'name', 'shortName']);
+            expect(dataElementModelDefinition.getTranslatableProperties())
+                .toEqual(['description', 'formName', 'name', 'shortName']);
         });
 
         it('should return only the properties that have a translatableKey', () => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement');
-            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({ ...props }));
+            dataElementSchema.properties = dataElementSchema.properties
+                .map(({ translationKey, ...props }) => ({ ...props }));
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
@@ -1143,7 +1171,8 @@ describe('ModelDefinition', () => {
 
         it('should return only the properties that have a translatableKey', () => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement');
-            dataElementSchema.properties = dataElementSchema.properties.map(({ translationKey, ...props }) => ({ ...props }));
+            dataElementSchema.properties = dataElementSchema.properties
+                .map(({ translationKey, ...props }) => ({ ...props }));
 
             dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
@@ -1165,13 +1194,13 @@ describe('ModelDefinition subsclasses', () => {
     });
 
     describe('UserModelDefinition', () => {
-        let UserModelDefinition;
+        let UserModelDefinitionClass;
         let userModelDefinition;
 
         beforeEach(() => {
-            UserModelDefinition = ModelDefinition.specialClasses.user;
+            UserModelDefinitionClass = ModelDefinition.specialClasses.user;
 
-            userModelDefinition = new UserModelDefinition({
+            userModelDefinition = new UserModelDefinitionClass({
                 singular: 'user',
                 plural: 'users',
                 displayName: 'Users',
@@ -1192,14 +1221,39 @@ describe('ModelDefinition subsclasses', () => {
         });
     });
 
+    describe('DataSetModelDefinition', () => {
+        let DataSetModelDefinitionClass;
+        let dataSetModelDefinition;
+
+        beforeEach(() => {
+            DataSetModelDefinitionClass = ModelDefinition.specialClasses.dataSet;
+
+            dataSetModelDefinition = new DataSetModelDefinitionClass(
+                fixtures.get('/api/schemas/dataSet'),
+                {},
+                {},
+                {},
+                {},
+            );
+        });
+
+        it('handles compulsory data element operands correctly', () => {
+            const dataSet = dataSetModelDefinition.create({
+                compulsoryDataElementOperands: ['one', 'two', 'three'],
+            });
+            expect(dataSet).toBeInstanceOf(Model);
+            expect(dataSet.dataValues.compulsoryDataElementOperands).toEqual(['one', 'two', 'three']);
+        });
+    });
+
     describe('OrganisationUnitDefinition', () => {
-        let OrganisationUnitModelDefinition;
+        let OrganisationUnitModelDefinitionClass;
         let organisationUnitModelDefinition;
 
         beforeEach(() => {
-            OrganisationUnitModelDefinition = ModelDefinition.specialClasses.organisationUnit;
+            OrganisationUnitModelDefinitionClass = ModelDefinition.specialClasses.organisationUnit;
 
-            organisationUnitModelDefinition = new OrganisationUnitModelDefinition({
+            organisationUnitModelDefinition = new OrganisationUnitModelDefinitionClass({
                 singular: 'organisationUnit',
                 plural: 'organisationUnits',
                 apiEndpoint: 'organisationUnits',

@@ -1,4 +1,3 @@
-import Filters from '../Filters';
 import Filter from '../Filter';
 
 describe('Filter', () => {
@@ -9,12 +8,16 @@ describe('Filter', () => {
     });
 
     describe('instance', () => {
-        let filters;
+        let mockModelDefinition;
         let filter;
+        let addFilterCallback;
 
         beforeEach(() => {
-            filters = new Filters();
-            filter = new Filter(filters);
+            mockModelDefinition = {};
+
+            addFilterCallback = jest.fn()
+                .mockReturnValue(mockModelDefinition);
+            filter = new Filter(addFilterCallback);
         });
 
         it('should have a comparator', () => {
@@ -58,22 +61,14 @@ describe('Filter', () => {
                 expect(() => filter.equals()).toThrowError('filterValue should be provided');
             });
 
-            it('should return call the getReturn method on filters', () => {
-                const modelDefinitionFake = {};
-                filters.getReturn = jest.fn().mockReturnValue(modelDefinitionFake);
-
-                filter.equals('ANC');
-
-                expect(filters.getReturn).toBeCalled();
-                expect(filter.equals('ANC')).toBe(modelDefinitionFake);
+            it('should return the modelDefinition', () => {
+                expect(filter.equals('ANC')).toBe(mockModelDefinition);
             });
 
-            it('should call add on the Filters instance with itself as parameter', () => {
-                filters.add = jest.fn();
-
+            it('should call the filter callback with the new filter', () => {
                 filter.on('year').equals('2013');
 
-                expect(filters.add).toBeCalledWith(filter);
+                expect(addFilterCallback).toHaveBeenCalled();
             });
         });
 

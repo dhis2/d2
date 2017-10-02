@@ -80,7 +80,8 @@ describe('CurrentUser.userSettings', () => {
             userSettings.get()
                 .catch((error) => {
                     expect(error).toBeInstanceOf(TypeError);
-                    expect(error.message).toBe('A "key" parameter should be specified when calling get() on userSettings');
+                    expect(error.message)
+                        .toBe('A "key" parameter should be specified when calling get() on userSettings');
                 })
                 .then(done);
         });

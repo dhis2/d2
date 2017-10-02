@@ -209,9 +209,16 @@ describe('System', () => {
     });
 
     describe('loadAppStore()', () => {
+        // Useful constants!
+        const sysVersionMinusTwo = '2.26';
+        const sysVersionMinusOne = '2.27';
+        const sysVersion = '2.28';
+        const sysVersionPlusOne = '2.29';
+        const sysVersionPlusTwo = '2.30';
+
         beforeEach(() => {
             system.setSystemInfo({
-                version: '2.22',
+                version: sysVersion,
             });
 
             jest.spyOn(apiMock, 'get')
@@ -233,10 +240,8 @@ describe('System', () => {
         });
 
         it('should return the compatible apps from the api', () => {
-            const expectedApps = fixtures.get('/appStore');
-
-            // Only the second app is compatible
-            expectedApps.apps[0].versions = [expectedApps.apps[0].versions[1]];
+            // Apps 3 and 6 are compatible with 2.28
+            const expectedApps = fixtures.get('/appStore').filter((app, i) => [3, 6].includes(i));
 
             return system.loadAppStore()
                 .then((apps) => {
@@ -244,30 +249,88 @@ describe('System', () => {
                 });
         });
 
-        it('should return the compatible apps', () => {
-            const returnedApps = fixtures.get('/appStore');
+        describe('with version 2.24', () => {
+            beforeEach(() => {
+                system.setSystemInfo({
+                    version: '2.24',
+                });
+            });
 
-            returnedApps.apps = [
+            it('should return the compatible apps from the API', () => {
+                // Apps 2, 4 and 6 are compatible with 2.24
+                const expectedApps = fixtures.get('/appStore').filter((app, i) => [2, 4, 6].includes(i));
+
+                return system.loadAppStore()
+                    .then((apps) => {
+                        expect(apps).toEqual(expectedApps);
+                    });
+            });
+        });
+
+        describe('with version 2.25', () => {
+            beforeEach(() => {
+                system.setSystemInfo({
+                    version: '2.25',
+                });
+            });
+
+            it('should return the compatible apps from the API', () => {
+                // Apps 1, 2, 4, 5 and 6 are compatible with 2.25
+                const expectedApps = fixtures.get('/appStore').filter((app, i) => [1, 2, 4, 5, 6].includes(i));
+
+                return system.loadAppStore()
+                    .then((apps) => {
+                        expect(apps).toEqual(expectedApps);
+                    });
+            });
+        });
+
+        it('should return the compatible apps', () => {
+            // const returnedApps = fixtures.get('/appStore');
+
+            const returnedApps = [
                 {
-                    versions: [
-                        { min_platform_version: '2.13', max_platform_version: '2.20' },
-                        { min_platform_version: '2.20' },
+                    versions: [ // One version compatible
+                        { min_platform_version: sysVersionMinusTwo, max_platform_version: sysVersionMinusOne },
+                        { min_platform_version: sysVersionMinusOne }, // compatible
                     ],
                 },
                 {
-                    versions: [
-                        { min_platform_version: '2.25', max_platform_version: '2.26' },
-                        { min_platform_version: '2.26' },
+                    versions: [ // Both incompatible
+                        { min_platform_version: sysVersionPlusOne, max_platform_version: sysVersionPlusTwo },
+                        { min_platform_version: sysVersionPlusTwo },
                     ],
                 },
                 {
-                    versions: [
-                        { min_platform_version: '2.21' },
+                    versions: [ // Compatible
+                        { min_platform_version: sysVersionMinusOne },
                     ],
                 },
                 {
-                    versions: [
-                        { max_platform_version: '2.19' },
+                    versions: [ // Incompatible
+                        { max_platform_version: sysVersionMinusOne },
+                    ],
+                },
+                {
+                    versions: [ // One version compatible
+                        { minDhisVersion: sysVersionMinusTwo, maxDhisVersion: sysVersionMinusOne },
+                        { minDhisVersion: sysVersionMinusOne }, // compatible
+                    ],
+                },
+                {
+                    versions: [ // Both incompatible
+                        { minDhisVersion: sysVersionPlusOne, maxDhisVersion: sysVersionPlusTwo },
+                        { minDhisVersion: sysVersionPlusTwo },
+                    ],
+                },
+                {
+                    versions: [ // Compatible
+                        { minDhisVersion: sysVersionMinusOne },
+                    ],
+                },
+                {
+                    versions: [ // Incompatible
+                        { maxDhisVersion: sysVersionMinusOne },
                     ],
                 },
             ];
@@ -276,13 +339,13 @@ describe('System', () => {
 
             return system.loadAppStore()
                 .then((apps) => {
-                    expect(apps.apps.length).toBe(2);
+                    expect(apps.length).toBe(4);
                 });
         });
 
         it('should return all the apps when compatibility flag is set to false', () => system.loadAppStore(false)
             .then((apps) => {
-                expect(apps.apps.length).toBe(fixtures.get('/appStore').apps.length);
+                expect(apps.length).toBe(fixtures.get('/appStore').length);
             }));
 
         it('should reject the promise when the request fails', () => {
@@ -465,10 +528,9 @@ describe('System', () => {
 
         beforeEach(() => {
             jest.spyOn(System, 'compareVersions');
-
             appVersion = {
-                min_platform_version: '2.22',
-                max_platform_version: '2.23-SNAPSHOT',
+                min_platform_version: '2.23',
+                max_platform_version: '2.23',
             };
             systemVersion = '2.23';
         });
@@ -477,12 +539,18 @@ describe('System', () => {
             System.compareVersions.mockRestore();
         });
 
-        it('should return false when the app is not new enough', () => {
-            expect(System.isVersionCompatible(systemVersion, appVersion)).toBe(false);
+        it('should return false when the app is too new', () => {
+            expect(System.isVersionCompatible(
+                systemVersion,
+                Object.assign(appVersion, { min_platform_version: '2.24' }),
+            )).toBe(false);
         });
 
         it('should return false when the app is too old', () => {
-            expect(System.isVersionCompatible(systemVersion, appVersion)).toBe(false);
+            expect(System.isVersionCompatible(
+                systemVersion,
+                Object.assign(appVersion, { max_platform_version: '2.22' }),
+            )).toBe(false);
         });
 
         it('should return true when the system version is within the app version range', () => {
@@ -503,6 +571,51 @@ describe('System', () => {
                 min_platform_version: '2.17',
                 max_platform_version: '2.20',
             })).toBe(false);
+        });
+
+
+        describe('with 2.28 app version format', () => {
+            beforeEach(() => {
+                appVersion = {
+                    minDhisVersion: '2.22',
+                    maxDhisVersion: '2.23-SNAPSHOT',
+                };
+                systemVersion = '2.23';
+            });
+
+            it('should return false when the app is too new', () => {
+                expect(System.isVersionCompatible(
+                    systemVersion,
+                    Object.assign(appVersion, { minDhisVersion: '2.24' }),
+                )).toBe(false);
+            });
+
+            it('should return false when the app is too old', () => {
+                expect(System.isVersionCompatible(
+                    systemVersion,
+                    Object.assign(appVersion, { maxDhisVersion: '2.22' }),
+                )).toBe(false);
+            });
+
+            it('should return true when the system version is within the app version range', () => {
+                appVersion.minDhisVersion = '2.20';
+                appVersion.maxDhisVersion = '2.25';
+
+                expect(System.isVersionCompatible(systemVersion, appVersion));
+            });
+
+            it('should return true when no version bounds are given', () => {
+                appVersion = {};
+
+                expect(System.isVersionCompatible(systemVersion, appVersion)).toBe(true);
+            });
+
+            it('should return false when the version is not compatible', () => {
+                expect(System.isVersionCompatible('2.22', {
+                    minDhisVersion: '2.17',
+                    maxDhisVersion: '2.20',
+                })).toBe(false);
+            });
         });
     });
 

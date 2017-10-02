@@ -7,6 +7,8 @@ import { isString } from '../lib/check';
  *
  * @description
  * Handles communication with the userSettings endpoint. Can be used to get or save userSettings.
+ *
+ * @memberof module:current-user
  */
 
 class UserSettings {
@@ -19,8 +21,6 @@ class UserSettings {
     }
 
     /**
-     * @method all
-     *
      * @returns {Promise} Promise that resolves with the usersettings object from the api.
      *
      * @description
@@ -40,8 +40,6 @@ class UserSettings {
     }
 
     /**
-     * @method get
-     *
      * @param {String} key The identifier of the user setting that should be retrieved.
      * @returns {Promise} A promise that resolves with the value or will fail if the value is not available.
      *
@@ -86,8 +84,6 @@ class UserSettings {
     }
 
     /**
-     * @method set
-     *
      * @param {String} key The identifier of the user setting that should be saved.
      * @param {String} value The new value of the user setting.
      * @returns {Promise} A promise that will resolve when the new value has been saved, or fail if saving fails.

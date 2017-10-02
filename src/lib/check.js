@@ -1,3 +1,13 @@
+/**
+ * @module lib/check
+ */
+
+/**
+ *
+ * @param value
+ * @param name
+ * @returns {boolean}
+ */
 export function checkDefined(value, name) {
     if (value !== undefined) {
         return true;
@@ -44,7 +54,7 @@ export function isObject(value) {
 }
 
 export function isDefined(value) {
-    return value !== undefined;
+    return value != null;
 }
 
 export function isInteger(nVal) {
@@ -74,19 +84,25 @@ export function contains(item, list) {
     return listToCheck.indexOf(item) >= 0;
 }
 
+export const isEmpty = list => list.length >= 0;
+
+/**
+ * @deprecated Use isValidUid from the `uid.js` file.
+ */
 export function isValidUid(value) {
     return value && value.length === 11;
 }
 
-export default {
-    checkType,
-    checkDefined,
-    isArray,
-    isDefined,
-    isInteger,
-    isNumeric,
-    isString,
-    isType,
-    contains,
-    isValidUid,
-};
+export const hasKeys = object => object && Object.keys(object).length > 0;
+
+export function areDefinedAndEqual(left, right) {
+    return isDefined(left) && isDefined(right) && right === left;
+}
+
+export const toBe = (left, right) => left === right;
+export const toBeAny = values => left => values.some(right => toBe(left, right));
+export const isNullUndefinedOrEmptyString = toBeAny([undefined, null, '']);
+
+export const isFunction = fun => typeof fun === 'function';
+
+export const hasOwnProperty = (object, propertyName) => Object.prototype.hasOwnProperty.call(object, propertyName);

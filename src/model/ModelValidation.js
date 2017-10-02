@@ -4,7 +4,9 @@ import Api from '../api/Api';
 import { getOwnedPropertyJSON } from './helpers/json';
 
 /**
- * @class ModelValidation
+ * Handles validation of Model objects based on their modelDefinition.
+ *
+ * @memberof module:model
  */
 class ModelValidation {
     constructor(providedLogger) {
@@ -13,8 +15,7 @@ class ModelValidation {
     }
 
     /**
-     * @deprecated
-     * @method validate
+     * @deprecated Client side model validation is deprecated in favour of server side validation only.
      *
      * @returns {{status: boolean, messages: Array}} Returns {status: true, messages: []}
      */
@@ -24,17 +25,14 @@ class ModelValidation {
     }
 
     /**
-     * @method validateAgainstSchema
+     * Sends a POST request against the `api/schemas` endpoint to check if the model is valid.
      *
      * @param {Model} model The model that should be validated.
      * @returns {Array} Returns an array with validation messages if there are any.
      *
-     * @description
-     * Sends a POST request against the `api/schemas` endpoint to check if the model is valid.
-     *
      * @note {warn} Currently only checks
      */
-    validateAgainstSchema(model) {
+    validateAgainstSchema(model) { // eslint-disable-line class-methods-use-this
         if (!(model && model.modelDefinition && model.modelDefinition.name)) {
             return Promise.reject('model.modelDefinition.name can not be found');
         }
@@ -61,14 +59,10 @@ class ModelValidation {
     }
 
     /**
-     * @method getModelValidation
-     * @static
-     *
-     * @returns {ModelValidation} New or memoized instance of `ModelInstance`
-     *
-     * @description
      * Returns the `ModelValidation` singleton. Creates a new one if it does not yet exist.
      * Grabs a logger instance by calling `Logger.getLogger`
+     *
+     * @returns {ModelValidation} New or memoized instance of `ModelInstance`
      */
     static getModelValidation() {
         if (this.modelValidation) {

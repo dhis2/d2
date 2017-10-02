@@ -1,4 +1,7 @@
-// TODO: Most of these functions should be moved out to d2-utilizr
+/**
+ * @module lib/utils
+ */
+
 
 export function throwError(message) {
     throw new Error(message);
@@ -31,14 +34,33 @@ export function copyOwnProperties(to, from) {
     return to;
 }
 
-export function pick(property) {
-    return (item) => {
-        if (item) {
-            return item[property];
-        }
-        return undefined;
-    };
+/**
+ * Curried get function to pick a property from an object
+ * Will safely pick a property from an object and guards against the infamous "can not read property of undefined".
+ *
+ * @param {String} propertyPath
+ * @param {Any} defaultValue A default value to be returned when no value was found at the path
+ * @returns Function
+ *
+ * get :: String -> Object -> Any
+ */
+export function pick(propertyPath) {
+    const propertiesToGet = propertyPath.split('.');
+
+    return item => propertiesToGet
+        .reduce((result, property) => {
+            if (result) {
+                return result[property];
+            }
+            return undefined;
+        }, item);
 }
+
+export const pickOr = (pathProperty, defaultValue) => (item) => {
+    const pathResult = pick(pathProperty)(item);
+
+    return pathResult !== undefined ? pathResult : defaultValue;
+};
 
 export class Deferred {
     constructor() {
@@ -58,7 +80,7 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
-    const apiUrlWithVersionRexExp = /api\/(2[3-9])/;
+    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])/;
     const apiVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
 
     const baseUrlHasVersion = apiVersionMatch && apiVersionMatch[1];
@@ -86,4 +108,8 @@ export function customEncodeURIComponent(uri) {
     // return uri;
     return encodeURIComponent(uri)
         .replace(whitelistRegExp, decodeURIComponent);
+}
+
+export function identity(value) {
+    return value;
 }
