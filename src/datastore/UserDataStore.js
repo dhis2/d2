@@ -1,4 +1,3 @@
-import { isArray } from '../lib/check';
 import BaseStore from './BaseStore';
 import UserDataStoreNamespace from './UserDataStoreNamespace';
 import Api from '../api/Api';
@@ -7,22 +6,33 @@ import Api from '../api/Api';
  * @augments module:datastore.BaseStore
  * @description
  * Represents the UserDataStore that can be interacted with. This can be used to get instances of UserDataStoreNamespace, which
- * can be used to interact with the {@link module:datastore.UserDataStoreNamespace namespace API}.
+ * can be used to interact with the {@link module:current-user.UserDataStoreNamespace namespace API}.
  *
  * The store is a key-value store, where a namespace contains a list of keys, and
- * a key corresponds to an arbitrary JSON-object.
+ * a key corresponds to an arbitrary JSON-object. The store is per-user, and only the currently logged-in user
+ * has access to the namespaces.
  *
- * @example
+ * Note that a namespace cannot exist without at least one key-value pair, for this reason
+ * there is no 'create'- method. It is therefore advised to call {@link module:current-user.UserDataStore#get get} with
+ * <code>autoLoad = false</code> if you are creating a namespace (in combination with {@link module:current-user.UserDataStoreNamespace#set set})
+ * (or you will get a 404-error in the console, as it tries to load a namespace that does not exist).
+ *
+ * @example <caption>Getting a value with promise-syntax</caption>
  * import { init } from 'd2';
  *
- * init({baseUrl: '/dhis/api'})
+ * init({baseUrl: 'https://play.dhis2.org/demo/api'})
  *   .then((d2) => {
  *     d2.userDataStore.get('namespace').then(namespace => {
  *          namespace.get('key').then(value => console.log(value))
  *      });
  *   });
  *
- * @memberof module:datastore
+ * @example <caption>Creation of namespace with async-syntax</caption>
+ * const namespace = await d2.userDataStore.get('new namespace', false);
+ * // The namespace is not actually created on the server before this is called
+ * await namespace.set('new key', value);
+ *
+ * @memberof module:current-user
  */
 class UserDataStore extends BaseStore {
     constructor(api = Api.getApi(), endPoint = 'dataStore') {
@@ -32,16 +42,7 @@ class UserDataStore extends BaseStore {
     /**
      * @description
      * Retrieves a list of keys for the given namespace, and returns an instance of UserDataStoreNamespace that
-     * may be used to interact with this namespace. See {@link module:datastore.UserDataStoreNamespace UserDataStoreNamespace}.
-     *
-     * Note that a namespace cannot exist without at least one key-value pair, for this reason
-     * there is no 'create'- method. It is therefore advised to call this method with autoLoad = false
-     * if you are creating a namespace (or you will get a 404-error in the console, as it
-     * tries to load a namespace that does not exist).
-     *
-     * @example <caption>Creation of namespace</caption>
-     * const namespace = await d2.userDataStore.get('new namespace', false);
-     * await namespace.set('new key', value);
+     * may be used to interact with this namespace. See {@link module:current-user.UserDataStoreNamespace UserDataStoreNamespace}.
      *
      * @param {string} namespace - Namespace to get.
      * @param {boolean=} [autoLoad=true] - If true, autoloads the keys of the namespace from the server
@@ -51,26 +52,7 @@ class UserDataStore extends BaseStore {
      * @returns {Promise<UserDataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true) {
-        if (!autoLoad) {
-            return new Promise((resolve) => {
-                resolve(new UserDataStoreNamespace(namespace, null, this.api, this.endPoint));
-            });
-        }
-
-        return this.api.get([this.endPoint, namespace].join('/'))
-            .then((response) => {
-                if (response && isArray(response)) {
-                    return new UserDataStoreNamespace(namespace, response, this.api, this.endPoint);
-                }
-                throw new Error('The requested namespace has no keys or does not exist.');
-            }).catch((e) => {
-                if (e.httpStatusCode === 404) {
-                    // If namespace does not exist, provide an instance of UserDataStoreNamespace
-                    // so it's possible to interact with the namespace.
-                    return new UserDataStoreNamespace(namespace, null, this.api, this.endPoint);
-                }
-                throw e;
-            });
+        return super.get(namespace, autoLoad, UserDataStoreNamespace);
     }
 
     /**

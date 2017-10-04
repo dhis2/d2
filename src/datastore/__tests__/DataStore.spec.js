@@ -28,6 +28,7 @@ describe('DataStore', () => {
             });
         });
 
+
         it('should return a datastorenamespace with keys if it exists', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(keys));
 
@@ -37,7 +38,8 @@ describe('DataStore', () => {
             }));
         });
 
-        it('should not request API if autoload is false', () => dataStore.get('DHIS', false).then(() => {
+        it('should not request API if autoload is false', () => dataStore.get('DHIS', false).then((res) => {
+            expect(res).toBeInstanceOf(DataStoreNamespace);
             expect(apiMock.get).not.toHaveBeenCalled();
         }));
 

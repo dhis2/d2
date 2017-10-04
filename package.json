@@ -74,8 +74,6 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/__fixtures__/"
-    ],
-    "testPathIgnorePatterns": [
-      ]
+    ]
   }
 }

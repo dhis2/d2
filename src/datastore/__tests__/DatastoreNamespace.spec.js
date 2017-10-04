@@ -129,6 +129,7 @@ describe('DataStoreNamespace', () => {
         const valueData = 'value';
         beforeEach(() => {
             jest.spyOn(namespace, 'update');
+            jest.spyOn(namespace, 'set');
         });
 
         it('should call the api with correct url', (done) => {
@@ -165,6 +166,18 @@ describe('DataStoreNamespace', () => {
                 expect(namespace.keys).toEqual(arr.concat(key));
                 done();
             }).catch(e => done(e));
+        });
+
+        it('should work with encrypt = true', async () => {
+            const encryptedVal = {
+                prop: 'am encrypted',
+            };
+            await namespace.set('encrypt', encryptedVal, false, true);
+
+            const calls = apiMock.post.mock.calls;
+            expect(namespace.set).toHaveBeenCalledWith('encrypt', encryptedVal, false, true);
+
+            expect(calls[calls.length - 1][0]).toContain('encrypt'); // last call with arg0
         });
     });
 

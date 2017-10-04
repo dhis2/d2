@@ -8,7 +8,7 @@ import Api from '../api/Api';
 /**
  * @private
  * @description
- * Represents a store that can be interacted with. This can be used to get instances of Namespaces, which
+ * Represents a key-value store that can be interacted with. This can be used to get instances of Namespaces, which
  * can be used to interact with the relating namespace API.
  *
  * @memberof module:datastore
@@ -31,8 +31,27 @@ class BaseStore {
      *  Default true
      * @returns {Promise<BaseStoreNamespace>} An instance of a current store-Namespace-instance representing the namespace that can be interacted with.
      */
-    get(namespace, autoLoad = true) { // eslint-disable-line no-unused-vars, class-methods-use-this
-        throw new Error('Must be implemented by subclass.');
+    get(namespace, autoLoad = true, RetClass) { // eslint-disable-line no-unused-vars, class-methods-use-this
+        if (!autoLoad) {
+            return new Promise((resolve) => {
+                resolve(new RetClass(namespace));
+            });
+        }
+
+        return this.api.get([this.endPoint, namespace].join('/'))
+            .then((response) => {
+                if (response && isArray(response)) {
+                    return new RetClass(namespace, response);
+                }
+                throw new Error('The requested namespace has no keys or does not exist.');
+            }).catch((e) => {
+                if (e.httpStatusCode === 404) {
+                    // If namespace does not exist, provide an instance of UserDataStoreNamespace
+                    // so it's possible to interact with the namespace.
+                    return new RetClass(namespace);
+                }
+                throw e;
+            });
     }
 
 

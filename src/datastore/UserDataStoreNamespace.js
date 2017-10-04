@@ -10,7 +10,7 @@ import BaseStoreNamespace from './BaseStoreNamespace';
  * @property {array} keys an array of the loaded keys.
  * @property {string} namespace Name of the namespace as on the server.
  *
- * @memberof module:datastore
+ * @memberof module:current-user
  */
 class UserDataStoreNamespace extends BaseStoreNamespace {
     constructor(namespace, keys, api = Api.getApi(), endPoint = 'userDataStore') {

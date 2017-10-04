@@ -1,7 +1,7 @@
 import Api from '../api/Api';
 import BaseStoreNamespace from './BaseStoreNamespace';
+
 /**
- *
  * @augments module:datastore.BaseStoreNamespace
  * @description
  * Represents a namespace in the dataStore that can be used to be used to interact with
@@ -27,4 +27,5 @@ class DataStoreNamespace extends BaseStoreNamespace {
         );
     }
 }
+
 export default DataStoreNamespace;

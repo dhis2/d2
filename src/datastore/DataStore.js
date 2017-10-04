@@ -1,4 +1,3 @@
-import { isArray } from '../lib/check';
 import BaseStore from './BaseStore';
 import DataStoreNamespace from './DataStoreNamespace';
 import Api from '../api/Api';
@@ -12,7 +11,7 @@ import Api from '../api/Api';
  * @example
  * import { init } from 'd2';
  *
- * init({baseUrl: '/dhis/api'})
+ * init({baseUrl: 'https://play.dhis2.org/demo/api'})
  *   .then((d2) => {
  *     d2.dataStore.get('namespace').then(namespace => {
  *          namespace.get('key').then(value => console.log(value))
@@ -46,26 +45,7 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true) {
-        if (!autoLoad) {
-            return new Promise((resolve) => {
-                resolve(new DataStoreNamespace(namespace));
-            });
-        }
-
-        return this.api.get([this.endPoint, namespace].join('/'))
-            .then((response) => {
-                if (response && isArray(response)) {
-                    return new DataStoreNamespace(namespace, response);
-                }
-                throw new Error('The requested namespace has no keys or does not exist.');
-            }).catch((e) => {
-                if (e.httpStatusCode === 404) {
-                    // If namespace does not exist, provide an instance of UserDataStoreNamespace
-                    // so it's possible to interact with the namespace.
-                    return new DataStoreNamespace(namespace);
-                }
-                throw e;
-            });
+        return super.get(namespace, autoLoad, DataStoreNamespace);
     }
 
     /**

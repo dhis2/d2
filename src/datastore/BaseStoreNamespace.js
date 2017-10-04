@@ -28,7 +28,17 @@ class BaseStoreNamespace {
         }
 
         this.api = api;
+
+        /**
+         * The name of the namespace
+         * @type {string}
+         */
         this.namespace = namespace;
+
+        /**
+         * an array of the loaded keys.
+         * @type {string[]}
+         */
         this.keys = keys || [];
         this.endPoint = endPoint;
     }
@@ -69,19 +79,21 @@ class BaseStoreNamespace {
      * Sets the value of given key to given value.
      *
      * This will also create a new namespace on the API-end if it does not exist.
-     * If the key exists {@link #update update} will be called.
+     * If the key exists <a href='#update'> update</a> will be called, unless <code>overrideUpdate</code> equals
+     * true.
      *
      * @param key - key in this namespace to update.
      * @param value - value to be set.
      * @param [overrideUpdate=false] - If true a post-request is sent even if key exists.
+     * @param [encrypt=false] - If the value should be encrypted on the server.
      * @returns {Promise} - the response body from the {@link module:api.Api#get API}.
      */
-    set(key, value, overrideUpdate = false) {
+    set(key, value, overrideUpdate = false, encrypt = false) {
         if (!overrideUpdate && this.keys.includes(key)) {
             return this.update(key, value);
         }
-
-        return this.api.post([this.endPoint, this.namespace, key].join('/'), value).then((resp) => {
+        const queryParams = encrypt === true ? '?encrypt=true' : '';
+        return this.api.post([this.endPoint, this.namespace, key + queryParams].join('/'), value).then((resp) => {
             this.keys = [...this.keys, key];
             return resp;
         });
