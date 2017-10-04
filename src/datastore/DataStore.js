@@ -1,19 +1,16 @@
-/**
- * @module datastore
- */
-
 import { isArray } from '../lib/check';
 import BaseStore from './BaseStore';
 import DataStoreNamespace from './DataStoreNamespace';
 import Api from '../api/Api';
 
 /**
+ * @augments module:datastore.BaseStore
  * @description
  * Represents the dataStore that can be interacted with. This can be used to get instances of UserDataStoreNamespace, which
- * can be used to interact with the namespace API.
+ * can be used to interact with the {@link module:datastore.DataStoreNamespace namespace API}.
  *
  * @example
- * import init from 'd2';
+ * import { init } from 'd2';
  *
  * init({baseUrl: '/dhis/api'})
  *   .then((d2) => {
@@ -32,7 +29,7 @@ class DataStore extends BaseStore {
     /**
      * @description
      * Retrieves a list of keys for the given namespace, and returns an instance of UserDataStoreNamespace that
-     * may be used to interact with this namespace. See {@link DataStoreNamespace}.
+     * may be used to interact with this namespace. See {@link module:datastore.DataStoreNamespace DataStoreNamespace}.
      *
      * Note that a namespace cannot exist without at least one key-value pair, for this reason
      * there is no 'create'- method. It is therefore advised to call this method with autoLoad = false
@@ -45,8 +42,7 @@ class DataStore extends BaseStore {
      *
      * @param namespace to get.
      * @param autoLoad if true, autoloads the keys of the namespace from the server
-     * before the namespace is created. If false, an instance of he namespace is returned without any keys.
-     *  Default true
+     * before the namespace is created. If false, an instance of the namespace is returned without any keys.
      * @returns {Promise<DataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true) {

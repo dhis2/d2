@@ -76,7 +76,6 @@
       "/__fixtures__/"
     ],
     "testPathIgnorePatterns": [
-      ".*\\.e2e\\.jsx?$"
-    ]
+      ]
   }
 }
