@@ -13,6 +13,7 @@ describe('DataStoreNamespace', () => {
 
         namespace = new DataStoreNamespace('DHIS', keys, apiMock);
 
+        apiMock.get.mockReturnValue(Promise.resolve());
         apiMock.post.mockReturnValue(Promise.resolve());
         apiMock.update.mockReturnValue(Promise.resolve());
         apiMock.delete.mockReturnValue(Promise.resolve());
@@ -39,6 +40,10 @@ describe('DataStoreNamespace', () => {
 
     describe('getKeys()', () => {
         const refreshedKeys = keys.concat('newkey');
+        beforeEach(() => {
+            apiMock.get.mockClear();
+            apiMock.get.mockReturnValue(Promise.resolve(keys));
+        });
 
         it('should return an array of keys', (done) => {
             namespace.getKeys().then((res) => {
@@ -47,10 +52,12 @@ describe('DataStoreNamespace', () => {
             }).catch(e => done(e));
         });
 
-        it('should not call remote api if forceload is false or not present', () => namespace.getKeys().then((res) => {
-            expect(res).toEqual(keys);
-            expect(apiMock.get).not.toHaveBeenCalled();
-        }));
+        it('should be backwards compatible with getKeys(false), but send request either way', () => {
+            namespace.getKeys().then((res) => {
+                expect(res).toEqual(keys);
+                expect(apiMock.get).toHaveBeenCalled();
+            });
+        });
 
         it('should call remote api if forceload is true and update internal array', (done) => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(refreshedKeys));

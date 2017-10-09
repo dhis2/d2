@@ -50,19 +50,14 @@ class BaseStoreNamespace {
      * response from API.
      * @returns {Promise} - The internal list of keys for current namespace.
      */
-    getKeys(forceLoad = false) {
-        if (!forceLoad) {
-            return Promise.resolve(this.keys);
-        }
-
-        return this.api.get([this.endPoint, this.namespace].join('/'))
-            .then((response) => {
-                if (response && isArray(response)) {
-                    this.keys = response;
-                    return response;
-                }
-                throw new Error('The requested namespace has no keys or does not exist.');
-            });
+    getKeys() {
+        return this.api.get([this.endPoint, this.namespace].join('/')).then((response) => {
+            if (response && isArray(response)) {
+                this.keys = response;
+                return response;
+            }
+            return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
+        });
     }
 
     /**
@@ -82,8 +77,8 @@ class BaseStoreNamespace {
      * If the key exists <a href='#update'> update</a> will be called, unless <code>overrideUpdate</code> equals
      * true.
      *
-     * @param key - key in this namespace to update.
-     * @param value - value to be set.
+     * @param key - key in this namespace to set.
+     * @param value - JSON-value to be set.
      * @param [overrideUpdate=false] - If true a post-request is sent even if key exists.
      * @param [encrypt=false] - If the value should be encrypted on the server.
      * @returns {Promise} - the response body from the {@link module:api.Api#get API}.

@@ -11,7 +11,7 @@ describe('UserDataStore', () => {
     beforeAll(async () => {
         d2 = await init({ baseUrl: 'https://play.dhis2.org/demo/api', schemas: [], headers: { authorization: credentials } });
         store = d2.currentUser.dataStore;
-        namespace = await store.get('namespace');
+        namespace = await store.create('namespace');
     });
 
     afterAll(async () => {
@@ -40,11 +40,11 @@ describe('UserDataStore', () => {
 
     describe('getAll()', () => {
         it('should work async', async () => {
-            const newNamespace = await d2.currentUser.dataStore.get('new namespace');
+            const newNamespace = await store.create('new namespace');
             const stringVal = 'a random string';
             await newNamespace.set('key', stringVal);
 
-            const namespaces = await d2.currentUser.dataStore.getAll();
+            const namespaces = await store.getAll();
             const serverVal = await newNamespace.get('key');
 
             expect(namespaces).toContain(newNamespace.namespace);
@@ -56,13 +56,13 @@ describe('UserDataStore', () => {
 
     describe('delete()', () => {
         it('should work async', async () => {
-            const newNamespace = await store.get('new namespace');
+            const newNamespace = await store.create('new namespace');
             const stringVal = 'a random string';
             await newNamespace.set('key', stringVal);
 
             await store.delete('new namespace');
-            const deletedNamespace = await store.get('new namespace', false);
-            expect(deletedNamespace.keys).toHaveLength(0);
+            // should throw as it does not exist
+            await expect(store.get('new namespace')).rejects.toBeDefined();
         });
     });
 });

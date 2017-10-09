@@ -15,6 +15,15 @@
   - `contentType` corresponds to the `Content-Type` header:
     - Before: `api.post(url, data, { contentType: 'text' })`
     - Now: `api.post(url, data, { headers: { 'Content-Type': 'text/plain' }})`
+- `d2.dataStore` API has changed in order to be more streamlined and easier to use:
+    - `d2.dataStore.create()` has been added to be able to ensure a new (empty) namespace.
+    - `d2.dataStore.get()` now rejects if the namespace does not exist.
+    - `d2.dataStore.getKeys()` now always fetches from the server, use `d2.dataStore.keys`-member to get a list of 
+    internal-keys in a synchronous way.
+    
+##### Added
+
+- `d2.currentUser.dataStore` has been added, and is a wrapper around UserDataStore. The API shares most functionality with `d2.dataStore`.
 
 
 ## 27.0.0

@@ -27,25 +27,37 @@ class DataStore extends BaseStore {
 
     /**
      * @description
-     * Retrieves a list of keys for the given namespace, and returns an instance of UserDataStoreNamespace that
+     * Tries to get the given namespace from the server, and returns an instance of DataStore that
      * may be used to interact with this namespace. See {@link module:datastore.DataStoreNamespace DataStoreNamespace}.
      *
-     * Note that a namespace cannot exist without at least one key-value pair, for this reason
-     * there is no 'create'- method. It is therefore advised to call this method with autoLoad = false
-     * if you are creating a namespace (or you will get a 404-error in the console, as it
-     * tries to load a namespace that does not exist).
-     *
-     * @example <caption>Creation of namespace</caption>
-     * d2.dataStore.get('new namespace', false).then(namespace => {
+     * @example <caption>Getting a namespace</caption>
+     * d2.dataStore.get('namespace').then(namespace => {
      *     namespace.set('new key', value);
-     *
-     * @param namespace to get.
-     * @param autoLoad if true, autoloads the keys of the namespace from the server
-     * before the namespace is created. If false, an instance of the namespace is returned without any keys.
-     * @returns {Promise<DataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
+     *});
+     * @param namespace - Namespace to get.
+     * @param [autoLoad=true] If true, autoloads the keys of the namespace from the server.
+     * If false, an instance of the namespace is returned without any keys (no request is sent to the server).
+     * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with,
+     * or an error if namespace exists.
      */
     get(namespace, autoLoad = true, RetClass = DataStoreNamespace) {
         return super.get(namespace, autoLoad, RetClass);
+    }
+
+    /**
+     * Creates a namespace. Ensures that the namespace does not exists on the server.
+     * Note that for the namespace to be saved on the server, you need to call {@link module:datastore.DataStoreNamespace#set set}.
+     *
+     * @example <caption>Creating a namespace</caption>
+     * d2.dataStore.create('new namespace').then(namespace => {
+     *     namespace.set('new key', value);
+     * });
+     * @param {string} namespace The namespace to create.
+     * @returns {Promise<DataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
+     * an error if namespace exists.
+     */
+    create(namespace, RetClass = DataStoreNamespace) {
+        return super.create(namespace, RetClass);
     }
 
     /**

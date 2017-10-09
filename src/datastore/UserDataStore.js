@@ -13,46 +13,65 @@ import Api from '../api/Api';
  * has access to the namespaces.
  *
  * Note that a namespace cannot exist without at least one key-value pair, for this reason
- * there is no 'create'- method. It is therefore advised to call {@link module:current-user.UserDataStore#get get} with
- * <code>autoLoad = false</code> if you are creating a namespace (in combination with {@link module:current-user.UserDataStoreNamespace#set set})
- * (or you will get a 404-error in the console, as it tries to load a namespace that does not exist).
+ * you need to call {@link module:current-user.UserDataStoreNamespace#set set} after {@link UserDataStore#create create} to save a namespace
+ * with a key and a value.
  *
  * @example <caption>Getting a value with promise-syntax</caption>
  * import { init } from 'd2';
  *
  * init({baseUrl: 'https://play.dhis2.org/demo/api'})
  *   .then((d2) => {
- *     d2.userDataStore.get('namespace').then(namespace => {
+ *     d2.currentUser.dataStore.get('namespace').then(namespace => {
  *          namespace.get('key').then(value => console.log(value))
  *      });
  *   });
  *
  * @example <caption>Creation of namespace with async-syntax</caption>
- * const namespace = await d2.userDataStore.get('new namespace', false);
- * // The namespace is not actually created on the server before this is called
+ * const namespace = await d2.currentUser.dataStore.create('new namespace', false);
+ * // The namespace is not actually created on the server before 'set' is called
  * await namespace.set('new key', value);
  *
  * @memberof module:current-user
  */
 class UserDataStore extends BaseStore {
-    constructor(api = Api.getApi(), endPoint = 'dataStore') {
+    constructor(api = Api.getApi(), endPoint = 'userDataStore') {
         super(api, endPoint);
     }
 
     /**
      * @description
-     * Retrieves a list of keys for the given namespace, and returns an instance of UserDataStoreNamespace that
+     * Tries to get the given namespace from the server, and returns an instance of 'UserDataStore' that
      * may be used to interact with this namespace. See {@link module:current-user.UserDataStoreNamespace UserDataStoreNamespace}.
      *
-     * @param {string} namespace - Namespace to get.
-     * @param {boolean=} [autoLoad=true] - If true, autoloads the keys of the namespace from the server
-     * before the namespace is created. If false, an instance of he namespace is returned without any keys.
+     * @example <caption>Getting a namespace</caption>
+     * d2.currentUser.dataStore.get('namespace').then(namespace => {
+     *     namespace.set('new key', value);
+     *}); See {@link module:current-user.UserDataStoreNamespace UserDataStoreNamespace}.
      *
+     * @param {string} namespace - Namespace to get.
+     * @param {boolean} [autoLoad=true] - If true, autoloads the keys of the namespace from the server.
+     * If false, an instance of the namespace is returned without any keys (no request is sent to the server).
      *
      * @returns {Promise<UserDataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true, RetClass = UserDataStoreNamespace) {
         return super.get(namespace, autoLoad, RetClass);
+    }
+
+    /**
+     * Creates a namespace. Ensures that the namespace does not exists on the server.
+     * Note that for the namespace to be saved on the server, you need to call {@link module:current-user.UserDataStoreNamespace#set set}.
+     *
+     * @example <caption>Creating a namespace</caption>
+     * d2.currentUser.dataStore.create('new namespace').then(namespace => {
+     *     namespace.set('new key', value);
+     * });
+     * @param {string} namespace The namespace to create.
+     * @returns {Promise<UserDataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
+     * an error if namespace exists.
+     */
+    create(namespace, RetClass = UserDataStoreNamespace) {
+        return super.create(namespace, RetClass);
     }
 
     /**

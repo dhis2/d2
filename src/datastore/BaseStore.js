@@ -22,13 +22,14 @@ class BaseStore {
 
     /**
      * @description
-     * Retrieves a list of keys for the given namespace, and returns an instance of UserDataStoreNamespace that
+     * Tries to get the given namespace from the server, and returns an instance of 'RetClass' that
      * may be used to interact with this namespace. See {@link DataStoreNamespace}.
      *
-     * @param namespace to get.
-     * @param [autoLoad=true] If true, autoloads the keys of the namespace from the server.
+     * @param {string} namespace To get.
+     * @param {boolean} [autoLoad=true] If true, autoloads the keys of the namespace from the server.
      * before the namespace is created. If false, an instance of he namespace is returned without any keys.
      * @returns {Promise<BaseStoreNamespace>} An instance of a current store-Namespace-instance representing the namespace that can be interacted with.
+     * Or an error if namespace does not exist.
      */
     get(namespace, autoLoad = true, RetClass) { // eslint-disable-line no-unused-vars, class-methods-use-this
         if (!autoLoad) {
@@ -36,7 +37,6 @@ class BaseStore {
                 resolve(new RetClass(namespace));
             });
         }
-
         return this.api.get([this.endPoint, namespace].join('/'))
             .then((response) => {
                 if (response && isArray(response)) {
@@ -45,14 +45,7 @@ class BaseStore {
                     }
                     return new RetClass(namespace, response);
                 }
-                throw new Error('The requested namespace has no keys or does not exist.');
-            }).catch((e) => {
-                if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
-                    // If namespace does not exist, provide an instance of UserDataStoreNamespace
-                    // so it's possible to interact with the namespace.
-                    return new RetClass(namespace);
-                }
-                throw e;
+                return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
             });
     }
 
@@ -78,6 +71,27 @@ class BaseStore {
      */
     delete(namespace) {
         return this.api.delete([this.endPoint, namespace].join('/'));
+    }
+
+    /**
+     * Creates a namespace. Ensures that the namespace does not exists on the server.
+     * Note that for the namespace to be saved on the server, you need to call {@link module:dataStore.BaseStoreNamespace.set set}.
+     *
+     * @param {string} namespace The namespace to create.
+     * @returns {Promise<BaseStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
+     * an error if namespace exists.
+     */
+    create(namespace, RetClass) {
+        return this.get(namespace, true, RetClass).then(() =>
+            Promise.reject(new Error('Namespace already exists.')))
+            .catch((e) => {
+                if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
+                // If namespace does not exist, provide an instance of the respective Namespace
+                // so it's possible to interact with the namespace.
+                    return Promise.resolve(new RetClass(namespace));
+                }
+                return Promise.reject(e);
+            });
     }
 }
 

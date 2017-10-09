@@ -21,20 +21,21 @@ describe('DataStore', () => {
 
     describe('get()', () => {
         it('should return an instance of datastorenamespace', () => {
-            apiMock.get.mockReturnValueOnce(Promise.resolve(keys));
+            apiMock.get.mockReturnValueOnce(Promise.resolve(namespaces));
 
-            dataStore.get('DHIS').then((namespace) => {
+            return dataStore.get('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(DataStoreNamespace);
             });
         });
 
 
         it('should return a datastorenamespace with keys if it exists', () => {
-            apiMock.get.mockReturnValueOnce(Promise.resolve(keys));
+            apiMock.get.mockReturnValueOnce(Promise.resolve(namespaces))
+                .mockReturnValueOnce(Promise.resolve(keys));
 
             return dataStore.get('DHIS').then(namespace => namespace.getKeys().then((res) => {
                 expect(res).toEqual(keys);
-                expect(apiMock.get).toHaveBeenCalledTimes(1);
+                expect(apiMock.get).toHaveBeenCalledTimes(2);
             }));
         });
 
@@ -51,12 +52,13 @@ describe('DataStore', () => {
             });
         });
 
-        it('should return an instance of Datastorenamespace if it does not exist on server', () => {
-            apiMock.get.mockReturnValueOnce(Promise.reject({ httpStatusCode: 404 }));
+        it('should throw an error if namespace does not exist on server', () => {
+            const err = { httpStatusCode: 404 };
+            apiMock.get.mockReturnValueOnce(Promise.reject(err));
 
-            return dataStore.get('DHIS').then((namespace) => {
-                expect(namespace).toBeInstanceOf(DataStoreNamespace);
-            });
+            return expect(dataStore.get('DHIS').catch((e) => {
+                expect(e).toThrow();
+            })).rejects.toBeDefined();
         });
 
         it('should throw when error is not 404', () => {
@@ -134,6 +136,26 @@ describe('DataStore', () => {
 
         it('should return the same object when called twice', () => {
             expect(DataStore.getDataStore()).toBe(DataStore.getDataStore());
+        });
+    });
+
+    describe('create()', () => {
+        it('should return an instance of DataStoreNamespace if namespace do not exist', () => {
+            const error = { httpStatusCode: 404 };
+            apiMock.get.mockReturnValueOnce(Promise.reject(error));
+
+            return dataStore.create('DHIS').then((namespace) => {
+                expect(namespace).toBeInstanceOf(DataStoreNamespace);
+                expect(namespace.keys).toHaveLength(0);
+            });
+        });
+
+        it('should return an error if namespace exists', () => {
+            apiMock.get.mockReturnValueOnce(Promise.resolve(keys));
+
+            return dataStore.get('DHIS').then((namespace) => {
+                expect(namespace).toBeInstanceOf(DataStoreNamespace);
+            });
         });
     });
 });
