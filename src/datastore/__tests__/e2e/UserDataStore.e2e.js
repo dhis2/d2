@@ -6,15 +6,16 @@ describe('UserDataStore', () => {
     const credentials = `Basic ${btoa('admin:district')}`;
     let d2;
     let namespace;
+    let store;
 
     beforeAll(async () => {
         d2 = await init({ baseUrl: 'https://play.dhis2.org/demo/api', schemas: [], headers: { authorization: credentials } });
-        namespace = await d2.currentUser.dataStore.get('namespace');
-        await namespace.delete();
+        store = d2.currentUser.dataStore;
+        namespace = await store.get('namespace');
     });
 
     afterAll(async () => {
-        await namespace.delete();
+        await store.delete('namespace');
     });
 
     describe('get()', () => {
@@ -49,7 +50,19 @@ describe('UserDataStore', () => {
             expect(namespaces).toContain(newNamespace.namespace);
             expect(serverVal).toEqual(stringVal);
 
-            newNamespace.delete();
+            await store.delete('new namespace');
+        });
+    });
+
+    describe('delete()', () => {
+        it('should work async', async () => {
+            const newNamespace = await store.get('new namespace');
+            const stringVal = 'a random string';
+            await newNamespace.set('key', stringVal);
+
+            await store.delete('new namespace');
+            const deletedNamespace = await store.get('new namespace', false);
+            expect(deletedNamespace.keys).toHaveLength(0);
         });
     });
 });

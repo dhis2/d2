@@ -26,9 +26,8 @@ class BaseStore {
      * may be used to interact with this namespace. See {@link DataStoreNamespace}.
      *
      * @param namespace to get.
-     * @param autoLoad if true, autoloads the keys of the namespace from the server.
+     * @param [autoLoad=true] If true, autoloads the keys of the namespace from the server.
      * before the namespace is created. If false, an instance of he namespace is returned without any keys.
-     *  Default true
      * @returns {Promise<BaseStoreNamespace>} An instance of a current store-Namespace-instance representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true, RetClass) { // eslint-disable-line no-unused-vars, class-methods-use-this
@@ -41,11 +40,14 @@ class BaseStore {
         return this.api.get([this.endPoint, namespace].join('/'))
             .then((response) => {
                 if (response && isArray(response)) {
+                    if (response.length < 1) { // fix for api bug returning empty array instead of 404
+                        return Promise.reject(response);
+                    }
                     return new RetClass(namespace, response);
                 }
                 throw new Error('The requested namespace has no keys or does not exist.');
             }).catch((e) => {
-                if (e.httpStatusCode === 404) {
+                if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
                     // If namespace does not exist, provide an instance of UserDataStoreNamespace
                     // so it's possible to interact with the namespace.
                     return new RetClass(namespace);
@@ -53,7 +55,6 @@ class BaseStore {
                 throw e;
             });
     }
-
 
     /**
      * Retrieves a list of all namespaces on the server.

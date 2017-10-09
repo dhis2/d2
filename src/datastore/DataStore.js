@@ -44,8 +44,8 @@ class DataStore extends BaseStore {
      * before the namespace is created. If false, an instance of the namespace is returned without any keys.
      * @returns {Promise<DataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
-    get(namespace, autoLoad = true) {
-        return super.get(namespace, autoLoad, DataStoreNamespace);
+    get(namespace, autoLoad = true, RetClass = DataStoreNamespace) {
+        return super.get(namespace, autoLoad, RetClass);
     }
 
     /**

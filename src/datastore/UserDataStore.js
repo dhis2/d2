@@ -51,8 +51,8 @@ class UserDataStore extends BaseStore {
      *
      * @returns {Promise<UserDataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
-    get(namespace, autoLoad = true) {
-        return super.get(namespace, autoLoad, UserDataStoreNamespace);
+    get(namespace, autoLoad = true, RetClass = UserDataStoreNamespace) {
+        return super.get(namespace, autoLoad, RetClass);
     }
 
     /**

@@ -105,6 +105,9 @@ class BaseStoreNamespace {
      * @returns {Promise} - the response body from the {@link module:api.Api#get API}.
      */
     delete(key) {
+        if (!isString(key)) {
+            throw new Error(`Expected key to be string, but got ${typeof key}`);
+        }
         return this.api.delete([this.endPoint, this.namespace, key].join('/')).then((resp) => {
             this.keys = this.keys.filter(elem => elem !== key);
             return resp;
