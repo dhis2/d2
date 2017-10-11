@@ -9,6 +9,7 @@
     "validate": "npm ls --depth 0 || yarn list",
     "test": "TZ=UTC jest",
     "test-watch": "npm run test -- --watch",
+    "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
     "prebuild": "npm run lint && npm run validate && npm run test",
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
@@ -74,6 +75,9 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/__fixtures__/"
-    ]
+    ],
+    "testPathIgnorePatterns": [
+      ".*\\.e2e\\.jsx?$"
+      ]
   }
 }

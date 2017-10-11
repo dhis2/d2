@@ -11,7 +11,17 @@ describe('UserDataStore', () => {
     beforeAll(async () => {
         d2 = await init({ baseUrl: 'https://play.dhis2.org/demo/api', schemas: [], headers: { authorization: credentials } });
         store = d2.currentUser.dataStore;
-        namespace = await store.create('namespace');
+
+        try {
+            namespace = await store.create('namespace');
+        } catch (e) { // delete if exists
+            expect(e).toThrow(/already exist/);
+            await store.delete('namespace');
+        }
+
+        if (await store.has('new namespace')) {
+            await store.delete('new namespace');
+        }
     });
 
     afterAll(async () => {
@@ -31,7 +41,7 @@ describe('UserDataStore', () => {
         });
 
         it('should work when autoLoad = false', async () => {
-            const ns = await d2.currentUser.dataStore.get('another namespace', false);
+            const ns = await store.get('another namespace', false);
 
             expect(ns).toBeInstanceOf(UserDataStoreNamespace);
             expect(ns.keys).toHaveLength(0);

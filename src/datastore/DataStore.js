@@ -22,7 +22,7 @@ import Api from '../api/Api';
  */
 class DataStore extends BaseStore {
     constructor(api = Api.getApi(), endPoint = 'dataStore') {
-        super(api, endPoint, api, endPoint);
+        super(api, endPoint, DataStoreNamespace);
     }
 
     /**
@@ -40,8 +40,8 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with,
      * or an error if namespace exists.
      */
-    get(namespace, autoLoad = true, RetClass = DataStoreNamespace) {
-        return super.get(namespace, autoLoad, RetClass);
+    get(namespace, autoLoad = true) {
+        return super.get(namespace, autoLoad);
     }
 
     /**
@@ -56,8 +56,8 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
      * an error if namespace exists.
      */
-    create(namespace, RetClass = DataStoreNamespace) {
-        return super.create(namespace, RetClass);
+    create(namespace) {
+        return super.create(namespace);
     }
 
     /**

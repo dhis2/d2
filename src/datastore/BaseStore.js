@@ -2,9 +2,9 @@
  * @module datastore
  */
 
-import { isArray } from '../lib/check';
+import BaseStoreNamespace from './BaseStoreNamespace';
 import Api from '../api/Api';
-
+import { isArray } from '../lib/check';
 /**
  * @private
  * @description
@@ -15,7 +15,14 @@ import Api from '../api/Api';
  * @abstract
  */
 class BaseStore {
-    constructor(api = Api.getApi(), endPoint = 'dataStore') {
+    constructor(api = Api.getApi(), endPoint = 'dataStore', NamespaceClass) {
+        if (this.constructor === BaseStore) {
+            throw new Error("Can't instantiate abstract class!");
+        }
+        if (!(NamespaceClass.prototype instanceof BaseStoreNamespace)) {
+            throw new Error(`NamespaceClass must be subclass of ${typeof BaseStoreNamespace}`);
+        }
+        this.NamespaceClass = NamespaceClass;
         this.endPoint = endPoint;
         this.api = api;
     }
@@ -31,10 +38,10 @@ class BaseStore {
      * @returns {Promise<BaseStoreNamespace>} An instance of a current store-Namespace-instance representing the namespace that can be interacted with.
      * Or an error if namespace does not exist.
      */
-    get(namespace, autoLoad = true, RetClass) { // eslint-disable-line no-unused-vars, class-methods-use-this
+    get(namespace, autoLoad = true) { // eslint-disable-line no-unused-vars, class-methods-use-this
         if (!autoLoad) {
             return new Promise((resolve) => {
-                resolve(new RetClass(namespace));
+                resolve(new this.NamespaceClass(namespace));
             });
         }
         return this.api.get([this.endPoint, namespace].join('/'))
@@ -43,7 +50,7 @@ class BaseStore {
                     if (response.length < 1) { // fix for api bug returning empty array instead of 404
                         return Promise.reject(response);
                     }
-                    return new RetClass(namespace, response);
+                    return new this.NamespaceClass(namespace, response);
                 }
                 return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
             });
@@ -60,6 +67,29 @@ class BaseStore {
                     return response;
                 }
                 throw new Error('No namespaces exist.');
+            });
+    }
+
+    /**
+     * Convenience method to check if a namespace exists on the server.
+     * @param {string} namespace - Namespace to check.
+     * @returns {Promise<boolean>} True if namespace exists, false otherwise.
+     */
+    has(namespace) {
+        return this.api.get([this.endPoint, namespace].join('/'))
+            .then((response) => {
+                if (response && isArray(response)) {
+                    if (response.length < 1) { // fix for api bug returning empty array instead of 404
+                        return Promise.reject(response);
+                    }
+                    return true;
+                }
+                return Promise.reject(new Error('Response is not an array!'));
+            }).catch((e) => {
+                if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
+                    return Promise.resolve(false);
+                }
+                throw e;
             });
     }
 
@@ -81,17 +111,9 @@ class BaseStore {
      * @returns {Promise<BaseStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
      * an error if namespace exists.
      */
-    create(namespace, RetClass) {
-        return this.get(namespace, true, RetClass).then(() =>
-            Promise.reject(new Error('Namespace already exists.')))
-            .catch((e) => {
-                if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
-                // If namespace does not exist, provide an instance of the respective Namespace
-                // so it's possible to interact with the namespace.
-                    return Promise.resolve(new RetClass(namespace));
-                }
-                return Promise.reject(e);
-            });
+    create(namespace) {
+        return this.has(namespace).then(exists =>
+            (exists ? Promise.reject(new Error('Namespace already exists.')) : new this.NamespaceClass(namespace)));
     }
 }
 

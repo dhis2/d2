@@ -26,6 +26,9 @@ class BaseStoreNamespace {
         if (!isString(endPoint)) {
             throw new Error('BaseStoreNamespace must be called with an endPoint');
         }
+        if (this.constructor === BaseStoreNamespace) {
+            throw new Error('Can\'t instantiate abstract class!');
+        }
 
         this.api = api;
 
