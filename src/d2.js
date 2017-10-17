@@ -24,6 +24,7 @@ import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
 import { fieldsForSchemas } from './model/config';
 import DataStore from './datastore/DataStore';
+import Analytics from './analytics/Analytics';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -215,6 +216,28 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
          * @instance
          */
         dataStore: DataStore.getDataStore(),
+
+        /**
+         * Analytics instance for requesting analytics data from various endpoints.
+         *
+         * @example
+         * d2.analytics.aggregate
+         *  .addDimensions([
+         *   'dx:Uvn6LCg7dVU;OdiHJayrsKo',
+         *   'pe:LAST_4_QUARTERS',
+         *   'ou:lc3eMKXaEfw;PMa2VCrupOd',
+         *  ])
+         *  .addFilter('pe:2016Q1;2016Q2')
+         *  .getRawData({
+         *    startDate: '2017-10-01',
+         *    endDate: '2017-10-31'
+         *  })
+         *  .then(console.log)
+         *
+         * @see {@link module:analytics/Analytics~Analytics|Analytics}
+         * @instance
+         */
+        analytics: Analytics.getAnalytics(),
     };
 
     // Process the config in a the config class to keep all config calls together.
