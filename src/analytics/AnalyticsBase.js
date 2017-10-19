@@ -181,10 +181,7 @@ class AnalyticsBase {
         return this.api.get(
             this.buildUrl(path),
             this.buildQuery())
-            .then((data) => {
-                this.data = data;
-                return Promise.resolve(this.data);
-            });
+            .then(data => Promise.resolve(data));
     }
 }
 
