@@ -178,15 +178,13 @@ class AnalyticsBase {
             accept: 'application/json',
         });
 
-        return this.data
-            ? Promise.resolve(this.data)
-            : this.api.get(
-                this.buildUrl(path),
-                this.buildQuery())
-                .then((data) => {
-                    this.data = data;
-                    return Promise.resolve(this.data);
-                });
+        return this.api.get(
+            this.buildUrl(path),
+            this.buildQuery())
+            .then((data) => {
+                this.data = data;
+                return Promise.resolve(this.data);
+            });
     }
 }
 
