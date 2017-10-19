@@ -46,7 +46,7 @@ class UserDataStore extends BaseStore {
      * @example <caption>Getting a namespace</caption>
      * d2.currentUser.dataStore.get('namespace').then(namespace => {
      *     namespace.set('new key', value);
-     *}); See {@link module:current-user.UserDataStoreNamespace UserDataStoreNamespace}.
+     *});
      *
      * @param {string} namespace - Namespace to get.
      * @param {boolean} [autoLoad=true] - If true, autoloads the keys of the namespace from the server.

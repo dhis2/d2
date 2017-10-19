@@ -208,9 +208,9 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
          */
         i18n: I18n.getI18n(),
         /**
-         * Instance of the BaseStore class for interaction with the dataStore api.
+         * Instance of the DataStore class for interaction with the dataStore api.
          *
-         * @see {@link module:datastore/BaseStore~DataStore|DataStore}
+         * @see {@link module:datastore.DataStore DataStore}
          *
          * @instance
          */

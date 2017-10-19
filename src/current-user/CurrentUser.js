@@ -99,8 +99,6 @@ function isInNoCreateAllowedForList(modelDefinition) {
  * Represents the current logged in user
  *
  * @memberof module:current-user
- * @property test asf
- *
  */
 class CurrentUser {
     /**
