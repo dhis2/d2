@@ -2,6 +2,7 @@ import Api from '../api/Api';
 import { customEncodeURIComponent } from '../lib/utils';
 
 /**
+ * @private
  * @description
  * Base class for communicating with the analytics API endpoint.
  * Its subclasses can be used to get analytics data.
@@ -13,6 +14,7 @@ import { customEncodeURIComponent } from '../lib/utils';
  * @requires module:api/Api
  *
  * @memberof module:analytics
+ * @abstract
  */
 class AnalyticsBase {
     constructor(api = Api.getApi(), endPoint = 'analytics') {
@@ -118,6 +120,8 @@ class AnalyticsBase {
     }
 
     /**
+     * @private
+     *
      * Builds the URL to pass to the Api object.
      * The URL includes the dimension(s) parameters.
      * Used internally.
@@ -138,6 +142,8 @@ class AnalyticsBase {
     }
 
     /**
+     * @private
+     *
      * Builds the query object passed to the API instance.
      * The object includes all the parameters passed via addParameter / addParameters.
      * and the filters passed via addFilter / addFilters.
@@ -155,6 +161,8 @@ class AnalyticsBase {
     }
 
     /**
+     * @private
+     *
      * Loads the analytics data and returns them as an object from the promise.
      * Used internally by the subclasses.
      *

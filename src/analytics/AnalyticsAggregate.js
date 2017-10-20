@@ -1,7 +1,7 @@
 import AnalyticsBase from './AnalyticsBase';
 
 /**
- * @extends AnalyticsBase
+ * @extends module:analytics.AnalyticsBase
  *
  * @param {Object} props Properties to pass to the constructor for overriding
  *
