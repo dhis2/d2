@@ -5,7 +5,7 @@ import Api from '../api/Api';
 /**
  * @augments module:datastore.BaseStore
  * @description
- * Represents the dataStore that can be interacted with. This can be used to get instances of UserDataStoreNamespace, which
+ * Represents the dataStore that can be interacted with. This can be used to get instances of DataStore, which
  * can be used to interact with the {@link module:datastore.DataStoreNamespace namespace API}.
  *
  * @example
@@ -28,7 +28,7 @@ class DataStore extends BaseStore {
     /**
      * @description
      * Tries to get the given namespace from the server, and returns an instance of DataStore that
-     * may be used to interact with this namespace. See {@link module:datastore.DataStoreNamespace DataStoreNamespace}.
+     * may be used to interact with this namespace. See {@link module:datastore.DataStoreNamespace DataStore}.
      *
      * @example <caption>Getting a namespace</caption>
      * d2.dataStore.get('namespace').then(namespace => {
@@ -37,7 +37,7 @@ class DataStore extends BaseStore {
      * @param namespace - Namespace to get.
      * @param [autoLoad=true] If true, autoloads the keys of the namespace from the server.
      * If false, an instance of the namespace is returned without any keys (no request is sent to the server).
-     * @returns {Promise<DataStoreNamespace>} An instance of a DataStoreNamespace representing the namespace that can be interacted with,
+     * @returns {Promise<DataStoreNamespace>} An instance of a DataStore representing the namespace that can be interacted with,
      * or an error if namespace exists.
      */
     get(namespace, autoLoad = true) {
@@ -66,7 +66,7 @@ class DataStore extends BaseStore {
      * @returns {DataStore} Object with the dataStore interaction properties
      *
      * @description
-     * Get a new instance of the dataStore object. This will function as a singleton, when a BaseStore object has been created
+     * Get a new instance of the dataStore object. This will function as a singleton, when a DataStore object has been created
      * when requesting getDataStore again the original version will be returned.
      */
     static getDataStore() {

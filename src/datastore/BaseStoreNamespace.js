@@ -49,8 +49,6 @@ class BaseStoreNamespace {
     /**
      * Get the keys for this namespace.
      *
-     * @param [forceLoad] - If true, retrieves and updates internal keys with
-     * response from API.
      * @returns {Promise} - The internal list of keys for current namespace.
      */
     getKeys() {
@@ -104,7 +102,7 @@ class BaseStoreNamespace {
      */
     delete(key) {
         if (!isString(key)) {
-            throw new Error(`Expected key to be string, but got ${typeof key}`);
+            return Promise.reject(new Error(`Expected key to be string, but got ${typeof key}`));
         }
         return this.api.delete([this.endPoint, this.namespace, key].join('/')).then((resp) => {
             this.keys = this.keys.filter(elem => elem !== key);

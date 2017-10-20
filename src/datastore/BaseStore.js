@@ -48,7 +48,7 @@ class BaseStore {
             .then((response) => {
                 if (response && isArray(response)) {
                     if (response.length < 1) { // fix for api bug returning empty array instead of 404
-                        return Promise.reject(response);
+                        return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
                     }
                     return new this.NamespaceClass(namespace, response);
                 }
