@@ -236,7 +236,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
          *  })
          *  .then(console.log)
          *
-         * @see {@link module:analytics/Analytics~Analytics|Analytics}
+         * @see {@link module:analytics.Analytics Analytics}
          * @instance
          */
         analytics: Analytics.getAnalytics(),
