@@ -19,41 +19,42 @@ import SystemConfiguration from './SystemConfiguration';
 class System {
     constructor(settings, configuration) {
         /**
-         * @type {SystemSettings} settings Contains a reference to a `SystemSettings` instance that can be used
+         * Contains a reference to a `SystemSettings` instance that can be used
          * to retrieve and save system settings.
          *
-         * @description
          * ```js
          * d2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')
          *  .then(systemSettingsValue => {
          *    console.log('Analytics was last updated on: ' + systemSettingsValue);
          *  });
          * ```
+         * @type {SystemSettings}
+         *
          */
         this.settings = settings;
 
         /**
-         * A representation of the system configuration, that can be used to retrieve and change system
-         * configuration options.
+         * A representation of the system configuration,
+         * that can be used to retrieve and change system configuration options.
          * @type {SystemConfiguration}
          */
         this.configuration = configuration;
 
         /**
-         * @type {Object} systemInfo
-         * @description An object containing system information about the DHIS2 instance
+         * An object containing system information about the DHIS2 instance
+         * @type {Object}
          */
         this.systemInfo = undefined;
 
         /**
-         * @type {Object} version
-         * @description An object containing version information about the DHIS2 instance
+         * An object containing version information about the DHIS2 instance
+         * @type {Object}
          */
         this.version = undefined;
 
         /**
-         * @type {Array} installedApps
-         * @description An array of all the webapps that are installed on the current DHIS2 instance
+         * An array of all the webapps that are installed on the current DHIS2 instance
+         * @type {Array}
          */
         this.installedApps = undefined;
     }
