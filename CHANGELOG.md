@@ -1,7 +1,7 @@
 # D2 Changelog
 
 ## 28.3.0
-###### _October 25th 2017_
+###### _October 26th 2017_
 
 **Breaking changes:**
 

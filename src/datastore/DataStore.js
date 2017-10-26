@@ -5,8 +5,15 @@ import Api from '../api/Api';
 /**
  * @augments module:datastore.BaseStore
  * @description
- * Represents the dataStore that can be interacted with. This can be used to get instances of DataStore, which
+ * Represents the dataStore that can be interacted with. This can be used to get instances of DataStoreNamespace, which
  * can be used to interact with the {@link module:datastore.DataStoreNamespace namespace API}.
+ *
+ * The store is a key-value store, where a namespace contains a list of keys, and
+ * a key corresponds to an arbitrary JSON-object. The dataStore is DHIS2-instance wide.
+ *
+ * Note that a namespace cannot exist without at least one key-value pair, for this reason
+ * you need to call {@link module:datastore.DataStoreNamespace#set set()} after {@link module:datastore.DataStore#create create()} to save a namespace
+ * with a key and a value.
  *
  * @example
  * import { init } from 'd2';
@@ -26,7 +33,6 @@ class DataStore extends BaseStore {
     }
 
     /**
-     * @method get
      * @description
      * Tries to get the given namespace from the server, and returns an instance of DataStore that
      * may be used to interact with this namespace. See {@link module:datastore.DataStoreNamespace DataStore}.
@@ -41,9 +47,11 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of a DataStore representing the namespace that can be interacted with,
      * or an error if namespace exists.
      */
+    get(namespace, autoLoad = true) {
+        return super.get(namespace, autoLoad);
+    }
 
     /**
-     * @method create
      * Creates a namespace. Ensures that the namespace does not exists on the server.
      * Note that for the namespace to be saved on the server, you need to call {@link module:datastore.DataStoreNamespace#set set}.
      *
@@ -55,6 +63,9 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
      * an error if namespace exists.
      */
+    create(namespace) {
+        return super.create(namespace);
+    }
 
     /**
      * @static

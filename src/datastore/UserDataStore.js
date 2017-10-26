@@ -13,7 +13,7 @@ import Api from '../api/Api';
  * has access to the namespaces.
  *
  * Note that a namespace cannot exist without at least one key-value pair, for this reason
- * you need to call {@link module:current-user.UserDataStoreNamespace#set set} after {@link UserDataStore#create create} to save a namespace
+ * you need to call {@link module:current-user.UserDataStoreNamespace#set set()} after {@link module:current-user.UserDataStore#create create()} to save a namespace
  * with a key and a value.
  *
  * @example <caption>Getting a value with promise-syntax</caption>
@@ -39,7 +39,6 @@ class UserDataStore extends BaseStore {
     }
 
     /**
-     * @method get
      * @description
      * Tries to get the given namespace from the server, and returns an instance of 'UserDataStore' that
      * may be used to interact with this namespace. See {@link module:current-user.UserDataStoreNamespace UserDataStoreNamespace}.
@@ -55,9 +54,11 @@ class UserDataStore extends BaseStore {
      *
      * @returns {Promise<UserDataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
+    get(namespace, autoLoad = true) {
+        return super.get(namespace, autoLoad);
+    }
 
     /**
-     * @method create
      * Creates a namespace. Ensures that the namespace does not exists on the server.
      * Note that for the namespace to be saved on the server, you need to call {@link module:current-user.UserDataStoreNamespace#set set}.
      *
@@ -69,6 +70,9 @@ class UserDataStore extends BaseStore {
      * @returns {Promise<UserDataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
      * an error if namespace exists.
      */
+    create(namespace) {
+        return super.create(namespace);
+    }
 
     /**
      * @static
