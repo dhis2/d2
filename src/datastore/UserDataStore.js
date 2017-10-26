@@ -39,6 +39,7 @@ class UserDataStore extends BaseStore {
     }
 
     /**
+     * @method get
      * @description
      * Tries to get the given namespace from the server, and returns an instance of 'UserDataStore' that
      * may be used to interact with this namespace. See {@link module:current-user.UserDataStoreNamespace UserDataStoreNamespace}.
@@ -54,11 +55,9 @@ class UserDataStore extends BaseStore {
      *
      * @returns {Promise<UserDataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
-    get(namespace, autoLoad = true) {
-        return super.get(namespace, autoLoad);
-    }
 
     /**
+     * @method create
      * Creates a namespace. Ensures that the namespace does not exists on the server.
      * Note that for the namespace to be saved on the server, you need to call {@link module:current-user.UserDataStoreNamespace#set set}.
      *
@@ -70,9 +69,6 @@ class UserDataStore extends BaseStore {
      * @returns {Promise<UserDataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
      * an error if namespace exists.
      */
-    create(namespace) {
-        return super.create(namespace);
-    }
 
     /**
      * @static

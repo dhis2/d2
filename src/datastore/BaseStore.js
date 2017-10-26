@@ -38,7 +38,7 @@ class BaseStore {
      * @returns {Promise<BaseStoreNamespace>} An instance of a current store-Namespace-instance representing the namespace that can be interacted with.
      * Or an error if namespace does not exist.
      */
-    get(namespace, autoLoad = true) { // eslint-disable-line no-unused-vars, class-methods-use-this
+    get(namespace, autoLoad = true) {
         if (!autoLoad) {
             return new Promise((resolve) => {
                 resolve(new this.NamespaceClass(namespace));

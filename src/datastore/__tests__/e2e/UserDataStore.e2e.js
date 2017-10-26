@@ -29,7 +29,7 @@ describe('UserDataStore', () => {
     });
 
     describe('get()', () => {
-        it('should work async', async () => {
+        it('should fetch asynchronously', async () => {
             const value = { value: '123' };
             const key = 'key';
             await namespace.set(key, value);
@@ -49,7 +49,7 @@ describe('UserDataStore', () => {
     });
 
     describe('getAll()', () => {
-        it('should work async', async () => {
+        it('should get asynchronously', async () => {
             const newNamespace = await store.create('new namespace');
             const stringVal = 'a random string';
             await newNamespace.set('key', stringVal);
@@ -65,7 +65,7 @@ describe('UserDataStore', () => {
     });
 
     describe('delete()', () => {
-        it('should work async', async () => {
+        it('should delete asynchronously', async () => {
             const newNamespace = await store.create('new namespace');
             const stringVal = 'a random string';
             await newNamespace.set('key', stringVal);

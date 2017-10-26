@@ -26,6 +26,7 @@ class DataStore extends BaseStore {
     }
 
     /**
+     * @method get
      * @description
      * Tries to get the given namespace from the server, and returns an instance of DataStore that
      * may be used to interact with this namespace. See {@link module:datastore.DataStoreNamespace DataStore}.
@@ -40,11 +41,9 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of a DataStore representing the namespace that can be interacted with,
      * or an error if namespace exists.
      */
-    get(namespace, autoLoad = true) {
-        return super.get(namespace, autoLoad);
-    }
 
     /**
+     * @method create
      * Creates a namespace. Ensures that the namespace does not exists on the server.
      * Note that for the namespace to be saved on the server, you need to call {@link module:datastore.DataStoreNamespace#set set}.
      *
@@ -56,9 +55,6 @@ class DataStore extends BaseStore {
      * @returns {Promise<DataStoreNamespace>} An instance of the current store-Namespace-instance representing the namespace that can be interacted with, or
      * an error if namespace exists.
      */
-    create(namespace) {
-        return super.create(namespace);
-    }
 
     /**
      * @static
