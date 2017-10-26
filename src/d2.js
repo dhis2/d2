@@ -210,11 +210,12 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
         /**
          * Instance of the DataStore class for interaction with the dataStore api.
          *
-         * @see {@link module:datastore/DataStore~DataStore|DataStore}
+         * @see {@link module:datastore.DataStore DataStore}
          *
          * @instance
          */
         dataStore: DataStore.getDataStore(),
+
     };
 
     // Process the config in a the config class to keep all config calls together.
