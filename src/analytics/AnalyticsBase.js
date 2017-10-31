@@ -161,12 +161,9 @@ class AnalyticsBase {
     }
 
     /**
-     * @private
-     *
      * Loads the analytics data and returns them as an object from the promise.
-     * Used internally by the subclasses.
      *
-     * @param {!String} path The path to append to the endpoint value.
+     * @param {String} path The path to append to the endpoint value.
      *
      * @returns {Promise} Promise that resolves with the analytics data from the api.
      *
@@ -177,7 +174,7 @@ class AnalyticsBase {
      *   'pe:LAST_12_MONTHS'
      *  ])
      *  .addFilter('ou:ImspTQPwCqd')
-     *  .get('rawData.json')
+     *  .get()
      *  .then(analyticsData => console.log('Analytics data', analyticsData))
      */
     get(path) {
