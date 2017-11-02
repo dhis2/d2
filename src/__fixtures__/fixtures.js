@@ -39,6 +39,8 @@ export default (function x() {
     addFixture('/singleUserAllFields', require('./json/singleUserAllFields.json'));
     addFixture('/singleUserOwnerFields', require('./json/singleUserOwnerFields.json'));
     addFixture('/api/legendSets/k1JHPfXsJND', require('./json/api/legendSets/k1JHPfXsJND.json'));
+    addFixture('/api/analytics/dataValueSet', require('./json/api/analytics/dataValueSet.json'));
+    addFixture('/api/analytics/rawData', require('./json/api/analytics/rawData.json'));
 
     return {
         get: getFixture,

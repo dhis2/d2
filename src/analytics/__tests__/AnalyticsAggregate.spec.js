@@ -1,135 +1,8 @@
+import fixtures from '../../__fixtures__/fixtures';
 import MockApi from '../../api/Api';
 import AnalyticsAggregate from '../AnalyticsAggregate';
 
 jest.mock('../../api/Api'); // src/api/__mocks/Api.js
-
-const dataValueSetFixture = {
-    dataValues: [
-        {
-            dataElement: 'DE_359596',
-            period: '201709',
-            orgUnit: 'OU_525',
-            categoryOptionCombo: 'COC_167661',
-            value: '17640.0',
-            storedBy: '[aggregated]',
-            created: '2017-10-18',
-            lastUpdated: '2017-10-18',
-            comment: '[aggregated]',
-        },
-        {
-            dataElement: 'DE_359596',
-            period: '201709',
-            orgUnit: 'OU_525',
-            categoryOptionCombo: 'COC_167660',
-            value: '4668.0',
-            storedBy: '[aggregated]',
-            created: '2017-10-18',
-            lastUpdated: '2017-10-18',
-            comment: '[aggregated]',
-        },
-    ],
-};
-
-const rawDataFixture = {
-    metaData: {
-        items: {
-            RXL3lPSK8oG: {
-                name: 'Clinic',
-            },
-            J5jldMd8OHv: {
-                name: 'Facility Type',
-            },
-            ou: {
-                name: 'Organisation unit',
-            },
-            CXw2yu5fodb: {
-                name: 'CHC',
-            },
-            O6uvpzGd5pu: {
-                name: 'Bo',
-            },
-            fbfJHSPpUQD: {
-                name: 'ANC 1st visit',
-                legendSet: 'fqs276KXCXi',
-            },
-            uYxK4wmcPqA: {
-                name: 'CHP',
-            },
-            MAs88nJc9nL: {
-                name: 'Private Clinic',
-            },
-            fdc6uOvgoji: {
-                name: 'Bombali',
-            },
-            tDZVQ1WtwpA: {
-                name: 'Hospital',
-            },
-            dx: {
-                name: 'Data',
-            },
-            pq2XI5kz2BY: {
-                name: 'Fixed',
-            },
-            cYeuwXTCPkU: {
-                name: 'ANC 2nd visit',
-                legendSet: 'fqs276KXCXi',
-            },
-            Jtf34kNZhzP: {
-                name: 'ANC 3rd visit',
-            },
-            PT59n8BQbqM: {
-                name: 'Outreach',
-            },
-            EYbopBOJWsW: {
-                name: 'MCHP',
-            },
-            PVLOW4bCshG: {
-                name: 'NGO',
-            },
-            oRVt7g429ZO: {
-                name: 'Public facilities',
-            },
-            Bpx0589u8y0: {
-                name: 'Facility Ownership',
-            },
-            w0gFTTmsUcF: {
-                name: 'Mission',
-            },
-        },
-        dimensions: {
-            dx: [
-                'fbfJHSPpUQD',
-                'cYeuwXTCPkU',
-                'Jtf34kNZhzP',
-            ],
-            pe: [],
-            J5jldMd8OHv: [
-                'uYxK4wmcPqA',
-                'EYbopBOJWsW',
-                'RXL3lPSK8oG',
-                'tDZVQ1WtwpA',
-                'CXw2yu5fodb',
-            ],
-            ou: [
-                'O6uvpzGd5pu',
-                'fdc6uOvgoji',
-            ],
-            co: [
-                'pq2XI5kz2BY',
-                'PT59n8BQbqM',
-            ],
-            Bpx0589u8y0: [
-                'PVLOW4bCshG',
-                'MAs88nJc9nL',
-                'oRVt7g429ZO',
-                'w0gFTTmsUcF',
-            ],
-        },
-    },
-    rows: [],
-    width: 0,
-    height: 0,
-};
 
 const debugSqlFixture = `select de.name as de_name, de.uid as de_uid, de.dataelementid as de_id, pe.startdate as
 start_date, pe.enddate as end_date, pt.name as pt_name, ou.name as ou_name, ou.uid as ou_uid, ou.organisationunitid as
@@ -146,6 +19,7 @@ limit 100000`;
 describe('Analytics.aggregate', () => {
     let aggregate;
     let mockApi;
+    let fixture;
 
     beforeEach(() => {
         mockApi = MockApi.getApi();
@@ -178,7 +52,9 @@ describe('Analytics.aggregate', () => {
                 'ou:ImspTQPwCqd',
             ]);
 
-            mockApi.get.mockReturnValue(Promise.resolve(dataValueSetFixture));
+            fixture = fixtures.get('/api/analytics/dataValueSet');
+
+            mockApi.get.mockReturnValue(Promise.resolve(fixture));
         });
 
         it('should be a function', () => {
@@ -197,7 +73,7 @@ describe('Analytics.aggregate', () => {
 
         it('should resolve a promise with data', () => aggregate.getDataValueSet()
             .then((data) => {
-                expect(data.dataValues.length).toEqual(dataValueSetFixture.dataValues.length);
+                expect(data.dataValues.length).toEqual(fixture.dataValues.length);
             }));
     });
 
@@ -258,7 +134,9 @@ describe('Analytics.aggregate', () => {
                     endDate: '2016-01-31',
                 });
 
-            mockApi.get.mockReturnValue(Promise.resolve(rawDataFixture));
+            fixture = fixtures.get('/api/analytics/rawData');
+
+            mockApi.get.mockReturnValue(Promise.resolve(fixture));
         });
 
         it('should be a function', () => {
@@ -292,8 +170,8 @@ describe('Analytics.aggregate', () => {
 
         it('should resolve a promise with data', () => aggregate.getRawData()
             .then((data) => {
-                expect(data.metaData.items).toEqual(rawDataFixture.metaData.items);
-                expect(data.metaData.dimensions).toEqual(rawDataFixture.metaData.dimensions);
+                expect(data.metaData.items).toEqual(fixture.metaData.items);
+                expect(data.metaData.dimensions).toEqual(fixture.metaData.dimensions);
                 expect(data.width).toEqual(0);
                 expect(data.height).toEqual(0);
             }));
