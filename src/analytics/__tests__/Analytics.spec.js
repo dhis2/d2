@@ -1,12 +1,13 @@
 import Analytics from '../Analytics';
 import AnalyticsAggregate from '../AnalyticsAggregate';
 import AnalyticsEvents from '../AnalyticsEvents';
+import AnalyticsRequest from '../AnalyticsRequest';
 
 describe('Analytics', () => {
     let analytics;
 
     beforeEach(() => {
-        analytics = new Analytics(new AnalyticsAggregate(), new AnalyticsEvents());
+        analytics = new Analytics(new AnalyticsAggregate(), new AnalyticsEvents(), AnalyticsRequest);
     });
 
     it('should create an instance of Analytics', () => {
@@ -23,6 +24,10 @@ describe('Analytics', () => {
 
     it('should contain an instance of AnalyticsEvents', () => {
         expect(analytics.events).toBeInstanceOf(AnalyticsEvents);
+    });
+
+    it('should contain a reference to AnalyticsRequest', () => {
+        expect(analytics.request).toBe(AnalyticsRequest);
     });
 
     describe('getAnalytics', () => {

@@ -41,6 +41,10 @@ export default (function x() {
     addFixture('/api/legendSets/k1JHPfXsJND', require('./json/api/legendSets/k1JHPfXsJND.json'));
     addFixture('/api/analytics/dataValueSet', require('./json/api/analytics/dataValueSet.json'));
     addFixture('/api/analytics/rawData', require('./json/api/analytics/rawData.json'));
+    addFixture('/api/analytics/aggregate', require('./json/api/analytics/aggregate.json'));
+    addFixture('/api/analytics/count', require('./json/api/analytics/count.json'));
+    addFixture('/api/analytics/query', require('./json/api/analytics/query.json'));
+    addFixture('/api/analytics/cluster', require('./json/api/analytics/cluster.json'));
 
     return {
         get: getFixture,
