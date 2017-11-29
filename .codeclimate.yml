@@ -2,11 +2,13 @@ engines:
   duplication:
     enabled: true
     exclude_paths:
-    - "__tests__"
-    - "__mocks__"
-    - "__fixtures__"
+    - "__tests__/**"
+    - "__mocks__/**"
+    - "__fixtures__/**"
     - "**.spec.js"
   eslint:
     enabled: true
     exclude_paths:
-    - "__fixtures__"
+    - "__fixtures__/**"
+exclude_paths:
+- "**.spec.js"
