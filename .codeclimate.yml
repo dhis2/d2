@@ -5,7 +5,7 @@ engines:
     - __tests__
     - __mocks__
     - __fixtures__
-    - **.spec.js
+    - "**.spec.js"
   eslint:
     enabled: true
     exclude_paths:
