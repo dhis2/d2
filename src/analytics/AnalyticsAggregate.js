@@ -3,8 +3,6 @@ import AnalyticsBase from './AnalyticsBase';
 /**
  * @extends module:analytics.AnalyticsBase
  *
- * @param {Object} props Properties to pass to the constructor for overriding
- *
  * @description
  * Analytics aggregate class used to request aggregate analytics data from Web API.
  *
@@ -14,106 +12,67 @@ import AnalyticsBase from './AnalyticsBase';
  */
 class AnalyticsAggregate extends AnalyticsBase {
     /**
-     * @param {String} [format=json] Format for the output.
-     * Supported formats are JSON and XML.
-     * @param {Object} params Object with parameters to pass to the request
+     * @param {!AnalyticsRequest} req Request object
      *
      * @returns {Promise} Promise that resolves with the analytics data value set data from the API.
      *
      * @example
-     * const d2AnalyticsAggregate = d2.analytics.aggregate
-     *  .addDimensions([
-     *   'dx:Uvn6LCg7dVU;OdiHJayrsKo',
-     *   'pe:LAST_4_QUARTERS',
-     *   'ou:lc3eMKXaEfw;PMa2VCrupOd',
-     *   ...
-     *  ])
-     *  .addFilters([
-     *   'ou:O6uvpzGd5pu'
-     *   ...
-     *  ]);
+     * const req = new d2.analytics.request()
+     *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
+     *  .addPeriodDimension('LAST_4_QUARTERS')
+     *  .addOrgUnitDimension(['lc3eMKXaEfw','PMa2VCrupOd'])
+     *  .addOrgUnitFilter('O6uvpzGd5pu')
+     *  .withStartDate('2017-10-01')
+     *  .withEndDate('2017-10-31');
      *
-     * d2AnalyticsAggregate.getDataValueSet('json', {
-     *   startDate: '2017-10-01',
-     *   endDate: '2017-10-31',
-     *   ...
-     * })
+     * d2.analytics.aggregate.getDataValueSet(req)
      * .then(console.log);
      */
-    getDataValueSet(format = 'json', params) {
-        if (params) {
-            this.addParameters(params);
-        }
-
-        return this.get(`dataValueSet.${format}`);
+    getDataValueSet(req) {
+        return this.get(req.withPath('dataValueSet'));
     }
 
     /**
-     * @param {String} [format=json] Format for the output.
-     * Supported formats are JSON and XML.
-     * @param {Object} params Object with parameters to pass to the request
+     * @param {!AnalyticsRequest} req Request object
      *
      * @returns {Promise} Promise that resolves with the raw data from the API.
      *
      * @example
-     * const d2AnalyticsAggregate = d2.analytics.aggregate
-     *  .addDimensions([
-     *   'dx:Uvn6LCg7dVU;OdiHJayrsKo',
-     *   'pe:LAST_4_QUARTERS',
-     *   'ou:lc3eMKXaEfw;PMa2VCrupOd',
-     *   ...
-     *  ])
-     *  .addFilters([
-     *   'ou:O6uvpzGd5pu'
-     *   ...
-     *  ]);
+     * const req = new d2.analytics.request()
+     *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
+     *  .addPeriodDimension('LAST_4_QUARTERS')
+     *  .addOrgUnitDimension(['lc3eMKXaEfw', 'PMa2VCrupOd'])
+     *  .addOrgUnitFilter('O6uvpzGd5pu');
+     *  .withStartDate('2017-10-01')
+     *  .withEndDate('2017-10-31')
+     *  .withFormat('xml');
      *
-     *  d2AnalyticsAggregate.getRawData('xml', {
-     *   startDate: '2017-10-01',
-     *   endDate: '2017-10-31',
-     *   ...
-     *  })
+     *  d2.analytics.aggregate.getRawData(req)
      *  .then(console.log);
      */
-    getRawData(format = 'json', params) {
-        if (params) {
-            this.addParameters(params);
-        }
-
-        return this.get(`rawData.${format}`);
+    getRawData(req) {
+        return this.get(req.withPath('rawData'));
     }
 
     /**
-     * @param {Object} params Object with parameters to pass to the request
+     * @param {!AnalyticsRequest} req Request object
      *
      * @returns {Promise} Promise that resolves with the SQL statement used to query the database.
      *
      * @example
-     * const d2AnalyticsAggregate = d2.analytics.aggregate
-     *  .addDimensions([
-     *   'dx:Uvn6LCg7dVU;OdiHJayrsKo',
-     *   'pe:LAST_4_QUARTERS',
-     *   'ou:lc3eMKXaEfw;PMa2VCrupOd',
-     *   ...
-     *  ])
-     *  .addFilters([
-     *   'ou:O6uvpzGd5pu'
-     *   ...
-     *  ]);
+     * const req = new d2.analytics.request()
+     *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
+     *  .addPeriodDimension('LAST_4_QUARTERS')
+     *  .addOrgUnitDimension(['lc3eMKXaEfw', 'PMa2VCrupOd'])
+     *  .addOrgUnitFilter('O6uvpzGd5pu');
+     *  .withStartDate('2017-10-01')
+     *  .withEndDate('2017-10-31');
      *
-     *  d2AnalyticsAggregate.getDebugSql({
-     *   startDate: '2017-10-01',
-     *   endDate: '2017-10-31',
-     *   ...
-     *  })
+     *  d2.analytics.aggregate.getDebugSql(req);
      *  .then(console.log);
      */
-    getDebugSql(params) {
-        if (params) {
-            this.addParameters(params);
-        }
-
-        return this.get('debug/sql');
+    getDebugSql(req) {
+        return this.get(req.withPath('debug/sql'));
     }
 }
 
