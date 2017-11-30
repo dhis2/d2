@@ -770,16 +770,16 @@ class AnalyticsRequest {
     }
 
     /**
-    * Adds the asc query parameter to the request.
-    *
-    * @param {!String} value The dimensions to be sorted ascending
-    *
-    * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
-    *
-    * @example
-    * const req = new d2.analytics.request()
-    *    .withAsc('EVENTDATE');
-    */
+     * Adds the asc query parameter to the request.
+     *
+     * @param {!String} value The dimensions to be sorted ascending
+     *
+     * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
+     *
+     * @example
+     * const req = new d2.analytics.request()
+     *    .withAsc('EVENTDATE');
+     */
     withAsc(value) {
         if (value) {
             this.parameters.asc = value;
