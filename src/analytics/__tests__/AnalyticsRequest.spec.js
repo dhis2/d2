@@ -450,7 +450,7 @@ describe('.withAggregationType()', () => {
     it('should add the aggregationType parameter with the default value', () => {
         request.withAggregationType();
 
-        expect(request.parameters).toEqual({ aggregationType: 'AVERAGE' });
+        expect(request.parameters).toEqual({ aggregationType: 'DEFAULT' });
     });
 
     it('should add the aggregationType parameter with the specified value', () => {
