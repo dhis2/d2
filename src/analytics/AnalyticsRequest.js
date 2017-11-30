@@ -237,7 +237,7 @@ class AnalyticsRequest {
     /**
      * Adds the aggregationType query parameter to the request.
      *
-     * @param {String} [aggregationType=DEFAULT] The aggregationType value
+     * @param {String} aggregationType The aggregationType value
      *
      * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
      *
@@ -245,14 +245,15 @@ class AnalyticsRequest {
      * const req = new d2.analytics.request()
      *    .withAggregationType('SUM');
      */
-    withAggregationType(value = 'DEFAULT') {
+    withAggregationType(value) {
         const aggregationType = value.toUpperCase();
 
         const aggregationTypes = new Set([
             'AVERAGE',
+            'AVERAGE_SUM_ORG_UNIT',
             'COUNT',
-            'DEFAULT',
             'LAST',
+            'LAST_AVERAGE_ORG_UNIT',
             'MIN',
             'MAX',
             'STDDEV',
