@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 import AnalyticsRequest from './AnalyticsRequest';
 
 /**
@@ -84,7 +86,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (aggregationTypes.has(aggregationType)) {
                 this.parameters.aggregationType = aggregationType;
             } else {
-                // console.warn(`d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`);
                 this.parameters.aggregationType = value;
             }
 
@@ -295,7 +297,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (displayProperties.has(displayProperty)) {
                 this.parameters.displayProperty = displayProperty;
             } else {
-                // console.warn(`d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`);
                 this.parameters.displayProperty = value;
             }
 
@@ -537,7 +539,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (eventStatuses.has(eventStatus)) {
                 this.parameters.eventStatus = eventStatus;
             } else {
-                // console.warn(`d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`);
                 this.parameters.eventStatus = value;
             }
 
@@ -567,7 +569,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (programStatuses.has(programStatus)) {
                 this.parameters.programStatus = programStatus;
             } else {
-                // console.warn(`d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`);
                 this.parameters.programStatus = value;
             }
 
@@ -597,7 +599,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (ouModes.has(ouMode)) {
                 this.parameters.ouMode = ouMode;
             } else {
-                // console.warn(`d2.analytics.request.withOuMode(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withOuMode(): "${value}" not listed as possible value`);
                 this.parameters.ouMode = value;
             }
 
@@ -732,7 +734,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (sortOrders.has(sortOrder)) {
                 this.parameters.sortOrder = sortOrder;
             } else {
-                // console.warn(`d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`);
                 this.parameters.sortOrder = value;
             }
 
@@ -783,7 +785,7 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (outputTypes.has(type)) {
                 this.parameters.outputType = type;
             } else {
-                // console.warn(`d2.analytics.request.withOutputType(): "${value}" not listed as possible value`);
+                console.warn(`d2.analytics.request.withOutputType(): "${value}" not listed as possible value`);
                 this.parameters.outputType = value;
             }
 
