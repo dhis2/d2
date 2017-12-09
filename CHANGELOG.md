@@ -1,5 +1,20 @@
 # D2 Changelog
 
+## 28.3.0
+###### _October 26th 2017_
+
+**Breaking changes:**
+
+- `d2.dataStore` API has changed in order to be more streamlined and easier to use:
+    - `d2.dataStore.create()` has been added to be able to ensure a new (empty) namespace.
+    - `d2.dataStore.get()` now rejects if the namespace does not exist.
+    - `d2.dataStore.getKeys()` now always fetches from the server, use `d2.dataStore.keys`-member to get a list of 
+    internal-keys in a synchronous way.
+    
+##### Added
+
+- `d2.currentUser.dataStore` has been added, and is a wrapper around UserDataStore. The API shares most functionality with `d2.dataStore`.
+
 ## 28.0.0
 ###### _September 19th 2017_
 

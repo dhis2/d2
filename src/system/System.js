@@ -9,8 +9,6 @@ import SystemSettings from './SystemSettings';
 import SystemConfiguration from './SystemConfiguration';
 
 /**
- * @class System
- *
  * @description
  * Represents the system that can be interacted with. There is a single instance of this pre-defined onto the d2
  * object after initialisation. This can be interacted with using its property objects to among other be used
@@ -21,45 +19,42 @@ import SystemConfiguration from './SystemConfiguration';
 class System {
     constructor(settings, configuration) {
         /**
-         * @property {SystemSettings} settings Contains a reference to a `SystemSettings` instance that can be used
+         * Contains a reference to a `SystemSettings` instance that can be used
          * to retrieve and save system settings.
          *
-         * @description
          * ```js
          * d2.system.settings.get('keyLastSuccessfulResourceTablesUpdate')
          *  .then(systemSettingsValue => {
          *    console.log('Analytics was last updated on: ' + systemSettingsValue);
          *  });
          * ```
+         * @type {SystemSettings}
+         *
          */
         this.settings = settings;
 
         /**
-         * @property {SystemConfiguration} configuration
-         *
-         * @description A representation of the system configuration, that can be used to retreive and change system
-         * configuration options.
+         * A representation of the system configuration,
+         * that can be used to retrieve and change system configuration options.
+         * @type {SystemConfiguration}
          */
         this.configuration = configuration;
 
         /**
-         * @property {Object} systemInfo
-         *
-         * @description An object containing system information about the DHIS2 instance
+         * An object containing system information about the DHIS2 instance
+         * @type {Object}
          */
         this.systemInfo = undefined;
 
         /**
-         * @property {Object} version
-         *
-         * @description An object containing version information about the DHIS2 instance
+         * An object containing version information about the DHIS2 instance
+         * @type {Object}
          */
         this.version = undefined;
 
         /**
-         * @property {Array} installedApps
-         *
-         * @description An array of all the webapps that are installed on the current DHIS2 instance
+         * An array of all the webapps that are installed on the current DHIS2 instance
+         * @type {Array}
          */
         this.installedApps = undefined;
     }
@@ -196,9 +191,20 @@ class System {
         return api.update('apps').then(() => this.loadInstalledApps());
     }
 
-    // TODO: Document
+    /**
+     * @static
+     * @typedef {Object} ParsedVersion
+     * @property {number} major - Major version of the parsed-string (before .)
+     * @property {number} minor - Minor version of the parsed-string (after .)
+     * @property {boolean} snapshot - If it's a snapshot-version
+     */
     // TODO: Validate string
     // TODO: Handle valid version objects too
+    /**
+     * Parses a version string into an object describing the version.
+     * @param {string} version Version-string to parse
+     * @returns {module:system.ParsedVersion}
+     */
     static parseVersionString(version) {
         return {
             major: Number.parseInt(version, 10),
@@ -207,9 +213,14 @@ class System {
         };
     }
 
-    // TODO: Document
     // Disable eslint complexity warning
     /* eslint-disable complexity */
+    /**
+     * Compares version a to version b.
+     * @param a {string|module:system.ParsedVersion}
+     * @param b {string|module:system.ParsedVersion}
+     * @returns {number} 0 if same version, else a - b.
+     */
     static compareVersions(a, b) {
         const from = (typeof a === 'string' || a instanceof String) ? System.parseVersionString(a) : a;
         const to = (typeof b === 'string' || b instanceof String) ? System.parseVersionString(b) : b;
@@ -223,6 +234,14 @@ class System {
         return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1);
     }
 
+    /**
+     * Checks if systemVersion is compatible with appVersion.
+     * Versions are compatible if appVersion.minDhisVersion <= parsed systemVersion and
+     * if appVersion.maxDhisVersion >= parsed systemVersion.
+     * @param systemVersion {string|module:system.ParsedVersion} systemVersion to check
+     * @param {Object} appVersion - AppVersion object to check
+     * @returns {boolean} true if compatible, false otherwise.
+     */
     static isVersionCompatible(systemVersion, appVersion) {
         const minVersion = appVersion.minDhisVersion || appVersion.min_platform_version || null;
         const maxVersion = appVersion.maxDhisVersion || appVersion.max_platform_version || null;

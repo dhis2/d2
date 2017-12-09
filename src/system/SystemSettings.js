@@ -2,8 +2,6 @@ import { isString } from '../lib/check';
 import Api from '../api/Api';
 
 /**
- * @class SystemSettings
- *
  * @description
  * Handles communication with the systemSettings endpoint. Can be used to get or save systemSettings.
  *
