@@ -37,6 +37,24 @@ const FILTER_COMPARATORS = {
      * This method can be used to add a ne filter value
      */
     notEqual: 'ne',
+    /**
+     * @function
+     * @memberof module:model.Filter.prototype
+     * @returns {Filter} Returns the modified filter for chaining
+     *
+     * @description
+     * This method can be used to add a in filter value
+     */
+    in: 'in',
+    /**
+     * @function
+     * @memberof module:model.Filter.prototype
+     * @returns {Filter} Returns the modified filter for chaining
+     *
+     * @description
+     * This method can be used to add a !in filter value
+     */
+    notIn: '!in',
 };
 
 /**
@@ -104,7 +122,7 @@ Object.keys(FILTER_COMPARATORS).forEach((filter) => {
             checkDefined(filterValue, 'filterValue');
 
             this.comparator = FILTER_COMPARATORS[filter];
-            this.filterValue = filterValue;
+            this.filterValue = [FILTER_COMPARATORS.in, FILTER_COMPARATORS.notIn].includes(this.comparator) ? `[${filterValue.join(',')}]` : filterValue;
 
             return this.addFilterCallback(this);
         },
