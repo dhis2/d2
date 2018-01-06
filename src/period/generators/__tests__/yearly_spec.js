@@ -133,7 +133,7 @@ describe('Yearly period', () => {
         });
 
         it('should use the current year when no year has been given', () => {
-            expect(generateYearlyPeriodsUpToYear()).toEqual(generateYearlyPeriodsUpToYear(2017));
+            expect(generateYearlyPeriodsUpToYear()).toEqual(generateYearlyPeriodsUpToYear(new Date().getFullYear()));
         });
     });
 });
