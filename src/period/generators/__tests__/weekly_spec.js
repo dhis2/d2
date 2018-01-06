@@ -38,7 +38,7 @@ describe('Weekly period', () => {
         });
 
         it('should generate the correct result for each period', () => {
-            const periods = generateWeeklyPeriodsForYear();
+            const periods = generateWeeklyPeriodsForYear(2017);
 
             expect(periods[0]).toEqual({
                 startDate: '2017-01-02',
@@ -112,7 +112,7 @@ describe('Weekly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateWeeklyPeriodsForYear()).toEqual(generateWeeklyPeriodsForYear(2017));
+            expect(generateWeeklyPeriodsForYear()).toEqual(generateWeeklyPeriodsForYear(new Date().getFullYear()));
         });
 
         it('should have 71 years in 400-year cycle with iso week 53', () => {

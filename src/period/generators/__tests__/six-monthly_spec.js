@@ -31,7 +31,7 @@ describe('Six-monthly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateSixMonthlyPeriodsForYear()).toEqual(generateSixMonthlyPeriodsForYear(2017));
+            expect(generateSixMonthlyPeriodsForYear()).toEqual(generateSixMonthlyPeriodsForYear(new Date().getFullYear()));
         });
     });
 });
