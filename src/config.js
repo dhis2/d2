@@ -1,8 +1,6 @@
 import defaultConfig from './defaultConfig';
 import { isType, isString } from './lib/check';
 
-const DEFAULT_API_VERSION = 26;
-
 export default class Config {
     static create(...args) {
         const configObjects = args
@@ -23,7 +21,8 @@ export default class Config {
         if (isString(config.baseUrl)) {
             api.setBaseUrl(config.baseUrl);
         } else {
-            api.setBaseUrl(`/api/${DEFAULT_API_VERSION}`);
+            // default to the current version of the `/api`
+            api.setBaseUrl('/api');
         }
 
         if (config.i18n && config.i18n.sources) {
