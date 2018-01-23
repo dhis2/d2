@@ -49,7 +49,7 @@ describe('Six-monthly-april period', () => {
         });
 
         it('should use the current year when no year has been given', () => {
-            expect(generateSixMonthlyAprilPeriodsForYear()).toEqual(generateSixMonthlyAprilPeriodsForYear(2017));
+            expect(generateSixMonthlyAprilPeriodsForYear()).toEqual(generateSixMonthlyAprilPeriodsForYear(new Date().getFullYear()));
         });
     });
 });
