@@ -1,7 +1,7 @@
 import defaultConfig from './defaultConfig';
 import { isType, isString } from './lib/check';
 
-const DEFAULT_API_VERSION = 25;
+const DEFAULT_API_VERSION = 26;
 
 export default class Config {
     static create(...args) {
