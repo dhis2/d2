@@ -49,7 +49,7 @@ describe('Bi-monthly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateBiMonthlyPeriodsForYear()).toEqual(generateBiMonthlyPeriodsForYear(2017));
+            expect(generateBiMonthlyPeriodsForYear()).toEqual(generateBiMonthlyPeriodsForYear(new Date().getFullYear()));
         });
     });
 });

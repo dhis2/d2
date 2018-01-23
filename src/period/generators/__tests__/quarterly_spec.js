@@ -41,7 +41,7 @@ describe('Quarterly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateQuarterlyPeriodsForYear()).toEqual(generateQuarterlyPeriodsForYear(2017));
+            expect(generateQuarterlyPeriodsForYear()).toEqual(generateQuarterlyPeriodsForYear(new Date().getFullYear()));
         });
     });
 });

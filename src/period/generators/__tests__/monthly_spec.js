@@ -26,7 +26,7 @@ describe('Monthly period', () => {
         });
 
         it('should generate the same periods when called without as when called with the current year', () => {
-            expect(generateMonthlyPeriodsForYear()).toEqual(generateMonthlyPeriodsForYear(2017));
+            expect(generateMonthlyPeriodsForYear()).toEqual(generateMonthlyPeriodsForYear(new Date().getFullYear()));
         });
     });
 });
