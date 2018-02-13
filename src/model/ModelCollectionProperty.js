@@ -122,7 +122,8 @@ class ModelCollectionProperty extends ModelCollection {
 
     /**
      * Checks if the collection property has been modified.
-     *
+     * @param {boolean} [includeValues=true] If true, also checks if any models in the collection
+     * has been edited by checking the dirty flag on each model.
      * @returns {boolean} true if any elements have been added to or removed from the collection
      */
     isDirty(includeValues = true) {
