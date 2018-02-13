@@ -16,6 +16,7 @@ const NON_MODEL_COLLECTIONS = {
     deliveryChannels: ['programNotificationTemplate'],
     redirectUris: ['oAuth2Client'],
     organisationUnitLevels: ['validationRule'],
+    favorites: [],
 };
 
 const isNonModelCollection = (propertyName, modelType) => {
