@@ -125,7 +125,11 @@ class ModelCollectionProperty extends ModelCollection {
      *
      * @returns {boolean} true if any elements have been added to or removed from the collection
      */
-    isDirty() {
+    isDirty(includeValues = true) {
+        if (includeValues) {
+            return this.dirty || this.toArray()
+                .filter(model => model && (model.isDirty() === true)).length > 0;
+        }
         return this.dirty;
     }
 
