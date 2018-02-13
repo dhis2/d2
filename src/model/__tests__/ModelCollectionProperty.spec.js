@@ -185,7 +185,7 @@ describe('ModelCollectionProperty', () => {
 
             expect(mcp.isDirty()).toBe(false);
 
-            testModels[0].name = 'Birk';
+            testModels[0].name = 'Raccoon';
             expect(testModels[0].isDirty()).toBe(true);
             expect(mcp.isDirty()).toBe(true);
         });
@@ -198,7 +198,7 @@ describe('ModelCollectionProperty', () => {
 
             expect(mcp.isDirty()).toBe(false);
 
-            testModels[0].name = 'Birk';
+            testModels[0].name = 'Raccoon';
             expect(testModels[0].isDirty()).toBe(true);
             expect(mcp.isDirty(false)).toBe(false);
         });
