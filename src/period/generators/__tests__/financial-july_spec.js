@@ -133,7 +133,7 @@ describe('Financial July period', () => {
         });
 
         it('should generate use the current year when no year has been given', () => {
-            expect(generateFinancialJulyPeriodsUpToYear()).toEqual(generateFinancialJulyPeriodsUpToYear(2017));
+            expect(generateFinancialJulyPeriodsUpToYear()).toEqual(generateFinancialJulyPeriodsUpToYear(new Date().getFullYear()));
         });
     });
 });

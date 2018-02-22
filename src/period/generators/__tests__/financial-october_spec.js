@@ -133,7 +133,7 @@ describe('Financial October period', () => {
         });
 
         it('should generate use the current year when no year has been given', () => {
-            expect(generateFinancialOctoberPeriodsUpToYear()).toEqual(generateFinancialOctoberPeriodsUpToYear(2017));
+            expect(generateFinancialOctoberPeriodsUpToYear()).toEqual(generateFinancialOctoberPeriodsUpToYear(new Date().getFullYear()));
         });
     });
 });

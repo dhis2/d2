@@ -133,7 +133,7 @@ describe('Financial April period', () => {
         });
 
         it('should generate use the current year when no year has been given', () => {
-            expect(generateFinancialAprilPeriodsUpToYear()).toEqual(generateFinancialAprilPeriodsUpToYear(2017));
+            expect(generateFinancialAprilPeriodsUpToYear()).toEqual(generateFinancialAprilPeriodsUpToYear(new Date().getFullYear()));
         });
     });
 });

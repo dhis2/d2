@@ -1,6 +1,6 @@
 {
   "name": "d2",
-  "version": "28.2.0",
+  "version": "29.0.1",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "build": "npm run build-only",
     "lint": "./node_modules/eslint/bin/eslint.js src",
+    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix",
     "travis": "npm run coverage && npm run build"
   },
   "repository": {
@@ -78,6 +79,6 @@
     ],
     "testPathIgnorePatterns": [
       ".*\\.e2e\\.jsx?$"
-      ]
+    ]
   }
 }
