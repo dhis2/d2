@@ -107,4 +107,30 @@ describe('getJSONForProperties', () => {
             });
         });
     });
+
+    describe('property types', () => {
+        it('should handle non-embedded collection properties', () => {
+            const favoritesPropName = 'favorites';
+            const favoritesValue = ['userId1', 'userId2'];
+            const model = {
+                modelDefinition: {
+                    modelValidations: {
+                        favorites: {},
+                    },
+                },
+                dataValues: {
+                    [favoritesPropName]: favoritesValue,
+                },
+                getCollectionChildrenPropertyNames: () => [favoritesPropName],
+                getReferenceProperties: () => [],
+            };
+            const actual = getJSONForProperties(model, [favoritesPropName]);
+
+            const expected = {
+                [favoritesPropName]: favoritesValue,
+            };
+
+            expect(actual).toEqual(expected);
+        });
+    });
 });

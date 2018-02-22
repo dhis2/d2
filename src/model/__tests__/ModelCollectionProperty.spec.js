@@ -24,7 +24,7 @@ describe('ModelCollectionProperty', () => {
 
         mcp = ModelCollectionProperty.create(mockParentModel, mockModelDefinition, 'dataElementGroups', []);
 
-        testModels.push(mockModelDefinition.create({ id: 'dataEleme01' }));
+        testModels.push(mockModelDefinition.create({ id: 'dataEleme01', name: 'Test' }));
         testModels.push(mockModelDefinition.create({ id: 'dataEleme02' }));
         testModels.push(mockModelDefinition.create({ id: 'dataEleme03' }));
     });
@@ -175,6 +175,32 @@ describe('ModelCollectionProperty', () => {
             expect(mcp.isDirty()).toBe(false);
             mcp.added.add(testModels[0]);
             expect(mcp.isDirty()).toBe(false);
+        });
+
+        it('Should be dirty=true if any model has been edited by default', () => {
+            expect(mcp.isDirty()).toBe(false);
+            mcp.add(testModels[0]);
+            expect(mcp.isDirty()).toBe(true);
+            mcp.resetDirtyState();
+
+            expect(mcp.isDirty()).toBe(false);
+
+            testModels[0].name = 'Raccoon';
+            expect(testModels[0].isDirty()).toBe(true);
+            expect(mcp.isDirty()).toBe(true);
+        });
+
+        it('Should be dirty=false if includeValues=false', () => {
+            expect(mcp.isDirty()).toBe(false);
+            mcp.add(testModels[0]);
+            expect(mcp.isDirty()).toBe(true);
+            mcp.resetDirtyState();
+
+            expect(mcp.isDirty()).toBe(false);
+
+            testModels[0].name = 'Raccoon';
+            expect(testModels[0].isDirty()).toBe(true);
+            expect(mcp.isDirty(false)).toBe(false);
         });
     });
 

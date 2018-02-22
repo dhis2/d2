@@ -24,6 +24,7 @@ import Config from './config';
 import CurrentUser from './current-user/CurrentUser';
 import { fieldsForSchemas } from './model/config';
 import DataStore from './datastore/DataStore';
+import Analytics from './analytics/Analytics';
 import GeoFeatures from './geofeatures/GeoFeatures';
 
 let firstRun = true;
@@ -211,11 +212,40 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
         /**
          * Instance of the DataStore class for interaction with the dataStore api.
          *
-         * @see {@link module:datastore/DataStore~DataStore|DataStore}
+         * @see {@link module:datastore.DataStore DataStore}
          *
          * @instance
          */
         dataStore: DataStore.getDataStore(),
+
+        /**
+         * Analytics instance for requesting analytics data from various endpoints.
+         *
+         * @example
+         * d2.analytics.aggregate
+         *  .addDimensions([
+         *   'dx:Uvn6LCg7dVU;OdiHJayrsKo',
+         *   'pe:LAST_4_QUARTERS',
+         *   'ou:lc3eMKXaEfw;PMa2VCrupOd',
+         *  ])
+         *  .addFilter('pe:2016Q1;2016Q2')
+         *  .getRawData({
+         *    startDate: '2017-10-01',
+         *    endDate: '2017-10-31'
+         *  })
+         *  .then(console.log)
+         *
+         * @see {@link module:analytics.Analytics Analytics}
+         * @instance
+         */
+        analytics: Analytics.getAnalytics(),
+
+        /*
+         * GeoFeatures instance
+         *
+         * @see {@link module:geoFeatures.GeoFeatures GeoFeatures}
+         * @instance
+         */
         geoFeatures: GeoFeatures.getGeoFeatures(),
     };
 

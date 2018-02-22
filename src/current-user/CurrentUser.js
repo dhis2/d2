@@ -4,6 +4,7 @@
 import UserAuthorities from './UserAuthorities';
 import UserSettings from './UserSettings';
 import { noCreateAllowedFor } from '../defaultConfig';
+import UserDataStore from '../datastore/UserDataStore';
 
 const models = Symbol('models');
 const propertiesToIgnore = new Set([
@@ -111,13 +112,18 @@ class CurrentUser {
     constructor(userData, userAuthorities, modelDefinitions, settings) {
         Object.assign(this, getPropertiesForCurrentUserObject(userData));
 
+        /**
+         *
+         * @type {UserAuthorities}
+         */
         this.authorities = userAuthorities;
+
         this[models] = modelDefinitions;
 
         /**
-         * @property {UserSettings} settings Contains a reference to a `UserSettings` instance that can be used
+         * Contains a reference to a `UserSettings` instance that can be used
          * to retrieve and save system settings.
-         *
+         * @type {UserSettings}
          * @description
          * ```js
          * d2.currentUser.userSettings.get('keyUiLocale')
@@ -127,6 +133,13 @@ class CurrentUser {
          * ```
          */
         this.userSettings = settings;
+
+        /**
+         * Contains a reference to {@link module:current-user.UserDataStore UserDataStore}
+         * @type UserDataStore
+         *
+         */
+        this.dataStore = UserDataStore.getUserDataStore();
     }
 
     /**

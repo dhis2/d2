@@ -3,8 +3,6 @@ import { isString } from '../lib/check';
 
 
 /**
- * @class UserSettings
- *
  * @description
  * Handles communication with the userSettings endpoint. Can be used to get or save userSettings.
  *
