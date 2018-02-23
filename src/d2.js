@@ -25,6 +25,7 @@ import CurrentUser from './current-user/CurrentUser';
 import { fieldsForSchemas } from './model/config';
 import DataStore from './datastore/DataStore';
 import Analytics from './analytics/Analytics';
+import GeoFeatures from './geofeatures/GeoFeatures';
 
 let firstRun = true;
 let deferredD2Init = Deferred.create();
@@ -238,6 +239,14 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
          * @instance
          */
         analytics: Analytics.getAnalytics(),
+
+        /*
+         * GeoFeatures instance
+         *
+         * @see {@link module:geoFeatures.GeoFeatures GeoFeatures}
+         * @instance
+         */
+        geoFeatures: GeoFeatures.getGeoFeatures(),
     };
 
     // Process the config in a the config class to keep all config calls together.
