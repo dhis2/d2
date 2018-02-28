@@ -687,7 +687,7 @@ describe('ModelBase', () => {
 
         it('should not throw an exception on `toJSON` for base models', () => {
             expect(model.toJSON()).toEqual({});
-        })
+        });
 
         it('should return a json representation of the model', () => {
             model.modelDefinition = {
