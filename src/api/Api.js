@@ -186,6 +186,18 @@ class Api {
     }
 
     /**
+     * Perform a PATCH request.
+     *
+     * @param {string} url The url for the request
+     * @param {*} data Any data that should be send with the request. This becomes the body of the PATCH request.
+     *
+     * @returns {Promise.<*>} The response body.
+     */
+    patch(url, data) {
+        return this.request('PATCH', getUrl(this.baseUrl, url), JSON.stringify(data));
+    }
+
+    /**
      * General purpose request function for making http requests.
      *
      * The more specific functions like `delete`, `post` and `get`, utilize this function to make the requests.
