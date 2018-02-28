@@ -610,13 +610,9 @@ describe('Api', () => {
 
         it('should call the ajax method with the correct PATCH request', () => {
             const data = {
-                a: 'A',
-                b: 'B!',
-                obj: {
-                    oa: 'o.a',
-                    ob: 'o.b',
+                propAtBaseLevel: {
+                    nestedChildThatNeedsTOBeUpdated: false,
                 },
-                arr: [1, 2, 3],
             };
             api.patch('some/fake/api/endpoint', data);
 
