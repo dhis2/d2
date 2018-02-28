@@ -679,6 +679,17 @@ describe('ModelBase', () => {
 
         beforeEach(() => {
             model = Object.create(modelBase);
+        });
+
+        it('should be a function', () => {
+            expect(typeof model.toJSON).toBe('function');
+        });
+
+        it('should not throw an exception on `toJSON` for base models', () => {
+            expect(model.toJSON()).toEqual({});
+        });
+
+        it('should return a json representation of the model', () => {
             model.modelDefinition = {
                 modelValidations: {
                     name: {
@@ -700,13 +711,6 @@ describe('ModelBase', () => {
 
             model.name = model.dataValues.name;
             model.dataElements = model.dataValues.dataElements;
-        });
-
-        it('should be a function', () => {
-            expect(typeof model.toJSON).toBe('function');
-        });
-
-        it('should return a json representation of the model', () => {
             const expected = ({
                 name: 'ANC',
                 dataElements: [
