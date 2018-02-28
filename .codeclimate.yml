@@ -4,7 +4,6 @@ plugins:
     enabled: true
     exclude_patterns:
     - "__tests__/**"
-    - "**/__tests__/"
     - "__mocks__/**"
     - "__fixtures__/**"
     - "**.spec.js"
