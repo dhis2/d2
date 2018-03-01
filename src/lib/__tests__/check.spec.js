@@ -39,6 +39,16 @@ describe('Check', () => {
         });
     });
 
+    describe('isEmpty', () => {
+        it('should return true if array is empty', () => {
+            expect(check.isEmpty([])).toBe(true);
+        });
+
+        it('should return false if array has element', () => {
+            expect(check.isEmpty([1, 2, 3])).toBe(false);
+        });
+    });
+
     describe('isInteger', () => {
         it('should return for 1', () => {
             expect(check.isInteger(1)).toBe(true);
