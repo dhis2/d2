@@ -84,7 +84,7 @@ export function contains(item, list) {
     return listToCheck.indexOf(item) >= 0;
 }
 
-export const isEmpty = list => list.length >= 0;
+export const isEmpty = list => list.length === 0;
 
 /**
  * @deprecated Use isValidUid from the `uid.js` file.
