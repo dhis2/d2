@@ -7,6 +7,7 @@ function mockInit() {
         update: jest.fn(),
         delete: jest.fn(),
         request: jest.fn(),
+        setDefaultHeaders: jest.fn(),
     };
 }
 

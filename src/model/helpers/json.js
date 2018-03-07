@@ -13,7 +13,7 @@ const NON_MODEL_COLLECTIONS = {
     aggregationLevels: ['dataElement'],
     grantTypes: ['oAuth2Client'],
     translations: [],
-    deliveryChannels: ['programNotificationTemplate'],
+    deliveryChannels: ['programNotificationTemplate', 'dataSetNotificationTemplate'],
     redirectUris: ['oAuth2Client'],
     organisationUnitLevels: ['validationRule'],
     favorites: [],

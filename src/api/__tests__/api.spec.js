@@ -603,6 +603,30 @@ describe('Api', () => {
         });
     });
 
+    describe('patch', () => {
+        it('should be a method', () => {
+            expect(api.patch).toBeInstanceOf(Function);
+        });
+
+        it('should call the ajax method with the correct PATCH request', () => {
+            const data = {
+                propAtBaseLevel: {
+                    nestedChildThatNeedsTOBeUpdated: false,
+                },
+            };
+            api.patch('some/fake/api/endpoint', data);
+
+            expect(fetchMock).toBeCalledWith(
+                '/api/some/fake/api/endpoint',
+                Object.assign(baseFetchOptions, {
+                    method: 'PATCH',
+                    headers: new Headers({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify(data),
+                }),
+            );
+        });
+    });
+
     describe('defaultHeaders', () => {
         it('should use the set default headers for the request', () => {
             api.setDefaultHeaders({

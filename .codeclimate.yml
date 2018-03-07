@@ -1,14 +1,15 @@
-engines:
+version: 2
+plugins:
   duplication:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
     - "__tests__/**"
     - "__mocks__/**"
     - "__fixtures__/**"
     - "**.spec.js"
   eslint:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
     - "__fixtures__/**"
-exclude_paths:
+exclude_patterns:
 - "**.spec.js"
