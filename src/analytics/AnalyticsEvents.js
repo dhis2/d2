@@ -17,7 +17,7 @@ class AnalyticsEvents extends AnalyticsBase {
      * @returns {Promise} Promise that resolves with the analytics aggregate data from the api.
      *
      * @example
-     * const req = d2.analytics.request()
+     * const req = new d2.analytics.request()
      *  .withProgram('eBAyeGv0exc')
      *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
      *  .addPeriodDimension('LAST_4_QUARTERS')
@@ -39,7 +39,7 @@ class AnalyticsEvents extends AnalyticsBase {
      * @returns {Promise} Promise that resolves with the analytics count data from the api.
      *
      * @example
-     * const req = d2.analytics.request()
+     * const req = new d2.analytics.request()
      *  .withProgram('eBAyeGv0exc')
      *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
      *  .addPeriodDimension('LAST_4_QUARTERS')
@@ -62,7 +62,7 @@ class AnalyticsEvents extends AnalyticsBase {
      * @returns {Promise} Promise that resolves with the analytics cluster data from the api.
      *
      * @example
-     * const req = d2.analytics.request()
+     * const req = new d2.analytics.request()
      *  .withProgram('eBAyeGv0exc')
      *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
      *  .addPeriodDimension('LAST_4_QUARTERS')
@@ -86,7 +86,7 @@ class AnalyticsEvents extends AnalyticsBase {
      * @returns {Promise} Promise that resolves with the analytics query data from the api.
      *
      * @example
-     * const req = d2.analytics.request()
+     * const req = new d2.analytics.request()
      *  .withProgram('eBAyeGv0exc')
      *  .addDataDimension(['Uvn6LCg7dVU','OdiHJayrsKo'])
      *  .addPeriodDimension('LAST_4_QUARTERS')
