@@ -303,7 +303,10 @@ class ModelDefinition {
     save(model) {
         if (isAnUpdate(model)) {
             const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
-            const updateUrl = updateAPIUrlWithBaseUrlVersionNumber(model.dataValues.href, this.api.baseUrl);
+            // Fallback to modelDefinition if href is unavailable
+            const updateUrl = model.dataValues.href
+                ? updateAPIUrlWithBaseUrlVersionNumber(model.dataValues.href, this.api.baseUrl)
+                : [model.modelDefinition.apiEndpoint, model.dataValues.id].join('/');
 
             // Save the existing model
             return this.api.update(updateUrl, jsonPayload, true);

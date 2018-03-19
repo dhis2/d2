@@ -957,6 +957,12 @@ describe('ModelDefinition', () => {
                 expect(apiUpdateStub.mock.calls[0][0]).toBe(fixtures.get('/singleUserAllFields').href);
             });
 
+            it('should be able to construct a valid save url without an href set on the model', () => {
+                delete model.dataValues.href;
+                userModelDefinition.save(model);
+                expect(apiUpdateStub.mock.calls[0][0]).toBe(fixtures.get('/singleUserAllFields').href);
+            });
+
             it('should call the update method on the api with the replace strategy option set to true', () => {
                 userModelDefinition.save(model);
 
