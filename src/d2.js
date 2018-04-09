@@ -379,6 +379,11 @@ export function getInstance() {
     return deferredD2Init.promise;
 }
 
+export function setInstance(d2) {
+    console.warn('[d2] Overriding d2 instance; you better be sure about this.');
+    deferredD2Init.resolve(d2);
+}
+
 /**
  * Can be used to set config options before initialisation of d2.
  *
