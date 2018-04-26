@@ -62,10 +62,11 @@ const propertySymbols = Array
  */
 function getPropertiesForCurrentUserObject(currentUserObject) {
     let properties;
-    // The userCredentials object on the userObject is confusing so we set the properties straight onto the currentUser
-    // object itself
+    // The userCredentials object on the userObject is confusing so we set the properties straight onto the currentUser object itself
     if (currentUserObject.userCredentials) {
         properties = Object.assign({}, currentUserObject.userCredentials, currentUserObject);
+        // the above line overwrites the id in userCredentials when merging. Therefore, it has to be set explicitly.
+        properties.userCredentialsID = currentUserObject.userCredentials.id;
     } else {
         properties = Object.assign({}, currentUserObject);
     }
