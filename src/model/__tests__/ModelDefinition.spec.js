@@ -805,11 +805,59 @@ describe('ModelDefinition', () => {
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
         });
 
+        it('should work with operator-filter', () => {
+            dataElementModelDefinition
+                .filter()
+                .on('name')
+                .operator('like', 'John')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
+        });
+
+        it('should work with chained operator-filter', () => {
+            dataElementModelDefinition
+                .filter()
+                .on('name')
+                .operator('like', 'John')
+                .filter()
+                .on('username')
+                .operator('token', 'admin')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:token:admin'] });
+        });
+
+        it('should work with rootJunction', () => {
+            dataElementModelDefinition
+                .filter()
+                .logicMode('OR')
+                .on('name')
+                .like('John')
+                .filter()
+                .logicMode('OR')
+                .on('username')
+                .token('admin')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:token:admin'], rootJunction: 'OR' });
+        });
+
         it('should not try to filter by "undefined"', () => {
             dataElementModelDefinition
                 .list({ filter: undefined });
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+        });
+
+        it('should work by constructing filters before calling list', () => {
+            const filters = dataElementModelDefinition.filter();
+            filters.logicMode('OR');
+            filters.on('name').like('John');
+            filters.on('username').token('admin');
+            filters.list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:token:admin'], rootJunction: 'OR' });
         });
     });
 

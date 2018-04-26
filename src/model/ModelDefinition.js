@@ -270,7 +270,8 @@ class ModelDefinition {
      */
     list(listParams = {}) {
         const { apiEndpoint, ...extraParams } = listParams;
-        const params = Object.assign({ fields: ':all' }, extraParams);
+        const definedRootJunction = this.filters.rootJunction ? { rootJunction: this.filters.rootJunction } : {};
+        const params = Object.assign({ fields: ':all' }, definedRootJunction, extraParams);
         const definedFilters = this.filters.getQueryFilterValues();
 
         if (!isDefined(params.filter)) {

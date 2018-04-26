@@ -110,4 +110,25 @@ describe('Filters', () => {
             expect(filters.getQueryFilterValues()).toEqual(['code:eq:Partner_453', 'name:like:John']);
         });
     });
+
+    describe('logicMode', () => {
+        let filters;
+
+        beforeEach(() => {
+            filters = new Filters();
+        });
+
+        it('should be a function', () => {
+            expect(filters.getQueryFilterValues).toBeInstanceOf(Function);
+        });
+
+        it('should throw when invalid rootJunction are given', () => {
+            expect(() => filters.logicMode('asf')).toThrow();
+        });
+
+        it('should set the rootJunction on the object', () => {
+            filters.logicMode('OR');
+            expect(filters.rootJunction).toEqual('OR');
+        });
+    });
 });
