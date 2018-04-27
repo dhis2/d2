@@ -57,6 +57,7 @@ Array [
     "filters": Filters {
       "filters": Array [],
       "modelDefinition": [Circular],
+      "rootJunction": null,
     },
     "getOwnedPropertyJSON": [Function],
     "identifiableObject": true,
@@ -985,6 +986,7 @@ Array [
     "filters": Filters {
       "filters": Array [],
       "modelDefinition": [Circular],
+      "rootJunction": null,
     },
     "getOwnedPropertyJSON": [Function],
     "identifiableObject": true,

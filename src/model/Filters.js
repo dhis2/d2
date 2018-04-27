@@ -1,4 +1,4 @@
-import { isType } from '../lib/check';
+import { isType, checkValidRootJunction } from '../lib/check';
 import { identity } from '../lib/utils';
 import Filter from '../model/Filter';
 
@@ -24,6 +24,7 @@ class Filters {
          */
         this.filters = filters;
         this.modelDefinition = modelDefinition;
+        this.rootJunction = null;
     }
 
     /**
@@ -95,6 +96,26 @@ class Filters {
      */
     getFilterList() {
         return this.filters.map(identity);
+    }
+
+    /**
+     * The logic mode to use on the filters.
+     *
+     * Default behavior is AND.
+     * Note that the logic will be used across all the filters, which
+     * means with OR, results will be returned when any of the filter match.
+     * It MUST be called last on the chain of filters when called 
+     * through modelDefinition.filter().
+     * @see {@link https://docs.dhis2.org/master/en/developer/html/webapi_metadata_object_filter.html|Object filter Docs }
+     * @example
+     * d2.programs.filter().on('name').like('Child')
+     * .filter().logicMode('OR').on('code').equals('Child')
+     * @param {string} junction The logic operator to use. One of ['OR', 'AND'];
+     */
+    logicMode(junction) {
+        checkValidRootJunction(junction);
+        this.rootJunction = junction;
+        return this;
     }
 
     /**
