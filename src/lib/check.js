@@ -106,3 +106,19 @@ export const isNullUndefinedOrEmptyString = toBeAny([undefined, null, '']);
 export const isFunction = fun => typeof fun === 'function';
 
 export const hasOwnProperty = (object, propertyName) => Object.prototype.hasOwnProperty.call(object, propertyName);
+
+// The logical mode to use when having multiple filters.
+// Default is AND.
+// See https://docs.dhis2.org/master/en/developer/html/webapi_metadata_object_filter.html
+
+export const rootJunctions = ['OR', 'AND'];
+export const isValidRootJunction = toBeAny(rootJunctions);
+export function checkValidRootJunction(rootJunction) {
+    checkType(rootJunction, 'string', 'rootJunction');
+
+    if (isValidRootJunction(rootJunction)) {
+        return true;
+    }
+    throw new Error(`Expected ${rootJunction} to be one of [${rootJunctions}]`);
+}
+
