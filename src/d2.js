@@ -85,8 +85,8 @@ export function getManifest(url, ApiClass = Api) {
 export function getUserSettings(ApiClass = Api) {
     const api = ApiClass.getApi();
 
-    if (preInitConfig.baseUrl && firstRun) {
-        api.setBaseUrl(preInitConfig.baseUrl);
+    if (firstRun) {
+        Config.processPreinitConfig(preInitConfig, api);
     }
 
     return api.get('userSettings');
@@ -130,6 +130,8 @@ function getModelRequests(api, schemaNames) {
  * baseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain
  * for example http://localhost/dhis/ you should set the base url to `/dhis/api`
  *
+ * uauthorizedCb
+ * 
  * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.
  * See the description for more information on the available settings.
  * @returns {Promise.<D2>} A promise that resolves with the intialized {@link init~d2|d2} object.
@@ -146,10 +148,6 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
     const api = ApiClass.getApi();
 
     const config = Config.create(preInitConfig, initConfig);
-
-    if (config.headers) {
-        api.setDefaultHeaders(config.headers);
-    }
 
     /**
      * @namespace
