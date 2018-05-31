@@ -182,6 +182,9 @@ class Api {
         // to clear out existing values
         const urlForUpdate = useMergeStrategy === true ? `${url}?${getMergeStrategyParam()}` : url;
 
+        if (typeof data === 'string') {
+            return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), data);
+        }
         return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), JSON.stringify(data));
     }
 
