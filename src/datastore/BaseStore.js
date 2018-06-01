@@ -2,9 +2,9 @@
  * @module datastore
  */
 
-import BaseStoreNamespace from './BaseStoreNamespace';
-import Api from '../api/Api';
-import { isArray } from '../lib/check';
+import BaseStoreNamespace from './BaseStoreNamespace'
+import Api from '../api/Api'
+import { isArray } from '../lib/check'
 /**
  * @private
  * @description
@@ -17,14 +17,16 @@ import { isArray } from '../lib/check';
 class BaseStore {
     constructor(api = Api.getApi(), endPoint = 'dataStore', NamespaceClass) {
         if (this.constructor === BaseStore) {
-            throw new Error("Can't instantiate abstract class!");
+            throw new Error("Can't instantiate abstract class!")
         }
         if (!(NamespaceClass.prototype instanceof BaseStoreNamespace)) {
-            throw new Error(`NamespaceClass must be subclass of ${typeof BaseStoreNamespace}`);
+            throw new Error(
+                `NamespaceClass must be subclass of ${typeof BaseStoreNamespace}`
+            )
         }
-        this.NamespaceClass = NamespaceClass;
-        this.endPoint = endPoint;
-        this.api = api;
+        this.NamespaceClass = NamespaceClass
+        this.endPoint = endPoint
+        this.api = api
     }
 
     /**
@@ -40,20 +42,30 @@ class BaseStore {
      */
     get(namespace, autoLoad = true) {
         if (!autoLoad) {
-            return new Promise((resolve) => {
-                resolve(new this.NamespaceClass(namespace));
-            });
+            return new Promise(resolve => {
+                resolve(new this.NamespaceClass(namespace))
+            })
         }
-        return this.api.get([this.endPoint, namespace].join('/'))
-            .then((response) => {
+        return this.api
+            .get([this.endPoint, namespace].join('/'))
+            .then(response => {
                 if (response && isArray(response)) {
-                    if (response.length < 1) { // fix for api bug returning empty array instead of 404
-                        return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
+                    if (response.length < 1) {
+                        // fix for api bug returning empty array instead of 404
+                        return Promise.reject(
+                            new Error(
+                                'The requested namespace has no keys or does not exist.'
+                            )
+                        )
                     }
-                    return new this.NamespaceClass(namespace, response);
+                    return new this.NamespaceClass(namespace, response)
                 }
-                return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
-            });
+                return Promise.reject(
+                    new Error(
+                        'The requested namespace has no keys or does not exist.'
+                    )
+                )
+            })
     }
 
     /**
@@ -61,13 +73,12 @@ class BaseStore {
      * @returns {Promise} An array of namespaces.
      */
     getAll() {
-        return this.api.get(this.endPoint)
-            .then((response) => {
-                if (response && isArray(response)) {
-                    return response;
-                }
-                throw new Error('No namespaces exist.');
-            });
+        return this.api.get(this.endPoint).then(response => {
+            if (response && isArray(response)) {
+                return response
+            }
+            throw new Error('No namespaces exist.')
+        })
     }
 
     /**
@@ -76,21 +87,24 @@ class BaseStore {
      * @returns {Promise<boolean>} True if namespace exists, false otherwise.
      */
     has(namespace) {
-        return this.api.get([this.endPoint, namespace].join('/'))
-            .then((response) => {
+        return this.api
+            .get([this.endPoint, namespace].join('/'))
+            .then(response => {
                 if (response && isArray(response)) {
-                    if (response.length < 1) { // fix for api bug returning empty array instead of 404
-                        return Promise.reject(response);
+                    if (response.length < 1) {
+                        // fix for api bug returning empty array instead of 404
+                        return Promise.reject(response)
                     }
-                    return true;
+                    return true
                 }
-                return Promise.reject(new Error('Response is not an array!'));
-            }).catch((e) => {
+                return Promise.reject(new Error('Response is not an array!'))
+            })
+            .catch(e => {
                 if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
-                    return Promise.resolve(false);
+                    return Promise.resolve(false)
                 }
-                throw e;
-            });
+                throw e
+            })
     }
 
     /**
@@ -100,7 +114,7 @@ class BaseStore {
      * @returns {Promise} the response body from the {@link module:api.Api#get API}.
      */
     delete(namespace) {
-        return this.api.delete([this.endPoint, namespace].join('/'));
+        return this.api.delete([this.endPoint, namespace].join('/'))
     }
 
     /**
@@ -112,9 +126,13 @@ class BaseStore {
      * an error if namespace exists.
      */
     create(namespace) {
-        return this.has(namespace).then(exists =>
-            (exists ? Promise.reject(new Error('Namespace already exists.')) : new this.NamespaceClass(namespace)));
+        return this.has(namespace).then(
+            exists =>
+                exists
+                    ? Promise.reject(new Error('Namespace already exists.'))
+                    : new this.NamespaceClass(namespace)
+        )
     }
 }
 
-export default BaseStore;
+export default BaseStore

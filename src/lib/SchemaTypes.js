@@ -1,8 +1,9 @@
-import { throwError } from './utils';
-import { isString } from './check';
+import { throwError } from './utils'
+import { isString } from './check'
 
 class SchemaTypes {
-    getTypes() { // eslint-disable-line class-methods-use-this
+    getTypes() {
+        // eslint-disable-line class-methods-use-this
         return [
             'TEXT',
             'NUMBER',
@@ -20,17 +21,26 @@ class SchemaTypes {
             'DATE',
             'COMPLEX',
             'IDENTIFIER',
-            'CONSTANT',
-        ];
+            'CONSTANT'
+        ]
     }
 
     typeLookup(propertyType) {
-        if (this.getTypes().indexOf(propertyType) >= 0 && isString(propertyType)) {
-            return propertyType;
+        if (
+            this.getTypes().indexOf(propertyType) >= 0 &&
+            isString(propertyType)
+        ) {
+            return propertyType
         }
 
-        return throwError(['Type from schema "', propertyType, '" not found available type list.'].join(''));
+        return throwError(
+            [
+                'Type from schema "',
+                propertyType,
+                '" not found available type list.'
+            ].join('')
+        )
     }
 }
 
-export default new SchemaTypes();
+export default new SchemaTypes()

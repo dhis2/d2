@@ -1,6 +1,6 @@
-import BaseStore from './BaseStore';
-import UserDataStoreNamespace from './UserDataStoreNamespace';
-import Api from '../api/Api';
+import BaseStore from './BaseStore'
+import UserDataStoreNamespace from './UserDataStoreNamespace'
+import Api from '../api/Api'
 
 /**
  * @augments module:datastore.BaseStore
@@ -35,7 +35,7 @@ import Api from '../api/Api';
  */
 class UserDataStore extends BaseStore {
     constructor(api = Api.getApi(), endPoint = 'userDataStore') {
-        super(api, endPoint, UserDataStoreNamespace);
+        super(api, endPoint, UserDataStoreNamespace)
     }
 
     /**
@@ -55,7 +55,7 @@ class UserDataStore extends BaseStore {
      * @returns {Promise<UserDataStoreNamespace>} An instance of a UserDataStoreNamespace representing the namespace that can be interacted with.
      */
     get(namespace, autoLoad = true) {
-        return super.get(namespace, autoLoad);
+        return super.get(namespace, autoLoad)
     }
 
     /**
@@ -71,7 +71,7 @@ class UserDataStore extends BaseStore {
      * an error if namespace exists.
      */
     create(namespace) {
-        return super.create(namespace);
+        return super.create(namespace)
     }
 
     /**
@@ -86,11 +86,14 @@ class UserDataStore extends BaseStore {
 
     static getUserDataStore() {
         if (!UserDataStore.getUserDataStore.dataStore) {
-            UserDataStore.getUserDataStore.dataStore = new UserDataStore(Api.getApi(), 'userDataStore');
+            UserDataStore.getUserDataStore.dataStore = new UserDataStore(
+                Api.getApi(),
+                'userDataStore'
+            )
         }
 
-        return UserDataStore.getUserDataStore.dataStore;
+        return UserDataStore.getUserDataStore.dataStore
     }
 }
 
-export default UserDataStore;
+export default UserDataStore

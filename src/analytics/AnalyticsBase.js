@@ -1,4 +1,4 @@
-import Api from '../api/Api';
+import Api from '../api/Api'
 
 /**
  * @private
@@ -15,7 +15,7 @@ import Api from '../api/Api';
  */
 class AnalyticsBase {
     constructor(api = Api.getApi()) {
-        this.api = api;
+        this.api = api
     }
 
     /**
@@ -36,11 +36,10 @@ class AnalyticsBase {
      *  .then(analyticsData => console.log('Analytics data', analyticsData))
      */
     get(req) {
-        return this.api.get(
-            req.buildUrl(),
-            req.buildQuery())
-            .then(data => Promise.resolve(data));
+        return this.api
+            .get(req.buildUrl(), req.buildQuery())
+            .then(data => Promise.resolve(data))
     }
 }
 
-export default AnalyticsBase;
+export default AnalyticsBase

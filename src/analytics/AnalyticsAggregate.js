@@ -1,4 +1,4 @@
-import AnalyticsBase from './AnalyticsBase';
+import AnalyticsBase from './AnalyticsBase'
 
 /**
  * @extends module:analytics.AnalyticsBase
@@ -29,7 +29,7 @@ class AnalyticsAggregate extends AnalyticsBase {
      * .then(console.log);
      */
     getDataValueSet(req) {
-        return this.get(req.withPath('dataValueSet'));
+        return this.get(req.withPath('dataValueSet'))
     }
 
     /**
@@ -51,7 +51,7 @@ class AnalyticsAggregate extends AnalyticsBase {
      *  .then(console.log);
      */
     getRawData(req) {
-        return this.get(req.withPath('rawData'));
+        return this.get(req.withPath('rawData'))
     }
 
     /**
@@ -72,8 +72,8 @@ class AnalyticsAggregate extends AnalyticsBase {
      *  .then(console.log);
      */
     getDebugSql(req) {
-        return this.get(req.withPath('debug/sql'));
+        return this.get(req.withPath('debug/sql'))
     }
 }
 
-export default AnalyticsAggregate;
+export default AnalyticsAggregate

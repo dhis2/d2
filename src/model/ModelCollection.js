@@ -1,28 +1,32 @@
-import { isValidUid, isArray, checkType } from '../lib/check';
-import { throwError } from '../lib/utils';
-import Model from './Model';
-import ModelDefinition from './ModelDefinition';
-import Pager from '../pager/Pager';
+import { isValidUid, isArray, checkType } from '../lib/check'
+import { throwError } from '../lib/utils'
+import Model from './Model'
+import ModelDefinition from './ModelDefinition'
+import Pager from '../pager/Pager'
 
 function throwIfContainsOtherThanModelObjects(values) {
     if (values && values[Symbol.iterator]) {
-        const toCheck = [...values];
-        toCheck.forEach((value) => {
+        const toCheck = [...values]
+        toCheck.forEach(value => {
             if (!(value instanceof Model)) {
-                throwError('Values of a ModelCollection must be instances of Model');
+                throwError(
+                    'Values of a ModelCollection must be instances of Model'
+                )
             }
-        });
+        })
     }
 }
 
 function throwIfContainsModelWithoutUid(values) {
     if (values && values[Symbol.iterator]) {
-        const toCheck = [...values];
-        toCheck.forEach((value) => {
+        const toCheck = [...values]
+        toCheck.forEach(value => {
             if (!isValidUid(value.id)) {
-                throwError('Can not add a Model without id to a ModelCollection');
+                throwError(
+                    'Can not add a Model without id to a ModelCollection'
+                )
             }
-        });
+        })
     }
 }
 
@@ -48,29 +52,33 @@ class ModelCollection {
      * the pages in the collection. For more information see the `Pager` class.
      */
     constructor(modelDefinition, values, pagerData) {
-        checkType(modelDefinition, ModelDefinition);
+        checkType(modelDefinition, ModelDefinition)
         /**
          * @property {ModelDefinition} modelDefinition The `ModelDefinition` that this collection is for. This defines the type of models that
          * are allowed to be added to the collection.
          */
-        this.modelDefinition = modelDefinition;
+        this.modelDefinition = modelDefinition
 
         /**
          * @property {Pager} pager Pager object that is created from the pagerData that was passed when the collection was constructed. If no pager data was present
          * the pager will have default values.
          */
-        this.pager = new Pager(pagerData, modelDefinition);
+        this.pager = new Pager(pagerData, modelDefinition)
 
         // We can not extend the Map object right away in v8 contexts.
-        this.valuesContainerMap = new Map();
-        this[Symbol.iterator] = this.valuesContainerMap[Symbol.iterator].bind(this.valuesContainerMap);
+        this.valuesContainerMap = new Map()
+        this[Symbol.iterator] = this.valuesContainerMap[Symbol.iterator].bind(
+            this.valuesContainerMap
+        )
 
-        throwIfContainsOtherThanModelObjects(values);
-        throwIfContainsModelWithoutUid(values);
+        throwIfContainsOtherThanModelObjects(values)
+        throwIfContainsModelWithoutUid(values)
 
         // Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
-            values.forEach(value => this.valuesContainerMap.set(value.id, value));
+            values.forEach(value =>
+                this.valuesContainerMap.set(value.id, value)
+            )
         }
     }
 
@@ -83,7 +91,7 @@ class ModelCollection {
      * the size will return the items on that page. To get the total number of items consult the pager.
      */
     get size() {
-        return this.valuesContainerMap.size;
+        return this.valuesContainerMap.size
     }
 
     /**
@@ -97,11 +105,11 @@ class ModelCollection {
      * @throws {Error} Throws error when the passed value does not have a valid id.
      */
     add(value) {
-        throwIfContainsOtherThanModelObjects([value]);
-        throwIfContainsModelWithoutUid([value]);
+        throwIfContainsOtherThanModelObjects([value])
+        throwIfContainsModelWithoutUid([value])
 
-        this.set(value.id, value);
-        return this;
+        this.set(value.id, value)
+        return this
     }
 
     /**
@@ -111,25 +119,25 @@ class ModelCollection {
      * @returns {Array} Returns the values of the collection as an array.
      */
     toArray() {
-        const resultArray = [];
+        const resultArray = []
 
-        this.forEach((model) => {
-            resultArray.push(model);
-        });
+        this.forEach(model => {
+            resultArray.push(model)
+        })
 
-        return resultArray;
+        return resultArray
     }
 
     static create(modelDefinition, values, pagerData) {
-        return new ModelCollection(modelDefinition, values, pagerData);
+        return new ModelCollection(modelDefinition, values, pagerData)
     }
 
     static throwIfContainsOtherThanModelObjects(value) {
-        return throwIfContainsOtherThanModelObjects(value);
+        return throwIfContainsOtherThanModelObjects(value)
     }
 
     static throwIfContainsModelWithoutUid(value) {
-        return throwIfContainsModelWithoutUid(value);
+        return throwIfContainsModelWithoutUid(value)
     }
 
     /**
@@ -139,41 +147,56 @@ class ModelCollection {
      */
     // TODO: Reset the pager?
     clear() {
-        return this.valuesContainerMap.clear.call(this.valuesContainerMap);
+        return this.valuesContainerMap.clear.call(this.valuesContainerMap)
     }
 
     delete(...args) {
-        return this.valuesContainerMap.delete.call(this.valuesContainerMap, ...args);
+        return this.valuesContainerMap.delete.call(
+            this.valuesContainerMap,
+            ...args
+        )
     }
 
     entries() {
-        return this.valuesContainerMap.entries.call(this.valuesContainerMap);
+        return this.valuesContainerMap.entries.call(this.valuesContainerMap)
     }
 
     // FIXME: This calls the forEach function with the values Map and not with the ModelCollection as the third argument
     forEach(...args) {
-        return this.valuesContainerMap.forEach.call(this.valuesContainerMap, ...args);
+        return this.valuesContainerMap.forEach.call(
+            this.valuesContainerMap,
+            ...args
+        )
     }
 
     get(...args) {
-        return this.valuesContainerMap.get.call(this.valuesContainerMap, ...args);
+        return this.valuesContainerMap.get.call(
+            this.valuesContainerMap,
+            ...args
+        )
     }
 
     has(...args) {
-        return this.valuesContainerMap.has.call(this.valuesContainerMap, ...args);
+        return this.valuesContainerMap.has.call(
+            this.valuesContainerMap,
+            ...args
+        )
     }
 
     keys() {
-        return this.valuesContainerMap.keys.call(this.valuesContainerMap);
+        return this.valuesContainerMap.keys.call(this.valuesContainerMap)
     }
 
     set(...args) {
-        return this.valuesContainerMap.set.call(this.valuesContainerMap, ...args);
+        return this.valuesContainerMap.set.call(
+            this.valuesContainerMap,
+            ...args
+        )
     }
 
     values() {
-        return this.valuesContainerMap.values.call(this.valuesContainerMap);
+        return this.valuesContainerMap.values.call(this.valuesContainerMap)
     }
 }
 
-export default ModelCollection;
+export default ModelCollection

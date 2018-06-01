@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-import AnalyticsRequest from './AnalyticsRequest';
+import AnalyticsRequest from './AnalyticsRequest'
 
 /**
  * @private
@@ -33,10 +33,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withPath(path) {
             if (path) {
-                this.path = path;
+                this.path = path
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -52,8 +52,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withFormat('xml');
          */
         withFormat(format = 'json') {
-            this.format = format;
-            return new AnalyticsRequest(this);
+            this.format = format
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -68,7 +68,7 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withAggregationType('SUM');
          */
         withAggregationType(value) {
-            const aggregationType = value.toUpperCase();
+            const aggregationType = value.toUpperCase()
 
             const aggregationTypes = new Set([
                 'AVERAGE',
@@ -80,17 +80,19 @@ const AnalyticsRequestPropertiesMixin = base =>
                 'MAX',
                 'STDDEV',
                 'SUM',
-                'VARIANCE',
-            ]);
+                'VARIANCE'
+            ])
 
             if (aggregationTypes.has(aggregationType)) {
-                this.parameters.aggregationType = aggregationType;
+                this.parameters.aggregationType = aggregationType
             } else {
-                console.warn(`d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`);
-                this.parameters.aggregationType = value;
+                console.warn(
+                    `d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`
+                )
+                this.parameters.aggregationType = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -106,10 +108,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withMeasureCriteria(criteria) {
             if (criteria) {
-                this.parameters.measureCriteria = criteria;
+                this.parameters.measureCriteria = criteria
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -125,10 +127,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withPreAggregationMeasureCriteria(criteria) {
             if (criteria) {
-                this.parameters.preAggregationMeasureCriteria = criteria;
+                this.parameters.preAggregationMeasureCriteria = criteria
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -143,8 +145,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withSkipMeta();
          */
         withSkipMeta(flag = true) {
-            this.parameters.skipMeta = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.skipMeta = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -159,8 +161,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withSkipData();
          */
         withSkipData(flag = true) {
-            this.parameters.skipData = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.skipData = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -175,8 +177,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withHierarchyMeta();
          */
         withHierarchyMeta(flag = true) {
-            this.parameters.hierarchyMeta = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.hierarchyMeta = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -191,8 +193,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withIgnoreLimit();
          */
         withIgnoreLimit(flag = true) {
-            this.parameters.ignoreLimit = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.ignoreLimit = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -207,8 +209,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withTableLayout();
          */
         withTableLayout(flag = true) {
-            this.parameters.tableLayout = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.tableLayout = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -223,8 +225,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withHideEmptyRows();
          */
         withHideEmptyRows(flag = true) {
-            this.parameters.hideEmptyRows = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.hideEmptyRows = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -239,8 +241,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withHideEmptyColumns();
          */
         withHideEmptyColumns(flag = true) {
-            this.parameters.hideEmptyColumns = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.hideEmptyColumns = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -255,8 +257,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withShowHierarchy();
          */
         withShowHierarchy(flag = true) {
-            this.parameters.showHierarchy = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.showHierarchy = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -271,8 +273,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withIncludeNumDen();
          */
         withIncludeNumDen(flag = true) {
-            this.parameters.includeNumDen = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.includeNumDen = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -287,21 +289,20 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withDisplayProperty('SHORTNAME');
          */
         withDisplayProperty(value) {
-            const displayProperty = value.toUpperCase();
+            const displayProperty = value.toUpperCase()
 
-            const displayProperties = new Set([
-                'NAME',
-                'SHORTNAME',
-            ]);
+            const displayProperties = new Set(['NAME', 'SHORTNAME'])
 
             if (displayProperties.has(displayProperty)) {
-                this.parameters.displayProperty = displayProperty;
+                this.parameters.displayProperty = displayProperty
             } else {
-                console.warn(`d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`);
-                this.parameters.displayProperty = value;
+                console.warn(
+                    `d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`
+                )
+                this.parameters.displayProperty = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -317,10 +318,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withOutputIdScheme(scheme) {
             if (scheme) {
-                this.parameters.outputIdScheme = scheme;
+                this.parameters.outputIdScheme = scheme
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -336,10 +337,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withInputIdScheme(scheme) {
             if (scheme) {
-                this.parameters.inputIdScheme = scheme;
+                this.parameters.inputIdScheme = scheme
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -355,10 +356,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withApprovalLevel(level) {
             if (level) {
-                this.parameters.approvalLevel = level;
+                this.parameters.approvalLevel = level
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -374,10 +375,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withRelativePeriodDate(date) {
             if (date) {
-                this.parameters.relativePeriodDate = date;
+                this.parameters.relativePeriodDate = date
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -393,10 +394,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withUserOrgUnit(orgUnit) {
             if (orgUnit) {
-                this.parameters.userOrgUnit = orgUnit;
+                this.parameters.userOrgUnit = orgUnit
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -412,10 +413,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withColumns(dimensions) {
             if (dimensions) {
-                this.parameters.columns = dimensions;
+                this.parameters.columns = dimensions
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -431,10 +432,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withRows(dimensions) {
             if (dimensions) {
-                this.parameters.rows = dimensions;
+                this.parameters.rows = dimensions
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -450,10 +451,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withStartDate(date) {
             if (date) {
-                this.parameters.startDate = date;
+                this.parameters.startDate = date
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -469,10 +470,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withEndDate(date) {
             if (date) {
-                this.parameters.endDate = date;
+                this.parameters.endDate = date
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -489,10 +490,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withProgram(program) {
             if (program) {
-                this.program = program;
+                this.program = program
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -508,10 +509,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withStage(stage) {
             if (stage) {
-                this.parameters.stage = stage;
+                this.parameters.stage = stage
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -526,24 +527,26 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withEventStatus('COMPLETED');
          */
         withEventStatus(value) {
-            const eventStatus = value.toUpperCase();
+            const eventStatus = value.toUpperCase()
 
             const eventStatuses = new Set([
                 'ACTIVE',
                 'COMPLETED',
                 'SCHEDULED',
                 'OVERDUE',
-                'SKIPPED',
-            ]);
+                'SKIPPED'
+            ])
 
             if (eventStatuses.has(eventStatus)) {
-                this.parameters.eventStatus = eventStatus;
+                this.parameters.eventStatus = eventStatus
             } else {
-                console.warn(`d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`);
-                this.parameters.eventStatus = value;
+                console.warn(
+                    `d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`
+                )
+                this.parameters.eventStatus = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -558,22 +561,24 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withProgramStatus('COMPLETED');
          */
         withProgramStatus(value) {
-            const programStatus = value.toUpperCase();
+            const programStatus = value.toUpperCase()
 
             const programStatuses = new Set([
                 'ACTIVE',
                 'COMPLETED',
-                'CANCELLED',
-            ]);
+                'CANCELLED'
+            ])
 
             if (programStatuses.has(programStatus)) {
-                this.parameters.programStatus = programStatus;
+                this.parameters.programStatus = programStatus
             } else {
-                console.warn(`d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`);
-                this.parameters.programStatus = value;
+                console.warn(
+                    `d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`
+                )
+                this.parameters.programStatus = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -588,22 +593,20 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withOuMode('CHILDREN');
          */
         withOuMode(value) {
-            const ouMode = value.toUpperCase();
+            const ouMode = value.toUpperCase()
 
-            const ouModes = new Set([
-                'DESCENDANTS',
-                'CHILDREN',
-                'SELECTED',
-            ]);
+            const ouModes = new Set(['DESCENDANTS', 'CHILDREN', 'SELECTED'])
 
             if (ouModes.has(ouMode)) {
-                this.parameters.ouMode = ouMode;
+                this.parameters.ouMode = ouMode
             } else {
-                console.warn(`d2.analytics.request.withOuMode(): "${value}" not listed as possible value`);
-                this.parameters.ouMode = value;
+                console.warn(
+                    `d2.analytics.request.withOuMode(): "${value}" not listed as possible value`
+                )
+                this.parameters.ouMode = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -619,10 +622,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withAsc(value) {
             if (value) {
-                this.parameters.asc = value;
+                this.parameters.asc = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -638,10 +641,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withDesc(value) {
             if (value) {
-                this.parameters.desc = value;
+                this.parameters.desc = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -656,8 +659,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withCoordinatesOnly();
          */
         withCoordinatesOnly(flag = true) {
-            this.parameters.coordinatesOnly = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.coordinatesOnly = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -672,8 +675,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withPage(2);
          */
         withPage(page = 1) {
-            this.parameters.page = page;
-            return new AnalyticsRequest(this);
+            this.parameters.page = page
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -688,8 +691,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withPageSize(10);
          */
         withPageSize(size = 50) {
-            this.parameters.pageSize = size;
-            return new AnalyticsRequest(this);
+            this.parameters.pageSize = size
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -706,10 +709,10 @@ const AnalyticsRequestPropertiesMixin = base =>
         withValue(value) {
             // must be a data element or attribute of numeric value type
             if (value) {
-                this.parameters.value = value;
+                this.parameters.value = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -724,21 +727,20 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withSortOrder('DESC');
          */
         withSortOrder(value) {
-            const sortOrder = value.toUpperCase();
+            const sortOrder = value.toUpperCase()
 
-            const sortOrders = new Set([
-                'ASC',
-                'DESC',
-            ]);
+            const sortOrders = new Set(['ASC', 'DESC'])
 
             if (sortOrders.has(sortOrder)) {
-                this.parameters.sortOrder = sortOrder;
+                this.parameters.sortOrder = sortOrder
             } else {
-                console.warn(`d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`);
-                this.parameters.sortOrder = value;
+                console.warn(
+                    `d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`
+                )
+                this.parameters.sortOrder = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -754,12 +756,12 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withLimit(value) {
             if (value) {
-                const limit = (value > 10000) ? 10000 : value;
+                const limit = value > 10000 ? 10000 : value
 
-                this.parameters.limit = limit;
+                this.parameters.limit = limit
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -774,22 +776,24 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withOutputType('ENROLLMENT');
          */
         withOutputType(value) {
-            const type = value.toUpperCase();
+            const type = value.toUpperCase()
 
             const outputTypes = new Set([
                 'EVENT',
                 'ENROLLMENT',
-                'TRACKED_ENTITY_INSTANCE',
-            ]);
+                'TRACKED_ENTITY_INSTANCE'
+            ])
 
             if (outputTypes.has(type)) {
-                this.parameters.outputType = type;
+                this.parameters.outputType = type
             } else {
-                console.warn(`d2.analytics.request.withOutputType(): "${value}" not listed as possible value`);
-                this.parameters.outputType = value;
+                console.warn(
+                    `d2.analytics.request.withOutputType(): "${value}" not listed as possible value`
+                )
+                this.parameters.outputType = value
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -804,8 +808,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withCollapseDataDimensions();
          */
         withCollapseDataDimensions(flag = true) {
-            this.parameters.collapseDataDimensions = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.collapseDataDimensions = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -820,8 +824,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withSkipRounding();
          */
         withSkipRounding(flag = true) {
-            this.parameters.skipRounding = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.skipRounding = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -836,8 +840,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withAggregateData();
          */
         withAggregateData(flag = true) {
-            this.parameters.aggregateData = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.aggregateData = flag
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -853,10 +857,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withClusterSize(size) {
             if (size) {
-                this.parameters.clusterSize = size;
+                this.parameters.clusterSize = size
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -872,8 +876,8 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withCoordinateField(field = 'EVENT') {
             // EVENT, <attribute-id>, <dataelement-id>
-            this.parameters.coordinateField = field;
-            return new AnalyticsRequest(this);
+            this.parameters.coordinateField = field
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -889,10 +893,10 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withBbox(bbox) {
             if (bbox) {
-                this.parameters.bbox = bbox;
+                this.parameters.bbox = bbox
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
 
         /**
@@ -907,9 +911,9 @@ const AnalyticsRequestPropertiesMixin = base =>
          *    .withIncludeClusterPoints();
          */
         withIncludeClusterPoints(flag = true) {
-            this.parameters.includeClusterPoints = flag;
-            return new AnalyticsRequest(this);
+            this.parameters.includeClusterPoints = flag
+            return new AnalyticsRequest(this)
         }
-    };
+    }
 
-export default AnalyticsRequestPropertiesMixin;
+export default AnalyticsRequestPropertiesMixin

@@ -18,24 +18,15 @@
     "singular": "legend",
     "persisted": true,
     "order": 1070,
-    "references": [
-        "org.hisp.dhis.legend.LegendSet",
-        "org.hisp.dhis.user.User"
-    ],
+    "references": ["org.hisp.dhis.legend.LegendSet", "org.hisp.dhis.user.User"],
     "authorities": [
         {
             "type": "CREATE",
-            "authorities": [
-                "F_LEGEND_SET_ADD",
-                "F_GIS_ADMIN"
-            ]
+            "authorities": ["F_LEGEND_SET_ADD", "F_GIS_ADMIN"]
         },
         {
             "type": "DELETE",
-            "authorities": [
-                "F_LEGEND_SET_DELETE",
-                "F_GIS_ADMIN"
-            ]
+            "authorities": ["F_LEGEND_SET_DELETE", "F_GIS_ADMIN"]
         }
     ],
     "properties": [
@@ -80,7 +71,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "collection": false,
             "unique": false,
@@ -106,7 +97,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "collection": true,
             "itemPropertyType": "COMPLEX",
@@ -150,7 +141,7 @@
             "simple": true,
             "required": true,
             "writable": true,
-            "min": -2.147483648E9,
+            "min": -2.147483648e9,
             "nameableObject": false,
             "klass": "java.lang.Double",
             "propertyType": "NUMBER",
@@ -160,7 +151,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "length": 2147483647,
             "collection": false,
@@ -236,7 +227,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 2.147483647E9,
+            "max": 2.147483647e9,
             "manyToMany": false,
             "collection": false,
             "unique": false,
@@ -287,7 +278,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "collection": true,
             "itemPropertyType": "COMPLEX",
@@ -363,7 +354,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "cascade": "delete-orphan",
             "manyToMany": true,
             "collection": true,
@@ -394,7 +385,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "collection": true,
             "itemPropertyType": "COMPLEX",
@@ -424,7 +415,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 2.147483647E9,
+            "max": 2.147483647e9,
             "manyToMany": false,
             "length": 230,
             "collection": false,
@@ -478,7 +469,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "collection": false,
             "unique": false,
@@ -492,7 +483,7 @@
             "simple": true,
             "required": true,
             "writable": true,
-            "min": -2.147483648E9,
+            "min": -2.147483648e9,
             "nameableObject": false,
             "klass": "java.lang.Double",
             "propertyType": "NUMBER",
@@ -502,7 +493,7 @@
             "readable": true,
             "ordered": false,
             "identifiableObject": false,
-            "max": 1.7976931348623157E308,
+            "max": 1.7976931348623157e308,
             "manyToMany": false,
             "length": 2147483647,
             "collection": false,

@@ -1,5 +1,5 @@
-import Api from '../api/Api';
-import { isString, isArray } from '../lib/check';
+import Api from '../api/Api'
+import { isString, isArray } from '../lib/check'
 
 /**
  * @private
@@ -21,29 +21,33 @@ class BaseStoreNamespace {
      */
     constructor(namespace, keys, api = Api.getApi(), endPoint) {
         if (!isString(namespace)) {
-            throw new Error('BaseStoreNamespace must be called with a string to identify the Namespace');
+            throw new Error(
+                'BaseStoreNamespace must be called with a string to identify the Namespace'
+            )
         }
         if (!isString(endPoint)) {
-            throw new Error('BaseStoreNamespace must be called with an endPoint');
+            throw new Error(
+                'BaseStoreNamespace must be called with an endPoint'
+            )
         }
         if (this.constructor === BaseStoreNamespace) {
-            throw new Error('Can\'t instantiate abstract class!');
+            throw new Error("Can't instantiate abstract class!")
         }
 
-        this.api = api;
+        this.api = api
 
         /**
          * The name of the namespace
          * @type {string}
          */
-        this.namespace = namespace;
+        this.namespace = namespace
 
         /**
          * an array of the loaded keys.
          * @type {string[]}
          */
-        this.keys = keys || [];
-        this.endPoint = endPoint;
+        this.keys = keys || []
+        this.endPoint = endPoint
     }
 
     /**
@@ -52,13 +56,19 @@ class BaseStoreNamespace {
      * @returns {Promise} - The internal list of keys for current namespace.
      */
     getKeys() {
-        return this.api.get([this.endPoint, this.namespace].join('/')).then((response) => {
-            if (response && isArray(response)) {
-                this.keys = response;
-                return response;
-            }
-            return Promise.reject(new Error('The requested namespace has no keys or does not exist.'));
-        });
+        return this.api
+            .get([this.endPoint, this.namespace].join('/'))
+            .then(response => {
+                if (response && isArray(response)) {
+                    this.keys = response
+                    return response
+                }
+                return Promise.reject(
+                    new Error(
+                        'The requested namespace has no keys or does not exist.'
+                    )
+                )
+            })
     }
 
     /**
@@ -68,7 +78,7 @@ class BaseStoreNamespace {
      * @returns {Promise} - The value of the given key.
      */
     get(key) {
-        return this.api.get([this.endPoint, this.namespace, key].join('/'));
+        return this.api.get([this.endPoint, this.namespace, key].join('/'))
     }
 
     /**
@@ -86,13 +96,18 @@ class BaseStoreNamespace {
      */
     set(key, value, overrideUpdate = false, encrypt = false) {
         if (!overrideUpdate && this.keys.includes(key)) {
-            return this.update(key, value);
+            return this.update(key, value)
         }
-        const queryParams = encrypt === true ? '?encrypt=true' : '';
-        return this.api.post([this.endPoint, this.namespace, key + queryParams].join('/'), value).then((resp) => {
-            this.keys = [...this.keys, key];
-            return resp;
-        });
+        const queryParams = encrypt === true ? '?encrypt=true' : ''
+        return this.api
+            .post(
+                [this.endPoint, this.namespace, key + queryParams].join('/'),
+                value
+            )
+            .then(resp => {
+                this.keys = [...this.keys, key]
+                return resp
+            })
     }
 
     /**
@@ -102,12 +117,16 @@ class BaseStoreNamespace {
      */
     delete(key) {
         if (!isString(key)) {
-            return Promise.reject(new Error(`Expected key to be string, but got ${typeof key}`));
+            return Promise.reject(
+                new Error(`Expected key to be string, but got ${typeof key}`)
+            )
         }
-        return this.api.delete([this.endPoint, this.namespace, key].join('/')).then((resp) => {
-            this.keys = this.keys.filter(elem => elem !== key);
-            return resp;
-        });
+        return this.api
+            .delete([this.endPoint, this.namespace, key].join('/'))
+            .then(resp => {
+                this.keys = this.keys.filter(elem => elem !== key)
+                return resp
+            })
     }
 
     /**
@@ -117,8 +136,11 @@ class BaseStoreNamespace {
      * @returns {Promise} - the response body from the {@link module:api.Api#get API}.
      */
     update(key, value) {
-        return this.api.update([this.endPoint, this.namespace, key].join('/'), value);
+        return this.api.update(
+            [this.endPoint, this.namespace, key].join('/'),
+            value
+        )
     }
 }
 
-export default BaseStoreNamespace;
+export default BaseStoreNamespace

@@ -1,9 +1,9 @@
-import { checkType, hasKeys } from '../lib/check';
-import { pickOr } from '../lib/utils';
-import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase';
-import createPropertyDefinitionsForAttributes from './helpers/attibutes';
+import { checkType, hasKeys } from '../lib/check'
+import { pickOr } from '../lib/utils'
+import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase'
+import createPropertyDefinitionsForAttributes from './helpers/attibutes'
 
-const pickAttributeValues = pickOr('attributeValues', []);
+const pickAttributeValues = pickOr('attributeValues', [])
 
 // TODO: Perhaps we can generate model classes dynamically based on the schemas and inherit from this.
 /**
@@ -29,15 +29,17 @@ class Model {
      * The model properties will depend on the ModelDefinition. A model definition is based on a DHIS2 Schema.
      */
     constructor(modelDefinition) {
-        checkType(modelDefinition, 'object', 'modelDefinition');
-        checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
+        checkType(modelDefinition, 'object', 'modelDefinition')
+        checkType(modelDefinition.modelProperties, 'object', 'modelProperties')
 
         /**
          * @property {ModelDefinition} modelDefinition Stores reference to the modelDefinition that was used when
          * creating the model. This property is not enumerable or writable and will therefore not show up when looping
          * over the object properties.
          */
-        Object.defineProperty(this, 'modelDefinition', { value: modelDefinition });
+        Object.defineProperty(this, 'modelDefinition', {
+            value: modelDefinition
+        })
 
         /**
          * @property {Boolean} dirty Represents the state of the model. When the model is concidered `dirty`
@@ -45,7 +47,7 @@ class Model {
          * This property is not enumerable or writable and will therefore not show up when looping
          * over the object properties.
          */
-        Object.defineProperty(this, 'dirty', { writable: true, value: false });
+        Object.defineProperty(this, 'dirty', { writable: true, value: false })
 
         /**
          * @private
@@ -54,7 +56,11 @@ class Model {
          *
          * @note {warning} This should not be accessed directly.
          */
-        Object.defineProperty(this, 'dataValues', { configurable: true, writable: true, value: {} });
+        Object.defineProperty(this, 'dataValues', {
+            configurable: true,
+            writable: true,
+            value: {}
+        })
 
         /**
          * Attach the modelDefinition modelProperties (the properties from the schema) onto the Model.
@@ -62,10 +68,10 @@ class Model {
          * For a data element model the modelProperties would be the following
          * https://play.dhis2.org/demo/api/schemas/dataElement.json?fields=properties
          */
-        Object.defineProperties(this, modelDefinition.modelProperties);
+        Object.defineProperties(this, modelDefinition.modelProperties)
 
-        const attributes = {};
-        const attributeProperties = modelDefinition.attributeProperties;
+        const attributes = {}
+        const attributeProperties = modelDefinition.attributeProperties
         if (hasKeys(attributeProperties)) {
             /**
              * @property {Object} attributes The attributes objects contains references to custom attributes defined
@@ -79,22 +85,23 @@ class Model {
              *
              * @see https://docs.dhis2.org/2.27/en/user/html/dhis2_user_manual_en_full.html#manage_attribute
              */
-            Object.defineProperty(this, 'attributes', { value: attributes });
+            Object.defineProperty(this, 'attributes', { value: attributes })
 
-            const getAttributeValues = () => pickAttributeValues(this);
-            const setAttributeValues = attributeValues => (this.attributeValues = attributeValues);
-            const setDirty = () => (this.dirty = true);
+            const getAttributeValues = () => pickAttributeValues(this)
+            const setAttributeValues = attributeValues =>
+                (this.attributeValues = attributeValues)
+            const setDirty = () => (this.dirty = true)
             const attributeDefinitions = createPropertyDefinitionsForAttributes(
                 attributeProperties,
                 getAttributeValues,
                 setAttributeValues,
-                setDirty,
-            );
+                setDirty
+            )
 
-            Object.defineProperties(attributes, attributeDefinitions);
+            Object.defineProperties(attributes, attributeDefinitions)
         }
 
-        this[DIRTY_PROPERTY_LIST] = new Set([]);
+        this[DIRTY_PROPERTY_LIST] = new Set([])
     }
 
     /**
@@ -110,11 +117,11 @@ class Model {
      * ```
      */
     static create(modelDefinition) {
-        return new Model(modelDefinition);
+        return new Model(modelDefinition)
     }
 }
 
 // Set the prototype of the Model class, this way we're able to extend from an single object
-Model.prototype = ModelBase;
+Model.prototype = ModelBase
 
-export default Model;
+export default Model

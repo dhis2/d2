@@ -1,6 +1,5 @@
-import Api from '../api/Api';
-import { isString } from '../lib/check';
-
+import Api from '../api/Api'
+import { isString } from '../lib/check'
 
 /**
  * @description
@@ -11,10 +10,10 @@ import { isString } from '../lib/check';
 
 class UserSettings {
     constructor(userSettings, api = Api.getApi()) {
-        this.api = api;
+        this.api = api
 
         if (userSettings) {
-            this.settings = userSettings;
+            this.settings = userSettings
         }
     }
 
@@ -33,8 +32,10 @@ class UserSettings {
     all() {
         return this.settings
             ? Promise.resolve(this.settings)
-            : this.api.get('userSettings')
-                .then((userSettings) => { this.settings = userSettings; return Promise.resolve(this.settings); });
+            : this.api.get('userSettings').then(userSettings => {
+                  this.settings = userSettings
+                  return Promise.resolve(this.settings)
+              })
     }
 
     /**
@@ -51,34 +52,39 @@ class UserSettings {
      */
     get(key) {
         if (this.settings && this.settings[key]) {
-            return Promise.resolve(this.settings[key]);
+            return Promise.resolve(this.settings[key])
         }
 
         function processValue(value) {
             // Attempt to parse the response as JSON. If this fails we return the value as is.
             try {
-                return JSON.parse(value);
+                return JSON.parse(value)
             } catch (e) {
-                return value;
+                return value
             }
         }
 
         return new Promise((resolve, reject) => {
             if (!isString(key)) {
-                throw new TypeError('A "key" parameter should be specified when calling get() on userSettings');
+                throw new TypeError(
+                    'A "key" parameter should be specified when calling get() on userSettings'
+                )
             }
 
-            this.api.get(['userSettings', key].join('/'))
-                .then((response) => {
-                    const value = processValue(response);
-                    // Store the value on the user settings object
-                    this[key] = value;
-                    if (value) {
-                        resolve(value);
-                    }
-                    reject(new Error('The requested userSetting has no value or does not exist.'));
-                });
-        });
+            this.api.get(['userSettings', key].join('/')).then(response => {
+                const value = processValue(response)
+                // Store the value on the user settings object
+                this[key] = value
+                if (value) {
+                    resolve(value)
+                }
+                reject(
+                    new Error(
+                        'The requested userSetting has no value or does not exist.'
+                    )
+                )
+            })
+        })
     }
 
     /**
@@ -95,14 +101,16 @@ class UserSettings {
      * ```
      */
     set(key, value) {
-        delete this.settings;
+        delete this.settings
 
-        const settingUrl = ['userSettings', key].join('/');
-        if (value === null || (`${value}`).length === 0) {
-            return this.api.delete(settingUrl);
+        const settingUrl = ['userSettings', key].join('/')
+        if (value === null || `${value}`.length === 0) {
+            return this.api.delete(settingUrl)
         }
-        return this.api.post(settingUrl, value, { headers: { 'Content-Type': 'text/plain' } });
+        return this.api.post(settingUrl, value, {
+            headers: { 'Content-Type': 'text/plain' }
+        })
     }
 }
 
-export default UserSettings;
+export default UserSettings

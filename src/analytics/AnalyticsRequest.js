@@ -1,7 +1,7 @@
-import AnalyticsRequestDimensionsMixin from './AnalyticsRequestDimensionsMixin';
-import AnalyticsRequestFiltersMixin from './AnalyticsRequestFiltersMixin';
-import AnalyticsRequestPropertiesMixin from './AnalyticsRequestPropertiesMixin';
-import AnalyticsRequestBase from './AnalyticsRequestBase';
+import AnalyticsRequestDimensionsMixin from './AnalyticsRequestDimensionsMixin'
+import AnalyticsRequestFiltersMixin from './AnalyticsRequestFiltersMixin'
+import AnalyticsRequestPropertiesMixin from './AnalyticsRequestPropertiesMixin'
+import AnalyticsRequestBase from './AnalyticsRequestBase'
 
 /**
  * @description
@@ -16,9 +16,10 @@ import AnalyticsRequestBase from './AnalyticsRequestBase';
  * @extends module:analytics.AnalyticsRequestPropertiesMixin
  * @extends module:analytics.AnalyticsRequestBase
  */
-class AnalyticsRequest extends
-    AnalyticsRequestDimensionsMixin(
-        AnalyticsRequestFiltersMixin(
-            AnalyticsRequestPropertiesMixin(AnalyticsRequestBase))) { }
+class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
+    AnalyticsRequestFiltersMixin(
+        AnalyticsRequestPropertiesMixin(AnalyticsRequestBase)
+    )
+) {}
 
-export default AnalyticsRequest;
+export default AnalyticsRequest

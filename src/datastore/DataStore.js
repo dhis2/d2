@@ -1,6 +1,6 @@
-import BaseStore from './BaseStore';
-import DataStoreNamespace from './DataStoreNamespace';
-import Api from '../api/Api';
+import BaseStore from './BaseStore'
+import DataStoreNamespace from './DataStoreNamespace'
+import Api from '../api/Api'
 
 /**
  * @augments module:datastore.BaseStore
@@ -29,7 +29,7 @@ import Api from '../api/Api';
  */
 class DataStore extends BaseStore {
     constructor(api = Api.getApi(), endPoint = 'dataStore') {
-        super(api, endPoint, DataStoreNamespace);
+        super(api, endPoint, DataStoreNamespace)
     }
 
     /**
@@ -48,7 +48,7 @@ class DataStore extends BaseStore {
      * or an error if namespace exists.
      */
     get(namespace, autoLoad = true) {
-        return super.get(namespace, autoLoad);
+        return super.get(namespace, autoLoad)
     }
 
     /**
@@ -64,7 +64,7 @@ class DataStore extends BaseStore {
      * an error if namespace exists.
      */
     create(namespace) {
-        return super.create(namespace);
+        return super.create(namespace)
     }
 
     /**
@@ -78,11 +78,11 @@ class DataStore extends BaseStore {
      */
     static getDataStore() {
         if (!DataStore.getDataStore.dataStore) {
-            DataStore.getDataStore.dataStore = new DataStore();
+            DataStore.getDataStore.dataStore = new DataStore()
         }
 
-        return DataStore.getDataStore.dataStore;
+        return DataStore.getDataStore.dataStore
     }
 }
 
-export default DataStore;
+export default DataStore

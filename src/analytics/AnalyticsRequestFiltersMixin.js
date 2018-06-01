@@ -1,4 +1,4 @@
-import AnalyticsRequest from './AnalyticsRequest';
+import AnalyticsRequest from './AnalyticsRequest'
 
 /**
  * @private
@@ -33,7 +33,7 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=dx:fbfJHSPpUQD;cYeuwXTCPkU;BfMAe6Itzgt.REPORTING_RATE
          */
         addDataFilter(values) {
-            return this.addFilter('dx', values);
+            return this.addFilter('dx', values)
         }
 
         /**
@@ -51,7 +51,7 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=pe:201701;201702;LAST_4_QUARTERS
          */
         addPeriodFilter(values) {
-            return this.addFilter('pe', values);
+            return this.addFilter('pe', values)
         }
 
         /**
@@ -69,7 +69,7 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=ou:O6uvpzGd5pu;lc3eMKXaEfw;OU_GROUP-w0gFTTmsUcF
          */
         addOrgUnitFilter(values) {
-            return this.addFilter('ou', values);
+            return this.addFilter('ou', values)
         }
 
         /**
@@ -88,18 +88,22 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&filter=qrur9Dvnyt5-Yf6UHoPkdS6
          */
         addFilter(dimension, values) {
-            const existingValues = this.filters[dimension] || [];
+            const existingValues = this.filters[dimension] || []
 
             if (typeof values === 'string') {
-                this.filters[dimension] = [...new Set([...existingValues, values])];
+                this.filters[dimension] = [
+                    ...new Set([...existingValues, values])
+                ]
             } else if (Array.isArray(values)) {
-                this.filters[dimension] = [...new Set([...existingValues, ...values])];
+                this.filters[dimension] = [
+                    ...new Set([...existingValues, ...values])
+                ]
             } else {
-                this.filters[dimension] = existingValues;
+                this.filters[dimension] = existingValues
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
-    };
+    }
 
-export default AnalyticsRequestFiltersMixin;
+export default AnalyticsRequestFiltersMixin

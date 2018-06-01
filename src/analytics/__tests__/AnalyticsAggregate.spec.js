@@ -1,9 +1,9 @@
-import fixtures from '../../__fixtures__/fixtures';
-import MockApi from '../../api/Api';
-import AnalyticsRequest from '../AnalyticsRequest';
-import AnalyticsAggregate from '../AnalyticsAggregate';
+import fixtures from '../../__fixtures__/fixtures'
+import MockApi from '../../api/Api'
+import AnalyticsRequest from '../AnalyticsRequest'
+import AnalyticsAggregate from '../AnalyticsAggregate'
 
-jest.mock('../../api/Api'); // src/api/__mocks/Api.js
+jest.mock('../../api/Api') // src/api/__mocks/Api.js
 
 const debugSqlFixture = `select de.name as de_name, de.uid as de_uid, de.dataelementid as de_id, pe.startdate as
 start_date, pe.enddate as end_date, pt.name as pt_name, ou.name as ou_name, ou.uid as ou_uid, ou.organisationunitid as
@@ -15,91 +15,98 @@ categoryoptioncombo coc on dv.categoryoptioncomboid = coc.categoryoptioncomboid 
 dv.attributeoptioncomboid = aoc.categoryoptioncomboid where dv.dataelementid in (359596,359597) and ((pe.startdate >=
     '2016-01-01' and pe.enddate <= '2016-03-31') or (pe.startdate >= '2016-04-01' and pe.enddate <= '2016-06-30') ) and
 ((dv.sourceid in (select organisationunitid from _orgunitstructure where idlevel2 = 264)) ) and dv.deleted is false
-limit 100000`;
+limit 100000`
 
 describe('Analytics.aggregate', () => {
-    let aggregate;
-    let request;
-    let mockApi;
-    let fixture;
+    let aggregate
+    let request
+    let mockApi
+    let fixture
 
     beforeEach(() => {
-        mockApi = MockApi.getApi();
-        MockApi.mockClear();
-        aggregate = new AnalyticsAggregate();
-    });
+        mockApi = MockApi.getApi()
+        MockApi.mockClear()
+        aggregate = new AnalyticsAggregate()
+    })
 
     it('should not be allowed to be called without new', () => {
-        expect(() => AnalyticsAggregate()).toThrowError('Cannot call a class as a function'); // eslint-disable-line new-cap
-    });
+        expect(() => AnalyticsAggregate()).toThrowError(
+            'Cannot call a class as a function'
+        ) // eslint-disable-line new-cap
+    })
 
     it('should add the mockApi onto the AnalyticsAggregate instance', () => {
-        expect(aggregate.api).toBe(mockApi);
-    });
+        expect(aggregate.api).toBe(mockApi)
+    })
 
     it('should use the api object when it is passed', () => {
-        const apiMockObject = {};
+        const apiMockObject = {}
 
-        aggregate = new AnalyticsAggregate(apiMockObject);
+        aggregate = new AnalyticsAggregate(apiMockObject)
 
-        expect(aggregate.api).toBe(apiMockObject);
-    });
+        expect(aggregate.api).toBe(apiMockObject)
+    })
 
     describe('.getDataValueSet()', () => {
         beforeEach(() => {
-            aggregate = new AnalyticsAggregate(new MockApi());
+            aggregate = new AnalyticsAggregate(new MockApi())
 
-            request = new AnalyticsRequest();
+            request = new AnalyticsRequest()
 
             request
-                .addDataDimension(['fbfJHSPpUQD.pq2XI5kz2BY', 'fbfJHSPpUQD.PT59n8BQbqM'])
+                .addDataDimension([
+                    'fbfJHSPpUQD.pq2XI5kz2BY',
+                    'fbfJHSPpUQD.PT59n8BQbqM'
+                ])
                 .addPeriodDimension('LAST_MONTH')
-                .addOrgUnitDimension('ImspTQPwCqd');
+                .addOrgUnitDimension('ImspTQPwCqd')
 
-            fixture = fixtures.get('/api/analytics/dataValueSet');
+            fixture = fixtures.get('/api/analytics/dataValueSet')
 
-            mockApi.get.mockReturnValue(Promise.resolve(fixture));
-        });
+            mockApi.get.mockReturnValue(Promise.resolve(fixture))
+        })
 
         it('should be a function', () => {
-            expect(aggregate.getDataValueSet).toBeInstanceOf(Function);
-        });
+            expect(aggregate.getDataValueSet).toBeInstanceOf(Function)
+        })
 
-        it('should resolve a promise with data', () => aggregate.getDataValueSet(request)
-            .then((data) => {
-                expect(data.dataValues.length).toEqual(fixture.dataValues.length);
-            }));
-    });
+        it('should resolve a promise with data', () =>
+            aggregate.getDataValueSet(request).then(data => {
+                expect(data.dataValues.length).toEqual(
+                    fixture.dataValues.length
+                )
+            }))
+    })
 
     describe('.getDebugSql()', () => {
         beforeEach(() => {
-            aggregate = new AnalyticsAggregate(new MockApi());
+            aggregate = new AnalyticsAggregate(new MockApi())
 
-            request = new AnalyticsRequest();
+            request = new AnalyticsRequest()
 
             request
                 .addDataDimension(['fbfJHSPpUQD', 'cYeuwXTCPkU'])
                 .addPeriodFilter(['2016Q1', '2016Q2'])
-                .addOrgUnitFilter('O6uvpzGd5pu');
+                .addOrgUnitFilter('O6uvpzGd5pu')
 
-            mockApi.get.mockReturnValue(Promise.resolve(debugSqlFixture));
-        });
+            mockApi.get.mockReturnValue(Promise.resolve(debugSqlFixture))
+        })
 
         it('should be a function', () => {
-            expect(aggregate.getDebugSql).toBeInstanceOf(Function);
-        });
+            expect(aggregate.getDebugSql).toBeInstanceOf(Function)
+        })
 
-        it('should resolve a promise with data', () => aggregate.getDebugSql(request)
-            .then((data) => {
-                expect(data).toEqual(debugSqlFixture);
-            }));
-    });
+        it('should resolve a promise with data', () =>
+            aggregate.getDebugSql(request).then(data => {
+                expect(data).toEqual(debugSqlFixture)
+            }))
+    })
 
     describe('.getRawData', () => {
         beforeEach(() => {
-            aggregate = new AnalyticsAggregate(new MockApi());
+            aggregate = new AnalyticsAggregate(new MockApi())
 
-            request = new AnalyticsRequest();
+            request = new AnalyticsRequest()
 
             request
                 .addDataDimension(['fbfJHSPpUQD', 'cYeuwXTCPkU', 'Jtf34kNZhzP'])
@@ -107,23 +114,25 @@ describe('Analytics.aggregate', () => {
                 .addDimension('Bpx0589u8y0')
                 .addOrgUnitDimension(['O6uvpzGd5pu', 'fdc6uOvgoji'])
                 .withStartDate('2016-01-01')
-                .withEndDate('2016-01-31');
+                .withEndDate('2016-01-31')
 
-            fixture = fixtures.get('/api/analytics/rawData');
+            fixture = fixtures.get('/api/analytics/rawData')
 
-            mockApi.get.mockReturnValue(Promise.resolve(fixture));
-        });
+            mockApi.get.mockReturnValue(Promise.resolve(fixture))
+        })
 
         it('should be a function', () => {
-            expect(aggregate.getRawData).toBeInstanceOf(Function);
-        });
+            expect(aggregate.getRawData).toBeInstanceOf(Function)
+        })
 
-        it('should resolve a promise with data', () => aggregate.getRawData(request)
-            .then((data) => {
-                expect(data.metaData.items).toEqual(fixture.metaData.items);
-                expect(data.metaData.dimensions).toEqual(fixture.metaData.dimensions);
-                expect(data.width).toEqual(0);
-                expect(data.height).toEqual(0);
-            }));
-    });
-});
+        it('should resolve a promise with data', () =>
+            aggregate.getRawData(request).then(data => {
+                expect(data.metaData.items).toEqual(fixture.metaData.items)
+                expect(data.metaData.dimensions).toEqual(
+                    fixture.metaData.dimensions
+                )
+                expect(data.width).toEqual(0)
+                expect(data.height).toEqual(0)
+            }))
+    })
+})

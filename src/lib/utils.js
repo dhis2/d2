@@ -2,16 +2,15 @@
  * @module lib/utils
  */
 
-
 export function throwError(message) {
-    throw new Error(message);
+    throw new Error(message)
 }
 
 // TODO: Throw an error when `toCurry` is not a function
 export function curry(toCurry, parameter) {
     return function curried(...args) {
-        return toCurry.apply(this, [parameter].concat(args));
-    };
+        return toCurry.apply(this, [parameter].concat(args))
+    }
 }
 
 export function addLockedProperty(object, name, value) {
@@ -19,19 +18,19 @@ export function addLockedProperty(object, name, value) {
         enumerable: true,
         configurable: false,
         writable: false,
-        value,
-    };
-    Object.defineProperty(object, name, propertyDescriptor);
+        value
+    }
+    Object.defineProperty(object, name, propertyDescriptor)
 }
 
 export function copyOwnProperties(to, from) {
     Object.keys(from)
         .filter(key => from.hasOwnProperty(key))
-        .forEach((key) => {
-            to[key] = from[key]; // eslint-disable-line no-param-reassign
-        });
+        .forEach(key => {
+            to[key] = from[key] // eslint-disable-line no-param-reassign
+        })
 
-    return to;
+    return to
 }
 
 /**
@@ -45,71 +44,70 @@ export function copyOwnProperties(to, from) {
  * get :: String -> Object -> Any
  */
 export function pick(propertyPath) {
-    const propertiesToGet = propertyPath.split('.');
+    const propertiesToGet = propertyPath.split('.')
 
-    return item => propertiesToGet
-        .reduce((result, property) => {
+    return item =>
+        propertiesToGet.reduce((result, property) => {
             if (result) {
-                return result[property];
+                return result[property]
             }
-            return undefined;
-        }, item);
+            return undefined
+        }, item)
 }
 
-export const pickOr = (pathProperty, defaultValue) => (item) => {
-    const pathResult = pick(pathProperty)(item);
+export const pickOr = (pathProperty, defaultValue) => item => {
+    const pathResult = pick(pathProperty)(item)
 
-    return pathResult !== undefined ? pathResult : defaultValue;
-};
+    return pathResult !== undefined ? pathResult : defaultValue
+}
 
 export class Deferred {
     constructor() {
         this.promise = new Promise((resolve, reject) => {
-            this.resolve = resolve;
-            this.reject = reject;
-        });
+            this.resolve = resolve
+            this.reject = reject
+        })
     }
 
     static create() {
-        return new Deferred();
+        return new Deferred()
     }
 }
 
 export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
     if (!baseUrl || !apiUrl) {
-        return apiUrl;
+        return apiUrl
     }
 
-    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])/;
-    const apiVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
+    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])/
+    const apiVersionMatch = baseUrl.match(apiUrlWithVersionRexExp)
 
-    const baseUrlHasVersion = apiVersionMatch && apiVersionMatch[1];
-    const apiUrlHasVersion = apiUrl && !apiUrlWithVersionRexExp.test(apiUrl);
+    const baseUrlHasVersion = apiVersionMatch && apiVersionMatch[1]
+    const apiUrlHasVersion = apiUrl && !apiUrlWithVersionRexExp.test(apiUrl)
 
     if (baseUrlHasVersion && apiUrlHasVersion) {
-        const version = apiVersionMatch[1];
+        const version = apiVersionMatch[1]
 
         // Inject the current api version number into the endPoint urls
-        return apiUrl.replace(/api/, `api/${version}`);
+        return apiUrl.replace(/api/, `api/${version}`)
     }
 
-    return apiUrl;
+    return apiUrl
 }
 
 // Define our very own special list of characters that we don't want to encode in the URI
-const whitelistURI = ',&$=/;:';
-const whitelistURICodes = whitelistURI.split('').map(c => encodeURIComponent(c));
-const whitelistRegExp = new RegExp(`(?:${whitelistURICodes.join('|')})`, 'g');
+const whitelistURI = ',&$=/;:'
+const whitelistURICodes = whitelistURI.split('').map(c => encodeURIComponent(c))
+const whitelistRegExp = new RegExp(`(?:${whitelistURICodes.join('|')})`, 'g')
 
 /**
  * Encode all invalid URI characters, except the ones we've decided we don't want to
  */
 export function customEncodeURIComponent(uri) {
     // return uri;
-    return encodeURIComponent(uri)
-        .replace(whitelistRegExp, decodeURIComponent);
+    return encodeURIComponent(uri).replace(whitelistRegExp, decodeURIComponent)
 }
 
 export function identity(value) {
-    return value;
+    return value
 }

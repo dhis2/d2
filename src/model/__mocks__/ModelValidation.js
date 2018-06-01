@@ -1,9 +1,9 @@
-const validation = jest.fn();
+const validation = jest.fn()
 
 export default {
     getModelValidation() {
         return {
-            validateAgainstSchema: validation,
-        };
-    },
-};
+            validateAgainstSchema: validation
+        }
+    }
+}

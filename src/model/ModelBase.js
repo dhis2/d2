@@ -1,16 +1,18 @@
-import ModelValidation from './ModelValidation';
-import { getJSONForProperties } from './helpers/json';
+import ModelValidation from './ModelValidation'
+import { getJSONForProperties } from './helpers/json'
 import {
     hasModelValidationForProperty,
     pickTypeFromModelValidation,
     pickEmbeddedObjectFromModelValidation,
     pickOwnerFromModelValidation,
-    updateModelFromResponseStatus,
-} from './helpers/models';
+    updateModelFromResponseStatus
+} from './helpers/models'
 
-const modelValidator = ModelValidation.getModelValidation();
+const modelValidator = ModelValidation.getModelValidation()
 
-export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty properties');
+export const DIRTY_PROPERTY_LIST = Symbol(
+    'List to keep track of dirty properties'
+)
 
 /**
  * Base class that supplies functionality to the Model classes
@@ -20,8 +22,8 @@ export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty propertie
 class ModelBase {
     constructor() {
         this.modelDefinition = {
-            modelValidations: {},
-        };
+            modelValidations: {}
+        }
     }
     /**
      * @returns {Promise} Returns a promise that resolves when the model has been saved or rejected with the result from
@@ -32,16 +34,17 @@ class ModelBase {
      * you're creating models with pre-specified IDs. Note that this does not check if the model is marked as dirty.
      */
     create() {
-        return this.validate()
-            .then((validationState) => {
-                if (!validationState.status) {
-                    return Promise.reject(validationState);
-                }
+        return this.validate().then(validationState => {
+            if (!validationState.status) {
+                return Promise.reject(validationState)
+            }
 
-                return this.modelDefinition
-                    .saveNew(this)
-                    .then(apiResponse => updateModelFromResponseStatus.call(this, apiResponse));
-            });
+            return this.modelDefinition
+                .saveNew(this)
+                .then(apiResponse =>
+                    updateModelFromResponseStatus.call(this, apiResponse)
+                )
+        })
     }
 
     /**
@@ -60,19 +63,20 @@ class ModelBase {
     save(includeChildren) {
         // Calling save when there's nothing to be saved is a no-op
         if (!this.isDirty(includeChildren)) {
-            return Promise.resolve({});
+            return Promise.resolve({})
         }
 
-        return this.validate()
-            .then((validationState) => {
-                if (!validationState.status) {
-                    return Promise.reject(validationState);
-                }
+        return this.validate().then(validationState => {
+            if (!validationState.status) {
+                return Promise.reject(validationState)
+            }
 
-                return this.modelDefinition
-                    .save(this)
-                    .then(apiResponse => updateModelFromResponseStatus.call(this, apiResponse));
-            });
+            return this.modelDefinition
+                .save(this)
+                .then(apiResponse =>
+                    updateModelFromResponseStatus.call(this, apiResponse)
+                )
+        })
     }
 
     /**
@@ -98,42 +102,46 @@ class ModelBase {
      */
     validate() {
         return new Promise((resolve, reject) => {
-            let validationMessages = [];
+            let validationMessages = []
 
             function unique(current, property) {
                 if (property && current.indexOf(property) === -1) {
-                    current.push(property);
+                    current.push(property)
                 }
-                return current;
+                return current
             }
 
             function asyncRemoteValidation(model) {
-                return modelValidator.validateAgainstSchema(model);
+                return modelValidator.validateAgainstSchema(model)
             }
 
             // Run async validation against the api
             asyncRemoteValidation(this)
-                .catch((remoteMessages) => {
+                .catch(remoteMessages => {
                     // Errors are ok in this case
                     if (Array.isArray(remoteMessages)) {
-                        return remoteMessages;
+                        return remoteMessages
                     }
-                    return Promise.reject(remoteMessages);
+                    return Promise.reject(remoteMessages)
                 })
-                .then((remoteMessages) => {
-                    validationMessages = validationMessages.concat(remoteMessages);
+                .then(remoteMessages => {
+                    validationMessages = validationMessages.concat(
+                        remoteMessages
+                    )
 
                     const validationState = {
                         status: remoteMessages.length === 0,
                         fields: validationMessages
-                            .map(validationMessage => validationMessage.property)
+                            .map(
+                                validationMessage => validationMessage.property
+                            )
                             .reduce(unique, []),
-                        messages: validationMessages,
-                    };
-                    resolve(validationState);
+                        messages: validationMessages
+                    }
+                    resolve(validationState)
                 })
-                .catch(message => reject(message));
-        });
+                .catch(message => reject(message))
+        })
     }
 
     // TODO: Cloning large graphs is very slow
@@ -142,15 +150,15 @@ class ModelBase {
             getJSONForProperties(
                 this,
                 Object.keys(this.modelDefinition.modelValidations),
-                true,
-            ),
-        );
+                true
+            )
+        )
 
         if (this.isDirty()) {
-            modelClone.dirty = this.isDirty(true);
+            modelClone.dirty = this.isDirty(true)
         }
 
-        return modelClone;
+        return modelClone
     }
 
     /**
@@ -161,7 +169,7 @@ class ModelBase {
      * @returns {Promise} Resolves when the object was successfully deleted.
      */
     delete() {
-        return this.modelDefinition.delete(this);
+        return this.modelDefinition.delete(this)
     }
 
     /**
@@ -173,7 +181,9 @@ class ModelBase {
      * @returns {boolean} Returns true when the model is in a dirty state.
      */
     isDirty(includeChildren = true) {
-        return this.dirty || (includeChildren === true && this.hasDirtyChildren());
+        return (
+            this.dirty || (includeChildren === true && this.hasDirtyChildren())
+        )
     }
 
     /**
@@ -184,21 +194,20 @@ class ModelBase {
      * @returns {ModelBase} Returns itself for potential chaining
      */
     resetDirtyState() {
-        this.dirty = false;
+        this.dirty = false
 
         // Also set it's children to be clean
-        this.getDirtyChildren()
-            .forEach((value) => {
-                if (value.resetDirtyState) {
-                    value.resetDirtyState();
-                } else {
-                    value.dirty = false; // eslint-disable-line no-param-reassign
-                }
-            });
+        this.getDirtyChildren().forEach(value => {
+            if (value.resetDirtyState) {
+                value.resetDirtyState()
+            } else {
+                value.dirty = false // eslint-disable-line no-param-reassign
+            }
+        })
 
-        this[DIRTY_PROPERTY_LIST].clear();
+        this[DIRTY_PROPERTY_LIST].clear()
 
-        return this;
+        return this
     }
 
     /**
@@ -207,7 +216,7 @@ class ModelBase {
      * @returns {Array<string>} The names of the properties that were changed.
      */
     getDirtyPropertyNames() {
-        return Array.from(this[DIRTY_PROPERTY_LIST].values());
+        return Array.from(this[DIRTY_PROPERTY_LIST].values())
     }
 
     /**
@@ -218,12 +227,13 @@ class ModelBase {
     // TODO: This name is very misleading and should probably be renamed to something like `getOwnerProperties` (would be a breaking change)
     getCollectionChildren() {
         return Object.keys(this)
-            .filter(propertyName =>
-                this[propertyName] &&
-                hasModelValidationForProperty(this, propertyName) &&
-                pickOwnerFromModelValidation(propertyName, this),
+            .filter(
+                propertyName =>
+                    this[propertyName] &&
+                    hasModelValidationForProperty(this, propertyName) &&
+                    pickOwnerFromModelValidation(propertyName, this)
             )
-            .map(propertyName => this[propertyName]);
+            .map(propertyName => this[propertyName])
     }
 
     /**
@@ -234,9 +244,10 @@ class ModelBase {
      * @returns {Array<string>} A list of property names that are marked as type `COLLECTION` in the schema.
      */
     getCollectionChildrenPropertyNames() {
-        return Object
-            .keys(this)
-            .filter(propertyName => pickTypeFromModelValidation(propertyName, this) === 'COLLECTION');
+        return Object.keys(this).filter(
+            propertyName =>
+                pickTypeFromModelValidation(propertyName, this) === 'COLLECTION'
+        )
     }
 
     /**
@@ -247,12 +258,13 @@ class ModelBase {
      * @returns {Array<string>} A list of property names that are marked as type `REFERENCE` in the schema.
      */
     getReferenceProperties() {
-        return Object
-            .keys(this)
-            .filter(propertyName =>
-                pickTypeFromModelValidation(propertyName, this) === 'REFERENCE' &&
-                pickEmbeddedObjectFromModelValidation(propertyName, this) === false,
-            );
+        return Object.keys(this).filter(
+            propertyName =>
+                pickTypeFromModelValidation(propertyName, this) ===
+                    'REFERENCE' &&
+                pickEmbeddedObjectFromModelValidation(propertyName, this) ===
+                    false
+        )
     }
 
     /**
@@ -264,8 +276,9 @@ class ModelBase {
      * @returns {Array<string>} A list of property names of embedded objects.
      */
     getEmbeddedObjectCollectionPropertyNames() {
-        return this.getCollectionChildrenPropertyNames()
-            .filter(propertyName => pickEmbeddedObjectFromModelValidation(propertyName, this));
+        return this.getCollectionChildrenPropertyNames().filter(propertyName =>
+            pickEmbeddedObjectFromModelValidation(propertyName, this)
+        )
     }
 
     /**
@@ -277,8 +290,9 @@ class ModelBase {
      * @returns {Array<any>}
      */
     getDirtyChildren() {
-        return this.getCollectionChildren()
-            .filter(property => property && (property.dirty === true));
+        return this.getCollectionChildren().filter(
+            property => property && property.dirty === true
+        )
     }
 
     /**
@@ -287,7 +301,7 @@ class ModelBase {
      * @returns {boolean} True when one of the children is dirty.
      */
     hasDirtyChildren() {
-        return this.getDirtyChildren().length > 0;
+        return this.getDirtyChildren().length > 0
     }
 
     /**
@@ -299,8 +313,11 @@ class ModelBase {
      * @returns {Object}
      */
     toJSON() {
-        return getJSONForProperties(this, Object.keys(this.modelDefinition.modelValidations));
+        return getJSONForProperties(
+            this,
+            Object.keys(this.modelDefinition.modelValidations)
+        )
     }
 }
 
-export default new ModelBase();
+export default new ModelBase()

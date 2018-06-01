@@ -1,4 +1,4 @@
-import { isDefined } from '../lib/check';
+import { isDefined } from '../lib/check'
 
 /**
  * @description
@@ -8,8 +8,8 @@ import { isDefined } from '../lib/check';
  */
 
 /**
-  * @memberof module:model
-  */
+ * @memberof module:model
+ */
 // TODO: Move to the model map
 class Pager {
     /**
@@ -23,17 +23,17 @@ class Pager {
      */
     constructor(
         pager = { page: 1, pageCount: 1, query: {} },
-        pagingHandler = { list: () => Promise.reject('No handler available') },
+        pagingHandler = { list: () => Promise.reject('No handler available') }
     ) {
         /**
          * @property {number} page Current page number
          */
-        this.page = pager.page;
+        this.page = pager.page
 
         /**
          * @property {number} pageCount The total number of pages available
          */
-        this.pageCount = pager.pageCount;
+        this.pageCount = pager.pageCount
 
         /**
          * @property {number} total The total number of items available.
@@ -42,7 +42,7 @@ class Pager {
          * This represents the total number of items available in the system. Note it is not the number of items
          * on the current page.
          */
-        this.total = pager.total;
+        this.total = pager.total
 
         /**
          * @property {string} nextPage The url to the next page.
@@ -50,7 +50,7 @@ class Pager {
          * @description
          * If there is no next page then this will be undefined.
          */
-        this.nextPage = pager.nextPage;
+        this.nextPage = pager.nextPage
 
         /**
          * @property {string} prevPage The url to the previous page
@@ -58,7 +58,7 @@ class Pager {
          * @description
          * If there is no previous page then this will be undefined.
          */
-        this.prevPage = pager.prevPage;
+        this.prevPage = pager.prevPage
 
         /**
          * @property {object} query Query parameters
@@ -67,9 +67,9 @@ class Pager {
          * Query parameters are used for things like filtering and field selection. Used to guarantee that pages are
          * from the same collection.
          */
-        this.query = pager.query;
+        this.query = pager.query
 
-        this.pagingHandler = pagingHandler;
+        this.pagingHandler = pagingHandler
     }
 
     /**
@@ -79,7 +79,7 @@ class Pager {
      * Check whether there is a next page.
      */
     hasNextPage() {
-        return isDefined(this.nextPage);
+        return isDefined(this.nextPage)
     }
 
     /**
@@ -88,7 +88,7 @@ class Pager {
      * @returns {Boolean} Result is true when there is a previous page, false when there is not.
      */
     hasPreviousPage() {
-        return isDefined(this.prevPage);
+        return isDefined(this.prevPage)
     }
 
     /**
@@ -110,9 +110,9 @@ class Pager {
      */
     getNextPage() {
         if (this.hasNextPage()) {
-            return this.goToPage(this.page + 1);
+            return this.goToPage(this.page + 1)
         }
-        return Promise.reject('There is no next page for this collection');
+        return Promise.reject('There is no next page for this collection')
     }
 
     /**
@@ -135,9 +135,9 @@ class Pager {
      */
     getPreviousPage() {
         if (this.hasPreviousPage()) {
-            return this.goToPage(this.page - 1);
+            return this.goToPage(this.page - 1)
         }
-        return Promise.reject('There is no previous page for this collection');
+        return Promise.reject('There is no previous page for this collection')
     }
 
     /**
@@ -160,14 +160,20 @@ class Pager {
     // TODO: Throwing the errors here is not really consistent with the rejection of promises for the getNextPage and getPreviousPage
     goToPage(pageNr) {
         if (pageNr < 1) {
-            throw new Error('PageNr can not be less than 1');
+            throw new Error('PageNr can not be less than 1')
         }
         if (pageNr > this.pageCount) {
-            throw new Error(`PageNr can not be larger than the total page count of ${this.pageCount}`);
+            throw new Error(
+                `PageNr can not be larger than the total page count of ${
+                    this.pageCount
+                }`
+            )
         }
 
-        return this.pagingHandler.list(Object.assign({}, this.query, { page: pageNr }));
+        return this.pagingHandler.list(
+            Object.assign({}, this.query, { page: pageNr })
+        )
     }
 }
 
-export default Pager;
+export default Pager

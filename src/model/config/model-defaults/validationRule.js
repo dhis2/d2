@@ -5,11 +5,11 @@ export default {
     leftSide: {
         missingValueStrategy: 'NEVER_SKIP',
         description: '',
-        expression: '',
+        expression: ''
     },
     rightSide: {
         missingValueStrategy: 'NEVER_SKIP',
         description: '',
-        expression: '',
-    },
-};
+        expression: ''
+    }
+}

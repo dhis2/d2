@@ -1,9 +1,9 @@
 /**
  * @module analytics
  */
-import AnalyticsAggregate from './AnalyticsAggregate';
-import AnalyticsEvents from './AnalyticsEvents';
-import AnalyticsRequest from './AnalyticsRequest';
+import AnalyticsAggregate from './AnalyticsAggregate'
+import AnalyticsEvents from './AnalyticsEvents'
+import AnalyticsRequest from './AnalyticsRequest'
 
 /**
  * @description
@@ -31,9 +31,9 @@ class Analytics {
      * @param {!module:analytics.AnalyticsRequest} analyticsRequest The AnalyticsRequest class
      */
     constructor(analyticsAggregate, analyticsEvents, analyticsRequest) {
-        this.aggregate = analyticsAggregate;
-        this.events = analyticsEvents;
-        this.request = analyticsRequest;
+        this.aggregate = analyticsAggregate
+        this.events = analyticsEvents
+        this.request = analyticsRequest
     }
 
     /**
@@ -53,12 +53,12 @@ class Analytics {
             Analytics.getAnalytics.analytics = new Analytics(
                 new AnalyticsAggregate(),
                 new AnalyticsEvents(),
-                AnalyticsRequest,
-            );
+                AnalyticsRequest
+            )
         }
 
-        return Analytics.getAnalytics.analytics;
+        return Analytics.getAnalytics.analytics
     }
 }
 
-export default Analytics;
+export default Analytics

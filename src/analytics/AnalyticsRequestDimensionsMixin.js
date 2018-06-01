@@ -1,4 +1,4 @@
-import AnalyticsRequest from './AnalyticsRequest';
+import AnalyticsRequest from './AnalyticsRequest'
 
 /**
  * @private
@@ -33,7 +33,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          *
          */
         addDataDimension(values) {
-            return this.addDimension('dx', values);
+            return this.addDimension('dx', values)
         }
 
         /**
@@ -51,7 +51,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=pe:201701;201702;LAST_4_QUARTERS
          */
         addPeriodDimension(values) {
-            return this.addDimension('pe', values);
+            return this.addDimension('pe', values)
         }
 
         /**
@@ -69,7 +69,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=ou:O6uvpzGd5pu;lc3eMKXaEfw;OU_GROUP-w0gFTTmsUcF
          */
         addOrgUnitDimension(values) {
-            return this.addDimension('ou', values);
+            return this.addDimension('ou', values)
         }
 
         /**
@@ -88,18 +88,22 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&dimension=qrur9Dvnyt5-Yf6UHoPkdS6
          */
         addDimension(dimension, values) {
-            const existingValues = this.dimensions[dimension] || [];
+            const existingValues = this.dimensions[dimension] || []
 
             if (typeof values === 'string') {
-                this.dimensions[dimension] = [...new Set([...existingValues, values])];
+                this.dimensions[dimension] = [
+                    ...new Set([...existingValues, values])
+                ]
             } else if (Array.isArray(values)) {
-                this.dimensions[dimension] = [...new Set([...existingValues, ...values])];
+                this.dimensions[dimension] = [
+                    ...new Set([...existingValues, ...values])
+                ]
             } else {
-                this.dimensions[dimension] = existingValues;
+                this.dimensions[dimension] = existingValues
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
-    };
+    }
 
-export default AnalyticsRequestDimensionsMixin;
+export default AnalyticsRequestDimensionsMixin

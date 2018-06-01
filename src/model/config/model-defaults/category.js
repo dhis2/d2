@@ -1,3 +1,3 @@
 export default {
-    dataDimension: true,
-};
+    dataDimension: true
+}
