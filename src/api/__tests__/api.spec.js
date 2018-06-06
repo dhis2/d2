@@ -552,8 +552,8 @@ describe('Api', () => {
                 '/api/some/fake/api/endpoint',
                 Object.assign(baseFetchOptions, {
                     method: 'PUT',
-                    headers: new Headers({ 'Content-Type': 'application/json' }),
-                    body: JSON.stringify(data),
+                    headers: new Headers({ 'Content-Type': 'text/plain' }),
+                    body: String(data),
                 }),
             );
         });
@@ -562,12 +562,12 @@ describe('Api', () => {
             api.update('some/fake/api/endpoint', {}, true);
 
             const fetchOptions = {
-                body: '{}',
+                body: String({}),
                 cache: 'default',
                 credentials: 'include',
                 headers: {
                     map: {
-                        'content-type': 'application/json',
+                        'content-type': 'text/plain',
                     },
                 },
                 method: 'PUT',
@@ -589,11 +589,11 @@ describe('Api', () => {
             api.update('some/fake/api/endpoint', {}, true);
 
             const fetchOptions = {
-                body: '{}',
+                body: String({}),
                 cache: 'default',
                 credentials: 'include',
                 headers: {
-                    map: { 'content-type': 'application/json' },
+                    map: { 'content-type': 'text/plain' },
                 },
                 method: 'PUT',
                 mode: 'cors',

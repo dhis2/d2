@@ -181,11 +181,8 @@ class Api {
         // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
         // to clear out existing values
         const urlForUpdate = useMergeStrategy === true ? `${url}?${getMergeStrategyParam()}` : url;
-
-        if (typeof data === 'string') {
-            return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), data);
-        }
-        return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), JSON.stringify(data));
+        return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), String(data),
+            { headers: new Headers({ 'Content-Type': 'text/plain' }) });
     }
 
     /**
