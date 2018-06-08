@@ -552,8 +552,8 @@ describe('Api', () => {
                 '/api/some/fake/api/endpoint',
                 Object.assign(baseFetchOptions, {
                     method: 'PUT',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: String(data),
+                    headers: new Headers({ 'Content-Type': 'application/json' }),
+                    body: JSON.stringify(data),
                 }),
             );
         });
@@ -562,12 +562,12 @@ describe('Api', () => {
             api.update('some/fake/api/endpoint', {}, true);
 
             const fetchOptions = {
-                body: String({}),
+                body: '{}',
                 cache: 'default',
                 credentials: 'include',
                 headers: {
                     map: {
-                        'content-type': 'text/plain',
+                        'content-type': 'application/json',
                     },
                 },
                 method: 'PUT',
@@ -589,17 +589,39 @@ describe('Api', () => {
             api.update('some/fake/api/endpoint', {}, true);
 
             const fetchOptions = {
-                body: String({}),
+                body: '{}',
                 cache: 'default',
                 credentials: 'include',
                 headers: {
-                    map: { 'content-type': 'text/plain' },
+                    map: { 'content-type': 'application/json' },
                 },
                 method: 'PUT',
                 mode: 'cors',
             };
 
             expect(fetchMock).toBeCalledWith('/api/some/fake/api/endpoint?mergeStrategy=REPLACE', fetchOptions);
+        });
+
+        it('should support payloads of plain texts', () => {
+            const data = {
+                a: 'A',
+                b: 'B!',
+                obj: {
+                    oa: 'o.a',
+                    ob: 'o.b',
+                },
+                arr: [1, 2, 3],
+            };
+            api.update('some/fake/api/endpoint', JSON.stringify(data));
+
+            expect(fetchMock).toBeCalledWith(
+                '/api/some/fake/api/endpoint',
+                Object.assign(baseFetchOptions, {
+                    method: 'PUT',
+                    headers: new Headers({ 'Content-Type': 'text/plain' }),
+                    body: JSON.stringify(data),
+                }),
+            );
         });
     });
 
