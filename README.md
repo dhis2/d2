@@ -4,6 +4,7 @@
 [![Test Coverage](https://codeclimate.com/github/dhis2/d2/badges/coverage.svg)](https://codeclimate.com/github/dhis2/d2/coverage)
 [![Code Climate](https://codeclimate.com/github/dhis2/d2/badges/gpa.svg)](https://codeclimate.com/github/dhis2/d2)
 [![npm version](https://badge.fury.io/js/d2.svg)](https://badge.fury.io/js/d2)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdhis2%2Fd2.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdhis2%2Fd2?ref=badge_shield)
 
 ----
 
@@ -66,3 +67,7 @@ For more information on how the Models work the `model` [module documentation](h
 the classes in the module are the current go to reference material.
 
 For other questions see the [FAQ](https://dhis2.github.io/d2/tutorial-FAQ.html) or the [full api documentation](https://dhis2.github.io/d2).
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdhis2%2Fd2.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdhis2%2Fd2?ref=badge_large)
