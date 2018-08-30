@@ -1,4 +1,6 @@
+import fixtures from '../../__fixtures__/fixtures';
 import AnalyticsRequest from '../AnalyticsRequest';
+import ModelDefinition from '../../model/ModelDefinition';
 
 let request;
 let expectedParameters;
@@ -47,12 +49,48 @@ describe('AnalyticsRequest', () => {
                 request = request
                     .addDataDimension('Jtf34kNZhzP')
                     .addDataDimension([
-                        'Jtf34kNZhzP', 'SA7WeFZnUci', 'V37YqbqpEhV',
-                        'bqK6eSIwo3h', 'cYeuwXTCPkU', 'fbfJHSPpUQD',
+                        'Jtf34kNZhzP',
+                        'SA7WeFZnUci',
+                        'V37YqbqpEhV',
+                        'bqK6eSIwo3h',
+                        'cYeuwXTCPkU',
+                        'fbfJHSPpUQD',
                     ]);
 
                 expect(request.dimensions).toEqual({
-                    dx: ['Jtf34kNZhzP', 'SA7WeFZnUci', 'V37YqbqpEhV', 'bqK6eSIwo3h', 'cYeuwXTCPkU', 'fbfJHSPpUQD'],
+                    dx: [
+                        'Jtf34kNZhzP',
+                        'SA7WeFZnUci',
+                        'V37YqbqpEhV',
+                        'bqK6eSIwo3h',
+                        'cYeuwXTCPkU',
+                        'fbfJHSPpUQD',
+                    ],
+                });
+            });
+        });
+
+        describe('.fromModel()', () => {
+            const chartModelDefinition = ModelDefinition.createFromSchema(
+                fixtures.get('/api/schemas/chart'),
+                fixtures.get('/api/attributes').attributes
+            );
+            const model = chartModelDefinition.create(fixtures.get('/chartAllFields'));
+
+            it('should add dimensions from the model', () => {
+                request = request.fromModel(model);
+
+                expect(request.dimensions).toEqual({
+                    dx: ['Uvn6LCg7dVU', 'sB79w2hiLp8'],
+                    ou: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'],
+                });
+            });
+
+            it('should add filters from the model', () => {
+                request = request.fromModel(model);
+
+                expect(request.filters).toEqual({
+                    pe: ['LAST_SIX_MONTH'],
                 });
             });
         });
@@ -226,12 +264,20 @@ describe('AnalyticsRequest', () => {
         describe('with boolean parameter', () => {
             [
                 'aggregateData',
-                'coordinatesOnly', 'collapseDataDimensions',
-                'hideEmptyRows', 'hideEmptyColumns', 'hierarchyMeta',
-                'ignoreLimit', 'includeClusterPoints', 'includeNumDen',
-                'showHierarchy', 'skipData', 'skipMeta', 'skipRounding',
+                'coordinatesOnly',
+                'collapseDataDimensions',
+                'hideEmptyRows',
+                'hideEmptyColumns',
+                'hierarchyMeta',
+                'ignoreLimit',
+                'includeClusterPoints',
+                'includeNumDen',
+                'showHierarchy',
+                'skipData',
+                'skipMeta',
+                'skipRounding',
                 'tableLayout',
-            ].forEach((parameter) => {
+            ].forEach(parameter => {
                 const funcName = getFuncName(parameter);
 
                 it(`should add the ${parameter} parameter with default value`, () => {
@@ -269,7 +315,7 @@ describe('AnalyticsRequest', () => {
                 'startDate',
                 'userOrgUnit',
                 'value', // XXX
-            ].forEach((parameter) => {
+            ].forEach(parameter => {
                 const funcName = getFuncName(parameter);
 
                 it(`should add the ${parameter} parameter with the specified value`, () => {
@@ -367,17 +413,13 @@ describe('AnalyticsRequest', () => {
             });
 
             it('should replace the path on subsequent requests', () => {
-                request = request
-                    .withPath('test')
-                    .withPath('another/path');
+                request = request.withPath('test').withPath('another/path');
 
                 expect(request.path).toEqual('another/path');
             });
 
             it('should not replace the path when called with no value', () => {
-                request = request
-                    .withPath('some/path')
-                    .withPath();
+                request = request.withPath('some/path').withPath();
 
                 expect(request.path).toEqual('some/path');
             });
@@ -391,9 +433,7 @@ describe('AnalyticsRequest', () => {
             });
 
             it('should not replace the program when called with no value', () => {
-                request = request
-                    .withProgram('eBAyeGv0exc')
-                    .withProgram();
+                request = request.withProgram('eBAyeGv0exc').withProgram();
 
                 expect(request.program).toEqual('eBAyeGv0exc');
             });
@@ -513,9 +553,7 @@ describe('AnalyticsRequest', () => {
             });
 
             it('should not replace the value when called with no value', () => {
-                request = request
-                    .withLimit('20000')
-                    .withLimit();
+                request = request.withLimit('20000').withLimit();
 
                 expect(request.parameters).toEqual({ limit: 10000 });
             });
@@ -564,9 +602,7 @@ describe('AnalyticsRequest', () => {
 
     describe('.buildUrl()', () => {
         it('should append the path to the endpoint', () => {
-            request = request
-                .addOrgUnitDimension(['ImspTQPwCqd'])
-                .withPath('test');
+            request = request.addOrgUnitDimension(['ImspTQPwCqd']).withPath('test');
 
             expect(request.buildUrl()).toEqual('analytics/test.json?dimension=ou:ImspTQPwCqd');
         });
@@ -591,9 +627,10 @@ describe('AnalyticsRequest', () => {
             let key;
             let value;
 
-            url.search.slice(1)
+            url.search
+                .slice(1)
                 .split('&')
-                .forEach((p) => {
+                .forEach(p => {
                     [key, value] = p.split('=');
                     searchParams[value] = key;
                 });
@@ -637,7 +674,10 @@ describe('AnalyticsRequest', () => {
                 .addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu'])
                 .withHierarchyMeta(false);
 
-            expect(request.buildQuery()).toEqual({ hierarchyMeta: false, filter: ['ou:ImspTQPwCqd;O6uvpzGd5pu'] });
+            expect(request.buildQuery()).toEqual({
+                hierarchyMeta: false,
+                filter: ['ou:ImspTQPwCqd;O6uvpzGd5pu'],
+            });
         });
     });
 });
