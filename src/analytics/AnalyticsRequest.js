@@ -20,10 +20,9 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
     AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase))
 ) {
     /**
-     * Extracts dimensions and filters from a analytic object model and add them to the request
+     * Extracts dimensions and filters from an analytic object model and add them to the request
      *
      * @param {Object} model The analytics object model from which extract the dimensions/filters
-     * and program/stage
      *
      * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
      *
@@ -54,17 +53,8 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
         const filters = model.filters || [];
 
         filters.forEach(
-            f => (request = request.addFilter(f.dimension, f.items.map(item => item.id)))
+            f => (request = request.addFilter(f.dimension, f.items.map(item => item.id))),
         );
-
-        // extract program and stage
-        if (model.program && model.program.id) {
-            request = request.withProgram(model.program.id);
-        }
-
-        if (model.programStage && model.programStage.id) {
-            request = request.withStage(model.programStage.id);
-        }
 
         return request;
     }
