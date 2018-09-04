@@ -276,6 +276,22 @@ const AnalyticsRequestPropertiesMixin = base =>
         }
 
         /**
+         * Adds the includeMetadataDetails query parameter to the request.
+         *
+         * @param {Boolean} [includeMetadataDetails=true] The includeMetadataDetails value
+         *
+         * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
+         *
+         * @example
+         * const req = new d2.analytics.request()
+         *    .withIncludeMetadataDetails();
+         */
+        withIncludeMetadataDetails(flag = true) {
+            this.parameters.includeMetadataDetails = flag;
+            return new AnalyticsRequest(this);
+        }
+
+        /**
          * Adds the displayProperty query parameter to the request.
          *
          * @param {!String} displayProperty The displayProperty value
