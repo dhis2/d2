@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { customEncodeURIComponent } from '../lib/utils';
 
 /**
@@ -18,8 +19,8 @@ class AnalyticsRequestBase {
         format = 'json',
         path,
         program,
-        dimensions = {},
-        filters = {},
+        dimensions = [],
+        filters = [],
         parameters = {},
     } = {}) {
         this.endPoint = endPoint;
@@ -27,8 +28,8 @@ class AnalyticsRequestBase {
         this.path = path;
         this.program = program;
 
-        this.dimensions = { ...dimensions };
-        this.filters = { ...filters };
+        this.dimensions = dimensions;
+        this.filters = filters;
         this.parameters = { ...parameters };
     }
 
@@ -39,18 +40,31 @@ class AnalyticsRequestBase {
      * The URL includes the dimension(s) parameters.
      * Used internally.
      *
+     * @param {Object} options Optional configurations
+     *
      * @returns {String} URL URL for the request with dimensions included
      */
-    buildUrl() {
+    buildUrl(options) {
         // at least 1 dimension is required
-        const encodedDimensions = Object.entries(this.dimensions)
-            .map(([dimension, values]) => {
-                if (Array.isArray(values) && values.length) {
-                    return `${dimension}:${values.map(customEncodeURIComponent).join(';')}`;
+        let dimensions = this.dimensions;
+
+        if (options && options.sorted) {
+            dimensions = cloneDeep(dimensions);
+
+            dimensions.sort((a, b) => (a.dimension > b.dimension));
+        }
+
+        const encodedDimensions = dimensions.map(({ dimension, items }) => {
+            if (Array.isArray(items) && items.length) {
+                if (options && options.sorted) {
+                    items.sort();
                 }
 
-                return dimension;
-            });
+                return `${dimension}:${items.map(customEncodeURIComponent).join(';')}`;
+            }
+
+            return dimension;
+        });
 
         const endPoint = [this.endPoint, this.path, this.program].filter(e => !!e).join('/');
 
@@ -68,13 +82,32 @@ class AnalyticsRequestBase {
      * The filters are handled by the API instance when building the final URL.
      * Used internally.
      *
+     * @param {Object} options Optional configurations
+     *
      * @returns {Object} Query parameters
      */
-    buildQuery() {
-        const encodedFilters = Object.entries(this.filters)
-            .map(([dimension, values]) => `${dimension}:${values.map(customEncodeURIComponent).join(';')}`);
+    buildQuery(options) {
+        let filters = this.filters;
 
-        if (encodedFilters.length) {
+        if (options && options.sorted) {
+            filters = cloneDeep(filters);
+
+            filters.sort((a, b) => (a.dimension > b.dimension));
+        }
+
+        const encodedFilters = filters.map(({ dimension, items }) => {
+            if (Array.isArray(items) && items.length) {
+                if (options && options.sorted) {
+                    items.sort();
+                }
+
+                return `${dimension}:${items.map(customEncodeURIComponent).join(';')}`;
+            }
+
+            return dimension;
+        });
+
+        if (filters.length) {
             this.parameters.filter = encodedFilters;
         }
 

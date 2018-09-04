@@ -20,8 +20,8 @@ describe('AnalyticsRequest', () => {
 
         it('should initialize properties', () => {
             expect(request.parameters).toEqual({});
-            expect(request.dimensions).toEqual({});
-            expect(request.filters).toEqual({});
+            expect(request.dimensions).toEqual([]);
+            expect(request.filters).toEqual([]);
         });
 
         it('should have a default endpoint value', () => {
@@ -40,9 +40,9 @@ describe('AnalyticsRequest', () => {
             it('should add the dx dimension', () => {
                 request.addDataDimension('Jtf34kNZhzP');
 
-                expect(request.dimensions).toEqual({
-                    dx: ['Jtf34kNZhzP'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'dx', items: ['Jtf34kNZhzP'] },
+                ]);
             });
 
             it('should append unique values to the dx dimension on subsequent calls', () => {
@@ -57,41 +57,44 @@ describe('AnalyticsRequest', () => {
                         'fbfJHSPpUQD',
                     ]);
 
-                expect(request.dimensions).toEqual({
-                    dx: [
-                        'Jtf34kNZhzP',
-                        'SA7WeFZnUci',
-                        'V37YqbqpEhV',
-                        'bqK6eSIwo3h',
-                        'cYeuwXTCPkU',
-                        'fbfJHSPpUQD',
-                    ],
-                });
+                expect(request.dimensions).toEqual([
+                    {
+                        dimension: 'dx',
+                        items: [
+                            'Jtf34kNZhzP',
+                            'SA7WeFZnUci',
+                            'V37YqbqpEhV',
+                            'bqK6eSIwo3h',
+                            'cYeuwXTCPkU',
+                            'fbfJHSPpUQD',
+                        ],
+                    },
+                ]);
             });
         });
 
         describe('.fromModel()', () => {
             const chartModelDefinition = ModelDefinition.createFromSchema(
                 fixtures.get('/api/schemas/chart'),
-                fixtures.get('/api/attributes').attributes
+                fixtures.get('/api/attributes').attributes,
             );
             const model = chartModelDefinition.create(fixtures.get('/chartAllFields'));
 
             it('should add dimensions from the model', () => {
                 request = request.fromModel(model);
 
-                expect(request.dimensions).toEqual({
-                    dx: ['Uvn6LCg7dVU', 'sB79w2hiLp8'],
-                    ou: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'dx', items: ['Uvn6LCg7dVU', 'sB79w2hiLp8'] },
+                    { dimension: 'ou', items: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'] },
+                ]);
             });
 
             it('should add filters from the model', () => {
                 request = request.fromModel(model);
 
-                expect(request.filters).toEqual({
-                    pe: ['LAST_SIX_MONTH'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'pe', items: ['LAST_SIX_MONTH'] },
+                ]);
             });
         });
 
@@ -99,9 +102,9 @@ describe('AnalyticsRequest', () => {
             it('should add the ou dimension', () => {
                 request.addOrgUnitDimension(['ImspTQPwCqd']);
 
-                expect(request.dimensions).toEqual({
-                    ou: ['ImspTQPwCqd'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'ou', items: ['ImspTQPwCqd'] },
+                ]);
             });
 
             it('should append unique values to the ou dimension on subsequent calls', () => {
@@ -109,9 +112,9 @@ describe('AnalyticsRequest', () => {
                     .addOrgUnitDimension(['ImspTQPwCqd'])
                     .addOrgUnitDimension(['ImspTQPwCqd', 'O6uvpzGd5pu']);
 
-                expect(request.dimensions).toEqual({
-                    ou: ['ImspTQPwCqd', 'O6uvpzGd5pu'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'ou', items: ['ImspTQPwCqd', 'O6uvpzGd5pu'] },
+                ]);
             });
         });
 
@@ -119,9 +122,9 @@ describe('AnalyticsRequest', () => {
             it('should add the pe dimension', () => {
                 request.addPeriodDimension('2017-01');
 
-                expect(request.dimensions).toEqual({
-                    pe: ['2017-01'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'pe', items: ['2017-01'] },
+                ]);
             });
 
             it('should append unique values to the pe dimension on subsequent calls', () => {
@@ -129,9 +132,9 @@ describe('AnalyticsRequest', () => {
                     .addPeriodDimension('2017-01')
                     .addPeriodDimension(['2017-01', '2017-02', '2017-03']);
 
-                expect(request.dimensions).toEqual({
-                    pe: ['2017-01', '2017-02', '2017-03'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'pe', items: ['2017-01', '2017-02', '2017-03'] },
+                ]);
             });
         });
 
@@ -139,17 +142,17 @@ describe('AnalyticsRequest', () => {
             it('should add the given dimension without any associated value', () => {
                 request.addDimension('Jtf34kNZhzP');
 
-                expect(request.dimensions).toEqual({
-                    Jtf34kNZhzP: [],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'Jtf34kNZhzP', items: [] },
+                ]);
             });
 
             it('should add the given dimension with the associated value (passed as string)', () => {
                 request.addDimension('J5jldMd8OHv', 'CXw2yu5fodb');
 
-                expect(request.dimensions).toEqual({
-                    J5jldMd8OHv: ['CXw2yu5fodb'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb'] },
+                ]);
             });
 
             it('should append values (passed as array) to the given dimension', () => {
@@ -157,9 +160,9 @@ describe('AnalyticsRequest', () => {
                     .addDimension('J5jldMd8OHv', 'CXw2yu5fodb')
                     .addDimension('J5jldMd8OHv', ['EYbopBOJWsW', 'test']);
 
-                expect(request.dimensions).toEqual({
-                    J5jldMd8OHv: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'] },
+                ]);
             });
 
             it('should not append a value already present in the dimension', () => {
@@ -167,9 +170,9 @@ describe('AnalyticsRequest', () => {
                     .addDimension('J5jldMd8OHv', ['EYbopBOJWsW', 'test'])
                     .addDimension('J5jldMd8OHv', 'test');
 
-                expect(request.dimensions).toEqual({
-                    J5jldMd8OHv: ['EYbopBOJWsW', 'test'],
-                });
+                expect(request.dimensions).toEqual([
+                    { dimension: 'J5jldMd8OHv', items: ['EYbopBOJWsW', 'test'] },
+                ]);
             });
         });
 
@@ -177,9 +180,9 @@ describe('AnalyticsRequest', () => {
             it('should add the dx dimension filter', () => {
                 request = request.addDataFilter('Jtf34kNZhzP');
 
-                expect(request.filters).toEqual({
-                    dx: ['Jtf34kNZhzP'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'dx', items: ['Jtf34kNZhzP'] },
+                ]);
             });
         });
 
@@ -187,9 +190,9 @@ describe('AnalyticsRequest', () => {
             it('should add the ou dimension filter', () => {
                 request.addOrgUnitFilter(['ImspTQPwCqd']);
 
-                expect(request.filters).toEqual({
-                    ou: ['ImspTQPwCqd'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'ou', items: ['ImspTQPwCqd'] },
+                ]);
             });
 
             it('should append unique values to the ou dimension filter on subsequent calls', () => {
@@ -197,9 +200,9 @@ describe('AnalyticsRequest', () => {
                     .addOrgUnitFilter('ImspTQPwCqd')
                     .addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu']);
 
-                expect(request.filters).toEqual({
-                    ou: ['ImspTQPwCqd', 'O6uvpzGd5pu'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'ou', items: ['ImspTQPwCqd', 'O6uvpzGd5pu'] },
+                ]);
             });
         });
 
@@ -207,9 +210,9 @@ describe('AnalyticsRequest', () => {
             it('should add the pe dimension filter', () => {
                 request.addPeriodFilter('2017-01');
 
-                expect(request.filters).toEqual({
-                    pe: ['2017-01'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'pe', items: ['2017-01'] },
+                ]);
             });
 
             it('should append unique values to the pe dimension filter on subsequent calls', () => {
@@ -217,9 +220,9 @@ describe('AnalyticsRequest', () => {
                     .addPeriodFilter('2017-01')
                     .addPeriodFilter(['2017-01', '2017-02', '2017-03']);
 
-                expect(request.filters).toEqual({
-                    pe: ['2017-01', '2017-02', '2017-03'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'pe', items: ['2017-01', '2017-02', '2017-03'] },
+                ]);
             });
         });
 
@@ -227,17 +230,17 @@ describe('AnalyticsRequest', () => {
             it('should add the given dimensions as filter without any associated value', () => {
                 request.addFilter('Jtf34kNZhzP');
 
-                expect(request.filters).toEqual({
-                    Jtf34kNZhzP: [],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'Jtf34kNZhzP', items: [] },
+                ]);
             });
 
             it('should add the given dimensions as filter with the associated value (passed as string)', () => {
                 request.addFilter('J5jldMd8OHv', 'CXw2yu5fodb');
 
-                expect(request.filters).toEqual({
-                    J5jldMd8OHv: ['CXw2yu5fodb'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb'] },
+                ]);
             });
 
             it('should append values (passed as array) to the given dimension filter', () => {
@@ -245,9 +248,9 @@ describe('AnalyticsRequest', () => {
                     .addFilter('J5jldMd8OHv', 'CXw2yu5fodb')
                     .addFilter('J5jldMd8OHv', ['EYbopBOJWsW', 'test']);
 
-                expect(request.filters).toEqual({
-                    J5jldMd8OHv: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'] },
+                ]);
             });
 
             it('should not append a value already present in the dimension filter', () => {
@@ -255,9 +258,9 @@ describe('AnalyticsRequest', () => {
                     .addFilter('J5jldMd8OHv', ['EYbopBOJWsW', 'test'])
                     .addFilter('J5jldMd8OHv', 'test');
 
-                expect(request.filters).toEqual({
-                    J5jldMd8OHv: ['EYbopBOJWsW', 'test'],
-                });
+                expect(request.filters).toEqual([
+                    { dimension: 'J5jldMd8OHv', items: ['EYbopBOJWsW', 'test'] },
+                ]);
             });
         });
 

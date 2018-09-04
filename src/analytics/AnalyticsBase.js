@@ -47,7 +47,8 @@ class AnalyticsBase {
         // keep metaData and data requests separate for caching purposes
         const metaDataReq = new AnalyticsRequest(req)
             .withSkipMeta(false)
-            .withSkipData(true);
+            .withSkipData(true)
+            .withIncludeMetadataDetails(true);
 
         const dataReq = new AnalyticsRequest(req)
             .withSkipData(false)
@@ -56,15 +57,16 @@ class AnalyticsBase {
             .withDisplayProperty('SHORTNAME');
 
         // parallelize requests
-        return Promise.all([this.fetch(dataReq), this.fetch(metaDataReq)])
+        return Promise.all([this.fetch(dataReq, { sorted: true }), this.fetch(metaDataReq)])
             .then(responses => Promise.resolve({ ...responses[0], metaData: responses[1].metaData }));
     }
 
     /**
      * This method does not manipulate the request object, but directly requests the data from the api
-     * based on its configuration.
+     * based on the request's configuration.
      *
      * @param {!AnalyticsRequest} req Request object
+     * @param {Object} options Optional configurations, ie. for sorting dimensions
      *
      * @returns {Promise} Promise that resolves with the data from the api.
      *
@@ -79,10 +81,10 @@ class AnalyticsBase {
      *
      * // { metaData: { ... }, rows: [], height: 0, width: 0 }
      */
-    fetch(req) {
+    fetch(req, options) {
         return this.api.get(
-            req.buildUrl(),
-            req.buildQuery())
+            req.buildUrl(options),
+            req.buildQuery(options))
             .then(data => Promise.resolve(data));
     }
 }
