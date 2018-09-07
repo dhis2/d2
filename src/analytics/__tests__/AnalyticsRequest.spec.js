@@ -280,6 +280,7 @@ describe('AnalyticsRequest', () => {
                 'skipMeta',
                 'skipRounding',
                 'tableLayout',
+                'includeMetadataDetails',
             ].forEach(parameter => {
                 const funcName = getFuncName(parameter);
 
