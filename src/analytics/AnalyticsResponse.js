@@ -68,7 +68,7 @@ class AnalyticsResponse {
             this.response = response;
             this.headers = this.extractHeaders();
             this.rows = this.extractRows();
-            this.metadata = this.extractMetadata();
+            this.metaData = this.extractMetadata();
         }
     }
 
