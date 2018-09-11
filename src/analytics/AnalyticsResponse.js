@@ -234,6 +234,7 @@ class AnalyticsResponse {
             };
         });
 
+        // XXX how does this work with different languages/collations?
         organisationUnits.sort((a, b) => {
             const aFullName = a.fullName;
             const bFullName = b.fullName;
