@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
+    "babel-jest": "^22.4.3",
     "docdash": "^0.4.0",
     "jsdoc": "^3.5.5",
     "whatwg-fetch": "^2.0.3"

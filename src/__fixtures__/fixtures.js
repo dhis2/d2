@@ -45,6 +45,7 @@ export default (function x() {
     addFixture('/api/analytics/count', require('./json/api/analytics/count.json'));
     addFixture('/api/analytics/query', require('./json/api/analytics/query.json'));
     addFixture('/api/analytics/cluster', require('./json/api/analytics/cluster.json'));
+    addFixture('/api/analytics/response', require('./json/api/analytics/response.json'));
 
     return {
         get: getFixture,
