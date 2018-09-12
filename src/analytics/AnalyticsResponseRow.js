@@ -1,12 +1,12 @@
 import AnalyticsResponseRowIdCombination from './AnalyticsResponseRowIdCombination';
 
-class AnalyticsResponseRow extends Array {
+class AnalyticsResponseRow {
     constructor(row) {
-        super(...row);
+        this.content = row;
     }
 
     getAt(index) {
-        return this[index];
+        return this.content[index];
     }
 
     setIdCombination(idCombination) {
@@ -22,7 +22,7 @@ class AnalyticsResponseRow extends Array {
     }
 
     toFloat(index) {
-        this[index] = parseFloat(this[index]);
+        return parseFloat(this.content[index]);
     }
 }
 

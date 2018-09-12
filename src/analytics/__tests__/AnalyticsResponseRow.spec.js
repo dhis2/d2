@@ -14,7 +14,7 @@ describe('AnalyticsResponseRow', () => {
         });
 
         it('should set the row when passed as argument', () => {
-            expect(responseRow).toEqual(row);
+            expect(responseRow).toEqual({ content: row });
         });
     });
 
@@ -35,9 +35,7 @@ describe('AnalyticsResponseRow', () => {
 
         describe('.toFloat()', () => {
             it('should return the value parsed as floating point number', () => {
-                responseRow.toFloat(1);
-
-                expect(responseRow[1]).toEqual(201706);
+                expect(responseRow.toFloat(1)).toEqual(201706);
             });
         });
     });
