@@ -17,7 +17,7 @@ import AnalyticsRequestBase from './AnalyticsRequestBase';
  * @extends module:analytics.AnalyticsRequestBase
  */
 class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
-    AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase))
+    AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase)),
 ) {
     /**
      * Extracts dimensions and filters from an analytic object model and add them to the request
