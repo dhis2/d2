@@ -57,11 +57,14 @@ class AnalyticsBase {
             .withDisplayProperty('SHORTNAME');
 
         // parallelize requests
-        return Promise.all([this.fetch(dataReq, { sorted: true }), this.fetch(metaDataReq)])
-            .then(responses => Promise.resolve({ ...responses[0], metaData: responses[1].metaData }));
+        return Promise.all([this.fetch(dataReq, { sorted: true }), this.fetch(metaDataReq)]).then(
+            responses => Promise.resolve({ ...responses[0], metaData: responses[1].metaData })
+        );
     }
 
     /**
+     * @private
+     * @description
      * This method does not manipulate the request object, but directly requests the data from the api
      * based on the request's configuration.
      *
@@ -82,9 +85,8 @@ class AnalyticsBase {
      * // { metaData: { ... }, rows: [], height: 0, width: 0 }
      */
     fetch(req, options) {
-        return this.api.get(
-            req.buildUrl(options),
-            req.buildQuery(options))
+        return this.api
+            .get(req.buildUrl(options), req.buildQuery(options))
             .then(data => Promise.resolve(data));
     }
 }
