@@ -1,5 +1,4 @@
 import AnalyticsResponseHeader from './AnalyticsResponseHeader';
-import AnalyticsResponseRow from './AnalyticsResponseRow';
 
 const booleanMap = {
     0: 'No', // XXX i18n.no || 'No',
@@ -107,8 +106,7 @@ class AnalyticsResponse {
             });
         }
 
-        // map to AnalyticsResponseRow
-        return rows.map(row => new AnalyticsResponseRow(row));
+        return rows;
     }
 
     extractMetadata() {
@@ -154,10 +152,10 @@ class AnalyticsResponse {
             let ouName;
 
             this.rows.forEach((row) => {
-                ouId = row.getAt(ouHeaderIndex);
+                ouId = row[ouHeaderIndex];
 
                 if (items[ouId] === undefined) {
-                    ouName = row.getAt(ouNameHeaderIndex);
+                    ouName = row[ouNameHeaderIndex];
 
                     items[ouId] = {
                         name: ouName,
@@ -183,7 +181,7 @@ class AnalyticsResponse {
 
         const rowIds = Array.from(
             // unique values
-            new Set(this.rows.map(responseRow => parseByType(responseRow.getAt(header.index)))),
+            new Set(this.rows.map(responseRow => parseByType(responseRow[header.index]))),
             // remove empty values
         ).filter(id => id !== '');
 
