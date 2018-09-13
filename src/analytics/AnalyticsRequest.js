@@ -16,9 +16,48 @@ import AnalyticsRequestBase from './AnalyticsRequestBase';
  * @extends module:analytics.AnalyticsRequestPropertiesMixin
  * @extends module:analytics.AnalyticsRequestBase
  */
-class AnalyticsRequest extends
-    AnalyticsRequestDimensionsMixin(
-        AnalyticsRequestFiltersMixin(
-            AnalyticsRequestPropertiesMixin(AnalyticsRequestBase))) { }
+class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
+    AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase)),
+) {
+    /**
+     * Extracts dimensions and filters from an analytic object model and add them to the request
+     *
+     * @param {Object} model The analytics object model from which extract the dimensions/filters
+     *
+     * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
+     *
+     * @example
+     * const req = new d2.analytics.request()
+     *    .fromModel(model);
+     *
+     * // dimension=pe:LAST_12_MONTH&dimension=dx:fbfJHSPpUQD;cYeuwXTCPkU;Jtf34kNZhzP;hfdmMSPBgLG&filter=ou:ImspTQPwCqd
+     */
+    fromModel(model) {
+        let request = this;
+
+        // extract dimensions from model
+        const columns = model.columns || [];
+        const rows = model.rows || [];
+
+        columns.concat(rows).forEach((d) => {
+            let dimension = d.dimension;
+
+            if (d.filter) {
+                dimension += `:${d.filter}`;
+            }
+
+            request = request.addDimension(dimension, d.items.map(item => item.id));
+        });
+
+        // extract filters from model
+        const filters = model.filters || [];
+
+        filters.forEach(
+            f => (request = request.addFilter(f.dimension, f.items.map(item => item.id))),
+        );
+
+        return request;
+    }
+}
 
 export default AnalyticsRequest;

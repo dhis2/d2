@@ -30,7 +30,7 @@ class AnalyticsEvents extends AnalyticsBase {
      *  .then(console.log);
      */
     getAggregate(req) {
-        return this.get(req.withPath('events/aggregate'));
+        return this.fetch(req.withPath('events/aggregate'));
     }
 
     /**
@@ -52,7 +52,7 @@ class AnalyticsEvents extends AnalyticsBase {
      *  .then(console.log);
      */
     getCount(req) {
-        return this.get(req.withPath('events/count'));
+        return this.fetch(req.withPath('events/count'));
     }
 
     /**
@@ -77,7 +77,7 @@ class AnalyticsEvents extends AnalyticsBase {
      *  .then(console.log);
      */
     getCluster(req) {
-        return this.get(req.withPath('events/cluster'));
+        return this.fetch(req.withPath('events/cluster'));
     }
 
     /**
@@ -99,7 +99,7 @@ class AnalyticsEvents extends AnalyticsBase {
      *  .then(console.log);
      */
     getQuery(req) {
-        return this.get(req.withPath('events/query'));
+        return this.fetch(req.withPath('events/query'));
     }
 }
 

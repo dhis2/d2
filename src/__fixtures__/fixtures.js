@@ -30,6 +30,7 @@ export default (function x() {
     addFixture('/api/schemas/user', require('./json/api/schemas/user.json'));
     addFixture('/api/schemas/legendSet', require('./json/api/schemas/legendSet.json'));
     addFixture('/api/schemas/legend', require('./json/api/schemas/legend.json'));
+    addFixture('/api/schemas/chart', require('./json/api/schemas/chart.json'));
     addFixture('/api/userSettings', require('./json/api/userSettings'));
     addFixture('/appStore', require('./json/api/appStore.json'));
     addFixture('/dataElementAttributes', require('./json/dataElementAttributes.json'));
@@ -38,6 +39,7 @@ export default (function x() {
     addFixture('/modelDefinitions/dataElement', require('./json/modelDefinitions/dataElement.json'));
     addFixture('/singleUserAllFields', require('./json/singleUserAllFields.json'));
     addFixture('/singleUserOwnerFields', require('./json/singleUserOwnerFields.json'));
+    addFixture('/chartAllFields', require('./json/chartAllFields.json'));
     addFixture('/api/legendSets/k1JHPfXsJND', require('./json/api/legendSets/k1JHPfXsJND.json'));
     addFixture('/api/analytics/dataValueSet', require('./json/api/analytics/dataValueSet.json'));
     addFixture('/api/analytics/rawData', require('./json/api/analytics/rawData.json'));
