@@ -18,9 +18,9 @@ before_deploy:
 - npm run build
 deploy:
   provider: npm
-  email: ci@dhis2.org
+  email: deployment@dhis2.org
   api_key:
-    secure: VPyATOy4THntMa7rhUqsL5aAGZfEyiHBETBDIbUQjIrGp447P+olpAOWUNZuKjjQhnKQg0OODiV+51+MY9EQBEa8w6crpiQR+m0NTxj/gMkVMXxfIqH1LaLbFYfH+85mF4Ik4cK5VfOlxTdRY89jDm7vGJavnQhLg9auT7sFWKM=
+    secure: SyAwR8WmjnN5STvknyCkWgAjRApW7iPcuH77L+pK12+qT19/I70a6PsmDKDdgKTSx35UgRNV2LhFkSlfmcb7yOj+G0vC2v+f0cLFiVa3JEi+dVRk+YjOK15csV6wEL53T8vYUxbjtzzWV8gv6PB9FK3YvQIVkUtmWWUX73PWV9M=
   on:
     tags: true
   skip_cleanup: true
