@@ -20,6 +20,28 @@ const AnalyticsRequestPropertiesMixin = base =>
      */
     class extends base {
         /**
+         * Sets the query parameters of the request
+         *
+         * @param {!Object} parameters The query parameters to add/modify to the request
+         *
+         * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
+         *
+         * @example
+         * const req = new d2.analytics.request()
+         *   .withParameters({ completedOnly: true, aggregationType: 'AVERAGE' });
+         */
+        withParameters(params) {
+            if (params) {
+                this.parameters = {
+                    ...this.parameters,
+                    ...params,
+                };
+            }
+
+            return new AnalyticsRequest(this);
+        }
+
+        /**
          * Sets the URL path for the request.
          * It appends the given path to the request's URL.
          *
