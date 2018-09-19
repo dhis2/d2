@@ -264,6 +264,29 @@ describe('AnalyticsRequest', () => {
             });
         });
 
+        describe('.withParameters()', () => {
+            const params = {
+                completedOnly: true,
+                aggregationType: 'AVERAGE',
+            };
+
+            it('should set the given parameters in the request', () => {
+                request.withParameters(params);
+
+                expect(request.parameters).toEqual(params);
+            });
+
+            it('should override a parameter if already present', () => {
+                request = request.withAggregationType('COUNT');
+
+                expect(request.parameters).toEqual({ aggregationType: 'COUNT' });
+
+                request = request.withParameters(params);
+
+                expect(request.parameters).toEqual(params);
+            });
+        });
+
         describe('with boolean parameter', () => {
             [
                 'aggregateData',
