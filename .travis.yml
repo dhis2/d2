@@ -20,7 +20,7 @@ deploy:
   provider: npm
   email: ci@dhis2.org
   api_key:
-    secure: VPyATOy4THntMa7rhUqsL5aAGZfEyiHBETBDIbUQjIrGp447P+olpAOWUNZuKjjQhnKQg0OODiV+51+MY9EQBEa8w6crpiQR+m0NTxj/gMkVMXxfIqH1LaLbFYfH+85mF4Ik4cK5VfOlxTdRY89jDm7vGJavnQhLg9auT7sFWKM=
+    secure: QJTOEQWRhTx5Sl3reCWDHx8BBA5oxmxSerExjM5nlWoVldrYeAZXDrGPIF75MM45NX2Z+iPQC4drbAJCeDJOa62OFBvvfPrlixfVTMbrZnfy9ZUafMCDTukelxeoki9NwkMtFi9+ZzF9Wp/H8O9SAXFKUDcKt9n8RLjZ+Zn7LPQ=
   on:
     tags: true
   skip_cleanup: true
