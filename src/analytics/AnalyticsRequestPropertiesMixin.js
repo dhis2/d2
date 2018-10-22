@@ -109,7 +109,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.aggregationType = aggregationType;
             } else if (aggregationType !== 'DEFAULT') {
                 console.warn(
-                    `d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`,
                 );
                 this.parameters.aggregationType = value;
             }
@@ -335,7 +335,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.displayProperty = displayProperty;
             } else {
                 console.warn(
-                    `d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`,
                 );
                 this.parameters.displayProperty = value;
             }
@@ -579,7 +579,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.eventStatus = eventStatus;
             } else {
                 console.warn(
-                    `d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`,
                 );
                 this.parameters.eventStatus = value;
             }
@@ -607,7 +607,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.programStatus = programStatus;
             } else {
                 console.warn(
-                    `d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`,
                 );
                 this.parameters.programStatus = value;
             }
@@ -635,7 +635,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.ouMode = ouMode;
             } else {
                 console.warn(
-                    `d2.analytics.request.withOuMode(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withOuMode(): "${value}" not listed as possible value`,
                 );
                 this.parameters.ouMode = value;
             }
@@ -769,7 +769,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.sortOrder = sortOrder;
             } else {
                 console.warn(
-                    `d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`,
                 );
                 this.parameters.sortOrder = value;
             }
@@ -818,7 +818,7 @@ const AnalyticsRequestPropertiesMixin = base =>
                 this.parameters.outputType = type;
             } else {
                 console.warn(
-                    `d2.analytics.request.withOutputType(): "${value}" not listed as possible value`
+                    `d2.analytics.request.withOutputType(): "${value}" not listed as possible value`,
                 );
                 this.parameters.outputType = value;
             }
