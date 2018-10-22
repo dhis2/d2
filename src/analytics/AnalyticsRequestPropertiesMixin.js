@@ -107,8 +107,10 @@ const AnalyticsRequestPropertiesMixin = base =>
 
             if (aggregationTypes.has(aggregationType)) {
                 this.parameters.aggregationType = aggregationType;
-            } else {
-                console.warn(`d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`);
+            } else if (aggregationType !== 'DEFAULT') {
+                console.warn(
+                    `d2.analytics.request.withAggregationType(): "${value}" not listed as possible value`
+                );
                 this.parameters.aggregationType = value;
             }
 
