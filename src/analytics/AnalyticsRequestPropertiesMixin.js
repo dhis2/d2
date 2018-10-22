@@ -327,15 +327,14 @@ const AnalyticsRequestPropertiesMixin = base =>
         withDisplayProperty(value) {
             const displayProperty = value.toUpperCase();
 
-            const displayProperties = new Set([
-                'NAME',
-                'SHORTNAME',
-            ]);
+            const displayProperties = new Set(['NAME', 'SHORTNAME']);
 
             if (displayProperties.has(displayProperty)) {
                 this.parameters.displayProperty = displayProperty;
             } else {
-                console.warn(`d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`);
+                console.warn(
+                    `d2.analytics.request.withDisplayProperty(): "${value}" not listed as possible value`
+                );
                 this.parameters.displayProperty = value;
             }
 
@@ -577,7 +576,9 @@ const AnalyticsRequestPropertiesMixin = base =>
             if (eventStatuses.has(eventStatus)) {
                 this.parameters.eventStatus = eventStatus;
             } else {
-                console.warn(`d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`);
+                console.warn(
+                    `d2.analytics.request.withEventStatus(): "${value}" not listed as possible value`
+                );
                 this.parameters.eventStatus = value;
             }
 
@@ -598,16 +599,14 @@ const AnalyticsRequestPropertiesMixin = base =>
         withProgramStatus(value) {
             const programStatus = value.toUpperCase();
 
-            const programStatuses = new Set([
-                'ACTIVE',
-                'COMPLETED',
-                'CANCELLED',
-            ]);
+            const programStatuses = new Set(['ACTIVE', 'COMPLETED', 'CANCELLED']);
 
             if (programStatuses.has(programStatus)) {
                 this.parameters.programStatus = programStatus;
             } else {
-                console.warn(`d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`);
+                console.warn(
+                    `d2.analytics.request.withProgramStatus(): "${value}" not listed as possible value`
+                );
                 this.parameters.programStatus = value;
             }
 
@@ -628,16 +627,14 @@ const AnalyticsRequestPropertiesMixin = base =>
         withOuMode(value) {
             const ouMode = value.toUpperCase();
 
-            const ouModes = new Set([
-                'DESCENDANTS',
-                'CHILDREN',
-                'SELECTED',
-            ]);
+            const ouModes = new Set(['DESCENDANTS', 'CHILDREN', 'SELECTED']);
 
             if (ouModes.has(ouMode)) {
                 this.parameters.ouMode = ouMode;
             } else {
-                console.warn(`d2.analytics.request.withOuMode(): "${value}" not listed as possible value`);
+                console.warn(
+                    `d2.analytics.request.withOuMode(): "${value}" not listed as possible value`
+                );
                 this.parameters.ouMode = value;
             }
 
@@ -764,15 +761,14 @@ const AnalyticsRequestPropertiesMixin = base =>
         withSortOrder(value) {
             const sortOrder = value.toUpperCase();
 
-            const sortOrders = new Set([
-                'ASC',
-                'DESC',
-            ]);
+            const sortOrders = new Set(['ASC', 'DESC']);
 
             if (sortOrders.has(sortOrder)) {
                 this.parameters.sortOrder = sortOrder;
             } else {
-                console.warn(`d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`);
+                console.warn(
+                    `d2.analytics.request.withSortOrder(): "${value}" not listed as possible value`
+                );
                 this.parameters.sortOrder = value;
             }
 
@@ -792,7 +788,7 @@ const AnalyticsRequestPropertiesMixin = base =>
          */
         withLimit(value) {
             if (value) {
-                const limit = (value > 10000) ? 10000 : value;
+                const limit = value > 10000 ? 10000 : value;
 
                 this.parameters.limit = limit;
             }
@@ -814,16 +810,14 @@ const AnalyticsRequestPropertiesMixin = base =>
         withOutputType(value) {
             const type = value.toUpperCase();
 
-            const outputTypes = new Set([
-                'EVENT',
-                'ENROLLMENT',
-                'TRACKED_ENTITY_INSTANCE',
-            ]);
+            const outputTypes = new Set(['EVENT', 'ENROLLMENT', 'TRACKED_ENTITY_INSTANCE']);
 
             if (outputTypes.has(type)) {
                 this.parameters.outputType = type;
             } else {
-                console.warn(`d2.analytics.request.withOutputType(): "${value}" not listed as possible value`);
+                console.warn(
+                    `d2.analytics.request.withOutputType(): "${value}" not listed as possible value`
+                );
                 this.parameters.outputType = value;
             }
 
