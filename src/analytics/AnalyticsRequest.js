@@ -17,7 +17,7 @@ import AnalyticsRequestBase from './AnalyticsRequestBase';
  * @extends module:analytics.AnalyticsRequestBase
  */
 class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
-    AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase))
+    AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase)),
 ) {
     /**
      * Extracts dimensions and filters from an analytic object model and add them to the request
@@ -45,7 +45,7 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
         const columns = model.columns || [];
         const rows = model.rows || [];
 
-        columns.concat(rows).forEach(d => {
+        columns.concat(rows).forEach((d) => {
             let dimension = d.dimension;
 
             if (d.filter) {
@@ -58,7 +58,7 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
         // extract filters from model
         const filters = model.filters || [];
 
-        filters.forEach(f => {
+        filters.forEach((f) => {
             request = passFilterAsDimension
                 ? request.addDimension(f.dimension, f.items.map(item => item.id))
                 : request.addFilter(f.dimension, f.items.map(item => item.id));
