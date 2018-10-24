@@ -208,7 +208,7 @@ describe('Api', () => {
                 .then(() => { done(new Error('The request succeeded')); })
                 .catch((err) => {
                     expect(typeof err).toBe('object');
-                    expect(err).toEqual(JSON.parse(response));
+                    expect(err).toEqual(response);
                     done();
                 })
                 .catch(done);
@@ -434,7 +434,7 @@ describe('Api', () => {
                 fixtures.get('/singleUserAllFields').href,
                 Object.assign(baseFetchOptions, {
                     method: 'POST',
-                    headers: new Headers({ 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ 'Content-Type': 'application/json', 'x-requested-with': 'XMLHttpRequest' }),
                     body: JSON.stringify(fixtures.get('/singleUserOwnerFields')),
                 }),
             );
@@ -447,7 +447,7 @@ describe('Api', () => {
                 '/api/systemSettings/mySettingsKey',
                 Object.assign(baseFetchOptions, {
                     method: 'POST',
-                    headers: new Headers({ 'content-type': 'text/plain', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ 'content-type': 'text/plain', 'x-requested-with': 'XMLHttpRequest' }),
                     body: 'string=test',
                 }),
             );
@@ -460,7 +460,7 @@ describe('Api', () => {
                 '/api/systemSettings/numberZero',
                 Object.assign(baseFetchOptions, {
                     method: 'POST',
-                    headers: new Headers({ 'content-type': 'text/plain', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ 'content-type': 'text/plain', 'x-requested-with': 'XMLHttpRequest' }),
                     body: JSON.stringify(0),
                 }),
             );
@@ -473,7 +473,7 @@ describe('Api', () => {
                 '/api/systemSettings/keyTrue',
                 Object.assign(baseFetchOptions, {
                     method: 'POST',
-                    headers: new Headers({ 'content-type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ 'content-type': 'application/json', 'x-requested-with': 'XMLHttpRequest' }),
                     body: 'true',
                 }),
             );
@@ -486,7 +486,7 @@ describe('Api', () => {
                 '/api/systemSettings/keyTrue',
                 Object.assign(baseFetchOptions, {
                     method: 'POST',
-                    headers: new Headers({ 'content-type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ 'content-type': 'application/json', 'x-requested-with': 'XMLHttpRequest' }),
                     body: 'false',
                 }),
             );
@@ -573,11 +573,11 @@ describe('Api', () => {
 
             expect(fetchMock).toBeCalledWith(
                 '/api/some/fake/api/endpoint',
-                Object.assign(baseFetchOptions, {
+                expect.objectContaining(Object.assign(baseFetchOptions, {
                     method: 'PUT',
-                    headers: new Headers({ 'Content-Type': 'application/json', 'x-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ 'Content-Type': 'application/json', 'x-requested-with': 'XMLHttpRequest' }),
                     body: JSON.stringify(data),
-                }),
+                })),
             );
         });
 
@@ -630,23 +630,14 @@ describe('Api', () => {
         });
 
         it('should support payloads of plain texts', () => {
-            const data = {
-                a: 'A',
-                b: 'B!',
-                obj: {
-                    oa: 'o.a',
-                    ob: 'o.b',
-                },
-                arr: [1, 2, 3],
-            };
-            api.update('some/fake/api/endpoint', JSON.stringify(data));
+            api.update('some/fake/api/endpoint', 'a string');
 
             expect(fetchMock).toBeCalledWith(
                 '/api/some/fake/api/endpoint',
                 Object.assign(baseFetchOptions, {
                     method: 'PUT',
-                    headers: new Headers({ 'Content-Type': 'text/plain' }),
-                    body: JSON.stringify(data),
+                    headers: new Headers({ 'Content-Type': 'text/plain', 'x-requested-with': 'XMLHttpRequest' }),
+                    body: 'a string',
                 }),
             );
         });
@@ -663,16 +654,18 @@ describe('Api', () => {
                     nestedChildThatNeedsTOBeUpdated: false,
                 },
             };
-            api.patch('some/fake/api/endpoint', data);
+            const endpoint = 'some/fake/api/endpoint';
 
-            expect(fetchMock).toBeCalledWith(
-                '/api/some/fake/api/endpoint',
-                Object.assign(baseFetchOptions, {
-                    method: 'PATCH',
-                    headers: new Headers({ 'Content-Type': 'application/json', 'x-requested-with': 'XMLHttpRequest' }),
-                    body: JSON.stringify(data),
-                }),
-            );
+
+            api.patch(endpoint, data);
+
+            const [endpointParam, fetchOptsParam] = fetchMock.mock.calls[0];
+            expect(endpointParam).toEqual(`/api/${endpoint}`);
+            expect(fetchOptsParam).toEqual(expect.objectContaining(Object.assign(baseFetchOptions, {
+                method: 'PATCH',
+                headers: new Headers({ 'Content-Type': 'application/json', 'x-requested-with': 'XMLHttpRequest' }),
+                body: JSON.stringify(data),
+            })));
         });
     });
 
@@ -680,7 +673,7 @@ describe('Api', () => {
         it('should use the set default headers for the request', () => {
             api.setDefaultHeaders({
                 Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=',
-                'X-Requested-With': 'XMLHttpRequest',
+                'x-requested-with': 'XMLHttpRequest',
             });
 
             api.get('/me');
@@ -689,7 +682,7 @@ describe('Api', () => {
                 '/api/me',
                 Object.assign(baseFetchOptions, {
                     method: 'GET',
-                    headers: new Headers({ Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=', 'x-requested-with': 'XMLHttpRequest' }),
                 }),
             );
         });
@@ -697,16 +690,16 @@ describe('Api', () => {
         it('should not use the defaultHeaders if specific header has been passed', () => {
             api.setDefaultHeaders({
                 Authorization: 'Basic YWRtaW46ZGlzdHJpY3Q=',
-                'X-Requested-With': 'XMLHttpRequest',
+                'x-requested-with': 'XMLHttpRequest',
             });
 
-            api.get('/me', undefined, { headers: { Authorization: 'Bearer ASDW212331sss', 'X-Requested-With': 'XMLHttpRequest' } });
+            api.get('/me', undefined, { headers: { Authorization: 'Bearer ASDW212331sss', 'x-requested-with': 'XMLHttpRequest' } });
 
             expect(fetchMock).toBeCalledWith(
                 '/api/me',
                 Object.assign(baseFetchOptions, {
                     method: 'GET',
-                    headers: new Headers({ Authorization: 'Bearer ASDW212331sss', 'X-Requested-With': 'XMLHttpRequest' }),
+                    headers: new Headers({ Authorization: 'Bearer ASDW212331sss', 'x-requested-with': 'XMLHttpRequest' }),
                 }),
             );
         });
