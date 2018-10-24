@@ -96,6 +96,16 @@ describe('AnalyticsRequest', () => {
                     { dimension: 'pe', items: ['LAST_SIX_MONTH'] },
                 ]);
             });
+
+            it('should convert filters into dimensions when passing the optional flag', () => {
+                request = request.fromModel(model, true);
+
+                expect(request.dimensions).toEqual([
+                    { dimension: 'dx', items: ['Uvn6LCg7dVU', 'sB79w2hiLp8'] },
+                    { dimension: 'ou', items: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'] },
+                    { dimension: 'pe', items: ['LAST_SIX_MONTH'] },
+                ]);
+            });
         });
 
         describe('.addOrgUnitDimension()', () => {
