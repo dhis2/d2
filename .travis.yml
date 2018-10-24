@@ -17,7 +17,7 @@ deploy:
   script: publish-build
   skip_cleanup: true
   on:
-tags: true
+    tags: true
 env:
   global:
   - secure: fA9xRQxlM6IfhBVhZ8D/GBjXXxhTkWxCe1vJ4PFVkedZbFlmk9PbRw4lJlwFfBVqsfo5ppDPZI5mOK3bzt1ZvZDFAgn/ootvC108mFFO1iua+bBLFDqP4IQty4MBnyaCGci4dPS4rCVjcozh17TqQTNBU6ZTZ2PBnePSUXN6NQA=
