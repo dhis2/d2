@@ -27,7 +27,7 @@ export default class Config {
         const api = d2.Api.getApi();
         d2.model.ModelDefinition.prototype.api = api; // eslint-disable-line no-param-reassign
         d2.models = d2.model.ModelDefinitions.getModelDefinitions(); // eslint-disable-line no-param-reassign
-        console.log(config);
+
         if (isString(config.baseUrl)) {
             api.setBaseUrl(config.baseUrl);
         } else {
