@@ -106,7 +106,7 @@ class Api {
     /**
      * When any request encounters a 401 - Unauthorized. This callback is called.
      * Useful for when you want an session expiration-handler API-wide.
-     * 
+     *
      * @param {*} cb - Function to call when any request recieves a 401. Called with the response from the server.
      */
     setUnauthorizedCallback(cb) {
@@ -331,7 +331,7 @@ class Api {
                                     options,
                                 };
                                 if (this.unauthorizedCallback) {
-                                    this.unauthorizedCallback(request, text);
+                                    this.unauthorizedCallback(request, parsedResponseData);
                                 }
                             }
                             if (!process.env || process.env.npm_lifecycle_event !== 'test') {
