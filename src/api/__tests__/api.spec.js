@@ -101,6 +101,31 @@ describe('Api', () => {
         });
     });
 
+    describe('setUnauthorizedCallback', () => {
+        beforeEach(() => {
+            api = new Api(() => {});
+        });
+
+        it('should be a method', () => {
+            expect(api.setUnauthorizedCallback).toBeInstanceOf(Function);
+        });
+
+        it('should throw when the base url provided is not a function', () => {
+            function shouldThrow() {
+                api.setUnauthorizedCallback('asf');
+            }
+
+            expect(shouldThrow).toThrowError('Callback must be a function.');
+        });
+
+        it('should set the unauthorizedCallback property on the object', () => {
+            const cb = () => {};
+            api.setUnauthorizedCallback(cb);
+
+            expect(api.unauthorizedCallback).toBe(cb);
+        });
+    });
+
     describe('request()', () => {
         it('should handle responses in plain text format', (done) => {
             fetchMock.mockReturnValueOnce(Promise.resolve({
@@ -209,6 +234,35 @@ describe('Api', () => {
                 .catch((err) => {
                     expect(typeof err).toBe('object');
                     expect(err).toEqual(response);
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('401 should call unauthorizedCb if set', (done) => {
+            const cb = jest.fn();
+            api.setUnauthorizedCallback(cb);
+
+            const response = {
+                httpStatus: 'Unauthorized',
+                httpStatusCode: 401,
+                status: 'ERROR',
+                message: 'Unauthorized',
+            };
+            const req = Promise.resolve({
+                ok: false,
+                status: 401,
+                text: () => Promise.resolve(response),
+            });
+            fetchMock.mockReturnValueOnce(req);
+
+            api.get('dataElements/401')
+                .then(() => { done(new Error('The request succeeded')); })
+                .catch(() => {
+                    expect(cb).toBeCalled();
+                    expect(cb).toHaveBeenCalledWith(expect.objectContaining(
+                        { method: 'GET', options: {}, url: '/api/dataElements/401' },
+                    ), response);
                     done();
                 })
                 .catch(done);
