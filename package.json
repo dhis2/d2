@@ -1,21 +1,18 @@
 {
   "name": "d2",
-  "version": "31.0.2",
+  "version": "31.1.1",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
     "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
     "coverage": "npm test -- --coverage",
-    "validate": "npm ls --depth 0 || yarn list",
     "test": "TZ=UTC jest",
     "test-watch": "npm run test -- --watch",
     "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
-    "prebuild": "npm run lint && npm run validate && npm run test",
-    "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "build": "npm run build-only",
+    "prebuild": "npm run lint && npm run test",
+    "build": "rm -rf build/ && babel src --out-dir build --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "lint": "./node_modules/eslint/bin/eslint.js src",
-    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix",
-    "travis": "npm run coverage && npm run build"
+    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix"
   },
   "repository": {
     "type": "git",
@@ -66,7 +63,6 @@
   },
   "pre-commit": [
     "lint",
-    "validate",
     "test"
   ],
   "nyc": {
