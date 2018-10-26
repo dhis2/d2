@@ -86,7 +86,7 @@ export function getUserSettings(ApiClass = Api) {
     const api = ApiClass.getApi();
 
     if (firstRun) {
-        Config.processPreinitConfig(preInitConfig, api);
+        Config.processPreInitConfig(preInitConfig, api);
     }
 
     return api.get('userSettings');
@@ -130,7 +130,7 @@ function getModelRequests(api, schemaNames) {
  * baseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain
  * for example http://localhost/dhis/ you should set the base url to `/dhis/api`
  *
- * uauthorizedCb: A callback function that is called whenever a API-request encounters a 401 - Unauthorized response.
+ * unauthorizedCb: A callback function that is called whenever a API-request encounters a 401 - Unauthorized response.
  *  The function is called with (request, response) - the request object that failed, and the parsed response from the server.
  *
  * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.

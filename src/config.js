@@ -13,7 +13,7 @@ export default class Config {
         return Object.assign({}, defaultConfig, ...args);
     }
 
-    static processPreinitConfig(preinitConfig, api) {
+    static processPreInitConfig(preinitConfig, api) {
         if (preinitConfig.headers) {
             api.setDefaultHeaders(preinitConfig.headers);
         }
