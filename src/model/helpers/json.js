@@ -20,6 +20,7 @@ const NON_MODEL_COLLECTIONS = {
     columns: [],
     rows: [],
     filters: [],
+    yearlySeries: [],
 };
 
 const isNonModelCollection = (propertyName, modelType) => {
