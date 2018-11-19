@@ -22,14 +22,14 @@ After installing you will be able to import the library into your project by usi
 
 ```js
 // Using ES2015 imports
-import d2 from 'd2/lib/d2';
+import d2 from 'd2';
 
 // Using CommonJS imports
-var d2 = require('d2/lib/d2');
+var d2 = require('d2');
 ```
 
 If you want to use `d2` as just a global variable on the window object you can include one of the following scripts in
-your page `d2/lib/d2-browser.js` or `d2/lib/d2-browser.min.js`
+your page `d2/d2-browser.js` or `d2/d2-browser.min.js`
 
 
 ## Initialise the library
@@ -39,7 +39,7 @@ where it should load data from (e.g. the schemas, currentUser, authorities). The
 To do this you have can provide d2 with a `baseUrl`. (If you don't provide any the default of `../api` will be used)
 
 ```js
-import { init } from 'd2/lib/d2';
+import { init } from 'd2/d2';
 
 init({ baseUrl: 'http://apps.dhis2.org/dev/api' })
   .then(d2 => {
