@@ -39,7 +39,7 @@ where it should load data from (e.g. the schemas, currentUser, authorities). The
 To do this you have can provide d2 with a `baseUrl`. (If you don't provide any the default of `../api` will be used)
 
 ```js
-import { init } from 'd2/d2';
+import { init } from 'd2';
 
 init({ baseUrl: 'http://apps.dhis2.org/dev/api' })
   .then(d2 => {
