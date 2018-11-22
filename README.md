@@ -8,7 +8,7 @@
 ----
 
 # Documentation
-The full api documentation is available at [full api documentation](https://dhis2.github.io/d2)
+The full api documentation is available at [full api documentation](https://d2-ci.github.io/d2/)
 
 # Quickstart  guide
 
