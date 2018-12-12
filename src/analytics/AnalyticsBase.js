@@ -57,7 +57,7 @@ class AnalyticsBase {
             .withDisplayProperty('SHORTNAME');
 
         // parallelize requests
-        return Promise.all([this.fetch(dataReq, { sorted: true }), this.fetch(metaDataReq)]).then(
+        return Promise.all([this.fetch(dataReq, { sorted: true }), this.fetch(metaDataReq, { sorted: true })]).then(
             responses => Promise.resolve({ ...responses[0], metaData: responses[1].metaData }),
         );
     }
