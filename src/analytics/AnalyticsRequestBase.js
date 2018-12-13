@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import sortBy from 'lodash/sortBy';
 import { customEncodeURIComponent } from '../lib/utils';
 
 /**
@@ -49,23 +49,17 @@ class AnalyticsRequestBase {
         let dimensions = this.dimensions;
 
         if (options && options.sorted) {
-            dimensions = cloneDeep(dimensions);
-
-            dimensions.sort((a, b) => {
-                if (a.dimension < b.dimension) {
-                    return -1;
-                }
-                return a.dimension === b.dimension ? 0 : 1;
-            });
+            dimensions = sortBy(dimensions, 'dimension');
         }
 
         const encodedDimensions = dimensions.map(({ dimension, items }) => {
             if (Array.isArray(items) && items.length) {
+                const encodedItems = items.map(customEncodeURIComponent);
                 if (options && options.sorted) {
-                    items.sort();
+                    encodedItems.sort();
                 }
 
-                return `${dimension}:${items.map(customEncodeURIComponent).join(';')}`;
+                return `${dimension}:${encodedItems.join(';')}`;
             }
 
             return dimension;
@@ -95,23 +89,17 @@ class AnalyticsRequestBase {
         let filters = this.filters;
 
         if (options && options.sorted) {
-            filters = cloneDeep(filters);
-
-            filters.sort((a, b) => {
-                if (a.dimension < b.dimension) {
-                    return -1;
-                }
-                return a.dimension === b.dimension ? 0 : 1;
-            });
+            filters = sortBy(filters, 'dimension');
         }
 
         const encodedFilters = filters.map(({ dimension, items }) => {
             if (Array.isArray(items) && items.length) {
+                const encodedItems = items.map(customEncodeURIComponent);
                 if (options && options.sorted) {
-                    items.sort();
+                    encodedItems.sort();
                 }
 
-                return `${dimension}:${items.map(customEncodeURIComponent).join(';')}`;
+                return `${dimension}:${encodedItems.join(';')}`;
             }
 
             return dimension;
