@@ -8,7 +8,7 @@
 ----
 
 # Documentation
-The full api documentation is available at [full api documentation](https://dhis2.github.io/d2)
+The full api documentation is available at [full api documentation](https://d2-ci.github.io/d2/)
 
 # Quickstart  guide
 
@@ -57,12 +57,12 @@ d2.models.user.list()
 
 # Getting started
 
-To get started we suggest you read the [Overview](https://dhis2.github.io/d2/tutorial-overview.html)
+To get started we suggest you read the [Overview](https://d2-ci.github.io/d2/tutorial-overview.html)
 
 If you are already fairly familiar what you are probably looking for would be the reference material on what is available
-on the instance of [d2](https://dhis2.github.io/d2/module-d2.init-d2.html).
+on the instance of [d2](https://d2-ci.github.io/d2/module-d2.init-d2.html).
 
-For more information on how the Models work the `model` [module documentation](https://dhis2.github.io/d2/module-model.html) and
+For more information on how the Models work the `model` [module documentation](https://d2-ci.github.io/d2/module-model.html) and
 the classes in the module are the current go to reference material.
 
-For other questions see the [FAQ](https://dhis2.github.io/d2/tutorial-FAQ.html) or the [full api documentation](https://dhis2.github.io/d2).
+For other questions see the [FAQ](https://d2-ci.github.io/d2/tutorial-FAQ.html) or the [full api documentation](https://d2-ci.github.io/d2).
