@@ -51,7 +51,9 @@ class AnalyticsRequestBase {
         if (options && options.sorted) {
             dimensions = cloneDeep(dimensions);
 
-            dimensions.sort((a, b) => (a.dimension > b.dimension));
+            dimensions.sort((a, b) =>
+                a.dimension < b.dimension ? -1 : a.dimension === b.dimension ? 0 : 1
+            );
         }
 
         const encodedDimensions = dimensions.map(({ dimension, items }) => {
@@ -92,7 +94,9 @@ class AnalyticsRequestBase {
         if (options && options.sorted) {
             filters = cloneDeep(filters);
 
-            filters.sort((a, b) => (a.dimension > b.dimension));
+            filters.sort((a, b) =>
+                a.dimension < b.dimension ? -1 : a.dimension === b.dimension ? 0 : 1
+            );
         }
 
         const encodedFilters = filters.map(({ dimension, items }) => {
