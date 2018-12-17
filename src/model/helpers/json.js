@@ -21,6 +21,7 @@ const NON_MODEL_COLLECTIONS = {
     rows: [],
     filters: [],
     yearlySeries: [],
+    interpretations: ['chart'],
 };
 
 const isNonModelCollection = (propertyName, modelType) => {
