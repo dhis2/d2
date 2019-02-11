@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
-    "whatwg-fetch": "^2.0.3"
+    "cross-fetch": "^3.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",

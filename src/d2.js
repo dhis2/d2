@@ -13,7 +13,7 @@
  * init({ baseUrl: 'https://play.dhis2.org/demo/api/27/' })
  *  .then(d2 => console.log(d2.currentUser.name));
  */
-import 'whatwg-fetch';
+import 'cross-fetch/polyfill';
 import { pick, Deferred, updateAPIUrlWithBaseUrlVersionNumber } from './lib/utils';
 import Logger from './logger/Logger';
 import model from './model';
