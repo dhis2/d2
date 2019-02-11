@@ -235,7 +235,9 @@ class Api {
             const isEncoded = query !== decodeURIComponent(query);
 
             if (isEncoded) {
-                throw new Error('Cannot process URL encoded URLs, pass an unencoded URL');
+                return Promise.reject(
+                    new Error('Cannot process URL encoded URLs, pass an unencoded URL'),
+                );
             }
 
             query = customEncodeURIComponent(query);

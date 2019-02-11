@@ -245,6 +245,18 @@ describe('Api', () => {
                 .catch(done);
         });
 
+        it.only('should reject with an error when url contains encoded query string', (done) => {
+            const message = 'Cannot process URL encoded URLs, pass an unencoded URL';
+
+            api.get('test?one=%5Bwith%20a%20filter%5D')
+                .then(() => done(new Error('The request should error')))
+                .catch((err) => {
+                    expect(err).toBeInstanceOf(Error);
+                    expect(err.message).toBe(message);
+                    done();
+                });
+        });
+
         it('should not break URIs when encoding', (done) => {
             api.get('test?a=b=c&df,gh')
                 .then(() => {
