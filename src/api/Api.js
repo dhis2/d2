@@ -229,14 +229,25 @@ class Api {
             requestUrl = requestUrl.substr(0, requestUrl.indexOf('?'));
         }
 
+        // Encode existing query parameters, since tomcat does not accept unencoded brackets. Throw
+        // an error if they're already encoded to prevent double encoding.
+        if (query) {
+            const isEncoded = query !== decodeURIComponent(query);
+
+            if (isEncoded) {
+                throw new Error('Cannot process URL encoded URLs, pass an unencoded URL');
+            }
+
+            query = customEncodeURIComponent(query);
+        }
+
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
             const encodedFilters = data.filter
                 .map(filter => filter.split(':').map(encodeURIComponent).join(':'));
 
             query = (
-                `${customEncodeURIComponent(query)}${query.length ? '&' : ''}` +
-                `filter=${encodedFilters.join('&filter=')}`
+                `${query}${query.length ? '&' : ''}filter=${encodedFilters.join('&filter=')}`
             );
             delete data.filter; // eslint-disable-line no-param-reassign
         }

@@ -234,7 +234,7 @@ describe('Api', () => {
                     expect(fetchMock).toHaveBeenCalledWith([
                         '/api/some/endpoint?',
                         'a=b&',
-                        'c=d|e&',
+                        'c=d%7Ce&',
                         'f=g%7Ch%5Bi%2Cj%5D%2Ck%5Bl%7Cm%5D%2Cn%7Bo~p%60q%60%24r%40s!t%7D&',
                         'u=-._~%3A%2F%3F%23%5B%5D%40!%24%26()*%2B%2C%3B%3D%3D%3D%2C~%24!%40*()_-%3D%2B%2F%3B%3A',
                     ].join(''),
