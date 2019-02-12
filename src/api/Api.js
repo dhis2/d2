@@ -232,7 +232,15 @@ class Api {
         // Encode existing query parameters, since tomcat does not accept unencoded brackets. Throw
         // an error if they're already encoded to prevent double encoding.
         if (query) {
-            const isEncoded = query !== decodeURIComponent(query);
+            let decodedURL;
+
+            try {
+                decodedURL = decodeURIComponent(query);
+            } catch (err) {
+                return Promise.reject(new Error('Query parameters in URL are invalid'));
+            }
+
+            const isEncoded = query !== decodedURL;
 
             if (isEncoded) {
                 return Promise.reject(

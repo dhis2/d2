@@ -257,6 +257,18 @@ describe('Api', () => {
                 });
         });
 
+        it('should reject with an error when url is malformed', (done) => {
+            const message = 'Query parameters in URL are invalid';
+
+            api.get('test?%5')
+                .then(() => done(new Error('The request should error')))
+                .catch((err) => {
+                    expect(err).toBeInstanceOf(Error);
+                    expect(err.message).toBe(message);
+                    done();
+                });
+        });
+
         it('should not break URIs when encoding', (done) => {
             api.get('test?a=b=c&df,gh')
                 .then(() => {
