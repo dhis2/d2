@@ -246,7 +246,7 @@ describe('Api', () => {
         });
 
         it('should reject with an error when url contains encoded query string', (done) => {
-            const message = 'Cannot process URL encoded URLs, pass an unencoded URL';
+            const message = 'Cannot process URL-encoded URLs, pass an unencoded URL';
 
             api.get('test?one=%5Bwith%20a%20filter%5D')
                 .then(() => done(new Error('The request should error')))

@@ -244,7 +244,7 @@ class Api {
 
             if (isEncoded) {
                 return Promise.reject(
-                    new Error('Cannot process URL encoded URLs, pass an unencoded URL'),
+                    new Error('Cannot process URL-encoded URLs, pass an unencoded URL'),
                 );
             }
 
