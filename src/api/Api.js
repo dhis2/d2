@@ -40,7 +40,7 @@ function getUrl(baseUrl, url) {
  * Used for interaction with the dhis2 api.
  *
  * This class is used as the backbone for d2 and handles all the interaction with the server. There is a singleton
- * available to be reused across your applications. The singleton can be grabbed from the d2 instance.
+ * available to be reused across your applications. The singleton can be grabbed from the d2 instance. The api methods all handle URL-encoding for you, so you can just pass them unencoded strings
  *
  * ```js
  * import { getInstance } from 'd2/lib/d2';
@@ -102,8 +102,8 @@ class Api {
     /**
      * Performs a GET request.
      *
-     * @param {string} url The url for the request
-     * @param {*} data Any data that should be send with the request. For a GET request these are turned into
+     * @param {string} url The url for the request, should be unencoded. Will return a rejected promise for malformed urls and urls that contain encoded query strings.
+     * @param {*} data Any data that should be sent with the request. For a GET request these are encoded and turned into
      * query parameters. For POST and PUT requests it becomes the body.
      * @param {Object.<string, any>} options The request options are passed as options to the fetch request.
      * These options are passed as the {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters|init}
