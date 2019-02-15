@@ -1,5 +1,12 @@
 # D2 Changelog
 
+## 30.1.0
+###### _February 15th 2019_
+
+**Breaking changes:**
+
+- `d2.Api` Api methods will reject with an error when passing urls with an encoded query-string, or when passing urls with a malformed query string. The existing query string and anything that will be appended will be encoded for you by d2.Api's methods.
+
 ## 28.3.0
 ###### _October 26th 2017_
 
