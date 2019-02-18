@@ -24,6 +24,12 @@ const periodFixtures = {
     '2017ThuW4': makePeriodFixture('2017ThuW4', '2017 W4 January 26 - February 1', '2017-01-26', '2017-02-01'),
     '2017SatW4': makePeriodFixture('2017SatW4', '2017 W4 January 21 - 27', '2017-01-21', '2017-01-27'),
     '2017SunW4': makePeriodFixture('2017SunW4', '2017 W4 January 22 - 28', '2017-01-22', '2017-01-28'),
+    // BiWeekly
+    '2019BiW12': makePeriodFixture('2019BiW12', '2019 BiWeek 12 June 3 - 16', '2019-06-03', '2019-06-16'),
+    '2019BiW04': makePeriodFixture('2019BiW4', '2019 BiWeek 4 February 11 - 24', '2019-02-11', '2019-02-24'),
+    '2015BiW1': makePeriodFixture('2015BiW1', '2015 BiWeek 1 December 29 - January 11', '2014-12-29', '2015-01-11'),
+    '2016BiW27': makePeriodFixture('2017BiW1', '2017 BiWeek 1 January 2 - 15', '2017-01-02', '2017-01-15'),
+    '2015BiW27': makePeriodFixture('2015BiW27', '2015 BiWeek 27 December 28 - January 10', '2015-12-28', '2016-01-10'),
     // Monthly
     198103: makePeriodFixture('198103', 'March 1981', '1981-03-01', '1981-03-31'),
     198002: makePeriodFixture('198002', 'February 1980', '1980-02-01', '1980-02-29'),
@@ -116,6 +122,29 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
         });
         it('should handle Weekly Sunday period types', () => {
             doPeriodTest('2017SunW4');
+        });
+    });
+    describe('for BiWeekly periods', () => {
+        it('should handle valid BiWeekly periods', () => {
+            doPeriodTest('2019BiW12');
+        });
+        it('should handle BiWeek 1-9 with leading zero', () => {
+            doPeriodTest('2019BiW04');
+        });
+        it('should handle BiWeek 1 that starts the previous year', () => {
+            doPeriodTest('2015BiW1');
+        });
+        it('should handle BiWeek 27 for 52-week years', () => {
+            doPeriodTest('2016BiW27');
+        });
+        it('should handle BiWeek 27 for 53-week years', () => {
+            doPeriodTest('2015BiW27');
+        });
+        it('should not accept BiWeek numbers higher than 27', () => {
+            expect(() => getPeriodFromPeriodId('2017BiW28')).toThrowError();
+        });
+        it('should not accept BiWeek numbers below 1', () => {
+            expect(() => getPeriodFromPeriodId('2017BiW0')).toThrowError();
         });
     });
     describe('for Monthly periods', () => {
