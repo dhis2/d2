@@ -3,7 +3,7 @@ import ModelBase, { DIRTY_PROPERTY_LIST } from '../ModelBase';
 
 jest.mock('../ModelValidation');
 
-describe('ModelBase', () => {
+describe.skip('ModelBase', () => {
     // TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
     let validateAgainstSchemaSpy;
 

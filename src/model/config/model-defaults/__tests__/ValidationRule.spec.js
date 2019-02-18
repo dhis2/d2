@@ -1,7 +1,7 @@
 import ModelDefinition from '../../../ModelDefinition';
 import fixtures from '../../../../__fixtures__/fixtures';
 
-describe('ValidationRule defaults', () => {
+describe.skip('ValidationRule defaults', () => {
     let validationRule;
 
     beforeEach(() => {

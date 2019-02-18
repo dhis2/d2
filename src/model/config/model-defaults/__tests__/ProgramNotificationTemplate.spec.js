@@ -1,7 +1,7 @@
 import ModelDefinition from '../../../ModelDefinition';
 import fixtures from '../../../../__fixtures__/fixtures';
 
-describe('ProgramNotificationTemplate defaults', () => {
+describe.skip('ProgramNotificationTemplate defaults', () => {
     let programNotificationTemplate;
 
     beforeEach(() => {
