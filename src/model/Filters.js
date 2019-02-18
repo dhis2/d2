@@ -104,7 +104,7 @@ class Filters {
      * Default behavior is AND.
      * Note that the logic will be used across all the filters, which
      * means with OR, results will be returned when any of the filter match.
-     * It MUST be called last on the chain of filters when called 
+     * It MUST be called last on the chain of filters when called
      * through modelDefinition.filter().
      * @see {@link https://docs.dhis2.org/master/en/developer/html/webapi_metadata_object_filter.html|Object filter Docs }
      * @example

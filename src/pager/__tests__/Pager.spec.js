@@ -5,7 +5,7 @@ describe('Pager', () => {
     let pageFixtureTwo;
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Pager()).toThrowError('Cannot call a class as a function');
+        expect(() => Pager()).toThrowErrorMatchingSnapshot();
     });
 
     describe('instance without data', () => {

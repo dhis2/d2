@@ -303,4 +303,4 @@ class ModelBase {
     }
 }
 
-export default new ModelBase();
+export default ModelBase;

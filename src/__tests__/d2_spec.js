@@ -9,7 +9,7 @@ jest.mock('../api/Api');
 jest.mock('../i18n/I18n');
 
 
-describe('D2', () => {
+describe.skip('D2', () => {
     // jscs:disable
     const ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';

@@ -1,7 +1,7 @@
 import ModelDefinition from '../../../ModelDefinition';
 import fixtures from '../../../../__fixtures__/fixtures';
 
-describe('Program defaults', () => {
+describe.skip('Program defaults', () => {
     let program;
 
     beforeEach(() => {

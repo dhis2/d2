@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`constructor should not be allowed to be called without new 1`] = `"Class constructor AnalyticsBase cannot be invoked without 'new'"`;

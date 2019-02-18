@@ -30,7 +30,7 @@ describe('Analytics.aggregate', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => AnalyticsAggregate()).toThrowError('Cannot call a class as a function'); // eslint-disable-line new-cap
+        expect(() => AnalyticsAggregate()).toThrowErrorMatchingSnapshot(); // eslint-disable-line new-cap
     });
 
     it('should add the mockApi onto the AnalyticsAggregate instance', () => {

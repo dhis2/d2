@@ -18,7 +18,7 @@ describe('settings.System', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => SystemSettings()).toThrowError('Cannot call a class as a function'); // eslint-disable-line
+        expect(() => SystemSettings()).toThrowErrorMatchingSnapshot(); // eslint-disable-line
     });
 
     it('should set an instance of Api onto the SystemSettings instance', () => {

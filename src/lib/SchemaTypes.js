@@ -33,4 +33,4 @@ class SchemaTypes {
     }
 }
 
-export default new SchemaTypes();
+export default SchemaTypes;

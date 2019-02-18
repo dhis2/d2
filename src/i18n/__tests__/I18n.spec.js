@@ -34,7 +34,7 @@ describe('Internationalisation (I18n)', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => I18n()).toThrowError('Cannot call a class as a function'); // eslint-disable-line
+        expect(() => I18n()).toThrowErrorMatchingSnapshot(); // eslint-disable-line
     });
 
     it('should set an instance of Api onto the SystemConfiguration instance', () => {

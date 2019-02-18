@@ -16,7 +16,7 @@ describe('Logger', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Logger()).toThrowError('Cannot call a class as a function');
+        expect(() => Logger()).toThrowErrorMatchingSnapshot();
     });
 
     it('should get the correct Logger instance from the namespace', () => {
