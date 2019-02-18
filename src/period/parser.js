@@ -4,8 +4,7 @@ import {
     getLastDateOfMonth,
     getFirstDateOfQuarter,
     getLastDateOfQuarter,
-    getFirstDateOfWeek,
-    addDays,
+    computeWeekBasedPeriod,
 } from './helpers';
 import { toLocaleDayFormat } from './formatters';
 
@@ -26,38 +25,6 @@ const periodTypeRegex = {
     FinancialApril: /^([0-9]{4})April$/,                // YYYY"April"
     FinancialJuly: /^([0-9]{4})July$/,                  // YYYY"July"
     FinancialOct: /^([0-9]{4})Oct$/,                    // YYYY"Oct"
-};
-
-const computeWeekBasedPeriod = ({ year, week, locale = 'en', weekTypeDiff = 0, periodLength = 6 }) => {
-    const startDate = addDays(weekTypeDiff, getFirstDateOfWeek(year, week));
-    const monthNames = getMonthNamesForLocale(locale);
-    const startMonth = startDate.getMonth();
-    const startYear = startDate.getFullYear();
-    const startMonthName = monthNames[startMonth];
-    const startDayNum = startDate.getDate();
-
-    if (week === 53 && startYear !== year) {
-        /* eslint-disable no-param-reassign */
-        week = 1;
-        year = startYear;
-        /* eslint-enable */
-    }
-
-    const endDate = addDays(periodLength, startDate);
-    const endMonth = endDate.getMonth();
-    const endDayNum = endDate.getDate();
-    const endMonthName = monthNames[endMonth];
-
-    return {
-        week,
-        year,
-        startMonthName,
-        startDayNum,
-        endMonthName,
-        endDayNum,
-        startDate: formatAsISODate(startDate),
-        endDate: formatAsISODate(endDate),
-    };
 };
 
 /* eslint-disable complexity */
