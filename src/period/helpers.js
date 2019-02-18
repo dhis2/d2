@@ -150,6 +150,24 @@ export function getFirstDateOfWeek(year, week) {
     return new Date(year, month, ordDate - ordDiff[month]);
 }
 
+/**
+ * This function takes some general instructions for a period and returns a precise period containing
+ * a start date and end date. It corrects for week 1 starting in a previous year and for week 53 in a
+ * 52 week year
+ * It is used by the BiWeekly periodType and all flavors of Weekly PeriodTypes,
+ * such as Weekly, weeklyWednessday, etc.
+ * @param {Object} obj - An object
+ * @param {Number} obj.year - Year
+ * @param {Number} obj.week - Week number between 1-53
+ * @param {String} [obj.locale=en] - The current locale
+ * @param {Number} [obj.weekTypeDiff=0] - The difference between the starting day of the week 
+ * in a given periodType and the first day of the week. This option is being used for different
+ * flavors of weekly period types, such as WeeklyWednesday, WeeklyThursday, etc.
+ * @param {Number} [obj.periodLength=6] - The amount of days until the end date: 6 for weekly 
+ * and 13 for Bikweekly
+ * @returns {Object} - An object containing various properties that can be used to contruct
+ * the final parsed period
+ */
 export const computeWeekBasedPeriod = ({ year, week, locale = 'en', weekTypeDiff = 0, periodLength = 6 }) => {
     const startDate = addDays(weekTypeDiff, getFirstDateOfWeek(year, week));
     const monthNames = getMonthNamesForLocale(locale);
