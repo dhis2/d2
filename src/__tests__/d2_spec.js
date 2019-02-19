@@ -8,7 +8,7 @@ jest.mock('../logger/Logger');
 jest.mock('../api/Api');
 jest.mock('../i18n/I18n');
 
-describe.skip('D2', () => {
+describe('D2', () => {
     const ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
     };

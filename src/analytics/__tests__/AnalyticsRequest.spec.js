@@ -7,7 +7,7 @@ let expectedParameters;
 
 const getFuncName = parameter => `with${parameter.charAt(0).toUpperCase()}${parameter.slice(1)}`;
 
-describe.skip('AnalyticsRequest', () => {
+describe('AnalyticsRequest', () => {
     beforeEach(() => {
         request = new AnalyticsRequest();
         expectedParameters = {};
