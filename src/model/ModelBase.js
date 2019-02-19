@@ -19,9 +19,8 @@ export const DIRTY_PROPERTY_LIST = Symbol('List to keep track of dirty propertie
  */
 class ModelBase {
     constructor() {
-        this.modelDefinition = {
-            modelValidations: {},
-        };
+        const modelValidations = { modelValidations: {} };
+        Object.defineProperty(this, 'modelDefinition', { writable: true, value: modelValidations });
     }
     /**
      * @returns {Promise} Returns a promise that resolves when the model has been saved or rejected with the result from
