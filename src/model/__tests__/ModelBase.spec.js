@@ -125,44 +125,43 @@ describe('ModelBase', () => {
                 expect(modelDefinition.save).not.toBeCalled();
             });
 
-            it('should reset dirty to false after save', (done) => {
-                model.save()
+            it('should reset dirty to false after save', () => {
+                expect.assertions(1);
+
+                return model.save()
                     .then(() => {
                         expect(model.dirty).toBe(false);
-                        done();
-                    }).catch((err) => {
-                        done(err);
                     });
             });
 
-            it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', (done) => {
-                model.save()
+            it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', () => {
+                expect.assertions(1);
+
+                return model.save()
                     .then(() => {
                         expect(model[DIRTY_PROPERTY_LIST].size).toBe(0);
-                        done();
-                    }).catch((err) => {
-                        done(err);
                     });
             });
 
-            it('should return a promise that resolves to an empty object when the model is not dirty', (done) => {
+            it('should return a promise that resolves to an empty object when the model is not dirty', () => {
                 model.dirty = false;
 
-                model.save()
+                expect.assertions(1);
+
+                return model.save()
                     .then((result) => {
                         expect(result).toEqual({});
-                        done();
-                    })
-                    .catch(done);
+                    });
             });
 
-            it('should return rejected promise when the model is not valid', (done) => {
+            it('should return rejected promise when the model is not valid', () => {
                 model.validate.mockReturnValue(Promise.resolve({ status: false }));
 
-                model.save()
+                expect.assertions(1);
+
+                return model.save()
                     .catch((message) => {
                         expect(message).toEqual({ status: false });
-                        done();
                     });
             });
 

@@ -370,11 +370,6 @@ describe('ModelDefinition', () => {
                 it('should not be owned by this schema', () => {
                     expect(modelValidations.externalAccess.owner).toBe(false);
                 });
-
-                // TODO: This currently has some sort of max value
-                // it('should not have a maxLength property', () => {
-                //    expect(modelValidations.externalAccess.maxLength).toBe(undefined);
-                // });
             });
 
             describe('id', () => {
@@ -1319,17 +1314,19 @@ describe('ModelDefinition subsclasses', () => {
             );
         });
 
-        it('should use the special root orgunit id when fetching lists', (done) => {
-            organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
+        it('should use the special root orgunit id when fetching lists', () => {
+            expect.assertions(1);
+
+            return organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
                 expect(getOnApiStub).toBeCalledWith('organisationUnits/myRootId', { fields: ':all' });
-                done();
             });
         });
 
-        it('should handle list queries without special `root` parameters', (done) => {
-            organisationUnitModelDefinition.list().catch(() => {
+        it('should handle list queries without special `root` parameters', () => {
+            expect.assertions(1);
+
+            return organisationUnitModelDefinition.list().catch(() => {
                 expect(getOnApiStub).toBeCalledWith('organisationUnits', { fields: ':all' });
-                done();
             });
         });
     });

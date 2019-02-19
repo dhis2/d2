@@ -218,13 +218,15 @@ describe('Pager', () => {
         });
 
         describe('should throw error when there is no page handler', () => {
-            it('should throw an error when no handler is specified', (done) => {
+            it('should throw an error when no handler is specified', () => {
                 pager = new Pager(pagerFixtureOne);
 
-                pager.getNextPage()
-                    .then(done)
+                expect.assertions(1);
+
+                return pager.getNextPage()
                     .catch(() => {
-                        done();
+                        // TODO: useless assertion
+                        expect(true).toBe(true);
                     });
             });
         });

@@ -1,3 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Internationalisation (I18n) async API isTranslated() totally tilts out if translations haven't been loaded yet 1`] = `"Tried to translate before loading translations!"`;
+
+exports[`Internationalisation (I18n) getTranslations() should throw an error is translations haven't been loaded yet 1`] = `"Tried to translate before loading translations!"`;
+
 exports[`Internationalisation (I18n) should not be allowed to be called without new 1`] = `"Class constructor I18n cannot be invoked without 'new'"`;

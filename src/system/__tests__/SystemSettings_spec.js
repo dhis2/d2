@@ -70,15 +70,16 @@ describe('settings.System', () => {
             expect(result).toBeInstanceOf(Promise);
         });
 
-        it('should reject the promise with an error if no key has been specified', (done) => {
-            systemSettings.get()
+        it('should reject the promise with an error if no key has been specified', () => {
+            expect.assertions(2);
+
+            return systemSettings.get()
                 .catch((error) => {
                     expect(error).toBeInstanceOf(TypeError);
                     expect(error.message).toBe(
                         'A "key" parameter should be specified when calling get() on systemSettings',
                     );
-                })
-                .then(done);
+                });
         });
 
         it('should call the api to get the value', () => {

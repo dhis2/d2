@@ -180,7 +180,7 @@ describe('ModelValidations', () => {
                 });
         });
 
-        it('should return an empty array when the validation passed', (done) => {
+        it('should return an empty array when the validation passed', () => {
             mockApi.post.mockReturnValueOnce(Promise.resolve({
                 httpStatus: 'OK',
                 httpStatusCode: 200,
@@ -190,12 +190,12 @@ describe('ModelValidations', () => {
                 },
             }));
 
-            modelValidation.validateAgainstSchema(modelMock)
+            expect.assertions(1);
+
+            return modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
                     expect(validationMessages).toEqual([]);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
         it('should throw an error when the server does not return the correct WebMessage format', () => {

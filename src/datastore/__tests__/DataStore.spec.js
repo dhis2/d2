@@ -83,34 +83,39 @@ describe('DataStore', () => {
                 ].join('')));
             });
 
-            it('should throw an error', (done) => {
-                return dataStore.get('not-my-namespace').then(() => {
-                    throw new Error('this should have failed');
-                }).catch(() => done());
+            it('should throw an error', () => {
+                expect.assertions(1);
+
+                return dataStore.get('not-my-namespace')
+                    .catch(() => {
+                        // TODO: this test looks like it's just testing the mock
+                        expect(true).toBe(true);
+                    });
             });
         });
     });
 
     describe('getAll()', () => {
-        it('should return an array of namespaces', (done) => {
+        it('should return an array of namespaces', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(namespaces));
-            dataStore
+
+            expect.assertions(1);
+
+            return dataStore
                 .getAll()
                 .then((namespaceRes) => {
                     expect(namespaces).toEqual(namespaceRes);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should throw an error when there is no response', (done) => {
+        it('should throw an error when there is no response', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(null));
 
+            expect.assertions(1);
+
             return dataStore.getAll()
-                .then(done)
                 .catch((namespaceRes) => {
                     expect(namespaceRes.message).toBe('No namespaces exist.');
-                    done();
                 });
         });
     });
