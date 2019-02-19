@@ -6,7 +6,7 @@ import ModelCollection from '../ModelCollection';
 jest.mock('../Model');
 jest.mock('../../../src/pager/Pager');
 
-describe.skip('ModelCollection', () => {
+describe('ModelCollection', () => {
     const mockSchema = { singular: 'mock', plural: 'mocks' };
     const mockModelDefinition = new ModelDefinition(mockSchema, []);
     let pagerObject;

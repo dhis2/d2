@@ -1,6 +1,6 @@
 import ModelDefinitions from '../ModelDefinitions';
 
-describe.skip('D2 models', () => {
+describe('D2 models', () => {
     let models;
 
     class ModelDefinition {

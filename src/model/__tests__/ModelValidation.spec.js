@@ -14,7 +14,7 @@ jest.mock('../helpers/json', () => ({
     },
 }));
 
-describe.skip('ModelValidations', () => {
+describe('ModelValidations', () => {
     let mockApi;
     let modelValidation;
 

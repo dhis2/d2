@@ -10,7 +10,7 @@ jest.mock('../ModelCollection');
 jest.mock('../ModelCollectionProperty');
 jest.mock('../Model');
 
-describe.skip('ModelDefinition', () => {
+describe('ModelDefinition', () => {
     let modelDefinition;
     let mockModelCollectionCreate;
     let mockModelCollectionPropertyCreate;
