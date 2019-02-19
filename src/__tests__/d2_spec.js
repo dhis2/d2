@@ -8,15 +8,13 @@ jest.mock('../logger/Logger');
 jest.mock('../api/Api');
 jest.mock('../i18n/I18n');
 
-
 describe.skip('D2', () => {
-    // jscs:disable
     const ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
     };
-    ModelDefinition.prototype = {
-    };
-    // jscs:enable
+
+    ModelDefinition.prototype = {};
+
     const ModelDefinitionMock = {
         createFromSchema: jest.fn().mockReturnValue(new ModelDefinition()),
         prototype: {},
@@ -341,30 +339,6 @@ describe.skip('D2', () => {
                 })
                 .catch(done);
         });
-
-        // FIXME: Test fails because the the ModelDefinitions class is a singleton
-        /*
-        xit('should create a ModelDefinition for each of the schemas', (done) => {
-            d2.init(undefined, apiMock)
-                .then(() => {
-                    expect(ModelDefinitionMock.createFromSchema).to.have.been.called;
-                    expect(ModelDefinitionMock.createFromSchema.callCount).to.equal(3);
-                    done();
-                })
-                .catch(done);
-        });
-*/
-
-        /*
-        xit('should call the ModelDefinition.createFromSchema with the schema', (done) => {
-            d2.init(undefined, apiMock)
-                .then(() => {
-                    expect(ModelDefinitionMock.createFromSchema).toHaveBeenCalledWith(fixtures.get('/api/schemas/dataElement'), fixtures.get('/dataElementAttributes'));
-                    done();
-                })
-                .catch(done);
-        });
-*/
 
         it('should add the ModelDefinitions to the models list', (done) => {
             d2.init(undefined, apiMock)
