@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Api get should call the failure handler when the server can't be reached 1`] = `"Server connection failed for API request: GET /api/api/dataElements?fields=id%2Cname"`;
+
 exports[`Api should not be allowed to be called without new 1`] = `"Class constructor Api cannot be invoked without 'new'"`;
