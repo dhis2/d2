@@ -167,6 +167,30 @@ export function getFirstDateOfWeek(year, week) {
  * and 13 for Bikweekly
  * @returns {Object} - An object containing various properties that can be used to contruct
  * the final parsed period
+ * @example for default scenario
+ * computeWeekBasedPeriod({ year: 2019, week: 12})
+ * // returns:
+ * // {
+ * //     week: 12,
+ * //     year: 2019,
+ * //     startMonthName: 'June',
+ * //     startDayNumber: 3,
+ * //     endDayNumber: 9,
+ * //     startDate: '2019-06-03',
+ * //     endDate: '2019-06-09',
+ * // }
+ * @example for week 53 in 52 week year edge case
+ * computeWeekBasedPeriod({ year: 2016, week: 53})
+ * // returns:
+ * // {
+ * //     week: 1,
+ * //     year: 2017,
+ * //     startMonthName: 'January',
+ * //     startDayNumber: 2,
+ * //     endDayNumber: 8,
+ * //     startDate: '2017-01-02',
+ * //     endDate: '2017-01-08',
+ * // }
  */
 export const computeWeekBasedPeriod = ({ year, week, locale = 'en', weekTypeDiff = 0, periodLength = 6 }) => {
     const startDate = addDays(weekTypeDiff, getFirstDateOfWeek(year, week));
