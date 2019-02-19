@@ -14,7 +14,7 @@ jest.mock('../helpers/json', () => ({
     },
 }));
 
-describe.skip('ModelValidations', () => {
+describe('ModelValidations', () => {
     let mockApi;
     let modelValidation;
 
@@ -33,7 +33,7 @@ describe.skip('ModelValidations', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelValidation()).toThrowError('Cannot call a class as a function');
+        expect(() => ModelValidation()).toThrowErrorMatchingSnapshot();
     });
 
     describe('getModelValidation', () => {

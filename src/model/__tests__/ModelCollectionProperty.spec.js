@@ -4,7 +4,7 @@ import Model from '../Model';
 import ModelDefinition from '../ModelDefinition';
 import ModelCollectionProperty from '../ModelCollectionProperty';
 
-describe.skip('ModelCollectionProperty', () => {
+describe('ModelCollectionProperty', () => {
     // let ModelCollectionProperty;
     let mockParentModel;
     let mockModelDefinition;

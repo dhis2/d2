@@ -10,7 +10,7 @@ jest.mock('../ModelCollection');
 jest.mock('../ModelCollectionProperty');
 jest.mock('../Model');
 
-describe.skip('ModelDefinition', () => {
+describe('ModelDefinition', () => {
     let modelDefinition;
     let mockModelCollectionCreate;
     let mockModelCollectionPropertyCreate;
@@ -30,7 +30,7 @@ describe.skip('ModelDefinition', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinition()).toThrowError('Cannot call a class as a function');
+        expect(() => ModelDefinition()).toThrowErrorMatchingSnapshot();
     });
 
     it('should create a ModelDefinition object', () => {

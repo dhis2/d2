@@ -6,7 +6,7 @@ import ModelCollection from '../ModelCollection';
 jest.mock('../Model');
 jest.mock('../../../src/pager/Pager');
 
-describe.skip('ModelCollection', () => {
+describe('ModelCollection', () => {
     const mockSchema = { singular: 'mock', plural: 'mocks' };
     const mockModelDefinition = new ModelDefinition(mockSchema, []);
     let pagerObject;
@@ -109,7 +109,7 @@ describe.skip('ModelCollection', () => {
             });
 
             it('should not be allowed to be called without new', () => {
-                expect(() => ModelCollection()).toThrowError('Cannot call a class as a function');
+                expect(() => ModelCollection()).toThrowErrorMatchingSnapshot();
             });
         });
 
