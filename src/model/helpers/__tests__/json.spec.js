@@ -11,7 +11,7 @@ jest.mock('../../ModelDefinitions', () => ({
     },
 }));
 
-describe.skip('getJSONForProperties', () => {
+describe('getJSONForProperties', () => {
     describe('for validationRule', () => {
         let validationRuleSchema;
         let validationRuleModelDefinition;
