@@ -16,7 +16,7 @@ describe('CurrentUser.userSettings', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => UserSettings()).toThrowErrorMatchingSnapshot(); // eslint-disable-line
+        expect(() => UserSettings()).toThrowErrorMatchingSnapshot();
     });
 
     it('should set an instance of MockApi onto the UserSettings instance', () => {

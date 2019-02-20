@@ -45,7 +45,7 @@ describe('Api', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Api(fetchMock)).toThrowErrorMatchingSnapshot(); // eslint-disable-line
+        expect(() => Api(fetchMock)).toThrowErrorMatchingSnapshot();
     });
 
     describe('when fetch is not supported', () => {

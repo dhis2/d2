@@ -15,7 +15,7 @@ describe('AnalyticsRequest', () => {
 
     describe('constructor', () => {
         it('should not be allowed to be called without new', () => {
-            expect(() => AnalyticsRequest()).toThrowErrorMatchingSnapshot(); // eslint-disable-line new-cap
+            expect(() => AnalyticsRequest()).toThrowErrorMatchingSnapshot();
         });
 
         it('should initialize properties', () => {

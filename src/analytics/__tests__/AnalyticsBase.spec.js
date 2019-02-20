@@ -11,7 +11,7 @@ describe('constructor', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => AnalyticsBase()).toThrowErrorMatchingSnapshot(); // eslint-disable-line new-cap
+        expect(() => AnalyticsBase()).toThrowErrorMatchingSnapshot();
     });
 
     it('should add the mockApi onto the AnalyticsBase instance', () => {

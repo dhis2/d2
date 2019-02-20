@@ -86,7 +86,7 @@ describe('System.configuration', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => SystemConfiguration()).toThrowErrorMatchingSnapshot(); // eslint-disable-line new-cap
+        expect(() => SystemConfiguration()).toThrowErrorMatchingSnapshot();
     });
 
     it('should add the mockApi onto the SystemConfiguration instance', () => {

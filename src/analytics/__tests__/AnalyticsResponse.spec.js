@@ -12,7 +12,7 @@ describe('AnalyticsResponse', () => {
 
     describe('constructor', () => {
         it('should not be allowed to be called without new', () => {
-            expect(() => AnalyticsResponse()).toThrowErrorMatchingSnapshot(); // eslint-disable-line new-cap
+            expect(() => AnalyticsResponse()).toThrowErrorMatchingSnapshot();
         });
 
         it('should set the response when passed as argument', () => {
