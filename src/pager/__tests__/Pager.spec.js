@@ -165,35 +165,41 @@ describe('Pager', () => {
                 expect(pager.getPreviousPage).toBeInstanceOf(Function);
             });
 
-            it('should return a promise', () => {
-                expect(pager.getPreviousPage()).toBeInstanceOf(Promise);
-            });
-
             it('should ask for the previous page if the prevPage property is set', () => {
                 pager.page = 2;
                 pager.prevPage = 'http://url.to.the.next.page';
 
-                pager.getPreviousPage();
+                expect.assertions(1);
 
-                expect(modelDefinition.list).toBeCalled();
+                return pager.getPreviousPage()
+                    .then(() => {
+                        expect(modelDefinition.list).toBeCalled();
+                    });
             });
 
             it('should not ask for a new list if there is no previous page', () => {
                 expect(modelDefinition.list).not.toHaveBeenCalled();
             });
 
-            it('should return a rejected promise if there are no more previous pages', () => pager.getPreviousPage()
-                .catch((message) => {
-                    expect(message).toBe('There is no previous page for this collection');
-                }));
+            it('should return a rejected promise if there are no more previous pages', () => {
+                expect.assertions(1);
+
+                return pager.getPreviousPage()
+                    .catch((message) => {
+                        expect(message).toBe('There is no previous page for this collection');
+                    });
+            });
 
             it('should call the list method with the current page number - 1', () => {
                 pager.page = 3;
                 pager.prevPage = 'http://url.to.the.next.page';
 
-                pager.getPreviousPage();
+                expect.assertions(1);
 
-                expect(modelDefinition.list).toBeCalledWith({ page: 2 });
+                return pager.getPreviousPage()
+                    .then(() => {
+                        expect(modelDefinition.list).toBeCalledWith({ page: 2 });
+                    });
             });
         });
 
