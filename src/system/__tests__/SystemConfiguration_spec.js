@@ -219,7 +219,7 @@ describe('System.configuration', () => {
                 expect.assertions(1);
 
                 return configuration.get('someRandomOptionThatDoesntExist').catch((err) => {
-                    expect(err.message).toMatchSnapshot();
+                    expect(err).toMatchSnapshot();
                 });
             });
         });
@@ -230,7 +230,7 @@ describe('System.configuration', () => {
 
                 return configuration.set('systemId', 'my-random-system-id')
                     .catch((err) => {
-                        expect(err.message).toMatchSnapshot();
+                        expect(err).toMatchSnapshot();
                     });
             });
 
