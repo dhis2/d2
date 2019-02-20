@@ -72,12 +72,6 @@ describe('ModelValidations', () => {
             expect(modelValidation.validateAgainstSchema).toBeInstanceOf(Function);
         });
 
-        it('should return a promise', () => {
-            mockApi.post.mockReturnValueOnce(Promise.resolve({}));
-
-            expect(modelValidation.validateAgainstSchema(modelMock)).toBeInstanceOf(Promise);
-        });
-
         it('should return a rejected promise if the model.modelDefinition.name is not present', () => {
             modelValidation.validateAgainstSchema()
                 .catch((message) => {
