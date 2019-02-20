@@ -4,8 +4,7 @@ import {
     getLastDateOfMonth,
     getFirstDateOfQuarter,
     getLastDateOfQuarter,
-    getFirstDateOfWeek,
-    addDays,
+    computeWeekBasedPeriod,
 } from './helpers';
 import { toLocaleDayFormat } from './formatters';
 
@@ -16,6 +15,7 @@ const periodTypeRegex = {
     WeeklyThursday: /^([0-9]{4})(Thu)W([0-9]{1,2})$/,   // YYYY"ThuW"[1-53]
     WeeklySaturday: /^([0-9]{4})(Sat)W([0-9]{1,2})$/,   // YYYY"SatW"[1-53]
     WeeklySunday: /^([0-9]{4})(Sun)W([0-9]{1,2})$/,     // YYYY"SunW"[1-53]
+    BiWeekly: /^([0-9]{4})BiW([0-9]{1,2})$/,            // YYYY"BiW"[1-27]
     Monthly: /^([0-9]{4})([0-9]{2})$/,                  // YYYYMM
     BiMonthly: /^([0-9]{4})([0-9]{2})B$/,               // YYYY0[1-6]"B"
     Quarterly: /^([0-9]{4})Q([1234])$/,                 // YYYY"Q"[1-4]
@@ -29,14 +29,13 @@ const periodTypeRegex = {
 
 /* eslint-disable complexity */
 const weeklyMatcherParser = (match, locale = 'en') => {
-    let year = parseInt(match[1], 10);
+    const year = parseInt(match[1], 10);
     const weekType = match[2];
-    let week = parseInt(match[3], 10);
+    const week = parseInt(match[3], 10);
+
     if (week < 1 || week > 53) {
         throw new Error('Invalid week number');
     }
-
-    const monthNames = getMonthNamesForLocale(locale);
 
     let weekTypeDiff = 0;
     switch (weekType) {
@@ -47,32 +46,17 @@ const weeklyMatcherParser = (match, locale = 'en') => {
     default: break;
     }
 
-    const startDate = addDays(weekTypeDiff, getFirstDateOfWeek(year, week));
-    const startMonth = startDate.getMonth();
-    const startYear = startDate.getFullYear();
-    const startMonthName = monthNames[startMonth];
-    const startDayNum = startDate.getDate();
+    const p = computeWeekBasedPeriod({ year, week, locale, weekTypeDiff });
 
-    if (week === 53 && startYear !== year) {
-        week = 1;
-        year = startYear;
-    }
-    const id = `${year}${weekType}W${week}`;
-
-    const endDate = addDays(6, startDate);
-    const endMonth = endDate.getMonth();
-    const endDayNum = endDate.getDate();
-    const endMonthName = monthNames[endMonth];
-
-    const name = startMonth === endMonth
-        ? `${year} W${week} ${startMonthName} ${startDayNum} - ${endDayNum}`
-        : `${year} W${week} ${startMonthName} ${startDayNum} - ${endMonthName} ${endDayNum}`;
+    const name = p.startMonthName === p.endMonthName
+        ? `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${p.endDayNum}`
+        : `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${p.endMonthName} ${p.endDayNum}`;
 
     return {
-        id,
+        id: `${p.year}${weekType}W${p.week}`,
         name,
-        startDate: formatAsISODate(startDate),
-        endDate: formatAsISODate(endDate),
+        startDate: p.startDate,
+        endDate: p.endDate,
     };
 };
 
@@ -103,6 +87,29 @@ const regexMatchToPeriod = {
     WeeklyThursday: weeklyMatcherParser,
     WeeklySaturday: weeklyMatcherParser,
     WeeklySunday: weeklyMatcherParser,
+    BiWeekly: (match, locale = 'en') => {
+        const year = parseInt(match[1], 10);
+        let biWeek = parseInt(match[2], 10);
+
+        if (biWeek < 1 || biWeek > 27) {
+            throw new Error('Invalid BiWeek number');
+        }
+
+        const week = (biWeek * 2) - 1;
+        const p = computeWeekBasedPeriod({ year, week, locale, periodLength: 13 });
+        biWeek = (p.week + 1) / 2;
+
+        const name = p.startMonthName === p.endMonthName
+            ? `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${p.startDayNum} - ${p.endDayNum}`
+            : `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${p.startDayNum} - ${p.endMonthName} ${p.endDayNum}`;
+
+        return {
+            id: `${p.year}BiW${biWeek}`,
+            name,
+            startDate: p.startDate,
+            endDate: p.endDate,
+        };
+    },
     Monthly: (match, locale = 'en') => {
         const id = match[0];
         const year = parseInt(match[1], 10);
