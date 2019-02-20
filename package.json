@@ -12,8 +12,7 @@
     "prebuild": "npm run lint && npm run test",
     "build": "rm -rf build/ && babel src --out-dir build --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
     "lint": "./node_modules/eslint/bin/eslint.js src",
-    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix",
-    "validate": "npm ls"
+    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix"
   },
   "repository": {
     "type": "git",
