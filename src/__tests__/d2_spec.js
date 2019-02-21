@@ -8,7 +8,7 @@ jest.mock('../logger/Logger');
 jest.mock('../api/Api');
 jest.mock('../i18n/I18n');
 
-describe.skip('D2', () => {
+describe('D2', () => {
     const ModelDefinition = function ModelDefinition() {
         this.name = 'dataElement';
     };
@@ -92,7 +92,7 @@ describe.skip('D2', () => {
 
         // Import after we have set all the mock values
         // TODO: should probably use jest.mock and use a regular ES6 import
-        d2 = require('../d2').default; // eslint-disable-line global-require
+        d2 = require('../d2'); // eslint-disable-line global-require
     });
 
     afterEach(() => {
