@@ -615,7 +615,9 @@ describe('Api', () => {
                 cache: 'default',
                 credentials: 'include',
                 headers: {
-                    map: { 'x-requested-with': 'XMLHttpRequest' },
+                    _headers: {
+                        'x-requested-with': ['XMLHttpRequest'],
+                    },
                 },
                 method: 'DELETE',
                 mode: 'cors',
@@ -660,9 +662,9 @@ describe('Api', () => {
                 cache: 'default',
                 credentials: 'include',
                 headers: {
-                    map: {
-                        'content-type': 'application/json',
-                        'x-requested-with': 'XMLHttpRequest',
+                    _headers: {
+                        'content-type': ['application/json'],
+                        'x-requested-with': ['XMLHttpRequest'],
                     },
                 },
                 method: 'PUT',
@@ -688,9 +690,9 @@ describe('Api', () => {
                 cache: 'default',
                 credentials: 'include',
                 headers: {
-                    map: {
-                        'content-type': 'application/json',
-                        'x-requested-with': 'XMLHttpRequest',
+                    _headers: {
+                        'content-type': ['application/json'],
+                        'x-requested-with': ['XMLHttpRequest'],
                     },
                 },
                 method: 'PUT',
