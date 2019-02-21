@@ -45,7 +45,7 @@
     "codeclimate-test-reporter": "^0.4.1",
     "docdash": "^1.0.3",
     "eslint-config-dhis2": "^3.0.2",
-    "form-data": "^2.1.2",
+    "form-data": "^2.3.3",
     "jest": "^24.1.0",
     "jsdoc": "^3.5.5",
     "lodash": "^4.17.11",

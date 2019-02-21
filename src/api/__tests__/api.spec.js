@@ -1,4 +1,4 @@
-import nodeFormData from 'form-data';
+import FormData from 'form-data';
 import System from '../../system/System';
 import fixtures from '../../__fixtures__/fixtures';
 import Api from '../Api';
@@ -572,9 +572,6 @@ describe('Api', () => {
         });
 
         it('should set remove the Content-Type header for form data', () => {
-            // Set the global FormData
-            global.FormData = nodeFormData;
-
             const data = new FormData();
             data.append('field_1', 'value_1');
             data.append('field_2', 'value_2');
@@ -585,9 +582,6 @@ describe('Api', () => {
                 .then(() => {
                     expect(fetchMock.mock.calls[0][1].headers.constructor.name).toBe('Headers');
                     expect(fetchMock.mock.calls[0][1].headers.get('Content-Type')).toBeNull();
-
-                    // Unset the global FormData
-                    global.FormData = undefined;
                 });
         });
     });
