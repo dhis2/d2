@@ -14,7 +14,8 @@
     "prebuild": "npm run lint && npm run test",
     "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
     "test-watch": "npm run test -- --watch",
-    "test": "TZ=UTC jest"
+    "test": "TZ=UTC jest",
+    "validate": "npm ls"
   },
   "repository": {
     "type": "git",
@@ -48,7 +49,6 @@
     "form-data": "^2.1.2",
     "jest": "^24.1.0",
     "jsdoc": "^3.5.5",
-    "karma-cli": "^1.0.1",
     "lodash": "^4.17.11",
     "precommit-hook": "3.0.0",
     "rimraf": "^2.6.3",
