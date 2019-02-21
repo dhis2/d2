@@ -4,15 +4,17 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "babel": "babel src --out-dir build --source-maps --ignore __tests__,__fixtures__,__mocks__",
+    "build": "npm run clean && npm run babel && webpack && webpack --config webpack.config.min.js",
+    "clean": "rimraf build",
     "coverage": "npm test -- --coverage",
-    "test": "TZ=UTC jest",
-    "test-watch": "npm run test -- --watch",
-    "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
+    "documentation": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "lint-fix": "eslint src --fix",
+    "lint": "eslint src",
     "prebuild": "npm run lint && npm run test",
-    "build": "rm -rf build/ && babel src --out-dir build --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "lint": "./node_modules/eslint/bin/eslint.js src",
-    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix"
+    "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
+    "test-watch": "npm run test -- --watch",
+    "test": "TZ=UTC jest"
   },
   "repository": {
     "type": "git",
@@ -51,6 +53,7 @@
     "lodash": "^4.17.4",
     "node-fetch": "^1.5.3",
     "precommit-hook": "3.0.0",
+    "rimraf": "^2.6.3",
     "webpack": "^2.5.1",
     "wrapper-webpack-plugin": "^0.1.7"
   },
