@@ -1,4 +1,4 @@
-const config = require('./webpack.dev.config');
+const config = require('./webpack.config.dev');
 
 /**
  * Since both dev and prod bundles are built together, the filename needs to be different for prod.
