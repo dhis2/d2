@@ -160,10 +160,10 @@ export function getFirstDateOfWeek(year, week) {
  * @param {Number} obj.year - Year
  * @param {Number} obj.week - Week number between 1-53
  * @param {String} [obj.locale=en] - The current locale
- * @param {Number} [obj.weekTypeDiff=0] - The difference between the starting day of the week 
+ * @param {Number} [obj.weekTypeDiff=0] - The difference between the starting day of the week
  * in a given periodType and the first day of the week. This option is being used for different
  * flavors of weekly period types, such as WeeklyWednesday, WeeklyThursday, etc.
- * @param {Number} [obj.periodLength=6] - The amount of days until the end date: 6 for weekly 
+ * @param {Number} [obj.periodLength=6] - The amount of days until the end date: 6 for weekly
  * and 13 for Bikweekly
  * @returns {Object} - An object containing various properties that can be used to contruct
  * the final parsed period
