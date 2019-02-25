@@ -8,8 +8,7 @@ function extractValidationViolations(webmessage) {
         return webmessage.response.errorReports;
     }
 
-    const error = new Error('Response was not a WebMessage with the expected format');
-    return Promise.reject(error);
+    throw new Error('Response was not a WebMessage with the expected format');
 }
 
 /**
