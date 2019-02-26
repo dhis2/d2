@@ -1,7 +1,6 @@
 # d2
 
 [![Build Status](https://travis-ci.org/dhis2/d2.svg?branch=v25)](https://travis-ci.org/dhis2/d2)
-[![Test Coverage](https://codeclimate.com/github/dhis2/d2/badges/coverage.svg)](https://codeclimate.com/github/dhis2/d2/coverage)
 [![npm version](https://badge.fury.io/js/d2.svg)](https://badge.fury.io/js/d2)
 
 ----
