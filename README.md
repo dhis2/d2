@@ -1,6 +1,6 @@
 # d2
 
-[![Build Status](https://travis-ci.org/dhis2/d2.svg?branch=v25)](https://travis-ci.org/dhis2/d2)
+[![Build Status](https://travis-ci.com/dhis2/d2.svg)](https://travis-ci.com/dhis2/d2)
 [![npm version](https://badge.fury.io/js/d2.svg)](https://badge.fury.io/js/d2)
 
 ----
