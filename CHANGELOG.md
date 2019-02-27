@@ -1,5 +1,12 @@
 # D2 Changelog
 
+## Upcoming verion
+###### _unreleased_
+
+**Breaking changes:**
+
+- Changed from babel `es2015` and `stage-2` presets to `babel-preset-env`, so for certain browsers support might have changed. Though currently the support is aligned with our supported browsers.
+
 ## 30.1.0
 ###### _February 15th 2019_
 
