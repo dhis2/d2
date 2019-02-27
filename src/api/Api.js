@@ -2,7 +2,7 @@
  * @module api
  */
 /* global window fetch Headers */
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
 import { checkType } from '../lib/check';
 import { customEncodeURIComponent } from '../lib/utils';
 import System from '../system/System';
