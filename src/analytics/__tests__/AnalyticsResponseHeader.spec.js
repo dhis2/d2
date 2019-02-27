@@ -17,7 +17,7 @@ describe('AnalyticsResponseHeader', () => {
         };
 
         it('should not be allowed to be called without new', () => {
-            expect(() => AnalyticsResponseHeader()).toThrowError('Cannot call a class as a function'); // eslint-disable-line new-cap
+            expect(() => AnalyticsResponseHeader()).toThrowErrorMatchingSnapshot();
         });
 
         it('should initialize properties', () => {

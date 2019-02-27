@@ -15,7 +15,7 @@ const pickAttributeValues = pickOr('attributeValues', []);
  *
  * @memberof module:model
  */
-class Model {
+class Model extends ModelBase {
     /**
      * @constructor
      *
@@ -29,6 +29,7 @@ class Model {
      * The model properties will depend on the ModelDefinition. A model definition is based on a DHIS2 Schema.
      */
     constructor(modelDefinition) {
+        super();
         checkType(modelDefinition, 'object', 'modelDefinition');
         checkType(modelDefinition.modelProperties, 'object', 'modelProperties');
 
@@ -113,8 +114,5 @@ class Model {
         return new Model(modelDefinition);
     }
 }
-
-// Set the prototype of the Model class, this way we're able to extend from an single object
-Model.prototype = ModelBase;
 
 export default Model;

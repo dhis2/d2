@@ -33,7 +33,7 @@ describe('ModelValidations', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelValidation()).toThrowError('Cannot call a class as a function');
+        expect(() => ModelValidation()).toThrowErrorMatchingSnapshot();
     });
 
     describe('getModelValidation', () => {
@@ -70,12 +70,6 @@ describe('ModelValidations', () => {
 
         it('should be a function', () => {
             expect(modelValidation.validateAgainstSchema).toBeInstanceOf(Function);
-        });
-
-        it('should return a promise', () => {
-            mockApi.post.mockReturnValueOnce(Promise.resolve({}));
-
-            expect(modelValidation.validateAgainstSchema(modelMock)).toBeInstanceOf(Promise);
         });
 
         it('should return a rejected promise if the model.modelDefinition.name is not present', () => {
@@ -180,7 +174,7 @@ describe('ModelValidations', () => {
                 });
         });
 
-        it('should return an empty array when the validation passed', (done) => {
+        it('should return an empty array when the validation passed', () => {
             mockApi.post.mockReturnValueOnce(Promise.resolve({
                 httpStatus: 'OK',
                 httpStatusCode: 200,
@@ -190,12 +184,12 @@ describe('ModelValidations', () => {
                 },
             }));
 
-            modelValidation.validateAgainstSchema(modelMock)
+            expect.assertions(1);
+
+            return modelValidation.validateAgainstSchema(modelMock)
                 .then((validationMessages) => {
                     expect(validationMessages).toEqual([]);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
         it('should throw an error when the server does not return the correct WebMessage format', () => {

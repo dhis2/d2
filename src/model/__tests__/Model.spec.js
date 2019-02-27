@@ -12,7 +12,7 @@ describe('Model', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Model()).toThrowError('Cannot call a class as a function');
+        expect(() => Model()).toThrowErrorMatchingSnapshot();
     });
 
     it('should throw when modelDefinition is not defined', () => {
@@ -71,7 +71,7 @@ describe('Model', () => {
         expect(keys).not.toContain('modelDefinition');
     });
 
-    it('should not allow the modelDefinition to be changed', () => {
+    it.skip('should not allow the modelDefinition to be changed', () => {
         const modelDefinition = { modelProperties: [] };
         const dataElementModel = Model.create(modelDefinition);
 
@@ -144,7 +144,7 @@ describe('Model', () => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement');
             const dataElementModelDefinition = ModelDefinition.createFromSchema(dataElementSchema);
 
-            dataElementModel = Model.create(dataElementModelDefinition);
+            dataElementModel = new Model(dataElementModelDefinition);
         });
 
         it('should be a method', () => {

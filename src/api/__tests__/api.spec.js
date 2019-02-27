@@ -45,7 +45,7 @@ describe('Api', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Api(fetchMock)).toThrowError('Cannot call a class as a function'); // eslint-disable-line
+        expect(() => Api(fetchMock)).toThrowErrorMatchingSnapshot();
     });
 
     describe('when fetch is not supported', () => {
@@ -127,35 +127,35 @@ describe('Api', () => {
     });
 
     describe('request()', () => {
-        it('should handle responses in plain text format', (done) => {
+        it('should handle responses in plain text format', () => {
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: true,
                 text: () => Promise.resolve('this is not valid json'),
             }));
 
-            api.get('text')
+            expect.assertions(1);
+
+            return api.get('text')
                 .then((result) => {
                     expect(result).toBe('this is not valid json');
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should handle responses in JSON format', (done) => {
+        it('should handle responses in JSON format', () => {
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: true,
                 text: () => Promise.resolve('"this is a JSON string"'),
             }));
 
-            api.get('json')
+            expect.assertions(1);
+
+            return api.get('json')
                 .then((result) => {
                     expect(result).toBe('this is a JSON string');
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should handle complex JSON objects', (done) => {
+        it('should handle complex JSON objects', () => {
             const data = {
                 id: '12345',
                 name: 'bla bla',
@@ -170,28 +170,27 @@ describe('Api', () => {
                 text: () => Promise.resolve(JSON.stringify(data)),
             }));
 
-            api.get('json')
+            expect.assertions(1);
+
+            return api.get('json')
                 .then((result) => {
                     expect(result).toEqual(data);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should report network errors', (done) => {
+        it('should report network errors', () => {
             fetchMock.mockReturnValueOnce(Promise.reject(new TypeError('Failed to fetch-o')));
 
-            api.get('http://not.a.real.server/hi')
-                .then(done)
+            expect.assertions(2);
+
+            return api.get('http://not.a.real.server/hi')
                 .catch((err) => {
                     expect(typeof err).toBe('string');
                     expect(err).toContain('failed');
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should report 404 errors', (done) => {
+        it('should report 404 errors', () => {
             const errorText = [
                 '{',
                 '"httpStatus":"Not Found",',
@@ -206,17 +205,16 @@ describe('Api', () => {
                 text: () => Promise.resolve(errorText),
             }));
 
-            api.get('dataElements/404')
-                .then(() => { done(new Error('The request succeeded')); })
+            expect.assertions(2);
+
+            return api.get('dataElements/404')
                 .catch((err) => {
                     expect(typeof err).toBe('object');
                     expect(err).toEqual(JSON.parse(errorText));
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should handle 401', (done) => {
+        it('should handle 401', () => {
             const response = {
                 httpStatus: 'Unauthorized',
                 httpStatusCode: 401,
@@ -229,17 +227,16 @@ describe('Api', () => {
                 text: () => Promise.resolve(response),
             }));
 
-            api.get('dataElements/401')
-                .then(() => { done(new Error('The request succeeded')); })
+            expect.assertions(2);
+
+            return api.get('dataElements/401')
                 .catch((err) => {
                     expect(typeof err).toBe('object');
                     expect(err).toEqual(response);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('401 should call unauthorizedCb if set', (done) => {
+        it('401 should call unauthorizedCb if set', () => {
             const cb = jest.fn();
             api.setUnauthorizedCallback(cb);
 
@@ -256,19 +253,18 @@ describe('Api', () => {
             });
             fetchMock.mockReturnValueOnce(req);
 
+            expect.assertions(2);
+
             api.get('dataElements/401')
-                .then(() => { done(new Error('The request succeeded')); })
                 .catch(() => {
                     expect(cb).toBeCalled();
                     expect(cb).toHaveBeenCalledWith(expect.objectContaining(
                         { method: 'GET', options: {}, url: '/api/dataElements/401' },
                     ), response);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should report 500 errors', (done) => {
+        it('should report 500 errors', () => {
             const errorText = [
                 '{',
                 '"httpStatus":"Internal Server Error",',
@@ -292,18 +288,19 @@ describe('Api', () => {
                 text: () => Promise.resolve(errorText),
             }));
 
-            api.post('dataApprovalLevels', data)
-                .then(() => { done(new Error('The request succeeded')); })
+            expect.assertions(2);
+
+            return api.post('dataApprovalLevels', data)
                 .catch((err) => {
                     expect(typeof err).toBe('object');
                     expect(err).toEqual(JSON.parse(errorText));
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should properly encode URIs', (done) => {
-            api.get('some/endpoint?a=b&c=d|e[with:filter]', {
+        it('should properly encode URIs', () => {
+            expect.assertions(1);
+
+            return api.get('some/endpoint?a=b&c=d|e[with:filter]', {
                 f: 'g|h[i,j],k[l|m],n{o~p`q`$r@s!t}',
                 u: '-._~:/?#[]@!$&()*+,;===,~$!@*()_-=+/;:',
             })
@@ -317,64 +314,64 @@ describe('Api', () => {
                     ].join(''),
                     baseFetchOptions,
                     );
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should reject with an error when url contains encoded query string', (done) => {
+        it('should reject with an error when url contains encoded query string', () => {
             const message = 'Cannot process URL-encoded URLs, pass an unencoded URL';
 
-            api.get('test?one=%5Bwith%20a%20filter%5D')
-                .then(() => done(new Error('The request should error')))
+            expect.assertions(2);
+
+            return api.get('test?one=%5Bwith%20a%20filter%5D')
                 .catch((err) => {
                     expect(err).toBeInstanceOf(Error);
                     expect(err.message).toBe(message);
-                    done();
                 });
         });
 
-        it('should reject with an error when url is malformed', (done) => {
+        it('should reject with an error when url is malformed', () => {
             const message = 'Query parameters in URL are invalid';
 
-            api.get('test?%5')
-                .then(() => done(new Error('The request should error')))
+            expect.assertions(2);
+
+            return api.get('test?%5')
                 .catch((err) => {
                     expect(err).toBeInstanceOf(Error);
                     expect(err.message).toBe(message);
-                    done();
                 });
         });
 
-        it('should not break URIs when encoding', (done) => {
-            api.get('test?a=b=c&df,gh')
+        it('should not break URIs when encoding', () => {
+            expect.assertions(1);
+
+            return api.get('test?a=b=c&df,gh')
                 .then(() => {
                     expect(fetchMock).toHaveBeenCalledWith(
                         '/api/test?a=b=c&df,gh',
                         baseFetchOptions,
                     );
-                    done();
-                }).catch(done);
+                });
         });
 
-        it('should encode data as JSON', (done) => {
+        it('should encode data as JSON', () => {
             const data = { name: 'Name', code: 'Code_01' };
-            api.post('jsonData', data)
+            expect.assertions(1);
+
+            return api.post('jsonData', data)
                 .then(() => {
                     expect(fetchMock.mock.calls[0][1].body).toBe(JSON.stringify(data));
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should not encode text/plain data as JSON', (done) => {
+        it('should not encode text/plain data as JSON', () => {
             const data = 'my data';
-            api.post('textData', data, { headers: { 'Content-Type': 'text/plain' } })
+
+            expect.assertions(1);
+
+            return api.post('textData', data, { headers: { 'Content-Type': 'text/plain' } })
                 .then(() => {
                     expect(fetchMock.mock.calls[0][1].body).toBe(data);
-                    done();
-                })
-                .catch(done);
+                });
         });
     });
 
@@ -432,16 +429,18 @@ describe('Api', () => {
             expect(fetchMock).toBeCalledWith('/api/dataElements?fields=id%2Cname', baseFetchOptions);
         });
 
-        it('should call the failure handler when the server can\'t be reached', (done) => {
+        it('should call the failure handler when the server can\'t be reached', () => {
             fetchMock.mockReturnValueOnce(Promise.reject());
 
-            api.get('/api/dataElements', { fields: 'id,name' })
-                .then(() => { throw new Error('Request did not fail'); })
-                .catch(() => done())
-                .catch(done);
+            expect.assertions(1);
+
+            return api.get('/api/dataElements', { fields: 'id,name' })
+                .catch((errMessage) => {
+                    expect(errMessage).toMatchSnapshot();
+                });
         });
 
-        it('should call the failure handler with the message if a webmessage was returned', (done) => {
+        it('should call the failure handler with the message if a webmessage was returned', () => {
             const errorJson = {
                 httpStatus: 'Not Found',
                 httpStatusCode: 404,
@@ -453,22 +452,24 @@ describe('Api', () => {
                 text: () => Promise.resolve(JSON.stringify(errorJson)),
             }));
 
-            api.get('/api/dataElements/sdfsf', { fields: 'id,name' })
-                .then(() => { done('The request did not fail'); })
-                .catch((err) => { expect(err).toEqual(errorJson); done(); });
+            expect.assertions(1);
+
+            return api.get('/api/dataElements/sdfsf', { fields: 'id,name' })
+                .catch((err) => { expect(err).toEqual(errorJson); });
         });
 
-        it('should call the success resolve handler', (done) => {
+        it('should call the success resolve handler', () => {
             fetchMock.mockReturnValueOnce(Promise.resolve({
                 ok: true,
                 text: () => Promise.resolve('"Success!"'),
             }));
 
-            api.get('/api/dataElements', { fields: 'id,name' })
+            expect.assertions(1);
+
+            return api.get('/api/dataElements', { fields: 'id,name' })
                 .then((res) => {
                     expect(res).toBe('Success!');
-                    done();
-                }, done);
+                });
         });
 
         it('should allow the options to be overridden', () => {
@@ -570,7 +571,7 @@ describe('Api', () => {
             );
         });
 
-        it('should set remove the Content-Type header for form data', (done) => {
+        it('should set remove the Content-Type header for form data', () => {
             // Set the global FormData
             global.FormData = nodeFormData;
 
@@ -578,24 +579,16 @@ describe('Api', () => {
             data.append('field_1', 'value_1');
             data.append('field_2', 'value_2');
 
-            api.post('form/data', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+            expect.assertions(2);
+
+            return api.post('form/data', data, { headers: { 'Content-Type': 'multipart/form-data' } })
                 .then(() => {
                     expect(fetchMock.mock.calls[0][1].headers.constructor.name).toBe('Headers');
                     expect(fetchMock.mock.calls[0][1].headers.get('Content-Type')).toBeNull();
 
                     // Unset the global FormData
                     global.FormData = undefined;
-                    done();
-                })
-                .catch(done);
-        });
-
-        it('should not try to determine the type of data if no data is provided', (done) => {
-            api.post('no/data')
-                .then(() => {
-                    done();
-                })
-                .catch(done);
+                });
         });
     });
 

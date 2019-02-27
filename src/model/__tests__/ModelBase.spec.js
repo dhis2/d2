@@ -1,5 +1,5 @@
 import ModelValidation from '../ModelValidation';
-import modelBase, { DIRTY_PROPERTY_LIST } from '../ModelBase';
+import ModelBase, { DIRTY_PROPERTY_LIST } from '../ModelBase';
 
 jest.mock('../ModelValidation');
 
@@ -13,14 +13,17 @@ describe('ModelBase', () => {
     });
 
     it('should have a save method', () => {
+        const modelBase = new ModelBase();
         expect(typeof modelBase.save).toBe('function');
     });
 
     it('should have a validate method', () => {
+        const modelBase = new ModelBase();
         expect(typeof modelBase.validate).toBe('function');
     });
 
     it('should have a clone method', () => {
+        const modelBase = new ModelBase();
         expect(typeof modelBase.clone).toBe('function');
     });
 
@@ -32,15 +35,15 @@ describe('ModelBase', () => {
         beforeEach(() => {
             validateFunction = jest.fn();
 
-
             modelDefinition = {
                 apiEndpoint: '/dataElements',
                 save: jest.fn().mockReturnValue(Promise.resolve()),
                 saveNew: jest.fn().mockReturnValue(Promise.resolve()),
             };
 
-            class Model {
+            class Model extends ModelBase {
                 constructor(modelDef) {
+                    super();
                     this.modelDefinition = modelDef;
                     this.validate = validateFunction;
                     this.dirty = true;
@@ -49,8 +52,8 @@ describe('ModelBase', () => {
                 }
             }
 
-            Model.prototype = modelBase;
             model = new Model(modelDefinition);
+
             Object.defineProperty(model, 'id', {
                 get() {
                     return this.dataValues.id;
@@ -122,44 +125,43 @@ describe('ModelBase', () => {
                 expect(modelDefinition.save).not.toBeCalled();
             });
 
-            it('should reset dirty to false after save', (done) => {
-                model.save()
+            it('should reset dirty to false after save', () => {
+                expect.assertions(1);
+
+                return model.save()
                     .then(() => {
                         expect(model.dirty).toBe(false);
-                        done();
-                    }).catch((err) => {
-                        done(err);
                     });
             });
 
-            it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', (done) => {
-                model.save()
+            it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', () => {
+                expect.assertions(1);
+
+                return model.save()
                     .then(() => {
                         expect(model[DIRTY_PROPERTY_LIST].size).toBe(0);
-                        done();
-                    }).catch((err) => {
-                        done(err);
                     });
             });
 
-            it('should return a promise that resolves to an empty object when the model is not dirty', (done) => {
+            it('should return a promise that resolves to an empty object when the model is not dirty', () => {
                 model.dirty = false;
 
-                model.save()
+                expect.assertions(1);
+
+                return model.save()
                     .then((result) => {
                         expect(result).toEqual({});
-                        done();
-                    })
-                    .catch(done);
+                    });
             });
 
-            it('should return rejected promise when the model is not valid', (done) => {
+            it('should return rejected promise when the model is not valid', () => {
                 model.validate.mockReturnValue(Promise.resolve({ status: false }));
 
-                model.save()
+                expect.assertions(1);
+
+                return model.save()
                     .catch((message) => {
                         expect(message).toEqual({ status: false });
-                        done();
                     });
             });
 
@@ -227,8 +229,9 @@ describe('ModelBase', () => {
                 },
             };
 
-            class Model {
+            class Model extends ModelBase {
                 constructor(validations) {
+                    super();
                     this.modelDefinition = {};
                     this.modelDefinition.modelValidations = validations;
                     this.dataValues = {
@@ -237,71 +240,74 @@ describe('ModelBase', () => {
                 }
             }
 
-            Model.prototype = modelBase;
             model = new Model(modelValidations);
 
             validateAgainstSchemaSpy.mockReturnValue(Promise.resolve([]));
         });
 
-        it('should fail when the async validate fails', (done) => {
-            validateAgainstSchemaSpy.mockReturnValue(Promise.reject('Validation against schema endpoint failed.'));
+        it('should fail when the async validate fails', () => {
+            const message = 'Validation against schema endpoint failed.';
+            validateAgainstSchemaSpy.mockReturnValue(Promise.reject(message));
 
-            model.validate()
-                .catch((message) => {
-                    expect(message).toBe('Validation against schema endpoint failed.');
-                    done();
+            expect.assertions(1);
+
+            return model.validate()
+                .catch((errMessage) => {
+                    expect(errMessage).toBe(message);
                 });
         });
 
-        it('should call the validateAgainstSchema method on the modelValidator', (done) => {
-            model.validate()
+        it('should call the validateAgainstSchema method on the modelValidator', () => {
+            expect.assertions(1);
+
+            return model.validate()
                 .then(() => {
                     expect(validateAgainstSchemaSpy).toBeCalled();
-                    done();
                 });
         });
 
-        it('should call validateAgainstSchema with the model', (done) => {
-            model.validate()
+        it('should call validateAgainstSchema with the model', () => {
+            expect.assertions(1);
+
+            return model.validate()
                 .then(() => {
                     expect(validateAgainstSchemaSpy).toBeCalledWith(model);
-                    done();
                 });
         });
 
-        it('should return false when there are the asyncValidation against the schema failed', (done) => {
+        it('should return false when there are the asyncValidation against the schema failed', () => {
             validateAgainstSchemaSpy
                 .mockReturnValue(Promise.resolve([
                     { message: 'Required property missing.', property: 'name' },
                 ]));
 
-            model.validate()
+            expect.assertions(1);
+
+            return model.validate()
                 .then((validationState) => {
                     expect(validationState.status).toBe(false);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        it('should return false when there are the asyncValidation against the schema failed', (done) => {
+        it('should return false when there are the asyncValidation against the schema failed', () => {
             validateAgainstSchemaSpy.mockReturnValue(Promise.resolve([]));
 
-            model.validate()
+            expect.assertions(1);
+
+            return model.validate()
                 .then((validationState) => {
                     expect(validationState.status).toBe(true);
-                    done();
-                })
-                .catch(done);
+                });
         });
     });
-
 
     describe('clone', () => {
         let modelDefinition;
         let model;
 
-        class Model {
+        class Model extends ModelBase {
             constructor(modelDef) {
+                super();
                 this.modelDefinition = modelDef;
                 this.validate = jest.fn().mockReturnValue(Promise.resolve({ status: true }));
                 this.dirty = false;
@@ -356,7 +362,6 @@ describe('ModelBase', () => {
                 },
             };
 
-            Model.prototype = modelBase;
             model = Model.create(modelDefinition);
         });
 
@@ -450,8 +455,9 @@ describe('ModelBase', () => {
                 delete: jest.fn().mockReturnValue(new Promise((resolve) => { resolve(); })),
             };
 
-            class Model {
+            class Model extends ModelBase {
                 constructor(modelDef) {
+                    super();
                     this.modelDefinition = modelDef;
                     this.validate = jest.fn().mockReturnValue(Promise.resolve({ status: true }));
                     this.dirty = true;
@@ -459,7 +465,6 @@ describe('ModelBase', () => {
                 }
             }
 
-            Model.prototype = modelBase;
             model = new Model(modelDefinition);
         });
 
@@ -488,7 +493,7 @@ describe('ModelBase', () => {
         let model;
 
         beforeEach(() => {
-            model = Object.create(modelBase);
+            model = new ModelBase();
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -523,7 +528,7 @@ describe('ModelBase', () => {
         let model;
 
         beforeEach(() => {
-            model = Object.create(modelBase);
+            model = new ModelBase();
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -561,7 +566,7 @@ describe('ModelBase', () => {
         let model;
 
         beforeEach(() => {
-            model = Object.create(modelBase);
+            model = new ModelBase();
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -620,7 +625,7 @@ describe('ModelBase', () => {
         let model;
 
         beforeEach(() => {
-            model = Object.create(modelBase);
+            model = new ModelBase();
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -654,7 +659,7 @@ describe('ModelBase', () => {
         let model;
 
         beforeEach(() => {
-            model = Object.create(modelBase);
+            model = new ModelBase();
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -678,7 +683,7 @@ describe('ModelBase', () => {
         let model;
 
         beforeEach(() => {
-            model = Object.create(modelBase);
+            model = new ModelBase();
         });
 
         it('should be a function', () => {

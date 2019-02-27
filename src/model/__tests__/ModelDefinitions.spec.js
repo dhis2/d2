@@ -19,7 +19,7 @@ describe('D2 models', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinitions()).toThrowError('Cannot call a class as a function');
+        expect(() => ModelDefinitions()).toThrowErrorMatchingSnapshot();
     });
 
     describe('add method', () => {

@@ -24,7 +24,7 @@ describe('System', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => System()).toThrowError('Cannot call a class as a function');
+        expect(() => System()).toThrowErrorMatchingSnapshot();
     });
 
     it('should contain an instance of SystemConfiguration', () => {

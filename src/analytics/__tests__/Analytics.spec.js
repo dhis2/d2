@@ -15,7 +15,7 @@ describe('Analytics', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => Analytics()).toThrowError('Cannot call a class as a function');
+        expect(() => Analytics()).toThrowErrorMatchingSnapshot();
     });
 
     it('should contain an instance of AnalyticsAggregate', () => {
