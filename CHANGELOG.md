@@ -1,6 +1,6 @@
 # D2 Changelog
 
-## Upcoming verion
+## Upcoming version
 ###### _unreleased_
 
 **Breaking changes:**
