@@ -4,8 +4,7 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "babel": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
-    "build": "npm run clean && npm run babel && npm run build:dev && npm run build:prod",
+    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod",
     "build:prod": "webpack --config webpack.config.prod.js --mode production",
     "build:dev": "webpack --config webpack.config.dev.js --mode development",
     "clean": "rimraf build",
@@ -17,6 +16,7 @@
     "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
     "test-watch": "npm run test -- --watch",
     "test": "TZ=UTC jest",
+    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
     "validate": "npm ls"
   },
   "repository": {
