@@ -4,15 +4,20 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "babel": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
+    "build": "npm run clean && npm run babel && npm run build:dev && npm run build:prod",
+    "build:prod": "webpack --config webpack.config.prod.js --mode production",
+    "build:dev": "webpack --config webpack.config.dev.js --mode development",
+    "clean": "rimraf build",
     "coverage": "npm test -- --coverage",
-    "test": "TZ=UTC jest",
-    "test-watch": "npm run test -- --watch",
-    "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
+    "documentation": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "lint-fix": "eslint src --fix",
+    "lint": "eslint src",
     "prebuild": "npm run lint && npm run test",
-    "build": "rm -rf build/ && babel src --out-dir build --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "lint": "./node_modules/eslint/bin/eslint.js src",
-    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix"
+    "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
+    "test-watch": "npm run test -- --watch",
+    "test": "TZ=UTC jest",
+    "validate": "npm ls"
   },
   "repository": {
     "type": "git",
@@ -30,7 +35,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
-    "whatwg-fetch": "^2.0.3"
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -39,21 +44,19 @@
     "@babel/preset-env": "^7.3.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
-    "canonical-path": "0.0.2",
     "codeclimate-test-reporter": "^0.4.1",
-    "docdash": "^0.4.0",
+    "docdash": "^1.0.3",
+    "eslint": "^4.19.1",
     "eslint-config-dhis2": "^3.0.2",
-    "esprima": "^3.1.3",
-    "form-data": "^2.1.2",
-    "isomorphic-fetch": "^2.2.1",
+    "form-data": "^2.3.3",
     "jest": "^24.1.0",
     "jsdoc": "^3.5.5",
-    "karma-cli": "^1.0.1",
-    "lodash": "^4.17.4",
-    "node-fetch": "^1.5.3",
+    "lodash": "^4.17.11",
     "precommit-hook": "3.0.0",
-    "webpack": "^2.5.1",
-    "wrapper-webpack-plugin": "^0.1.7"
+    "rimraf": "^2.6.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3",
+    "wrapper-webpack-plugin": "^2.1.0"
   },
   "engines": {
     "npm": ">=3.5.1",

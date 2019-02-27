@@ -92,7 +92,7 @@ describe('D2', () => {
 
         // Import after we have set all the mock values
         // TODO: should probably use jest.mock and use a regular ES6 import
-        d2 = require('../d2').default; // eslint-disable-line global-require
+        d2 = require('../d2'); // eslint-disable-line global-require
     });
 
     afterEach(() => {

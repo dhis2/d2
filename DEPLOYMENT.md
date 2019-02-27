@@ -14,5 +14,3 @@ of the following branches:
     - Update the npm `patch` version
     - Run the build script specified in the `package.json`
     - Push the newly created tag to github
-
-
