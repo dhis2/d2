@@ -1,6 +1,6 @@
 # d2
 
-[![build status](https://travis-ci.com/dhis2/d2.svg)](https://travis-ci.com/dhis2/d2)
+[![build status](https://travis-ci.com/dhis2/d2.svg?branch=master)](https://travis-ci.com/dhis2/d2)
 [![greenkeeper badge](https://badges.greenkeeper.io/dhis2/d2.svg)](https://greenkeeper.io/)
 [![npm version](https://badge.fury.io/js/d2.svg)](https://badge.fury.io/js/d2)
 
