@@ -1,7 +1,7 @@
 # d2
 
 [![Build Status](https://travis-ci.com/dhis2/d2.svg)](https://travis-ci.com/dhis2/d2)
-[![npm version](https://badge.fury.io/js/d2.svg)](https://badge.fury.io/js/d2)
+[![npm version](https://badge.fury.io/js/d2.svg)](https://badge.fury.io/js/d2) [![Greenkeeper badge](https://badges.greenkeeper.io/dhis2/d2.svg)](https://greenkeeper.io/)
 
 ----
 
