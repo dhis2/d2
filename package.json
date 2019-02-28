@@ -34,6 +34,11 @@
     "url": "https://github.com/dhis2/d2/issues"
   },
   "homepage": "https://github.com/dhis2/d2",
+  "greenkeeper": {
+    "ignore": [
+      "eslint"
+    ]
+  },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1"
   },
@@ -45,7 +50,7 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "docdash": "^1.0.3",
-    "eslint": "^5.14.1",
+    "eslint": "^4.6.1",
     "eslint-config-dhis2": "^3.0.2",
     "form-data": "^2.3.3",
     "jest": "^24.1.0",
