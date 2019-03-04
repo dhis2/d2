@@ -1,11 +1,15 @@
 # D2 Changelog
 
-## Upcoming version
-###### _unreleased_
+## 31.5.0
+###### _February 28th 2019_
 
 **Breaking changes:**
 
 - Changed from babel `es2015` and `stage-2` presets to `babel-preset-env`, so for certain browsers support might have changed. Though currently the support is aligned with our supported browsers.
+
+**Bugfix:**
+
+- Fixed usage of isomorphic-fetch, to allow for usage of d2 in node and the browser.
 
 ## 30.1.0
 ###### _February 15th 2019_
