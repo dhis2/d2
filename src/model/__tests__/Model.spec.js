@@ -71,17 +71,6 @@ describe('Model', () => {
         expect(keys).not.toContain('modelDefinition');
     });
 
-    it.skip('should not allow the modelDefinition to be changed', () => {
-        const modelDefinition = { modelProperties: [] };
-        const dataElementModel = Model.create(modelDefinition);
-
-        function shouldThrow() {
-            dataElementModel.modelDefinition = {};
-        }
-
-        expect(shouldThrow).toThrowError();
-    });
-
     describe('properties based off model definition', () => {
         let modelDefinition;
 
