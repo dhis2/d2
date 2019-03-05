@@ -403,11 +403,3 @@ export function setInstance(d2) {
  *   @type Config
  */
 export const config = preInitConfig; // Alias preInitConfig to be able to `import {config} from 'd2';`
-
-export default {
-    init,
-    config,
-    getInstance,
-    getUserSettings,
-    getManifest,
-};

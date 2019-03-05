@@ -27,8 +27,6 @@ import d2 from 'd2';
 var d2 = require('d2');
 ```
 
-If you want to use `d2` as just a global variable on the window object you can include one of the following scripts in your page `d2/d2-browser.js` or `d2/d2-browser.min.js`.
-
 ### Initialise the library
 To be able to use d2 you will first need to initialise the library. This is required to let the library know where it should load its data from (e.g. the schemas, currentUser, authorities). The schemas are the definitions of the data model as used in DHIS2.
 
