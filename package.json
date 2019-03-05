@@ -13,7 +13,6 @@
     "lint:fix": "eslint src --fix",
     "lint": "eslint src",
     "prebuild": "npm run lint && npm run test",
-    "test:e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
     "test:watch": "npm run test -- --watch",
     "test": "TZ=UTC jest",
     "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
