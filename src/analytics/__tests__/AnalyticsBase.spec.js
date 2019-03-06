@@ -49,6 +49,6 @@ describe('constructor', () => {
     });
 
     afterAll(() => {
-        base.api.get.resetMock();
+        base.api.get.mockReset();
     });
 });
