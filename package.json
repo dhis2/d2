@@ -4,19 +4,21 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod",
-    "build:prod": "webpack --config webpack.config.prod.js --mode production",
     "build:dev": "webpack --config webpack.config.dev.js --mode development",
+    "build:prod": "webpack --config webpack.config.prod.js --mode production",
+    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod",
     "clean": "rimraf build",
+    "commit:check": "d2-style commit check",
     "coverage": "npm test -- --coverage",
     "documentation": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "js:check": "d2-style js check --all",
+    "js:format": "d2-style js apply",
     "lint:fix": "eslint src --fix",
     "lint": "eslint src",
     "prebuild": "npm run lint && npm run test",
     "test:watch": "npm run test -- --watch",
     "test": "TZ=UTC jest",
-    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
-    "validate": "npm ls"
+    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
   },
   "repository": {
     "type": "git",
@@ -41,8 +43,8 @@
   },
   "husky": {
     "hooks": {
-        "commit-msg": "d2-style commit check",
-        "pre-commit": "d2-style js apply"
+        "commit-msg": "npm run commit:check",
+        "pre-commit": "npm run js:format"
     }
   },
   "dependencies": {
