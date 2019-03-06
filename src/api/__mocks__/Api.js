@@ -1,4 +1,4 @@
-let apiMock;
+let apiMock
 
 function mockInit() {
     apiMock = {
@@ -8,26 +8,24 @@ function mockInit() {
         delete: jest.fn(),
         request: jest.fn(),
         setDefaultHeaders: jest.fn(),
-    };
+    }
 }
 
 function values(object) {
-    return Object
-        .keys(object)
-        .map(key => object[key]);
+    return Object.keys(object).map(key => object[key])
 }
 
 function mockClear() {
     values(apiMock)
         .filter(property => typeof property === 'function')
-        .forEach(spyFn => spyFn.mockClear());
+        .forEach(spyFn => spyFn.mockClear())
 }
 
 export default function Api() {
-    return apiMock;
+    return apiMock
 }
-Api.getApi = jest.fn(() => new Api());
-Api.mockReset = mockInit;
-Api.mockClear = mockClear;
+Api.getApi = jest.fn(() => new Api())
+Api.mockReset = mockInit
+Api.mockClear = mockClear
 
-mockInit();
+mockInit()

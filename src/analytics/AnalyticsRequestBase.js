@@ -1,5 +1,5 @@
-import sortBy from 'lodash/sortBy';
-import { customEncodeURIComponent } from '../lib/utils';
+import sortBy from 'lodash/sortBy'
+import { customEncodeURIComponent } from '../lib/utils'
 
 /**
  * @private
@@ -23,14 +23,14 @@ class AnalyticsRequestBase {
         filters = [],
         parameters = {},
     } = {}) {
-        this.endPoint = endPoint;
-        this.format = format.toLowerCase();
-        this.path = path;
-        this.program = program;
+        this.endPoint = endPoint
+        this.format = format.toLowerCase()
+        this.path = path
+        this.program = program
 
-        this.dimensions = dimensions;
-        this.filters = filters;
-        this.parameters = { ...parameters };
+        this.dimensions = dimensions
+        this.filters = filters
+        this.parameters = { ...parameters }
     }
 
     /**
@@ -46,30 +46,32 @@ class AnalyticsRequestBase {
      */
     buildUrl(options) {
         // at least 1 dimension is required
-        let dimensions = this.dimensions;
+        let { dimensions } = this
 
         if (options && options.sorted) {
-            dimensions = sortBy(dimensions, 'dimension');
+            dimensions = sortBy(dimensions, 'dimension')
         }
 
         const encodedDimensions = dimensions.map(({ dimension, items }) => {
             if (Array.isArray(items) && items.length) {
-                const encodedItems = items.map(customEncodeURIComponent);
+                const encodedItems = items.map(customEncodeURIComponent)
                 if (options && options.sorted) {
-                    encodedItems.sort();
+                    encodedItems.sort()
                 }
 
-                return `${dimension}:${encodedItems.join(';')}`;
+                return `${dimension}:${encodedItems.join(';')}`
             }
 
-            return dimension;
-        });
+            return dimension
+        })
 
-        const endPoint = [this.endPoint, this.path, this.program].filter(e => !!e).join('/');
+        const endPoint = [this.endPoint, this.path, this.program]
+            .filter(e => !!e)
+            .join('/')
 
-        return (
-            `${endPoint}.${this.format}?dimension=${encodedDimensions.join('&dimension=')}`
-        );
+        return `${endPoint}.${this.format}?dimension=${encodedDimensions.join(
+            '&dimension='
+        )}`
     }
 
     /**
@@ -86,31 +88,31 @@ class AnalyticsRequestBase {
      * @returns {Object} Query parameters
      */
     buildQuery(options) {
-        let filters = this.filters;
+        let { filters } = this
 
         if (options && options.sorted) {
-            filters = sortBy(filters, 'dimension');
+            filters = sortBy(filters, 'dimension')
         }
 
         const encodedFilters = filters.map(({ dimension, items }) => {
             if (Array.isArray(items) && items.length) {
-                const encodedItems = items.map(customEncodeURIComponent);
+                const encodedItems = items.map(customEncodeURIComponent)
                 if (options && options.sorted) {
-                    encodedItems.sort();
+                    encodedItems.sort()
                 }
 
-                return `${dimension}:${encodedItems.join(';')}`;
+                return `${dimension}:${encodedItems.join(';')}`
             }
 
-            return dimension;
-        });
+            return dimension
+        })
 
         if (filters.length) {
-            this.parameters.filter = encodedFilters;
+            this.parameters.filter = encodedFilters
         }
 
-        return this.parameters;
+        return this.parameters
     }
 }
 
-export default AnalyticsRequestBase;
+export default AnalyticsRequestBase

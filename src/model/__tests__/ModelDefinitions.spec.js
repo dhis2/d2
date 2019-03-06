@@ -1,83 +1,88 @@
-import ModelDefinitions from '../ModelDefinitions';
+import ModelDefinitions from '../ModelDefinitions'
 
 describe('D2 models', () => {
-    let models;
+    let models
 
     class ModelDefinition {
         constructor(name, plural) {
-            this.name = name;
-            this.plural = plural;
+            this.name = name
+            this.plural = plural
         }
     }
 
     beforeEach(() => {
-        models = new ModelDefinitions();
-    });
+        models = new ModelDefinitions()
+    })
 
     it('should be an object', () => {
-        expect(models).toBeInstanceOf(Object);
-    });
+        expect(models).toBeInstanceOf(Object)
+    })
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinitions()).toThrowErrorMatchingSnapshot();
-    });
+        expect(() => ModelDefinitions()).toThrowErrorMatchingSnapshot()
+    })
 
     describe('add method', () => {
-        let dataElementModelDefinition;
+        let dataElementModelDefinition
 
         beforeEach(() => {
-            dataElementModelDefinition = new ModelDefinition('dataElement');
-        });
+            dataElementModelDefinition = new ModelDefinition('dataElement')
+        })
 
         it('should be a function', () => {
-            expect(models.add).toBeInstanceOf(Function);
-        });
+            expect(models.add).toBeInstanceOf(Function)
+        })
 
         it('should add a property to the models object', () => {
-            models.add(dataElementModelDefinition);
+            models.add(dataElementModelDefinition)
 
-            expect(models.dataElement).toBeInstanceOf(ModelDefinition);
-        });
+            expect(models.dataElement).toBeInstanceOf(ModelDefinition)
+        })
 
         it('should throw an error when trying to add something that already exists', () => {
             function shouldThrow() {
-                models.add(dataElementModelDefinition);
+                models.add(dataElementModelDefinition)
             }
-            models.add(dataElementModelDefinition);
+            models.add(dataElementModelDefinition)
 
-            expect(shouldThrow).toThrowError('Model dataElement already exists');
-        });
+            expect(shouldThrow).toThrowError('Model dataElement already exists')
+        })
 
         it('should reject a ModelDefinition that does not have a name property', () => {
             function shouldThrow() {
-                models.add({ apiEndPoint: '/dataElement' });
+                models.add({ apiEndPoint: '/dataElement' })
             }
-            models.add(dataElementModelDefinition);
+            models.add(dataElementModelDefinition)
 
-            expect(shouldThrow).toThrowError('Name should be set on the passed ModelDefinition to add one');
-        });
+            expect(shouldThrow).toThrowError(
+                'Name should be set on the passed ModelDefinition to add one'
+            )
+        })
 
         it('should add the plural version to the object', () => {
-            const indicatorDefinition = new ModelDefinition('indicator', 'indicators');
+            const indicatorDefinition = new ModelDefinition(
+                'indicator',
+                'indicators'
+            )
 
-            models.add(indicatorDefinition);
+            models.add(indicatorDefinition)
 
-            expect(models.indicator).toBeInstanceOf(ModelDefinition);
-            expect(models.indicator).toBe(models.indicators);
-        });
-    });
+            expect(models.indicator).toBeInstanceOf(ModelDefinition)
+            expect(models.indicator).toBe(models.indicators)
+        })
+    })
 
     describe('mapThroughDefinitions method', () => {
         beforeEach(() => {
-            models.add({ name: 'dataElement' });
-            models.add({ name: 'dataValue' });
-            models.add({ name: 'user' });
-            models.add({ name: 'userGroup' });
-        });
+            models.add({ name: 'dataElement' })
+            models.add({ name: 'dataValue' })
+            models.add({ name: 'user' })
+            models.add({ name: 'userGroup' })
+        })
 
         it('should should be a function', () => {
-            expect(models.mapThroughDefinitions).toBeInstanceOf(Function);
-        });
+            expect(models.mapThroughDefinitions).toBeInstanceOf(Function)
+        })
 
         it('should return an array of ModelDefinitions', () => {
             const expectedArray = [
@@ -85,27 +90,33 @@ describe('D2 models', () => {
                 { name: 'dataValue' },
                 { name: 'user' },
                 { name: 'userGroup' },
-            ];
+            ]
             function returnValue(item) {
-                return item;
+                return item
             }
 
-            expect(models.mapThroughDefinitions(returnValue)).toEqual(expectedArray);
-        });
+            expect(models.mapThroughDefinitions(returnValue)).toEqual(
+                expectedArray
+            )
+        })
 
         it('should throw if the transformer passed is not a function', () => {
-            expect(() => models.mapThroughDefinitions('')).toThrowError('Expected transformer to have type function');
-            expect(() => models.mapThroughDefinitions({})).toThrowError('Expected transformer to have type function');
-        });
+            expect(() => models.mapThroughDefinitions('')).toThrowError(
+                'Expected transformer to have type function'
+            )
+            expect(() => models.mapThroughDefinitions({})).toThrowError(
+                'Expected transformer to have type function'
+            )
+        })
 
         it('should not map through properties that are the plural versions', () => {
-            const iterator = jest.fn();
+            const iterator = jest.fn()
 
-            models.add({ name: 'indicator', plural: 'indicators' });
+            models.add({ name: 'indicator', plural: 'indicators' })
 
-            models.mapThroughDefinitions(iterator);
+            models.mapThroughDefinitions(iterator)
 
-            expect(iterator).toHaveBeenCalledTimes(5);
-        });
-    });
-});
+            expect(iterator).toHaveBeenCalledTimes(5)
+        })
+    })
+})

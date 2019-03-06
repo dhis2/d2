@@ -1,7 +1,7 @@
-import AnalyticsRequestDimensionsMixin from './AnalyticsRequestDimensionsMixin';
-import AnalyticsRequestFiltersMixin from './AnalyticsRequestFiltersMixin';
-import AnalyticsRequestPropertiesMixin from './AnalyticsRequestPropertiesMixin';
-import AnalyticsRequestBase from './AnalyticsRequestBase';
+import AnalyticsRequestDimensionsMixin from './AnalyticsRequestDimensionsMixin'
+import AnalyticsRequestFiltersMixin from './AnalyticsRequestFiltersMixin'
+import AnalyticsRequestPropertiesMixin from './AnalyticsRequestPropertiesMixin'
+import AnalyticsRequestBase from './AnalyticsRequestBase'
 
 /**
  * @description
@@ -17,7 +17,9 @@ import AnalyticsRequestBase from './AnalyticsRequestBase';
  * @extends module:analytics.AnalyticsRequestBase
  */
 class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
-    AnalyticsRequestFiltersMixin(AnalyticsRequestPropertiesMixin(AnalyticsRequestBase)),
+    AnalyticsRequestFiltersMixin(
+        AnalyticsRequestPropertiesMixin(AnalyticsRequestBase)
+    )
 ) {
     /**
      * Extracts dimensions and filters from an analytic object model and add them to the request
@@ -39,33 +41,39 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
      * // dimension=pe:LAST_12_MONTH&dimension=dx:fbfJHSPpUQD;cYeuwXTCPkU;Jtf34kNZhzP;hfdmMSPBgLG&dimension=ou:ImspTQPwCqd
      */
     fromModel(model, passFilterAsDimension = false) {
-        let request = this;
+        let request = this
 
         // extract dimensions from model
-        const columns = model.columns || [];
-        const rows = model.rows || [];
+        const columns = model.columns || []
+        const rows = model.rows || []
 
-        columns.concat(rows).forEach((d) => {
-            let dimension = d.dimension;
+        columns.concat(rows).forEach(d => {
+            let { dimension } = d
 
             if (d.filter) {
-                dimension += `:${d.filter}`;
+                dimension += `:${d.filter}`
             }
 
-            request = request.addDimension(dimension, d.items.map(item => item.id));
-        });
+            request = request.addDimension(
+                dimension,
+                d.items.map(item => item.id)
+            )
+        })
 
         // extract filters from model
-        const filters = model.filters || [];
+        const filters = model.filters || []
 
-        filters.forEach((f) => {
+        filters.forEach(f => {
             request = passFilterAsDimension
-                ? request.addDimension(f.dimension, f.items.map(item => item.id))
-                : request.addFilter(f.dimension, f.items.map(item => item.id));
-        });
+                ? request.addDimension(
+                      f.dimension,
+                      f.items.map(item => item.id)
+                  )
+                : request.addFilter(f.dimension, f.items.map(item => item.id))
+        })
 
-        return request;
+        return request
     }
 }
 
-export default AnalyticsRequest;
+export default AnalyticsRequest

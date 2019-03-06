@@ -1,12 +1,12 @@
-import AnalyticsResponseHeader from './AnalyticsResponseHeader';
+import AnalyticsResponseHeader from './AnalyticsResponseHeader'
 
 const booleanMap = {
     0: 'No', // XXX i18n.no || 'No',
     1: 'Yes', // i18n.yes || 'Yes',
-};
+}
 
-const OUNAME = 'ouname';
-const OU = 'ou';
+const OUNAME = 'ouname'
+const OU = 'ou'
 
 const DEFAULT_COLLECT_IGNORE_HEADERS = [
     'psi',
@@ -18,62 +18,65 @@ const DEFAULT_COLLECT_IGNORE_HEADERS = [
     'oucode',
     'eventdate',
     'eventdate',
-];
+]
 
-const DEFAULT_PREFIX_IGNORE_HEADERS = ['dy', ...DEFAULT_COLLECT_IGNORE_HEADERS];
+const DEFAULT_PREFIX_IGNORE_HEADERS = ['dy', ...DEFAULT_COLLECT_IGNORE_HEADERS]
 
-const getParseMiddleware = (type) => {
+const getParseMiddleware = type => {
     switch (type) {
-    case 'STRING':
-    case 'TEXT':
-        return value => `${value}`;
-    case 'INTEGER':
-    case 'NUMBER':
-        return value => (!Number.isNaN(+value) && Number.isFinite(+value) ? parseFloat(+value) : value);
-    default:
-        return value => value;
+        case 'STRING':
+        case 'TEXT':
+            return value => `${value}`
+        case 'INTEGER':
+        case 'NUMBER':
+            return value =>
+                !Number.isNaN(+value) && Number.isFinite(+value)
+                    ? parseFloat(+value)
+                    : value
+        default:
+            return value => value
     }
-};
+}
 
 const isPrefixHeader = (header, dimensions) => {
     if (DEFAULT_PREFIX_IGNORE_HEADERS.includes(header.name)) {
-        return false;
+        return false
     }
 
-    return Boolean(Array.isArray(dimensions) && dimensions.length === 0);
-};
+    return Boolean(Array.isArray(dimensions) && dimensions.length === 0)
+}
 
 const isCollectHeader = (header, dimensions) => {
     if (DEFAULT_COLLECT_IGNORE_HEADERS.includes(header.name)) {
-        return false;
+        return false
     }
 
-    return Boolean(Array.isArray(dimensions) && dimensions.length === 0);
-};
+    return Boolean(Array.isArray(dimensions) && dimensions.length === 0)
+}
 
-const getPrefixedId = (id, prefix) => `${prefix || ''} ${id}`;
+const getPrefixedId = (id, prefix) => `${prefix || ''} ${id}`
 
 const getNameByIdsByValueType = (id, valueType) => {
     if (valueType === 'BOOLEAN') {
-        return booleanMap[id];
+        return booleanMap[id]
     }
 
-    return id;
-};
+    return id
+}
 
 class AnalyticsResponse {
     constructor(response) {
         if (response) {
-            this.response = response;
-            this.headers = this.extractHeaders();
-            this.rows = this.extractRows();
-            this.metaData = this.extractMetadata();
+            this.response = response
+            this.headers = this.extractHeaders()
+            this.rows = this.extractRows()
+            this.metaData = this.extractMetadata()
         }
     }
 
     extractHeaders() {
-        const dimensions = this.response.metaData.dimensions;
-        const headers = this.response.headers || [];
+        const { dimensions } = this.response.metaData
+        const headers = this.response.headers || []
 
         return headers.map(
             (header, index) =>
@@ -81,171 +84,183 @@ class AnalyticsResponse {
                     isPrefix: isPrefixHeader(header, dimensions[header.name]),
                     isCollect: isCollectHeader(header, dimensions[header.name]),
                     index,
-                }),
-        );
+                })
+        )
     }
 
     extractRows() {
-        const headersWithOptionSet = this.headers.filter(header => header.optionSet);
-        let rows = this.response.rows;
+        const headersWithOptionSet = this.headers.filter(
+            header => header.optionSet
+        )
+        let { rows } = this.response
 
         if (headersWithOptionSet.length) {
-            rows = rows.slice();
+            rows = rows.slice()
 
-            const optionCodeIdMap = this.optionCodeIdMap();
+            const optionCodeIdMap = this.optionCodeIdMap()
 
             // replace option code with option uid
-            headersWithOptionSet.forEach((header) => {
+            headersWithOptionSet.forEach(header => {
                 rows.forEach((row, index) => {
-                    const id = optionCodeIdMap[header.name][row[header.index]];
+                    const id = optionCodeIdMap[header.name][row[header.index]]
 
                     if (id) {
-                        rows[index][header.index] = id;
+                        rows[index][header.index] = id
                     }
-                });
-            });
+                })
+            })
         }
 
-        return rows;
+        return rows
     }
 
     extractMetadata() {
-        const metaData = { ...this.response.metaData };
+        const metaData = { ...this.response.metaData }
 
-        const { dimensions, items } = metaData;
+        const { dimensions, items } = metaData
 
         // populate metaData dimensions and items
         this.headers
-            .filter(header => !DEFAULT_COLLECT_IGNORE_HEADERS.includes(header.name))
-            .forEach((header) => {
-                let ids;
+            .filter(
+                header => !DEFAULT_COLLECT_IGNORE_HEADERS.includes(header.name)
+            )
+            .forEach(header => {
+                let ids
 
                 // collect row values
                 if (header.isCollect) {
-                    ids = this.getSortedUniqueRowIdStringsByHeader(header);
-                    dimensions[header.name] = ids;
+                    ids = this.getSortedUniqueRowIdStringsByHeader(header)
+                    dimensions[header.name] = ids
                 } else {
-                    ids = dimensions[header.name];
+                    ids = dimensions[header.name]
                 }
 
                 if (header.isPrefix) {
                     // create prefixed dimensions array
-                    dimensions[header.name] = ids.map(id => getPrefixedId(id, header.name));
+                    dimensions[header.name] = ids.map(id =>
+                        getPrefixedId(id, header.name)
+                    )
 
                     // create items
                     dimensions[header.name].forEach((prefixedId, index) => {
-                        const id = ids[index];
-                        const valueType = header.valueType;
+                        const id = ids[index]
+                        const { valueType } = header
 
-                        const name = getNameByIdsByValueType(id, valueType);
+                        const name = getNameByIdsByValueType(id, valueType)
 
-                        items[prefixedId] = { name };
-                    });
+                        items[prefixedId] = { name }
+                    })
                 }
-            });
+            })
 
         // for events, add items from 'ouname'
         if (this.hasHeader(OUNAME) && this.hasHeader(OU)) {
-            const ouNameHeaderIndex = this.getHeader(OUNAME).getIndex();
-            const ouHeaderIndex = this.getHeader(OU).getIndex();
-            let ouId;
-            let ouName;
+            const ouNameHeaderIndex = this.getHeader(OUNAME).getIndex()
+            const ouHeaderIndex = this.getHeader(OU).getIndex()
+            let ouId
+            let ouName
 
-            this.rows.forEach((row) => {
-                ouId = row[ouHeaderIndex];
+            this.rows.forEach(row => {
+                ouId = row[ouHeaderIndex]
 
                 if (items[ouId] === undefined) {
-                    ouName = row[ouNameHeaderIndex];
+                    ouName = row[ouNameHeaderIndex]
 
                     items[ouId] = {
                         name: ouName,
-                    };
+                    }
                 }
-            });
+            })
         }
 
-        return metaData;
+        return metaData
     }
 
     getHeader(name) {
-        return this.headers.find(header => header.name === name);
+        return this.headers.find(header => header.name === name)
     }
 
     hasHeader(name) {
-        return this.getHeader(name) !== undefined;
+        return this.getHeader(name) !== undefined
     }
 
     getSortedUniqueRowIdStringsByHeader(header) {
-        const parseByType = getParseMiddleware(header.valueType);
-        const parseString = getParseMiddleware('STRING');
+        const parseByType = getParseMiddleware(header.valueType)
+        const parseString = getParseMiddleware('STRING')
 
         const rowIds = Array.from(
             // unique values
-            new Set(this.rows.map(responseRow => parseByType(responseRow[header.index]))),
+            new Set(
+                this.rows.map(responseRow =>
+                    parseByType(responseRow[header.index])
+                )
+            )
             // remove empty values
-        ).filter(id => id !== '');
+        ).filter(id => id !== '')
 
-        return rowIds.sort().map(id => parseString(id));
+        return rowIds.sort().map(id => parseString(id))
     }
 
     optionCodeIdMap() {
-        const { dimensions, items } = this.response.metaData;
-        const map = {};
+        const { dimensions, items } = this.response.metaData
+        const map = {}
 
-        this.headers.filter(header => typeof header.optionSet === 'string').forEach((header) => {
-            const optionIds = dimensions[header.name];
+        this.headers
+            .filter(header => typeof header.optionSet === 'string')
+            .forEach(header => {
+                const optionIds = dimensions[header.name]
 
-            map[header.name] = optionIds
-                .map(id => ({
-                    [items[id].code]: id,
-                }))
-                .reduce((acc, obj) => Object.assign(acc, obj), {});
-        });
+                map[header.name] = optionIds
+                    .map(id => ({
+                        [items[id].code]: id,
+                    }))
+                    .reduce((acc, obj) => Object.assign(acc, obj), {})
+            })
 
-        return map;
+        return map
     }
 
     sortOrganisationUnitsHierarchy() {
-        const organisationUnits = this.metaData.dimensions.ou;
+        const organisationUnits = this.metaData.dimensions.ou
 
         organisationUnits.forEach((organisationUnit, i) => {
-            const hierarchyPrefix = this.metaData.ouHierarchy[organisationUnit];
-            const hierarchyIds = [organisationUnit];
-            const hierarchyNames = [];
+            const hierarchyPrefix = this.metaData.ouHierarchy[organisationUnit]
+            const hierarchyIds = [organisationUnit]
+            const hierarchyNames = []
 
             hierarchyPrefix
                 .split('/')
                 .reverse()
-                .forEach((ouId) => {
-                    hierarchyIds.unshift(ouId);
-                });
+                .forEach(ouId => {
+                    hierarchyIds.unshift(ouId)
+                })
 
-            hierarchyIds.forEach((ouId) => {
+            hierarchyIds.forEach(ouId => {
                 if (this.metaData.items[ouId]) {
-                    hierarchyNames.push(this.metaData.items[ouId].name);
+                    hierarchyNames.push(this.metaData.items[ouId].name)
                 }
-            });
+            })
 
             organisationUnits[i] = {
                 id: organisationUnit,
                 fullName: hierarchyNames.join(' / '),
-            };
-        });
+            }
+        })
 
         // XXX how does this work with different languages/collations?
         organisationUnits.sort((a, b) => {
-            const aFullName = a.fullName;
-            const bFullName = b.fullName;
+            const aFullName = a.fullName
+            const bFullName = b.fullName
 
             if (aFullName < bFullName) {
-                return -1;
+                return -1
             }
 
-            return aFullName > bFullName ? 1 : 0;
-        });
+            return aFullName > bFullName ? 1 : 0
+        })
 
-        this.metaData.dimensions.ou = organisationUnits.map(ou => ou.id);
+        this.metaData.dimensions.ou = organisationUnits.map(ou => ou.id)
     }
 }
 
-export default AnalyticsResponse;
+export default AnalyticsResponse

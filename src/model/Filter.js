@@ -1,4 +1,4 @@
-import { checkDefined } from '../lib/check';
+import { checkDefined } from '../lib/check'
 
 const FILTER_COMPARATORS = {
     /**
@@ -57,7 +57,7 @@ const FILTER_COMPARATORS = {
      * This method can be used to add a !token filter value
      */
     nToken: '!token',
-};
+}
 
 /**
  * Filter class that can be used to build api endpoint filters using a semi-natural language style.
@@ -71,10 +71,10 @@ class Filter {
      * so it can be added to the list of filters.
      */
     constructor(addFilterCallback) {
-        this.addFilterCallback = addFilterCallback;
-        this.propertyName = 'name';
-        this.comparator = 'like';
-        this.filterValue = undefined;
+        this.addFilterCallback = addFilterCallback
+        this.propertyName = 'name'
+        this.comparator = 'like'
+        this.filterValue = undefined
     }
 
     /**
@@ -82,10 +82,10 @@ class Filter {
      * @returns {Filter}
      */
     on(propertyName) {
-        checkDefined(propertyName, 'Property name to filter on');
+        checkDefined(propertyName, 'Property name to filter on')
 
-        this.propertyName = propertyName;
-        return this;
+        this.propertyName = propertyName
+        return this
     }
 
     /**
@@ -98,7 +98,7 @@ class Filter {
      * @returns {string} The query param value to be appended to `filter=`
      */
     getQueryParamFormat() {
-        return [this.propertyName, this.comparator, this.filterValue].join(':');
+        return [this.propertyName, this.comparator, this.filterValue].join(':')
     }
 
     /**
@@ -113,7 +113,7 @@ class Filter {
      * Create a filter instance
      */
     static getFilter(addFilterCallback) {
-        return new Filter(addFilterCallback);
+        return new Filter(addFilterCallback)
     }
 
     /**
@@ -122,26 +122,26 @@ class Filter {
      * @param {*} filterValue to filter on
      */
     operator(operator, filterValue) {
-        checkDefined(operator, 'operator');
-        checkDefined(filterValue, 'filterValue');
-        this.comparator = operator;
-        this.filterValue = filterValue;
-        return this.addFilterCallback(this);
+        checkDefined(operator, 'operator')
+        checkDefined(filterValue, 'filterValue')
+        this.comparator = operator
+        this.filterValue = filterValue
+        return this.addFilterCallback(this)
     }
 }
 
 // Add the filters to the Filter prototype
-Object.keys(FILTER_COMPARATORS).forEach((filter) => {
+Object.keys(FILTER_COMPARATORS).forEach(filter => {
     Object.defineProperty(Filter.prototype, filter, {
         value: function filterGetter(filterValue) {
-            checkDefined(filterValue, 'filterValue');
+            checkDefined(filterValue, 'filterValue')
 
-            this.comparator = FILTER_COMPARATORS[filter];
-            this.filterValue = filterValue;
+            this.comparator = FILTER_COMPARATORS[filter]
+            this.filterValue = filterValue
 
-            return this.addFilterCallback(this);
+            return this.addFilterCallback(this)
         },
-    });
-});
+    })
+})
 
-export default Filter;
+export default Filter

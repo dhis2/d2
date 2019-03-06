@@ -1,5 +1,5 @@
-import Api from '../api/Api';
-import ModelCollection from './ModelCollection';
+import Api from '../api/Api'
+import ModelCollection from './ModelCollection'
 
 /**
  * A ModelCollectionProperty instance is a ModelCollection that is a property of
@@ -27,29 +27,29 @@ class ModelCollectionProperty extends ModelCollection {
      * collection contains (or may contain) data that has not yet been loaded from the API.
      */
     constructor(parentModel, modelDefinition, propName, values, api) {
-        super(modelDefinition, values, undefined);
+        super(modelDefinition, values, undefined)
 
         // The name of this property on the parent object - necessary for loading values lazily
-        this.propName = propName;
+        this.propName = propName
 
         // Dirty bit - true if any models have been added to or removed from the collection
-        this.dirty = false;
+        this.dirty = false
 
         // Keep track of added and removed elements
-        this.added = new Set();
-        this.removed = new Set();
+        this.added = new Set()
+        this.removed = new Set()
 
         // Using field transformers, it's possible to query the API for the presence of data without actually fetching
         // the data. For instance this is used to determine if an organization unit has any children without actually
         // loading the children. If yes, it will be displayed as an expandable branch within the tree.
         // For more information, see the documentation about field transformers, specifically the isNotEmpty operator:
         // https://docs.dhis2.org/master/en/developer/html/dhis2_developer_manual_full.html#webapi_field_transformers
-        this.hasUnloadedData = (values === true) || (values === undefined);
+        this.hasUnloadedData = values === true || values === undefined
 
-        this.api = api;
+        this.api = api
 
         // Store the parent model of this collection so we can construct the URI for API calls
-        this.parentModel = parentModel;
+        this.parentModel = parentModel
     }
 
     /**
@@ -62,19 +62,19 @@ class ModelCollectionProperty extends ModelCollection {
      */
     add(value) {
         if (this.valuesContainerMap.has(value.id)) {
-            return this;
+            return this
         }
 
-        super.add(value);
+        super.add(value)
 
         if (this.removed.has(value.id)) {
-            this.removed.delete(value.id);
+            this.removed.delete(value.id)
         } else {
-            this.added.add(value.id);
+            this.added.add(value.id)
         }
 
-        this.updateDirty();
-        return this;
+        this.updateDirty()
+        return this
     }
 
     /**
@@ -86,19 +86,19 @@ class ModelCollectionProperty extends ModelCollection {
      * @returns {ModelCollectionProperty} Returns itself for chaining purposes.
      */
     remove(value) {
-        ModelCollection.throwIfContainsOtherThanModelObjects([value]);
-        ModelCollection.throwIfContainsModelWithoutUid([value]);
+        ModelCollection.throwIfContainsOtherThanModelObjects([value])
+        ModelCollection.throwIfContainsModelWithoutUid([value])
 
         if (this.delete(value.id)) {
             if (this.added.has(value.id)) {
-                this.added.delete(value.id);
+                this.added.delete(value.id)
             } else {
-                this.removed.add(value.id);
+                this.removed.add(value.id)
             }
         }
 
-        this.updateDirty();
-        return this;
+        this.updateDirty()
+        return this
     }
 
     /**
@@ -107,17 +107,17 @@ class ModelCollectionProperty extends ModelCollection {
      * @returns {boolean} True if the collection has changed, false otherwise.
      */
     updateDirty() {
-        this.dirty = this.added.size > 0 || this.removed.size > 0;
-        return this.dirty;
+        this.dirty = this.added.size > 0 || this.removed.size > 0
+        return this.dirty
     }
 
     /**
      * Sets dirty=false and resets the added and removed sets used for dirty state tracking.
      */
     resetDirtyState() {
-        this.dirty = false;
-        this.added = new Set();
-        this.removed = new Set();
+        this.dirty = false
+        this.added = new Set()
+        this.removed = new Set()
     }
 
     /**
@@ -128,10 +128,14 @@ class ModelCollectionProperty extends ModelCollection {
      */
     isDirty(includeValues = true) {
         if (includeValues) {
-            return this.dirty || this.toArray()
-                .filter(model => model && (model.isDirty() === true)).length > 0;
+            return (
+                this.dirty ||
+                this.toArray().filter(
+                    model => model && model.isDirty() === true
+                ).length > 0
+            )
         }
-        return this.dirty;
+        return this.dirty
     }
 
     /**
@@ -144,43 +148,62 @@ class ModelCollectionProperty extends ModelCollection {
     save() {
         // Calling save when there's nothing to be saved is a no-op (not an error)
         if (!this.isDirty()) {
-            return Promise.resolve({});
+            return Promise.resolve({})
         }
 
-        const url = [this.parentModel.href, this.modelDefinition.plural].join('/');
+        const url = [this.parentModel.href, this.modelDefinition.plural].join(
+            '/'
+        )
         const data = {
             additions: Array.from(this.added).map(id => ({ id })),
             deletions: Array.from(this.removed).map(id => ({ id })),
-        };
+        }
 
-        return this.api.post(url, data)
+        return this.api
+            .post(url, data)
             .then(() => {
-                this.resetDirtyState();
-                return Promise.resolve({});
+                this.resetDirtyState()
+                return Promise.resolve({})
             })
-            .catch(err => Promise.reject('Failed to alter collection:', err));
+            .catch(err => Promise.reject('Failed to alter collection:', err))
     }
 
     load(options, forceReload = false) {
         if (!this.hasUnloadedData && !forceReload) {
-            return Promise.resolve(this);
+            return Promise.resolve(this)
         }
 
-        const url = [this.parentModel.modelDefinition.apiEndpoint, this.parentModel.id].join('/');
-        const requestOptions = Object.assign({
-            paging: false,
-        }, options, { fields: `${this.propName}[${(options && options.fields) || ':all'}]` });
+        const url = [
+            this.parentModel.modelDefinition.apiEndpoint,
+            this.parentModel.id,
+        ].join('/')
+        const requestOptions = Object.assign(
+            {
+                paging: false,
+            },
+            options,
+            {
+                fields: `${this.propName}[${(options && options.fields) ||
+                    ':all'}]`,
+            }
+        )
 
-        return this.api.get(url, requestOptions)
+        return this.api
+            .get(url, requestOptions)
             .then(data => data[this.propName])
-            .then((values) => {
+            .then(values => {
                 if (Array.isArray(values)) {
-                    this.valuesContainerMap.clear();
-                    values.forEach(value => this.valuesContainerMap.set(value.id, this.modelDefinition.create(value)));
+                    this.valuesContainerMap.clear()
+                    values.forEach(value =>
+                        this.valuesContainerMap.set(
+                            value.id,
+                            this.modelDefinition.create(value)
+                        )
+                    )
                 }
-                this.hasUnloadedData = false;
-                return Promise.resolve(this);
-            });
+                this.hasUnloadedData = false
+                return Promise.resolve(this)
+            })
     }
 
     /**
@@ -192,9 +215,14 @@ class ModelCollectionProperty extends ModelCollection {
      * @returns {ModelCollectionProperty}
      */
     static create(parentModel, modelDefinition, propName, values) {
-        return new ModelCollectionProperty(parentModel, modelDefinition, propName, values, Api.getApi());
+        return new ModelCollectionProperty(
+            parentModel,
+            modelDefinition,
+            propName,
+            values,
+            Api.getApi()
+        )
     }
 }
 
-
-export default ModelCollectionProperty;
+export default ModelCollectionProperty
