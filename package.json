@@ -39,6 +39,12 @@
       "eslint-plugin-import"
     ]
   },
+  "husky": {
+    "hooks": {
+        "commit-msg": "d2-style commit check",
+        "pre-commit": "d2-style js apply"
+    }
+  },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1"
   },
@@ -47,6 +53,7 @@
     "@babel/core": "^7.3.3",
     "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
+    "@dhis2/cli-style": "^2.2.1",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "docdash": "^1.0.3",
@@ -55,11 +62,10 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-import": "^2.14.0",
     "form-data": "^2.3.3",
+    "husky": "^1.3.1",
     "jest": "^24.1.0",
     "jsdoc": "^3.5.5",
     "lodash": "^4.17.11",
-    "precommit-hook": "3.0.0",
-    "prettier": "^1.16.4",
     "rimraf": "^2.6.3",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
@@ -68,10 +74,6 @@
     "npm": ">=3.5.1",
     "node": ">=5.1.1"
   },
-  "pre-commit": [
-    "lint",
-    "test"
-  ],
   "nyc": {
     "sourceMap": false,
     "instrument": false

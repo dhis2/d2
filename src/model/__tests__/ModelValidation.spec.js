@@ -61,12 +61,10 @@ describe('ModelValidations', () => {
             modelMock = {
                 modelDefinition: {
                     name: 'dataElement',
-                    getOwnedPropertyJSON: jest
-                        .fn()
-                        .mockReturnValueOnce({
-                            id: 'R4dd3wwdwdw',
-                            name: 'ANC',
-                        }),
+                    getOwnedPropertyJSON: jest.fn().mockReturnValueOnce({
+                        id: 'R4dd3wwdwdw',
+                        name: 'ANC',
+                    }),
                     getOwnedPropertyNames: jest
                         .fn()
                         .mockReturnValueOnce(['id', 'name']),
