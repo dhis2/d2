@@ -1,23 +1,25 @@
 language: node_js
 node_js:
-- 10
+    - 10
 before_script:
-- npm install --global @dhis2/deploy-build
+    - npm install --global @dhis2/deploy-build
 script:
-- npm run coverage
-- npm run build
-- npm run documentation
+    - npm run commit:check
+    - npm run js:check
+    - npm run coverage
+    - npm run build
+    - npm run documentation
 deploy:
-- provider: script
-  script: deploy-build
-  skip_cleanup: true
-  on:
-    all_branches: true
-- provider: script
-  script: publish-build
-  skip_cleanup: true
-  on:
-    tags: true
+    - provider: script
+      script: deploy-build
+      skip_cleanup: true
+      on:
+        all_branches: true
+    - provider: script
+      script: publish-build
+      skip_cleanup: true
+      on:
+        tags: true
 env:
   global:
   - secure: bBeOYAhlJat7w1enn4HH6JAtgFfZ/ciod2qlLsTtoGoid8OwbOM08hw8F/G4txIzNddZxQhBHytRbLb3n9pnVJOK8mfjsxiXaLTS9VNANm64q98NSrx4CYIf/98Efpiq7NnUAyz9jnyjMd/jZYvNM3U8mdYVbN706qLPQH58kKI=
