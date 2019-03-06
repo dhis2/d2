@@ -1,4 +1,4 @@
-import AnalyticsRequest from './AnalyticsRequest';
+import AnalyticsRequest from './AnalyticsRequest'
 
 /**
  * @private
@@ -8,14 +8,14 @@ import AnalyticsRequest from './AnalyticsRequest';
  * @param {*} base The base class to mix onto
  * @return {module:analytics.AnalyticsRequestDimensionsMixin} The mixin class
  */
+/**
+ * @private
+ * @description
+ * AnalyticsRequest dimensions mixin class
+ *
+ * @alias module:analytics.AnalyticsRequestDimensionsMixin
+ */
 const AnalyticsRequestDimensionsMixin = base =>
-    /**
-     * @private
-     * @description
-     * AnalyticsRequest dimensions mixin class
-     *
-     * @alias module:analytics.AnalyticsRequestDimensionsMixin
-     */
     class extends base {
         /**
          * Adds/updates the dx dimension to use in the request.
@@ -33,7 +33,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          *
          */
         addDataDimension(items) {
-            return this.addDimension('dx', items);
+            return this.addDimension('dx', items)
         }
 
         /**
@@ -51,7 +51,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=pe:201701;201702;LAST_4_QUARTERS
          */
         addPeriodDimension(items) {
-            return this.addDimension('pe', items);
+            return this.addDimension('pe', items)
         }
 
         /**
@@ -69,7 +69,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=ou:O6uvpzGd5pu;lc3eMKXaEfw;OU_GROUP-w0gFTTmsUcF
          */
         addOrgUnitDimension(items) {
-            return this.addDimension('ou', items);
+            return this.addDimension('ou', items)
         }
 
         /**
@@ -88,39 +88,42 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&dimension=qrur9Dvnyt5-Yf6UHoPkdS6
          */
         addDimension(dimension, items) {
-            let dimensionIndex = 0;
+            let dimensionIndex = 0
 
             const existingDimension = this.dimensions.find((item, index) => {
                 if (item.dimension === dimension) {
-                    dimensionIndex = index;
+                    dimensionIndex = index
 
-                    return item;
+                    return item
                 }
 
-                return false;
-            });
+                return false
+            })
 
-            let updatedItems = [];
-            let existingItems = [];
+            let updatedItems = []
+            let existingItems = []
 
             if (existingDimension) {
-                existingItems = existingDimension.items || [];
+                existingItems = existingDimension.items || []
             }
 
             if (typeof items === 'string') {
-                updatedItems = [...new Set([...existingItems, items])];
+                updatedItems = [...new Set([...existingItems, items])]
             } else if (Array.isArray(items)) {
-                updatedItems = [...new Set([...existingItems, ...items])];
+                updatedItems = [...new Set([...existingItems, ...items])]
             }
 
             if (existingDimension) {
-                this.dimensions.splice(dimensionIndex, 1, { dimension, items: updatedItems });
+                this.dimensions.splice(dimensionIndex, 1, {
+                    dimension,
+                    items: updatedItems,
+                })
             } else {
-                this.dimensions.push({ dimension, items: updatedItems });
+                this.dimensions.push({ dimension, items: updatedItems })
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
-    };
+    }
 
-export default AnalyticsRequestDimensionsMixin;
+export default AnalyticsRequestDimensionsMixin

@@ -74,7 +74,7 @@
  *
  * organisationUnitsOnLevel3WithParent
  *  .list({ paging: false }) // Loads all organisation units on level 3 with O6uvpzGd5pu as their parent
-*   .then(organisationUnitCollection => console.log(organisationUnitCollection));
+ *   .then(organisationUnitCollection => console.log(organisationUnitCollection));
  * ```
  *
  * As you might have noticed we passed `{ paging: false }` to the `.list` method. Any options passed to the list method
@@ -129,11 +129,11 @@
  * ## Model
  * TODO: :(
  */
-import ModelBase from './ModelBase';
-import Model from './Model';
-import ModelDefinition from './ModelDefinition';
-import ModelDefinitions from './ModelDefinitions';
-import ModelValidation from './ModelValidation';
+import ModelBase from './ModelBase'
+import Model from './Model'
+import ModelDefinition from './ModelDefinition'
+import ModelDefinitions from './ModelDefinitions'
+import ModelValidation from './ModelValidation'
 
 export default {
     ModelBase,
@@ -141,4 +141,4 @@ export default {
     ModelDefinition,
     ModelDefinitions,
     ModelValidation,
-};
+}

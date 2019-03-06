@@ -1,14 +1,18 @@
-import { generateSixMonthlyAprilPeriodsForYear } from '../six-monthly-april';
+import { generateSixMonthlyAprilPeriodsForYear } from '../six-monthly-april'
 
 describe('Six-monthly-april period', () => {
     describe('generateSixMonthlyAprilPeriodsForYear()', () => {
         it('should not allow years before the year zero', () => {
-            expect(() => generateSixMonthlyAprilPeriodsForYear(-10)).toThrowError();
-        });
+            expect(() =>
+                generateSixMonthlyAprilPeriodsForYear(-10)
+            ).toThrowError()
+        })
 
         it('should throw an error when passing a Date object', () => {
-            expect(() => generateSixMonthlyAprilPeriodsForYear(new Date())).toThrowError();
-        });
+            expect(() =>
+                generateSixMonthlyAprilPeriodsForYear(new Date())
+            ).toThrowError()
+        })
 
         it('should generate the correct six monthly april periods for 2017', () => {
             expect(generateSixMonthlyAprilPeriodsForYear(2017)).toEqual([
@@ -26,8 +30,8 @@ describe('Six-monthly-april period', () => {
                     iso: '2017AprilS2',
                     id: '2017AprilS2',
                 },
-            ]);
-        });
+            ])
+        })
 
         it('should generate the correct six monthly april periods for 2014', () => {
             expect(generateSixMonthlyAprilPeriodsForYear(2014)).toEqual([
@@ -45,11 +49,13 @@ describe('Six-monthly-april period', () => {
                     iso: '2014AprilS2',
                     id: '2014AprilS2',
                 },
-            ]);
-        });
+            ])
+        })
 
         it('should use the current year when no year has been given', () => {
-            expect(generateSixMonthlyAprilPeriodsForYear()).toEqual(generateSixMonthlyAprilPeriodsForYear(new Date().getFullYear()));
-        });
-    });
-});
+            expect(generateSixMonthlyAprilPeriodsForYear()).toEqual(
+                generateSixMonthlyAprilPeriodsForYear(new Date().getFullYear())
+            )
+        })
+    })
+})

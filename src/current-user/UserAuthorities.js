@@ -1,4 +1,4 @@
-const auths = Symbol('authorities');
+const auths = Symbol('authorities')
 
 /**
  * Simple wrapper class for the user authorities list
@@ -12,7 +12,7 @@ class UserAuthorities {
      * @param {string[]} authorities A set of the user's authorities.
      */
     constructor(authorities = []) {
-        this[auths] = new Set(authorities);
+        this[auths] = new Set(authorities)
     }
 
     /**
@@ -24,9 +24,9 @@ class UserAuthorities {
      */
     has(authority) {
         if (this[auths].has('ALL')) {
-            return true;
+            return true
         }
-        return this[auths].has(authority);
+        return this[auths].has(authority)
     }
 
     /**
@@ -35,8 +35,8 @@ class UserAuthorities {
      * @param {string[]} authorities A set of the user's authorities as recieved from the api.
      */
     static create(authorities) {
-        return new UserAuthorities(authorities);
+        return new UserAuthorities(authorities)
     }
 }
 
-export default UserAuthorities;
+export default UserAuthorities

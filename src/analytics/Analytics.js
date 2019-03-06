@@ -1,10 +1,10 @@
 /**
  * @module analytics
  */
-import AnalyticsAggregate from './AnalyticsAggregate';
-import AnalyticsEvents from './AnalyticsEvents';
-import AnalyticsRequest from './AnalyticsRequest';
-import AnalyticsResponse from './AnalyticsResponse';
+import AnalyticsAggregate from './AnalyticsAggregate'
+import AnalyticsEvents from './AnalyticsEvents'
+import AnalyticsRequest from './AnalyticsRequest'
+import AnalyticsResponse from './AnalyticsResponse'
 
 /**
  * @description
@@ -34,11 +34,16 @@ class Analytics {
      * @param {!module:analytics.AnalyticsRequest} analyticsRequest The AnalyticsRequest class
      * @param {!module:analytics.AnalyticsResponse} analyticsResponse The AnalyticsResponse class
      */
-    constructor(analyticsAggregate, analyticsEvents, analyticsRequest, analyticsResponse) {
-        this.aggregate = analyticsAggregate;
-        this.events = analyticsEvents;
-        this.request = analyticsRequest;
-        this.response = analyticsResponse;
+    constructor(
+        analyticsAggregate,
+        analyticsEvents,
+        analyticsRequest,
+        analyticsResponse
+    ) {
+        this.aggregate = analyticsAggregate
+        this.events = analyticsEvents
+        this.request = analyticsRequest
+        this.response = analyticsResponse
     }
 
     /**
@@ -59,12 +64,12 @@ class Analytics {
                 new AnalyticsAggregate(),
                 new AnalyticsEvents(),
                 AnalyticsRequest,
-                AnalyticsResponse,
-            );
+                AnalyticsResponse
+            )
         }
 
-        return Analytics.getAnalytics.analytics;
+        return Analytics.getAnalytics.analytics
     }
 }
 
-export default Analytics;
+export default Analytics

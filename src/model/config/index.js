@@ -1,14 +1,14 @@
-import organisationUnitGroupSetDefaults from './model-defaults/organisationUnitGroupSet';
-import categoryDefaults from './model-defaults/category';
-import categoryOptionGroupSetDefaults from './model-defaults/categoryOptionGroupSet';
-import dataElementDefaults from './model-defaults/dataElement';
-import dataElementGroupSetDefaults from './model-defaults/dataElementGroupSet';
-import dataSetDefaults from './model-defaults/dataSet';
-import externalMapLayer from './model-defaults/externalMapLayer';
-import validationNotificationTemplate from './model-defaults/validationNotificationTemplate';
-import validationRuleDefaults from './model-defaults/validationRule';
-import programDefaults from './model-defaults/program';
-import programNotificationTemplateDefaults from './model-defaults/programNotificationTemplate';
+import organisationUnitGroupSetDefaults from './model-defaults/organisationUnitGroupSet'
+import categoryDefaults from './model-defaults/category'
+import categoryOptionGroupSetDefaults from './model-defaults/categoryOptionGroupSet'
+import dataElementDefaults from './model-defaults/dataElement'
+import dataElementGroupSetDefaults from './model-defaults/dataElementGroupSet'
+import dataSetDefaults from './model-defaults/dataSet'
+import externalMapLayer from './model-defaults/externalMapLayer'
+import validationNotificationTemplate from './model-defaults/validationNotificationTemplate'
+import validationRuleDefaults from './model-defaults/validationRule'
+import programDefaults from './model-defaults/program'
+import programNotificationTemplateDefaults from './model-defaults/programNotificationTemplate'
 
 export const defaultValues = new Map([
     ['organisationUnitGroupSet', organisationUnitGroupSetDefaults],
@@ -22,13 +22,13 @@ export const defaultValues = new Map([
     ['validationRule', validationRuleDefaults],
     ['program', programDefaults],
     ['programNotificationTemplate', programNotificationTemplateDefaults],
-]);
+])
 
 export function getDefaultValuesForModelType(modelDefinitionName) {
     if (defaultValues.has(modelDefinitionName)) {
-        return defaultValues.get(modelDefinitionName);
+        return defaultValues.get(modelDefinitionName)
     }
-    return {};
+    return {}
 }
 
 const schemaFields = [
@@ -43,7 +43,7 @@ const schemaFields = [
     'klass',
     'identifiableObject',
     'translatable',
-];
+]
 
 const schemaPropertyFields = [
     'href',
@@ -63,6 +63,8 @@ const schemaPropertyFields = [
     'itemPropertyType',
     'translationKey',
     'embeddedObject',
-];
+]
 
-export const fieldsForSchemas = schemaFields.concat(`properties[${schemaPropertyFields.join(',')}]`).join(',');
+export const fieldsForSchemas = schemaFields
+    .concat(`properties[${schemaPropertyFields.join(',')}]`)
+    .join(',')

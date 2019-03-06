@@ -4,9 +4,9 @@
  * @requires module:api/Api
  */
 
-import Api from '../api/Api';
-import SystemSettings from './SystemSettings';
-import SystemConfiguration from './SystemConfiguration';
+import Api from '../api/Api'
+import SystemSettings from './SystemSettings'
+import SystemConfiguration from './SystemConfiguration'
 
 /**
  * @description
@@ -31,32 +31,32 @@ class System {
          * @type {SystemSettings}
          *
          */
-        this.settings = settings;
+        this.settings = settings
 
         /**
          * A representation of the system configuration,
          * that can be used to retrieve and change system configuration options.
          * @type {SystemConfiguration}
          */
-        this.configuration = configuration;
+        this.configuration = configuration
 
         /**
          * An object containing system information about the DHIS2 instance
          * @type {Object}
          */
-        this.systemInfo = undefined;
+        this.systemInfo = undefined
 
         /**
          * An object containing version information about the DHIS2 instance
          * @type {Object}
          */
-        this.version = undefined;
+        this.version = undefined
 
         /**
          * An array of all the webapps that are installed on the current DHIS2 instance
          * @type {Array}
          */
-        this.installedApps = undefined;
+        this.installedApps = undefined
     }
 
     /**
@@ -65,8 +65,8 @@ class System {
      * @param systemInfo
      */
     setSystemInfo(systemInfo) {
-        this.version = System.parseVersionString(systemInfo.version);
-        this.systemInfo = systemInfo;
+        this.version = System.parseVersionString(systemInfo.version)
+        this.systemInfo = systemInfo
     }
 
     /**
@@ -75,7 +75,7 @@ class System {
      * @param apps
      */
     setInstalledApps(apps) {
-        this.installedApps = apps;
+        this.installedApps = apps
     }
 
     /**
@@ -84,14 +84,13 @@ class System {
      * @returns {Promise} A promise that resolves to the list of installed apps
      */
     loadInstalledApps() {
-        const api = Api.getApi();
+        const api = Api.getApi()
 
-        return api.get('apps')
-            .then((apps) => {
-                this.setInstalledApps(apps);
+        return api.get('apps').then(apps => {
+            this.setInstalledApps(apps)
 
-                return apps;
-            });
+            return apps
+        })
     }
 
     /**
@@ -101,26 +100,27 @@ class System {
      * @param onProgress An optional callback that will be called whenever file upload progress info is available
      * @returns {Promise}
      */
-    uploadApp(zipFile, onProgress) { // eslint-disable-line class-methods-use-this
-        const api = Api.getApi();
-        const data = new FormData();
-        let xhr;
-        data.append('file', zipFile);
+    uploadApp(zipFile, onProgress) {
+        // eslint-disable-line class-methods-use-this
+        const api = Api.getApi()
+        const data = new FormData()
+        let xhr
+        data.append('file', zipFile)
 
         if (onProgress !== undefined) {
-            xhr = new XMLHttpRequest();
-            xhr.upload.onprogress = (progress) => {
+            xhr = new XMLHttpRequest()
+            xhr.upload.onprogress = progress => {
                 if (progress.lengthComputable) {
-                    onProgress(progress.loaded / progress.total);
+                    onProgress(progress.loaded / progress.total)
                 }
-            };
+            }
         }
 
         return api.post('apps', data, {
             contentType: false,
             processData: false,
             xhr: xhr !== undefined ? () => xhr : undefined,
-        });
+        })
     }
 
     /**
@@ -131,23 +131,31 @@ class System {
      */
     loadAppStore(compatibleOnly = true) {
         return new Promise((resolve, reject) => {
-            const api = Api.getApi();
+            const api = Api.getApi()
             api.get('appStore')
-                .then(appStoreData => resolve(appStoreData
-                    .map((appData) => {
-                        const app = Object.assign({}, appData);
+                .then(appStoreData =>
+                    resolve(
+                        appStoreData
+                            .map(appData => {
+                                const app = Object.assign({}, appData)
 
-                        if (compatibleOnly) {
-                            app.versions = app.versions
-                                .filter(versionData => System.isVersionCompatible(this.version, versionData));
-                        }
+                                if (compatibleOnly) {
+                                    app.versions = app.versions.filter(
+                                        versionData =>
+                                            System.isVersionCompatible(
+                                                this.version,
+                                                versionData
+                                            )
+                                    )
+                                }
 
-                        return app;
-                    })
-                    .filter(appData => appData.versions.length > 0)),
+                                return app
+                            })
+                            .filter(appData => appData.versions.length > 0)
+                    )
                 )
-                .catch(err => reject(err));
-        });
+                .catch(err => reject(err))
+        })
     }
 
     /**
@@ -156,15 +164,18 @@ class System {
      * @param uid The uid of the app version to install
      * @returns {Promise}
      */
-    installAppVersion(uid) { // eslint-disable-line class-methods-use-this
-        const api = Api.getApi();
+    installAppVersion(uid) {
+        // eslint-disable-line class-methods-use-this
+        const api = Api.getApi()
         return new Promise((resolve, reject) => {
-            api.post(['appStore', uid].join('/'), '', { dataType: 'text' }).then(() => {
-                resolve();
-            }).catch((err) => {
-                reject(err);
-            });
-        });
+            api.post(['appStore', uid].join('/'), '', { dataType: 'text' })
+                .then(() => {
+                    resolve()
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
     }
 
     /**
@@ -173,12 +184,16 @@ class System {
      * @param appKey The key of the app to remove
      * @returns {Promise}
      */
-    uninstallApp(appKey) { // eslint-disable-line class-methods-use-this
-        const api = Api.getApi();
+    uninstallApp(appKey) {
+        // eslint-disable-line class-methods-use-this
+        const api = Api.getApi()
 
-        return api.delete(['apps', appKey].join('/'))
-            // TODO: Stop jQuery from rejecting successful promises
-            .catch(() => undefined);
+        return (
+            api
+                .delete(['apps', appKey].join('/'))
+                // TODO: Stop jQuery from rejecting successful promises
+                .catch(() => undefined)
+        )
     }
 
     /**
@@ -187,8 +202,8 @@ class System {
      * @returns {Promise} A promise that resolves to the updated list of installed apps
      */
     reloadApps() {
-        const api = Api.getApi();
-        return api.update('apps').then(() => this.loadInstalledApps());
+        const api = Api.getApi()
+        return api.update('apps').then(() => this.loadInstalledApps())
     }
 
     /**
@@ -208,9 +223,12 @@ class System {
     static parseVersionString(version) {
         return {
             major: Number.parseInt(version, 10),
-            minor: Number.parseInt(version.substring(version.indexOf('.') + 1), 10),
+            minor: Number.parseInt(
+                version.substring(version.indexOf('.') + 1),
+                10
+            ),
             snapshot: version.indexOf('-SNAPSHOT') >= 0,
-        };
+        }
     }
 
     // Disable eslint complexity warning
@@ -222,16 +240,23 @@ class System {
      * @returns {number} 0 if same version, else a - b.
      */
     static compareVersions(a, b) {
-        const from = (typeof a === 'string' || a instanceof String) ? System.parseVersionString(a) : a;
-        const to = (typeof b === 'string' || b instanceof String) ? System.parseVersionString(b) : b;
+        const from =
+            typeof a === 'string' || a instanceof String
+                ? System.parseVersionString(a)
+                : a
+        const to =
+            typeof b === 'string' || b instanceof String
+                ? System.parseVersionString(b)
+                : b
 
         if (from.major !== to.major) {
-            return from.major - to.major;
-        } else if (from.minor !== to.minor) {
-            return from.minor - to.minor;
+            return from.major - to.major
+        }
+        if (from.minor !== to.minor) {
+            return from.minor - to.minor
         }
 
-        return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1);
+        return (from.snapshot ? 0 : 1) - (to.snapshot ? 0 : 1)
     }
 
     /**
@@ -243,13 +268,19 @@ class System {
      * @returns {boolean} true if compatible, false otherwise.
      */
     static isVersionCompatible(systemVersion, appVersion) {
-        const minVersion = appVersion.minDhisVersion || appVersion.min_platform_version || null;
-        const maxVersion = appVersion.maxDhisVersion || appVersion.max_platform_version || null;
+        const minVersion =
+            appVersion.minDhisVersion || appVersion.min_platform_version || null
+        const maxVersion =
+            appVersion.maxDhisVersion || appVersion.max_platform_version || null
 
-        const isNewEnough = (minVersion ? System.compareVersions(systemVersion, minVersion) >= 0 : true);
-        const isNotTooOld = (maxVersion ? System.compareVersions(systemVersion, maxVersion) <= 0 : true);
+        const isNewEnough = minVersion
+            ? System.compareVersions(systemVersion, minVersion) >= 0
+            : true
+        const isNotTooOld = maxVersion
+            ? System.compareVersions(systemVersion, maxVersion) <= 0
+            : true
 
-        return isNewEnough && isNotTooOld;
+        return isNewEnough && isNotTooOld
     }
     /* eslint-enable */
 
@@ -261,11 +292,14 @@ class System {
      */
     static getSystem() {
         if (!System.getSystem.system) {
-            System.getSystem.system = new System(new SystemSettings(), new SystemConfiguration());
+            System.getSystem.system = new System(
+                new SystemSettings(),
+                new SystemConfiguration()
+            )
         }
 
-        return System.getSystem.system;
+        return System.getSystem.system
     }
 }
 
-export default System;
+export default System

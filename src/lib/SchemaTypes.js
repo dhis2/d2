@@ -1,5 +1,5 @@
-import { throwError } from './utils';
-import { isString } from './check';
+import { throwError } from './utils'
+import { isString } from './check'
 
 const getTypes = () => [
     'TEXT',
@@ -19,25 +19,25 @@ const getTypes = () => [
     'COMPLEX',
     'IDENTIFIER',
     'CONSTANT',
-];
+]
 
-const typeLookup = (propertyType) => {
+const typeLookup = propertyType => {
     if (getTypes().indexOf(propertyType) >= 0 && isString(propertyType)) {
-        return propertyType;
+        return propertyType
     }
 
     const message = [
         'Type from schema "',
         propertyType,
         '" not found available type list.',
-    ].join('');
+    ].join('')
 
-    return throwError(message);
-};
+    return throwError(message)
+}
 
 const SchemaTypes = {
     getTypes,
     typeLookup,
-};
+}
 
-export default SchemaTypes;
+export default SchemaTypes

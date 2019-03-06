@@ -1,6 +1,6 @@
-import { isType, checkValidRootJunction } from '../lib/check';
-import { identity } from '../lib/utils';
-import Filter from '../model/Filter';
+import { isType, checkValidRootJunction } from '../lib/check'
+import { identity } from '../lib/utils'
+import Filter from './Filter'
 
 /**
  * @description
@@ -22,9 +22,9 @@ class Filters {
          * @type {Array<Filter>}
          * @private
          */
-        this.filters = filters;
-        this.modelDefinition = modelDefinition;
-        this.rootJunction = null;
+        this.filters = filters
+        this.modelDefinition = modelDefinition
+        this.rootJunction = null
     }
 
     /**
@@ -36,9 +36,9 @@ class Filters {
      * @returns {Filter} The created filter object for `propertyName`.
      */
     on(propertyName) {
-        const addFilter = this.add.bind(this);
+        const addFilter = this.add.bind(this)
 
-        return Filter.getFilter(addFilter).on(propertyName);
+        return Filter.getFilter(addFilter).on(propertyName)
     }
 
     /**
@@ -52,11 +52,11 @@ class Filters {
      */
     add(filter) {
         if (!isType(filter, Filter)) {
-            throw new TypeError('filter should be an instance of Filter');
+            throw new TypeError('filter should be an instance of Filter')
         }
-        this.filters.push(filter);
+        this.filters.push(filter)
 
-        return this.modelDefinition;
+        return this.modelDefinition
     }
 
     /**
@@ -64,7 +64,7 @@ class Filters {
      * @returns {Promise} Proxy the list() call on the filters object.
      */
     list() {
-        return this.modelDefinition.list();
+        return this.modelDefinition.list()
     }
 
     /**
@@ -78,7 +78,7 @@ class Filters {
      * @returns {Array<string>} A list of query param values to be used with the filter key.
      */
     getQueryFilterValues() {
-        return this.filters.map(filter => filter.getQueryParamFormat());
+        return this.filters.map(filter => filter.getQueryParamFormat())
     }
 
     /**
@@ -86,7 +86,7 @@ class Filters {
      * @returns {Array.<string>}
      */
     getFilters() {
-        return this.getQueryFilterValues();
+        return this.getQueryFilterValues()
     }
 
     /**
@@ -95,7 +95,7 @@ class Filters {
      * @returns {Array<Filter>} The list of Filter objects.
      */
     getFilterList() {
-        return this.filters.map(identity);
+        return this.filters.map(identity)
     }
 
     /**
@@ -113,9 +113,9 @@ class Filters {
      * @param {string} junction The logic operator to use. One of ['OR', 'AND'];
      */
     logicMode(junction) {
-        checkValidRootJunction(junction);
-        this.rootJunction = junction;
-        return this;
+        checkValidRootJunction(junction)
+        this.rootJunction = junction
+        return this
     }
 
     /**
@@ -126,8 +126,8 @@ class Filters {
      * @returns {Filters} A Filters object for the given modelDefinition.
      */
     static getFilters(modelDefinition, priorFilters = []) {
-        return new Filters(modelDefinition, priorFilters);
+        return new Filters(modelDefinition, priorFilters)
     }
 }
 
-export default Filters;
+export default Filters

@@ -1,220 +1,233 @@
-import ModelValidation from '../ModelValidation';
-import ModelBase, { DIRTY_PROPERTY_LIST } from '../ModelBase';
+import ModelValidation from '../ModelValidation'
+import ModelBase, { DIRTY_PROPERTY_LIST } from '../ModelBase'
 
-jest.mock('../ModelValidation');
+jest.mock('../ModelValidation')
 
 describe('ModelBase', () => {
     // TODO: For some reason we have to setup the mock before the beforeEach and reset the spy, should figure out a way to perhaps do this differently.
-    let validateAgainstSchemaSpy;
+    let validateAgainstSchemaSpy
 
     beforeEach(() => {
-        validateAgainstSchemaSpy = ModelValidation.getModelValidation().validateAgainstSchema;
-        validateAgainstSchemaSpy.mockReset();
-    });
+        validateAgainstSchemaSpy = ModelValidation.getModelValidation()
+            .validateAgainstSchema
+        validateAgainstSchemaSpy.mockReset()
+    })
 
     it('should have a save method', () => {
-        const modelBase = new ModelBase();
-        expect(typeof modelBase.save).toBe('function');
-    });
+        const modelBase = new ModelBase()
+        expect(typeof modelBase.save).toBe('function')
+    })
 
     it('should have a validate method', () => {
-        const modelBase = new ModelBase();
-        expect(typeof modelBase.validate).toBe('function');
-    });
+        const modelBase = new ModelBase()
+        expect(typeof modelBase.validate).toBe('function')
+    })
 
     it('should have a clone method', () => {
-        const modelBase = new ModelBase();
-        expect(typeof modelBase.clone).toBe('function');
-    });
+        const modelBase = new ModelBase()
+        expect(typeof modelBase.clone).toBe('function')
+    })
 
     describe('saving', () => {
-        let modelDefinition;
-        let model;
-        let validateFunction;
+        let modelDefinition
+        let model
+        let validateFunction
 
         beforeEach(() => {
-            validateFunction = jest.fn();
+            validateFunction = jest.fn()
 
             modelDefinition = {
                 apiEndpoint: '/dataElements',
                 save: jest.fn().mockReturnValue(Promise.resolve()),
                 saveNew: jest.fn().mockReturnValue(Promise.resolve()),
-            };
+            }
 
             class Model extends ModelBase {
                 constructor(modelDef) {
-                    super();
-                    this.modelDefinition = modelDef;
-                    this.validate = validateFunction;
-                    this.dirty = true;
-                    this[DIRTY_PROPERTY_LIST] = new Set(['name']);
-                    this.dataValues = {};
+                    super()
+                    this.modelDefinition = modelDef
+                    this.validate = validateFunction
+                    this.dirty = true
+                    this[DIRTY_PROPERTY_LIST] = new Set(['name'])
+                    this.dataValues = {}
                 }
             }
 
-            model = new Model(modelDefinition);
+            model = new Model(modelDefinition)
 
             Object.defineProperty(model, 'id', {
                 get() {
-                    return this.dataValues.id;
+                    return this.dataValues.id
                 },
-            });
-        });
+            })
+        })
 
         describe('create()', () => {
             it('should call validate before calling save', () => {
-                validateFunction.mockReturnValue(Promise.resolve({ status: true }));
+                validateFunction.mockReturnValue(
+                    Promise.resolve({ status: true })
+                )
 
-                model.create();
+                model.create()
 
                 // TODO: Fix assertion when the .toBeCalledBefore(model.save) is available https://github.com/facebook/jest/issues/4402
-                expect(model.validate).toBeCalled();
-            });
+                expect(model.validate).toBeCalled()
+            })
 
             it('should call saveNew on the model', () => {
-                validateFunction.mockReturnValue(Promise.resolve({ status: true }));
+                validateFunction.mockReturnValue(
+                    Promise.resolve({ status: true })
+                )
 
-                return model.create()
-                    .then(() => {
-                        expect(modelDefinition.saveNew).toBeCalledWith(model);
-                    });
-            });
+                return model.create().then(() => {
+                    expect(modelDefinition.saveNew).toBeCalledWith(model)
+                })
+            })
 
             it('should not call saveNew when validate fails', () => {
-                validateFunction.mockReturnValue(Promise.resolve({ status: false }));
+                validateFunction.mockReturnValue(
+                    Promise.resolve({ status: false })
+                )
 
-                return model.create()
+                return model
+                    .create()
                     .catch(e => e)
                     .then(() => {
-                        expect(modelDefinition.save).not.toBeCalled();
-                    });
-            });
-        });
+                        expect(modelDefinition.save).not.toBeCalled()
+                    })
+            })
+        })
 
         describe('save()', () => {
             beforeEach(() => {
-                model.validate.mockReturnValue(Promise.resolve({ status: true }));
-            });
+                model.validate.mockReturnValue(
+                    Promise.resolve({ status: true })
+                )
+            })
 
-            it('should call the save on the model modelDefinition with itself as a parameter', () => model.save()
-                .then(() => {
-                    expect(modelDefinition.save).toBeCalledWith(model);
-                }));
+            it('should call the save on the model modelDefinition with itself as a parameter', () =>
+                model.save().then(() => {
+                    expect(modelDefinition.save).toBeCalledWith(model)
+                }))
 
             it('should call validate before calling save', () => {
-                model.save();
+                model.save()
 
-                expect(model.validate).toBeCalled();
-            });
+                expect(model.validate).toBeCalled()
+            })
 
             it('should not call save when validate fails', () => {
-                model.validate.mockReturnValue(Promise.resolve({ status: false }));
+                model.validate.mockReturnValue(
+                    Promise.resolve({ status: false })
+                )
 
-                return model.save()
+                return model
+                    .save()
                     .catch(e => e)
                     .then(() => {
-                        expect(modelDefinition.save).not.toBeCalled();
-                    });
-            });
+                        expect(modelDefinition.save).not.toBeCalled()
+                    })
+            })
 
             it('should not call save when the model is not dirty', () => {
-                model.dirty = false;
+                model.dirty = false
 
-                model.save();
+                model.save()
 
-                expect(modelDefinition.save).not.toBeCalled();
-            });
+                expect(modelDefinition.save).not.toBeCalled()
+            })
 
             it('should reset dirty to false after save', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return model.save()
-                    .then(() => {
-                        expect(model.dirty).toBe(false);
-                    });
-            });
+                return model.save().then(() => {
+                    expect(model.dirty).toBe(false)
+                })
+            })
 
             it('should reset the DIRTY_PROPERTY_LIST to an empty set after save', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return model.save()
-                    .then(() => {
-                        expect(model[DIRTY_PROPERTY_LIST].size).toBe(0);
-                    });
-            });
+                return model.save().then(() => {
+                    expect(model[DIRTY_PROPERTY_LIST].size).toBe(0)
+                })
+            })
 
             it('should return a promise that resolves to an empty object when the model is not dirty', () => {
-                model.dirty = false;
+                model.dirty = false
 
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return model.save()
-                    .then((result) => {
-                        expect(result).toEqual({});
-                    });
-            });
+                return model.save().then(result => {
+                    expect(result).toEqual({})
+                })
+            })
 
             it('should return rejected promise when the model is not valid', () => {
-                model.validate.mockReturnValue(Promise.resolve({ status: false }));
+                model.validate.mockReturnValue(
+                    Promise.resolve({ status: false })
+                )
 
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return model.save()
-                    .catch((message) => {
-                        expect(message).toEqual({ status: false });
-                    });
-            });
+                return model.save().catch(message => {
+                    expect(message).toEqual({ status: false })
+                })
+            })
 
             it('should set the newly created id onto the model', () => {
-                modelDefinition.save.mockReturnValue(Promise.resolve({
-                    httpStatus: 'Created',
-                    response: {
-                        uid: 'DXyJmlo9rge',
-                    },
-                }));
+                modelDefinition.save.mockReturnValue(
+                    Promise.resolve({
+                        httpStatus: 'Created',
+                        response: {
+                            uid: 'DXyJmlo9rge',
+                        },
+                    })
+                )
 
-                return model.save()
-                    .then(() => {
-                        expect(model.id).toBe('DXyJmlo9rge');
-                    });
-            });
+                return model.save().then(() => {
+                    expect(model.id).toBe('DXyJmlo9rge')
+                })
+            })
 
             it('should set the correct href property onto the object', () => {
-                modelDefinition.save.mockReturnValue(Promise.resolve({
-                    httpStatus: 'Created',
-                    response: {
-                        uid: 'DXyJmlo9rge',
-                    },
-                }));
+                modelDefinition.save.mockReturnValue(
+                    Promise.resolve({
+                        httpStatus: 'Created',
+                        response: {
+                            uid: 'DXyJmlo9rge',
+                        },
+                    })
+                )
 
-                return model.save()
-                    .then(() => {
-                        expect(model.dataValues.href).toBe('/dataElements/DXyJmlo9rge');
-                    });
-            });
+                return model.save().then(() => {
+                    expect(model.dataValues.href).toBe(
+                        '/dataElements/DXyJmlo9rge'
+                    )
+                })
+            })
 
-            it('should set the dirty children\'s dirty flag back to false', () => {
+            it("should set the dirty children's dirty flag back to false", () => {
                 model.modelDefinition.modelValidations = {
                     organisationUnits: {
                         owner: true,
                     },
-                };
+                }
                 model.organisationUnits = {
                     size: 1,
                     dirty: true,
-                };
+                }
 
-                return model.save()
-                    .then(() => {
-                        expect(model.organisationUnits.dirty).toBe(false);
-                    });
-            });
-        });
-    });
+                return model.save().then(() => {
+                    expect(model.organisationUnits.dirty).toBe(false)
+                })
+            })
+        })
+    })
 
     describe('validate', () => {
-        let modelValidations;
-        let model;
+        let modelValidations
+        let model
 
         beforeEach(() => {
             modelValidations = {
@@ -227,123 +240,121 @@ describe('ModelBase', () => {
                     owner: true,
                     unique: false,
                 },
-            };
+            }
 
             class Model extends ModelBase {
                 constructor(validations) {
-                    super();
-                    this.modelDefinition = {};
-                    this.modelDefinition.modelValidations = validations;
+                    super()
+                    this.modelDefinition = {}
+                    this.modelDefinition.modelValidations = validations
                     this.dataValues = {
                         age: 4,
-                    };
+                    }
                 }
             }
 
-            model = new Model(modelValidations);
+            model = new Model(modelValidations)
 
-            validateAgainstSchemaSpy.mockReturnValue(Promise.resolve([]));
-        });
+            validateAgainstSchemaSpy.mockReturnValue(Promise.resolve([]))
+        })
 
         it('should fail when the async validate fails', () => {
-            const message = 'Validation against schema endpoint failed.';
-            validateAgainstSchemaSpy.mockReturnValue(Promise.reject(message));
+            const message = 'Validation against schema endpoint failed.'
+            validateAgainstSchemaSpy.mockReturnValue(Promise.reject(message))
 
-            expect.assertions(1);
+            expect.assertions(1)
 
-            return model.validate()
-                .catch((errMessage) => {
-                    expect(errMessage).toBe(message);
-                });
-        });
+            return model.validate().catch(errMessage => {
+                expect(errMessage).toBe(message)
+            })
+        })
 
         it('should call the validateAgainstSchema method on the modelValidator', () => {
-            expect.assertions(1);
+            expect.assertions(1)
 
-            return model.validate()
-                .then(() => {
-                    expect(validateAgainstSchemaSpy).toBeCalled();
-                });
-        });
+            return model.validate().then(() => {
+                expect(validateAgainstSchemaSpy).toBeCalled()
+            })
+        })
 
         it('should call validateAgainstSchema with the model', () => {
-            expect.assertions(1);
+            expect.assertions(1)
 
-            return model.validate()
-                .then(() => {
-                    expect(validateAgainstSchemaSpy).toBeCalledWith(model);
-                });
-        });
+            return model.validate().then(() => {
+                expect(validateAgainstSchemaSpy).toBeCalledWith(model)
+            })
+        })
 
         it('should return false when there are the asyncValidation against the schema failed', () => {
-            validateAgainstSchemaSpy
-                .mockReturnValue(Promise.resolve([
+            validateAgainstSchemaSpy.mockReturnValue(
+                Promise.resolve([
                     { message: 'Required property missing.', property: 'name' },
-                ]));
+                ])
+            )
 
-            expect.assertions(1);
+            expect.assertions(1)
 
-            return model.validate()
-                .then((validationState) => {
-                    expect(validationState.status).toBe(false);
-                });
-        });
+            return model.validate().then(validationState => {
+                expect(validationState.status).toBe(false)
+            })
+        })
 
         it('should return false when there are the asyncValidation against the schema failed', () => {
-            validateAgainstSchemaSpy.mockReturnValue(Promise.resolve([]));
+            validateAgainstSchemaSpy.mockReturnValue(Promise.resolve([]))
 
-            expect.assertions(1);
+            expect.assertions(1)
 
-            return model.validate()
-                .then((validationState) => {
-                    expect(validationState.status).toBe(true);
-                });
-        });
-    });
+            return model.validate().then(validationState => {
+                expect(validationState.status).toBe(true)
+            })
+        })
+    })
 
     describe('clone', () => {
-        let modelDefinition;
-        let model;
+        let modelDefinition
+        let model
 
         class Model extends ModelBase {
             constructor(modelDef) {
-                super();
-                this.modelDefinition = modelDef;
-                this.validate = jest.fn().mockReturnValue(Promise.resolve({ status: true }));
-                this.dirty = false;
-                this[DIRTY_PROPERTY_LIST] = new Set([]);
+                super()
+                this.modelDefinition = modelDef
+                this.validate = jest
+                    .fn()
+                    .mockReturnValue(Promise.resolve({ status: true }))
+                this.dirty = false
+                this[DIRTY_PROPERTY_LIST] = new Set([])
                 this.dataValues = {
                     id: 'DXyJmlo9rge',
                     name: 'My metadata object',
-                };
+                }
             }
 
             static create(modelDef) {
-                model = new Model(modelDef);
+                model = new Model(modelDef)
 
                 Object.defineProperty(model, 'id', {
                     get() {
-                        return this.dataValues.id;
+                        return this.dataValues.id
                     },
                     enumerable: true,
-                });
+                })
                 Object.defineProperty(model, 'name', {
                     get() {
-                        return this.dataValues.name;
+                        return this.dataValues.name
                     },
                     set(newValue) {
-                        this.dataValues.name = newValue;
+                        this.dataValues.name = newValue
                     },
                     enumerable: true,
-                });
+                })
                 Object.defineProperty(model, 'userGroups', {
                     get() {
-                        return this.dataValues.userGroups;
+                        return this.dataValues.userGroups
                     },
                     enumerable: true,
-                });
+                })
 
-                return model;
+                return model
             }
         }
 
@@ -352,7 +363,9 @@ describe('ModelBase', () => {
                 apiEndpoint: '/dataElements',
                 save: jest.fn().mockReturnValue(Promise.resolve()),
                 saveNew: jest.fn().mockReturnValue(Promise.resolve()),
-                create: jest.fn().mockReturnValue(Model.create(modelDefinition)),
+                create: jest
+                    .fn()
+                    .mockReturnValue(Model.create(modelDefinition)),
                 modelValidations: {
                     id: {},
                     name: {},
@@ -360,60 +373,67 @@ describe('ModelBase', () => {
                         type: 'COLLECTION',
                     },
                 },
-            };
+            }
 
-            model = Model.create(modelDefinition);
-        });
+            model = Model.create(modelDefinition)
+        })
 
         it('should call create on the modelDefinition', () => {
-            model.clone();
+            model.clone()
 
-            expect(modelDefinition.create).toBeCalled();
-        });
+            expect(modelDefinition.create).toBeCalled()
+        })
 
         it('should pass all the dataValues to the create function', () => {
-            model.clone();
+            model.clone()
 
             expect(modelDefinition.create).toBeCalledWith({
                 id: 'DXyJmlo9rge',
                 name: 'My metadata object',
-            });
-        });
+            })
+        })
 
         it('should pass collections arrays of ids', () => {
             // Would generally be a ModelCollection, but it extends Map so for simplicity we use Map directly.
             model.dataValues.userGroups = new Map([
                 ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC' }],
                 ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS' }],
-            ]);
+            ])
 
-            model.clone();
+            model.clone()
 
             expect(modelDefinition.create).toBeCalledWith({
                 id: 'DXyJmlo9rge',
                 name: 'My metadata object',
-                userGroups: [
-                    { id: 'P3jJH5Tu5VC' },
-                    { id: 'FQ2o8UBlcrS' },
-                ],
-            });
-        });
+                userGroups: [{ id: 'P3jJH5Tu5VC' }, { id: 'FQ2o8UBlcrS' }],
+            })
+        })
 
         it('should retain all of the values in the child collections', () => {
             model.dataValues.userGroups = new Map([
-                ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC',
-                    name: 'Administrators',
-                    clone() {
-                        return { id: 'P3jJH5Tu5VC', name: 'Administrators' };
-                    } }],
-                ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS',
-                    name: 'Super users',
-                    clone() {
-                        return { id: 'FQ2o8UBlcrS', name: 'Super users' };
-                    } }],
-            ]);
+                [
+                    'P3jJH5Tu5VC',
+                    {
+                        id: 'P3jJH5Tu5VC',
+                        name: 'Administrators',
+                        clone() {
+                            return { id: 'P3jJH5Tu5VC', name: 'Administrators' }
+                        },
+                    },
+                ],
+                [
+                    'FQ2o8UBlcrS',
+                    {
+                        id: 'FQ2o8UBlcrS',
+                        name: 'Super users',
+                        clone() {
+                            return { id: 'FQ2o8UBlcrS', name: 'Super users' }
+                        },
+                    },
+                ],
+            ])
 
-            model.clone();
+            model.clone()
 
             expect(modelDefinition.create).toBeCalledWith({
                 id: 'DXyJmlo9rge',
@@ -422,113 +442,119 @@ describe('ModelBase', () => {
                     { id: 'P3jJH5Tu5VC', name: 'Administrators' },
                     { id: 'FQ2o8UBlcrS', name: 'Super users' },
                 ],
-            });
-        });
+            })
+        })
 
         it('should return an independent clone', () => {
-            const modelClone = model.clone();
+            const modelClone = model.clone()
 
-            expect(model).not.toBe(modelClone);
+            expect(model).not.toBe(modelClone)
 
-            modelClone.name = 'NewName';
+            modelClone.name = 'NewName'
 
-            expect(modelClone.dataValues.name).toBe('NewName');
-            expect(model.dataValues.name).toBe('My metadata object');
-        });
+            expect(modelClone.dataValues.name).toBe('NewName')
+            expect(model.dataValues.name).toBe('My metadata object')
+        })
 
         it('should preserve the dirty state of the original model', () => {
-            model.dirty = true;
-            model[DIRTY_PROPERTY_LIST] = new Set(['name']);
+            model.dirty = true
+            model[DIRTY_PROPERTY_LIST] = new Set(['name'])
 
-            const modelClone = model.clone();
+            const modelClone = model.clone()
 
-            expect(modelClone.dirty).toBe(true);
-        });
-    });
+            expect(modelClone.dirty).toBe(true)
+        })
+    })
 
     describe('delete', () => {
-        let modelDefinition;
-        let model;
+        let modelDefinition
+        let model
 
         beforeEach(() => {
             modelDefinition = {
-                delete: jest.fn().mockReturnValue(new Promise((resolve) => { resolve(); })),
-            };
+                delete: jest.fn().mockReturnValue(
+                    new Promise(resolve => {
+                        resolve()
+                    })
+                ),
+            }
 
             class Model extends ModelBase {
                 constructor(modelDef) {
-                    super();
-                    this.modelDefinition = modelDef;
-                    this.validate = jest.fn().mockReturnValue(Promise.resolve({ status: true }));
-                    this.dirty = true;
-                    this[DIRTY_PROPERTY_LIST] = new Set(['name']);
+                    super()
+                    this.modelDefinition = modelDef
+                    this.validate = jest
+                        .fn()
+                        .mockReturnValue(Promise.resolve({ status: true }))
+                    this.dirty = true
+                    this[DIRTY_PROPERTY_LIST] = new Set(['name'])
                 }
             }
 
-            model = new Model(modelDefinition);
-        });
+            model = new Model(modelDefinition)
+        })
 
         it('should have a delete method', () => {
-            expect(model.delete).toBeInstanceOf(Function);
-        });
+            expect(model.delete).toBeInstanceOf(Function)
+        })
 
         it('should call delete on the modeldefinition when called', () => {
-            model.delete();
+            model.delete()
 
-            expect(model.modelDefinition.delete).toBeCalled();
-        });
+            expect(model.modelDefinition.delete).toBeCalled()
+        })
 
         it('should call the modelDefinition.delete method with the model', () => {
-            model.delete();
+            model.delete()
 
-            expect(model.modelDefinition.delete).toBeCalledWith(model);
-        });
+            expect(model.modelDefinition.delete).toBeCalledWith(model)
+        })
 
         it('should return a promise', () => {
-            expect(model.delete()).toBeInstanceOf(Promise);
-        });
-    });
+            expect(model.delete()).toBeInstanceOf(Promise)
+        })
+    })
 
     describe('getCollectionChildren', () => {
-        let model;
+        let model
 
         beforeEach(() => {
-            model = new ModelBase();
+            model = new ModelBase()
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
                         owner: true,
                     },
-                    userGroups: {
-
-                    },
+                    userGroups: {},
                 },
-            };
+            }
             model.dataElements = {
                 name: 'dataElements',
                 dirty: true,
                 size: 2,
-            };
+            }
 
             model.userGroups = {
                 name: 'userGroups',
-            };
-        });
+            }
+        })
 
         it('should return the collection children', () => {
-            expect(model.getCollectionChildren()).toContain(model.dataElements);
-        });
+            expect(model.getCollectionChildren()).toContain(model.dataElements)
+        })
 
         it('should not return the children that are not collections', () => {
-            expect(model.getCollectionChildren()).not.toContain(model.userGroups);
-        });
-    });
+            expect(model.getCollectionChildren()).not.toContain(
+                model.userGroups
+            )
+        })
+    })
 
     describe('getCollectionChildrenPropertyNames', () => {
-        let model;
+        let model
 
         beforeEach(() => {
-            model = new ModelBase();
+            model = new ModelBase()
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -538,35 +564,41 @@ describe('ModelBase', () => {
                         type: 'COMPLEX',
                     },
                 },
-            };
+            }
 
-            model.dataElements = [];
-        });
+            model.dataElements = []
+        })
 
         it('should return the correct property collections', () => {
-            expect(model.getCollectionChildrenPropertyNames()).toContain('dataElements');
-        });
+            expect(model.getCollectionChildrenPropertyNames()).toContain(
+                'dataElements'
+            )
+        })
 
         it('should not return the collection for the property if there is no modelValidation for the property', () => {
-            model.indicators = [];
+            model.indicators = []
 
-            expect(model.getCollectionChildrenPropertyNames()).not.toContain('indicators');
-        });
+            expect(model.getCollectionChildrenPropertyNames()).not.toContain(
+                'indicators'
+            )
+        })
 
         it('should not return the collection for the property if there is no modelValidation for the property', () => {
             model.modelDefinition.modelValidations.indicators = {
                 type: 'COLLECTION',
-            };
+            }
 
-            expect(model.getCollectionChildrenPropertyNames()).not.toContain('indicators');
-        });
-    });
+            expect(model.getCollectionChildrenPropertyNames()).not.toContain(
+                'indicators'
+            )
+        })
+    })
 
     describe('getReferenceProperties', () => {
-        let model;
+        let model
 
         beforeEach(() => {
-            model = new ModelBase();
+            model = new ModelBase()
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -585,47 +617,47 @@ describe('ModelBase', () => {
                         embeddedObject: true,
                     },
                 },
-            };
+            }
 
-            model.dataElements = [];
+            model.dataElements = []
             model.user = {
                 id: 'xE7jOejl9FI',
                 firstName: 'John',
-            };
+            }
             model.accesses = {
                 read: true,
                 write: true,
-            };
-        });
+            }
+        })
 
         it('should return the correct reference properties', () => {
-            expect(model.getReferenceProperties()).toContain('user');
-        });
+            expect(model.getReferenceProperties()).toContain('user')
+        })
 
         it('should not return the reference property if there is no modelValidation for the property', () => {
-            model.randomObject = {};
+            model.randomObject = {}
 
-            expect(model.getReferenceProperties()).not.toContain('randomObject');
-        });
+            expect(model.getReferenceProperties()).not.toContain('randomObject')
+        })
 
         it('should not return the reference property if there is no value for the property', () => {
             model.modelDefinition.modelValidations.randomObject = {
                 type: 'REFERENCE',
-            };
+            }
 
-            expect(model.getReferenceProperties()).not.toContain('randomObject');
-        });
+            expect(model.getReferenceProperties()).not.toContain('randomObject')
+        })
 
         it('should not return the property if the reference property is embedded', () => {
-            expect(model.getReferenceProperties()).not.toContain('accesses');
-        });
-    });
+            expect(model.getReferenceProperties()).not.toContain('accesses')
+        })
+    })
 
     describe('getEmbeddedObjectCollectionPropertyNames', () => {
-        let model;
+        let model
 
         beforeEach(() => {
-            model = new ModelBase();
+            model = new ModelBase()
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
@@ -640,59 +672,63 @@ describe('ModelBase', () => {
                         embeddedObject: true,
                     },
                 },
-            };
+            }
 
-            model.dataElements = [];
-            model.legends = [];
-        });
+            model.dataElements = []
+            model.legends = []
+        })
 
         it('should include the embedded collection', () => {
-            expect(model.getEmbeddedObjectCollectionPropertyNames()).toContain('legends');
-        });
+            expect(model.getEmbeddedObjectCollectionPropertyNames()).toContain(
+                'legends'
+            )
+        })
 
         it('should not include non embedded object collections', () => {
-            expect(model.getEmbeddedObjectCollectionPropertyNames()).not.toContain('dataElements');
-        });
-    });
+            expect(
+                model.getEmbeddedObjectCollectionPropertyNames()
+            ).not.toContain('dataElements')
+        })
+    })
 
     describe('getDirtyChildren', () => {
-        let model;
+        let model
 
         beforeEach(() => {
-            model = new ModelBase();
+            model = new ModelBase()
             model.modelDefinition = {
                 modelValidations: {
                     dataElements: {
                         owner: true,
                     },
                 },
-            };
+            }
             model.dataElements = {
                 name: 'dataElements',
                 dirty: true,
                 size: 2,
-            };
-        });
+            }
+        })
 
         it('should return the dirty children properties', () => {
-            expect(model.getDirtyChildren()).toEqual([model.dataElements]);
-        });
-    });
+            expect(model.getDirtyChildren()).toEqual([model.dataElements])
+        })
+    })
 
     describe('toJSON', () => {
-        let model;
+        let model
 
         beforeEach(() => {
-            model = new ModelBase();
-        });
+            model = new ModelBase()
+        })
 
         it('should be a function', () => {
-            expect(typeof model.toJSON).toBe('function');
-        });
+            expect(typeof model.toJSON).toBe('function')
+        })
 
         it('should not throw an exception on `toJSON` for base models', () => {
-            expect(model.toJSON()).toEqual({});
-        });
+            expect(model.toJSON()).toEqual({})
+        })
 
         it('should return a json representation of the model', () => {
             model.modelDefinition = {
@@ -705,26 +741,23 @@ describe('ModelBase', () => {
                         type: 'COLLECTION',
                     },
                 },
-            };
+            }
             model.dataValues = {
                 name: 'ANC',
                 dataElements: new Map([
                     ['P3jJH5Tu5VC', { id: 'P3jJH5Tu5VC', name: 'anc1' }],
                     ['FQ2o8UBlcrS', { id: 'FQ2o8UBlcrS', name: 'anc2' }],
                 ]),
-            };
+            }
 
-            model.name = model.dataValues.name;
-            model.dataElements = model.dataValues.dataElements;
-            const expected = ({
+            model.name = model.dataValues.name
+            model.dataElements = model.dataValues.dataElements
+            const expected = {
                 name: 'ANC',
-                dataElements: [
-                    { id: 'P3jJH5Tu5VC' },
-                    { id: 'FQ2o8UBlcrS' },
-                ],
-            });
+                dataElements: [{ id: 'P3jJH5Tu5VC' }, { id: 'FQ2o8UBlcrS' }],
+            }
 
-            expect(model.toJSON()).toEqual(expected);
-        });
-    });
-});
+            expect(model.toJSON()).toEqual(expected)
+        })
+    })
+})

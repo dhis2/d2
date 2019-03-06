@@ -5,8 +5,8 @@ import {
     getFirstDateOfQuarter,
     getLastDateOfQuarter,
     computeWeekBasedPeriod,
-} from './helpers';
-import { toLocaleDayFormat } from './formatters';
+} from './helpers'
+import { toLocaleDayFormat } from './formatters'
 
 const periodTypeRegex = {
     Daily: /^([0-9]{4})([0-9]{2})([0-9]{2})$/,          // YYYYMMDD
@@ -31,58 +31,77 @@ const periodTypeRegex = {
 
 /* eslint-disable complexity */
 const weeklyMatcherParser = (match, locale = 'en') => {
-    const year = parseInt(match[1], 10);
-    const weekType = match[2];
-    const week = parseInt(match[3], 10);
+    const year = parseInt(match[1], 10)
+    const weekType = match[2]
+    const week = parseInt(match[3], 10)
 
     if (week < 1 || week > 53) {
-        throw new Error('Invalid week number');
+        throw new Error('Invalid week number')
     }
 
-    let weekTypeDiff = 0;
+    let weekTypeDiff = 0
     switch (weekType) {
-    case 'Wed': weekTypeDiff = 2; break;
-    case 'Thu': weekTypeDiff = 3; break;
-    case 'Sat': weekTypeDiff = -2; break;
-    case 'Sun': weekTypeDiff = -1; break;
-    default: break;
+        case 'Wed':
+            weekTypeDiff = 2
+            break
+        case 'Thu':
+            weekTypeDiff = 3
+            break
+        case 'Sat':
+            weekTypeDiff = -2
+            break
+        case 'Sun':
+            weekTypeDiff = -1
+            break
+        default:
+            break
     }
 
-    const p = computeWeekBasedPeriod({ year, week, locale, weekTypeDiff });
+    const p = computeWeekBasedPeriod({
+        year,
+        week,
+        locale,
+        weekTypeDiff,
+    })
 
-    const name = p.startMonthName === p.endMonthName
-        ? `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${p.endDayNum}`
-        : `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${p.endMonthName} ${p.endDayNum}`;
+    const name =
+        p.startMonthName === p.endMonthName
+            ? `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${
+                  p.endDayNum
+              }`
+            : `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${
+                  p.endMonthName
+              } ${p.endDayNum}`
 
     return {
         id: `${p.year}${weekType}W${p.week}`,
         name,
         startDate: p.startDate,
         endDate: p.endDate,
-    };
-};
+    }
+}
 
 const isValidDailyPeriod = (month, year, day) =>
-    month > 11 || month < 0 ||
-    day > 31 || day < 1 ||
-    year < 1000 || year > 5000;
+    month > 11 || month < 0 || day > 31 || day < 1 || year < 1000 || year > 5000
 /* eslint-enable */
 
 const regexMatchToPeriod = {
     Daily: (match, locale = 'en') => {
-        const year = parseInt(match[1], 10);
-        const month = parseInt(match[2], 10) - 1;
-        const day = parseInt(match[3], 10);
+        const year = parseInt(match[1], 10)
+        const month = parseInt(match[2], 10) - 1
+        const day = parseInt(match[3], 10)
         if (isValidDailyPeriod(month, year, day)) {
-            throw new Error('Invalid Daily period');
+            throw new Error('Invalid Daily period')
         }
-        const date = new Date(match[1], match[2] - 1, match[3]);
+        const date = new Date(match[1], match[2] - 1, match[3])
         return {
-            id: `${date.getFullYear()}${(`0${date.getMonth() + 1}`).substr(-2)}${(`0${date.getDate()}`).substr(-2)}`,
+            id: `${date.getFullYear()}${`0${date.getMonth() + 1}`.substr(
+                -2
+            )}${`0${date.getDate()}`.substr(-2)}`,
             name: toLocaleDayFormat(date, locale),
             startDate: formatAsISODate(date),
             endDate: formatAsISODate(date),
-        };
+        }
     },
     Weekly: weeklyMatcherParser,
     WeeklyWednesday: weeklyMatcherParser,
@@ -90,109 +109,126 @@ const regexMatchToPeriod = {
     WeeklySaturday: weeklyMatcherParser,
     WeeklySunday: weeklyMatcherParser,
     BiWeekly: (match, locale = 'en') => {
-        const year = parseInt(match[1], 10);
-        let biWeek = parseInt(match[2], 10);
+        const year = parseInt(match[1], 10)
+        let biWeek = parseInt(match[2], 10)
 
         if (biWeek < 1 || biWeek > 27) {
-            throw new Error('Invalid BiWeek number');
+            throw new Error('Invalid BiWeek number')
         }
 
-        const week = (biWeek * 2) - 1;
-        const p = computeWeekBasedPeriod({ year, week, locale, periodLength: 13 });
-        biWeek = (p.week + 1) / 2;
+        const week = biWeek * 2 - 1
+        const p = computeWeekBasedPeriod({
+            year,
+            week,
+            locale,
+            periodLength: 13,
+        })
+        biWeek = (p.week + 1) / 2
 
-        const name = p.startMonthName === p.endMonthName
-            ? `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${p.startDayNum} - ${p.endDayNum}`
-            : `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${p.startDayNum} - ${p.endMonthName} ${p.endDayNum}`;
+        const name =
+            p.startMonthName === p.endMonthName
+                ? `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${
+                      p.startDayNum
+                  } - ${p.endDayNum}`
+                : `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${
+                      p.startDayNum
+                  } - ${p.endMonthName} ${p.endDayNum}`
 
         return {
             id: `${p.year}BiW${biWeek}`,
             name,
             startDate: p.startDate,
             endDate: p.endDate,
-        };
+        }
     },
     Monthly: (match, locale = 'en') => {
-        const id = match[0];
-        const year = parseInt(match[1], 10);
-        const month = parseInt(match[2], 10) - 1;
+        const id = match[0]
+        const year = parseInt(match[1], 10)
+        const month = parseInt(match[2], 10) - 1
         if (month > 11 || month < 0) {
-            throw new Error('Invalid month number');
+            throw new Error('Invalid month number')
         }
-        const monthNum = `0${month + 1}`.substr(-2);
-        const monthNames = getMonthNamesForLocale(locale);
-        const lastDay = getLastDateOfMonth(year, month);
+        const monthNum = `0${month + 1}`.substr(-2)
+        const monthNames = getMonthNamesForLocale(locale)
+        const lastDay = getLastDateOfMonth(year, month)
         return {
             id,
             name: `${monthNames[month]} ${year}`,
             startDate: `${year}-${monthNum}-01`,
             endDate: formatAsISODate(lastDay),
-        };
+        }
     },
     BiMonthly: (match, locale = 'en') => {
-        const id = match[0];
-        const year = parseInt(match[1], 10);
-        const biMonth = parseInt(match[2], 10);
+        const id = match[0]
+        const year = parseInt(match[1], 10)
+        const biMonth = parseInt(match[2], 10)
         if (biMonth < 1 || biMonth > 6) {
-            throw new Error('Invalid BiMonth number');
+            throw new Error('Invalid BiMonth number')
         }
-        const startMonth = (biMonth - 1) * 2;
-        const startMonthNum = `0${startMonth + 1}`.substr(-2);
-        const endMonth = startMonth + 1;
-        const monthNames = getMonthNamesForLocale(locale);
+        const startMonth = (biMonth - 1) * 2
+        const startMonthNum = `0${startMonth + 1}`.substr(-2)
+        const endMonth = startMonth + 1
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id,
             name: `${monthNames[startMonth]} - ${monthNames[endMonth]} ${year}`,
             startDate: `${year}-${startMonthNum}-01`,
             endDate: formatAsISODate(getLastDateOfMonth(year, endMonth)),
-        };
+        }
     },
     Quarterly: (match, locale = 'en') => {
-        const id = match[0];
-        const year = parseInt(match[1], 10);
-        const quarter = parseInt(match[2], 10);
-        const startMonth = (quarter - 1) * 3;
-        const endMonth = (quarter * 3) - 1;
-        const monthNames = getMonthNamesForLocale(locale);
+        const id = match[0]
+        const year = parseInt(match[1], 10)
+        const quarter = parseInt(match[2], 10)
+        const startMonth = (quarter - 1) * 3
+        const endMonth = quarter * 3 - 1
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id,
             name: `${monthNames[startMonth]} - ${monthNames[endMonth]} ${year}`,
             startDate: formatAsISODate(getFirstDateOfQuarter(year, quarter)),
             endDate: formatAsISODate(getLastDateOfQuarter(year, quarter)),
-        };
+        }
     },
     SixMonthly: (match, locale = 'en') => {
-        const id = match[0];
-        const year = match[1];
-        const s = parseInt(match[2], 10) - 1;
-        const startMonth = 6 * s;
-        const endMonth = (6 * s) + 6;
-        const endMonthNum = `0${endMonth}`.substr(-2);
-        const monthNames = getMonthNamesForLocale(locale);
+        const id = match[0]
+        const year = match[1]
+        const s = parseInt(match[2], 10) - 1
+        const startMonth = 6 * s
+        const endMonth = 6 * s + 6
+        const endMonthNum = `0${endMonth}`.substr(-2)
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id,
-            name: `${monthNames[startMonth]} - ${monthNames[endMonth - 1]} ${year}`,
-            startDate: `${year}-0${(startMonth + 1)}-01`,
-            endDate: `${year}-${(endMonthNum)}-${s === 0 ? '30' : '31'}`,
-        };
+            name: `${monthNames[startMonth]} - ${
+                monthNames[endMonth - 1]
+            } ${year}`,
+            startDate: `${year}-0${startMonth + 1}-01`,
+            endDate: `${year}-${endMonthNum}-${s === 0 ? '30' : '31'}`,
+        }
     },
     SixMonthlyApril: (match, locale = 'en') => {
-        const id = match[0];
-        const year = parseInt(match[1], 10);
-        const s = parseInt(match[2], 10) - 1;
-        const startMonth = s === 0 ? 4 : 10;
-        const startMonthNum = `0${startMonth}`.substr(-2);
-        const endMonth = s === 0 ? 9 : 3;
-        const endMonthNum = `0${endMonth}`.substr(-2);
-        const monthNames = getMonthNamesForLocale(locale);
+        const id = match[0]
+        const year = parseInt(match[1], 10)
+        const s = parseInt(match[2], 10) - 1
+        const startMonth = s === 0 ? 4 : 10
+        const startMonthNum = `0${startMonth}`.substr(-2)
+        const endMonth = s === 0 ? 9 : 3
+        const endMonthNum = `0${endMonth}`.substr(-2)
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id,
-            name: s === 0
-                ? `${monthNames[startMonth - 1]} - ${monthNames[endMonth - 1]} ${year}`
-                : `${monthNames[startMonth - 1]} ${year} - ${monthNames[endMonth - 1]} ${year + 1}`,
-            startDate: `${year}-${(startMonthNum)}-01`,
-            endDate: `${year + s}-${(endMonthNum)}-${s === 0 ? '30' : '31'}`,
-        };
+            name:
+                s === 0
+                    ? `${monthNames[startMonth - 1]} - ${
+                          monthNames[endMonth - 1]
+                      } ${year}`
+                    : `${monthNames[startMonth - 1]} ${year} - ${
+                          monthNames[endMonth - 1]
+                      } ${year + 1}`,
+            startDate: `${year}-${startMonthNum}-01`,
+            endDate: `${year + s}-${endMonthNum}-${s === 0 ? '30' : '31'}`,
+        }
     },
     /* eslint-disable complexity */
     SixMonthlyNov: (match, locale = 'en') => {
@@ -223,34 +259,34 @@ const regexMatchToPeriod = {
         endDate: `${match[1]}-12-31`,
     }),
     FinancialApril: (match, locale = 'en') => {
-        const year = parseInt(match[1], 10);
-        const monthNames = getMonthNamesForLocale(locale);
+        const year = parseInt(match[1], 10)
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id: match[0],
             name: `${monthNames[3]} ${year} - ${monthNames[2]} ${year + 1}`,
             startDate: `${year}-04-01`,
             endDate: `${year + 1}-03-31`,
-        };
+        }
     },
     FinancialJuly: (match, locale = 'en') => {
-        const year = parseInt(match[1], 10);
-        const monthNames = getMonthNamesForLocale(locale);
+        const year = parseInt(match[1], 10)
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id: match[0],
             name: `${monthNames[6]} ${year} - ${monthNames[5]} ${year + 1}`,
             startDate: `${year}-07-01`,
             endDate: `${year + 1}-06-30`,
-        };
+        }
     },
     FinancialOct: (match, locale = 'en') => {
-        const year = parseInt(match[1], 10);
-        const monthNames = getMonthNamesForLocale(locale);
+        const year = parseInt(match[1], 10)
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id: match[0],
             name: `${monthNames[9]} ${year} - ${monthNames[8]} ${year + 1}`,
             startDate: `${year}-10-01`,
             endDate: `${year + 1}-09-30`,
-        };
+        }
     },
     FinancialNov: (match, locale = 'en') => {
         const year = parseInt(match[1], 10);
@@ -281,10 +317,10 @@ export function getPeriodFromPeriodId(periodId, locale = 'en') {
         })[0];
 
     if (!period) {
-        throw new Error('Invalid period format');
+        throw new Error('Invalid period format')
     }
 
-    return period;
+    return period
 }
 
-export default getPeriodFromPeriodId;
+export default getPeriodFromPeriodId
