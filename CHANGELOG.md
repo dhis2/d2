@@ -1,5 +1,12 @@
 # D2 Changelog
 
+## 31.6.0
+###### _March 7th 2019_
+
+**Breaking changes:**
+
+- Webpack browser bundle has been removed. Current build is a UMD build, see https://github.com/umdjs/umd.
+
 ## 31.5.0
 ###### _February 28th 2019_
 
