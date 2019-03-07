@@ -52,9 +52,7 @@ class AnalyticsBase {
 
         const dataReq = new AnalyticsRequest(req)
             .withSkipData(false)
-            .withSkipMeta(true)
-            .withIncludeNumDen(req.parameters.includeNumDen)
-            .withDisplayProperty('SHORTNAME');
+            .withSkipMeta(true);
 
         // parallelize requests
         return Promise.all([this.fetch(dataReq, { sorted: true }), this.fetch(metaDataReq)]).then(
