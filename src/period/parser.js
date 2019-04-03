@@ -203,17 +203,18 @@ const regexMatchToPeriod = {
         const endMonth = s === 0 ? 4 : 10;
         const endMonthNum = `0${endMonth}`.substr(-2);
         const monthNames = getMonthNamesForLocale(locale);
-        const endYear = s === 0 ? (year + 1) : year;
+        const startYear = s === 0 ? year : year + 1;
+        const endYear = year + 1;
         return {
             id,
             name: s === 0
                 ? `${monthNames[startMonth - 1]} ${year} - ${monthNames[endMonth - 1]} ${endYear}`
                 : `${monthNames[startMonth - 1]} - ${monthNames[endMonth - 1]} ${endYear}`,
-            startDate: `${year}-${(startMonthNum)}-01`,
+            startDate: `${startYear}-${(startMonthNum)}-01`,
             endDate: `${endYear}-${(endMonthNum)}-${s === 0 ? '30' : '31'}`,
         };
     },
-    /* eslint-enable complexity */
+    /* eslint-enable */
     Yearly: match => ({
         id: match[0],
         name: match[1],
