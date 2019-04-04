@@ -21,6 +21,7 @@ const periodTypeRegex = {
     Quarterly: /^([0-9]{4})Q([1234])$/,                 // YYYY"Q"[1-4]
     SixMonthly: /^([0-9]{4})S([12])$/,                  // YYYY"S"[1/2]
     SixMonthlyApril: /^([0-9]{4})AprilS([12])$/,        // YYYY"AprilS"[1/2]
+    SixMonthlyNov: /^([0-9]{4})NovS([12])$/,            // YYYY"NovS"[1/2]
     Yearly: /^([0-9]{4})$/,                             // YYYY
     FinancialApril: /^([0-9]{4})April$/,                // YYYY"April"
     FinancialJuly: /^([0-9]{4})July$/,                  // YYYY"July"
@@ -192,6 +193,28 @@ const regexMatchToPeriod = {
             endDate: `${year + s}-${(endMonthNum)}-${s === 0 ? '30' : '31'}`,
         };
     },
+    /* eslint-disable complexity */
+    SixMonthlyNov: (match, locale = 'en') => {
+        const id = match[0];
+        const year = parseInt(match[1], 10);
+        const s = parseInt(match[2], 10) - 1;
+        const startMonth = s === 0 ? 11 : 5;
+        const startMonthNum = `0${startMonth}`.substr(-2);
+        const endMonth = s === 0 ? 4 : 10;
+        const endMonthNum = `0${endMonth}`.substr(-2);
+        const monthNames = getMonthNamesForLocale(locale);
+        const startYear = s === 0 ? year : year + 1;
+        const endYear = year + 1;
+        return {
+            id,
+            name: s === 0
+                ? `${monthNames[startMonth - 1]} ${year} - ${monthNames[endMonth - 1]} ${endYear}`
+                : `${monthNames[startMonth - 1]} - ${monthNames[endMonth - 1]} ${endYear}`,
+            startDate: `${startYear}-${(startMonthNum)}-01`,
+            endDate: `${endYear}-${(endMonthNum)}-${s === 0 ? '30' : '31'}`,
+        };
+    },
+    /* eslint-enable */
     Yearly: match => ({
         id: match[0],
         name: match[1],

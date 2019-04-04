@@ -52,6 +52,9 @@ const periodFixtures = {
     // SixMonthlyApril
     '1981AprilS1': makePeriodFixture('1981AprilS1', 'April - September 1981', '1981-04-01', '1981-09-30'),
     '1981AprilS2': makePeriodFixture('1981AprilS2', 'October 1981 - March 1982', '1981-10-01', '1982-03-31'),
+    // SixMonthlyNov
+    '1981NovS1': makePeriodFixture('1981NovS1', 'November 1981 - April 1982', '1981-11-01', '1982-04-30'),
+    '1981NovS2': makePeriodFixture('1981NovS2', 'May - October 1982', '1982-05-01', '1982-10-31'),
     // Yearly
     1981: makePeriodFixture('1981', '1981', '1981-01-01', '1981-12-31'),
     2017: makePeriodFixture('2017', '2017', '2017-01-01', '2017-12-31'),
@@ -215,6 +218,16 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
         it('should not accept SixMonthlyApril periods below 1 or above 2', () => {
             expect(() => getPeriodFromPeriodId('1981AprilS0')).toThrowError();
             expect(() => getPeriodFromPeriodId('1981AprilS3')).toThrowError();
+        });
+    });
+    describe('for SixMonthlyNov periods', () => {
+        it('should handle valid SixMonthlyNov periods', () => {
+            doPeriodTest('1981NovS1');
+            doPeriodTest('1981NovS2');
+        });
+        it('should not accept SixMonthlyNov periods below 1 or above 2', () => {
+            expect(() => getPeriodFromPeriodId('1981NovS0')).toThrowError();
+            expect(() => getPeriodFromPeriodId('1981NovS3')).toThrowError();
         });
     });
     describe('for Yearly periods', () => {
