@@ -1,69 +1,71 @@
 import { getPeriodFromPeriodId } from '../parser';
 
-function makePeriodFixture(id, name, startDate, endDate) {
-    return { id, name, startDate, endDate };
+function makePeriodFixture(id, name, startDate, endDate, type) {
+    return { id, name, startDate, endDate, type };
 }
 
 const periodFixtures = {
     // Daily
-    19810331: makePeriodFixture('19810331', 'March 31, 1981', '1981-03-31', '1981-03-31'),
-    20171231: makePeriodFixture('20171231', 'December 31, 2017', '2017-12-31', '2017-12-31'),
-    20040229: makePeriodFixture('20040229', 'February 29, 2004', '2004-02-29', '2004-02-29'),
-    20170229: makePeriodFixture('20170301', 'March 1, 2017', '2017-03-01', '2017-03-01'),
+    19810331: makePeriodFixture('19810331', 'March 31, 1981', '1981-03-31', '1981-03-31', 'Daily'),
+    20171231: makePeriodFixture('20171231', 'December 31, 2017', '2017-12-31', '2017-12-31', 'Daily'),
+    20040229: makePeriodFixture('20040229', 'February 29, 2004', '2004-02-29', '2004-02-29', 'Daily'),
+    20170229: makePeriodFixture('20170301', 'March 1, 2017', '2017-03-01', '2017-03-01', 'Daily'),
     // Weekly
-    '2017W4': makePeriodFixture('2017W4', '2017 W4 January 23 - 29', '2017-01-23', '2017-01-29'),
-    '1981W37': makePeriodFixture('1981W37', '1981 W37 September 7 - 13', '1981-09-07', '1981-09-13'),
-    '2015W1': makePeriodFixture('2015W1', '2015 W1 December 29 - January 4', '2014-12-29', '2015-01-04'),
-    '1981W1': makePeriodFixture('1981W1', '1981 W1 December 29 - January 4', '1980-12-29', '1981-01-04'),
-    '2015W53': makePeriodFixture('2015W53', '2015 W53 December 28 - January 3', '2015-12-28', '2016-01-03'),
-    '2016W53': makePeriodFixture('2017W1', '2017 W1 January 2 - 8', '2017-01-02', '2017-01-08'),
-    '2016W52': makePeriodFixture('2016W52', '2016 W52 December 26 - January 1', '2016-12-26', '2017-01-01'),
-    '2017W04': makePeriodFixture('2017W4', '2017 W4 January 23 - 29', '2017-01-23', '2017-01-29'),
+    '2017W4': makePeriodFixture('2017W4', '2017 W4 January 23 - 29', '2017-01-23', '2017-01-29', 'Weekly'),
+    '1981W37': makePeriodFixture('1981W37', '1981 W37 September 7 - 13', '1981-09-07', '1981-09-13', 'Weekly'),
+    '2015W1': makePeriodFixture('2015W1', '2015 W1 December 29 - January 4', '2014-12-29', '2015-01-04', 'Weekly'),
+    '1981W1': makePeriodFixture('1981W1', '1981 W1 December 29 - January 4', '1980-12-29', '1981-01-04', 'Weekly'),
+    '2015W53': makePeriodFixture('2015W53', '2015 W53 December 28 - January 3', '2015-12-28', '2016-01-03', 'Weekly'),
+    '2016W53': makePeriodFixture('2017W1', '2017 W1 January 2 - 8', '2017-01-02', '2017-01-08', 'Weekly'),
+    '2016W52': makePeriodFixture('2016W52', '2016 W52 December 26 - January 1', '2016-12-26', '2017-01-01', 'Weekly'),
+    '2017W04': makePeriodFixture('2017W4', '2017 W4 January 23 - 29', '2017-01-23', '2017-01-29', 'Weekly'),
     // Weekly Wednesday/Thursday/Saturday/Sunday
-    '2017WedW4': makePeriodFixture('2017WedW4', '2017 W4 January 25 - 31', '2017-01-25', '2017-01-31'),
-    '2017ThuW4': makePeriodFixture('2017ThuW4', '2017 W4 January 26 - February 1', '2017-01-26', '2017-02-01'),
-    '2017SatW4': makePeriodFixture('2017SatW4', '2017 W4 January 21 - 27', '2017-01-21', '2017-01-27'),
-    '2017SunW4': makePeriodFixture('2017SunW4', '2017 W4 January 22 - 28', '2017-01-22', '2017-01-28'),
+    /* eslint-disable max-len */
+    '2017WedW4': makePeriodFixture('2017WedW4', '2017 W4 January 25 - 31', '2017-01-25', '2017-01-31', 'WeeklyWednesday'),
+    '2017ThuW4': makePeriodFixture('2017ThuW4', '2017 W4 January 26 - February 1', '2017-01-26', '2017-02-01', 'WeeklyThursday'),
+    '2017SatW4': makePeriodFixture('2017SatW4', '2017 W4 January 21 - 27', '2017-01-21', '2017-01-27', 'WeeklySaturday'),
+    '2017SunW4': makePeriodFixture('2017SunW4', '2017 W4 January 22 - 28', '2017-01-22', '2017-01-28', 'WeeklySunday'),
     // BiWeekly
-    '2019BiW12': makePeriodFixture('2019BiW12', '2019 BiWeek 12 June 3 - 16', '2019-06-03', '2019-06-16'),
-    '2019BiW04': makePeriodFixture('2019BiW4', '2019 BiWeek 4 February 11 - 24', '2019-02-11', '2019-02-24'),
-    '2015BiW1': makePeriodFixture('2015BiW1', '2015 BiWeek 1 December 29 - January 11', '2014-12-29', '2015-01-11'),
-    '2016BiW27': makePeriodFixture('2017BiW1', '2017 BiWeek 1 January 2 - 15', '2017-01-02', '2017-01-15'),
-    '2015BiW27': makePeriodFixture('2015BiW27', '2015 BiWeek 27 December 28 - January 10', '2015-12-28', '2016-01-10'),
+    '2019BiW12': makePeriodFixture('2019BiW12', '2019 BiWeek 12 June 3 - 16', '2019-06-03', '2019-06-16', 'BiWeekly'),
+    '2019BiW04': makePeriodFixture('2019BiW4', '2019 BiWeek 4 February 11 - 24', '2019-02-11', '2019-02-24', 'BiWeekly'),
+    '2015BiW1': makePeriodFixture('2015BiW1', '2015 BiWeek 1 December 29 - January 11', '2014-12-29', '2015-01-11', 'BiWeekly'),
+    '2016BiW27': makePeriodFixture('2017BiW1', '2017 BiWeek 1 January 2 - 15', '2017-01-02', '2017-01-15', 'BiWeekly'),
+    '2015BiW27': makePeriodFixture('2015BiW27', '2015 BiWeek 27 December 28 - January 10', '2015-12-28', '2016-01-10', 'BiWeekly'),
     // Monthly
-    198103: makePeriodFixture('198103', 'March 1981', '1981-03-01', '1981-03-31'),
-    198002: makePeriodFixture('198002', 'February 1980', '1980-02-01', '1980-02-29'),
-    198102: makePeriodFixture('198102', 'February 1981', '1981-02-01', '1981-02-28'),
+    198103: makePeriodFixture('198103', 'March 1981', '1981-03-01', '1981-03-31', 'Monthly'),
+    198002: makePeriodFixture('198002', 'February 1980', '1980-02-01', '1980-02-29', 'Monthly'),
+    198102: makePeriodFixture('198102', 'February 1981', '1981-02-01', '1981-02-28', 'Monthly'),
     // BiMonthly
-    '198101B': makePeriodFixture('198101B', 'January - February 1981', '1981-01-01', '1981-02-28'),
-    '198102B': makePeriodFixture('198102B', 'March - April 1981', '1981-03-01', '1981-04-30'),
-    '198103B': makePeriodFixture('198103B', 'May - June 1981', '1981-05-01', '1981-06-30'),
-    '198104B': makePeriodFixture('198104B', 'July - August 1981', '1981-07-01', '1981-08-31'),
-    '198105B': makePeriodFixture('198105B', 'September - October 1981', '1981-09-01', '1981-10-31'),
-    '198106B': makePeriodFixture('198106B', 'November - December 1981', '1981-11-01', '1981-12-31'),
+    '198101B': makePeriodFixture('198101B', 'January - February 1981', '1981-01-01', '1981-02-28', 'BiMonthly'),
+    '198102B': makePeriodFixture('198102B', 'March - April 1981', '1981-03-01', '1981-04-30', 'BiMonthly'),
+    '198103B': makePeriodFixture('198103B', 'May - June 1981', '1981-05-01', '1981-06-30', 'BiMonthly'),
+    '198104B': makePeriodFixture('198104B', 'July - August 1981', '1981-07-01', '1981-08-31', 'BiMonthly'),
+    '198105B': makePeriodFixture('198105B', 'September - October 1981', '1981-09-01', '1981-10-31', 'BiMonthly'),
+    '198106B': makePeriodFixture('198106B', 'November - December 1981', '1981-11-01', '1981-12-31', 'BiMonthly'),
     // Quarterly
-    '1981Q1': makePeriodFixture('1981Q1', 'January - March 1981', '1981-01-01', '1981-03-31'),
-    '1981Q2': makePeriodFixture('1981Q2', 'April - June 1981', '1981-04-01', '1981-06-30'),
-    '1981Q3': makePeriodFixture('1981Q3', 'July - September 1981', '1981-07-01', '1981-09-30'),
-    '1981Q4': makePeriodFixture('1981Q4', 'October - December 1981', '1981-10-01', '1981-12-31'),
+    '1981Q1': makePeriodFixture('1981Q1', 'January - March 1981', '1981-01-01', '1981-03-31', 'Quarterly'),
+    '1981Q2': makePeriodFixture('1981Q2', 'April - June 1981', '1981-04-01', '1981-06-30', 'Quarterly'),
+    '1981Q3': makePeriodFixture('1981Q3', 'July - September 1981', '1981-07-01', '1981-09-30', 'Quarterly'),
+    '1981Q4': makePeriodFixture('1981Q4', 'October - December 1981', '1981-10-01', '1981-12-31', 'Quarterly'),
     // SixMonthly
-    '1981S1': makePeriodFixture('1981S1', 'January - June 1981', '1981-01-01', '1981-06-30'),
-    '1981S2': makePeriodFixture('1981S2', 'July - December 1981', '1981-07-01', '1981-12-31'),
+    '1981S1': makePeriodFixture('1981S1', 'January - June 1981', '1981-01-01', '1981-06-30', 'SixMonthly'),
+    '1981S2': makePeriodFixture('1981S2', 'July - December 1981', '1981-07-01', '1981-12-31', 'SixMonthly'),
     // SixMonthlyApril
-    '1981AprilS1': makePeriodFixture('1981AprilS1', 'April - September 1981', '1981-04-01', '1981-09-30'),
-    '1981AprilS2': makePeriodFixture('1981AprilS2', 'October 1981 - March 1982', '1981-10-01', '1982-03-31'),
+    '1981AprilS1': makePeriodFixture('1981AprilS1', 'April - September 1981', '1981-04-01', '1981-09-30', 'SixMonthlyApril'),
+    '1981AprilS2': makePeriodFixture('1981AprilS2', 'October 1981 - March 1982', '1981-10-01', '1982-03-31', 'SixMonthlyApril'),
     // SixMonthlyNov
-    '1981NovS1': makePeriodFixture('1981NovS1', 'November 1981 - April 1982', '1981-11-01', '1982-04-30'),
-    '1981NovS2': makePeriodFixture('1981NovS2', 'May - October 1982', '1982-05-01', '1982-10-31'),
+    '1981NovS1': makePeriodFixture('1981NovS1', 'November 1981 - April 1982', '1981-11-01', '1982-04-30', 'SixMonthlyNov'),
+    '1981NovS2': makePeriodFixture('1981NovS2', 'May - October 1982', '1982-05-01', '1982-10-31', 'SixMonthlyNov'),
     // Yearly
-    1981: makePeriodFixture('1981', '1981', '1981-01-01', '1981-12-31'),
-    2017: makePeriodFixture('2017', '2017', '2017-01-01', '2017-12-31'),
+    1981: makePeriodFixture('1981', '1981', '1981-01-01', '1981-12-31', 'Yearly'),
+    2017: makePeriodFixture('2017', '2017', '2017-01-01', '2017-12-31', 'Yearly'),
     // FinancialApril
-    '1981April': makePeriodFixture('1981April', 'April 1981 - March 1982', '1981-04-01', '1982-03-31'),
+    '1981April': makePeriodFixture('1981April', 'April 1981 - March 1982', '1981-04-01', '1982-03-31', 'FinancialApril'),
     // FinancialJuly
-    '1981July': makePeriodFixture('1981July', 'July 1981 - June 1982', '1981-07-01', '1982-06-30'),
+    '1981July': makePeriodFixture('1981July', 'July 1981 - June 1982', '1981-07-01', '1982-06-30', 'FinancialJuly'),
     // FinancialOct
-    '1981Oct': makePeriodFixture('1981Oct', 'October 1981 - September 1982', '1981-10-01', '1982-09-30'),
+    '1981Oct': makePeriodFixture('1981Oct', 'October 1981 - September 1982', '1981-10-01', '1982-09-30', 'FinancialOct'),
+    /* eslint-enable */
 };
 
 function doPeriodTest(id) {
