@@ -255,10 +255,19 @@ const regexMatchToPeriod = {
 
 export function getPeriodFromPeriodId(periodId, locale = 'en') {
     const period = Object.keys(periodTypeRegex)
-        .filter(periodType => periodTypeRegex[periodType].test(periodId)
-            && regexMatchToPeriod.hasOwnProperty(periodType),
+        .filter(
+            periodType =>
+                periodTypeRegex[periodType].test(periodId) &&
+                regexMatchToPeriod.hasOwnProperty(periodType),
         )
-        .map(periodType => regexMatchToPeriod[periodType](periodId.match(periodTypeRegex[periodType]), locale))[0];
+        .map((periodType) => {
+            const matchedPeriod = regexMatchToPeriod[periodType](
+                periodId.match(periodTypeRegex[periodType]),
+                locale,
+            );
+            matchedPeriod.type = periodType;
+            return matchedPeriod;
+        })[0];
 
     if (!period) {
         throw new Error('Invalid period format');
