@@ -26,6 +26,7 @@ const periodTypeRegex = {
     FinancialApril: /^([0-9]{4})April$/,                // YYYY"April"
     FinancialJuly: /^([0-9]{4})July$/,                  // YYYY"July"
     FinancialOct: /^([0-9]{4})Oct$/,                    // YYYY"Oct"
+    FinancialNov: /^([0-9]{4})Nov$/,                    // YYYY"Nov"
 };
 
 /* eslint-disable complexity */
@@ -249,6 +250,16 @@ const regexMatchToPeriod = {
             name: `${monthNames[9]} ${year} - ${monthNames[8]} ${year + 1}`,
             startDate: `${year}-10-01`,
             endDate: `${year + 1}-09-30`,
+        };
+    },
+    FinancialNov: (match, locale = 'en') => {
+        const year = parseInt(match[1], 10);
+        const monthNames = getMonthNamesForLocale(locale);
+        return {
+            id: match[0],
+            name: `${monthNames[10]} ${year} - ${monthNames[9]} ${year + 1}`,
+            startDate: `${year}-11-01`,
+            endDate: `${year + 1}-10-31`,
         };
     },
 };
