@@ -65,6 +65,8 @@ const periodFixtures = {
     '1981July': makePeriodFixture('1981July', 'July 1981 - June 1982', '1981-07-01', '1982-06-30', 'FinancialJuly'),
     // FinancialOct
     '1981Oct': makePeriodFixture('1981Oct', 'October 1981 - September 1982', '1981-10-01', '1982-09-30', 'FinancialOct'),
+    // FinancialNov
+    '1981Nov': makePeriodFixture('1981Nov', 'November 1981 - October 1982', '1981-11-01', '1982-10-31', 'FinancialNov'),
     /* eslint-enable */
 };
 
@@ -267,6 +269,11 @@ describe('getPeriodFromPeriodId(periodId, locale) period parser', () => {
         //         makePeriodFixture('1981Oct', 'octobre 1981 - septembre 1982', '1981-10-01', '1982-09-30')
         //     );
         // });
+    });
+    describe('for FinancialNov periods', () => {
+        it('should handle FinancialNov periods', () => {
+            doPeriodTest('1981Nov');
+        });
     });
     describe('for invalid periods', () => {
         it('should not accept invalid periods', () => {
