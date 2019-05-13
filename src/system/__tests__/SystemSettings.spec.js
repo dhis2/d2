@@ -209,12 +209,14 @@ describe('settings.System', () => {
                 });
         });
 
-        it('should clear the settings cache', () => systemSettings.all()
+        it('should update the settings cache', () => systemSettings.all()
             .then(() => systemSettings.set('test', 'value'))
             .then(() => systemSettings.all())
-            .then(() => {
-                expect(mockApi.get).toHaveBeenCalledTimes(2);
+            .then(() => systemSettings.get('test'))
+            .then((test) => {
+                expect(mockApi.get).toHaveBeenCalledTimes(1);
                 expect(mockApi.post).toHaveBeenCalledTimes(1);
+                expect(test).toEqual('value');
             }));
     });
 
