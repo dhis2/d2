@@ -51,7 +51,7 @@
     "docdash": "^1.0.3",
     "eslint": "^4.6.1",
     "eslint-config-dhis2": "^3.0.2",
-    "form-data": "^2.3.3",
+    "form-data": "^2.4.0",
     "jest": "^24.1.0",
     "jsdoc": "^3.5.5",
     "lodash": "^4.17.11",
