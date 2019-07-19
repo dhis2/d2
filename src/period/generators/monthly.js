@@ -9,7 +9,6 @@ export function generateMonthlyPeriodsForYear(
     year = getCurrentYear(),
     locale = 'en'
 ) {
-    // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year)
 
     const periods = []

@@ -8,7 +8,6 @@ export function generateSixMonthlyAprilPeriodsForYear(
     year = getCurrentYear(),
     locale = 'en'
 ) {
-    // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year)
 
     const monthNames = getMonthNamesForLocale(locale)

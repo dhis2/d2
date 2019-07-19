@@ -11,7 +11,6 @@ export function generateFinancialJulyPeriodsUpToYear(
     numberOfYears = 10,
     locale = 'en'
 ) {
-    // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year)
     if (!isInteger(numberOfYears) || numberOfYears < 1) {
         throw new Error(

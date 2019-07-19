@@ -17,7 +17,6 @@ Model.create = jest.fn(modelDefinition => {
         modelDefinition.modelProperties
     ).reduce((descriptors, propertyName) => {
         descriptors[propertyName] = {
-            // eslint-disable-line no-param-reassign
             set(value) {
                 this.dataValues[propertyName] = value
             },

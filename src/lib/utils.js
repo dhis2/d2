@@ -27,7 +27,7 @@ export function copyOwnProperties(to, from) {
     Object.keys(from)
         .filter(key => from.hasOwnProperty(key))
         .forEach(key => {
-            to[key] = from[key] // eslint-disable-line no-param-reassign
+            to[key] = from[key]
         })
 
     return to
@@ -74,6 +74,7 @@ export class Deferred {
     }
 }
 
+// eslint-disable-next-line complexity
 export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
     if (!baseUrl || !apiUrl) {
         return apiUrl

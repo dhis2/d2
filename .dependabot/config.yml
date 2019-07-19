@@ -1,0 +1,16 @@
+version: 1
+
+update_configs:
+  - package_manager: "javascript"
+    directory: "/"
+    update_schedule: "live"
+    version_requirement_updates: "increase_versions"
+  - package_manager: "java:maven"
+    directory: "/"
+    update_schedule: "monthly"
+  - package_manager: "docker"
+    directory: "/"
+    update_schedule: "weekly"
+  - package_manager: "submodules"
+    directory: "/"
+    update_schedule: "weekly"

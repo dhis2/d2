@@ -87,6 +87,7 @@ const AnalyticsRequestDimensionsMixin = base =>
          *
          * // dimension=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&dimension=qrur9Dvnyt5-Yf6UHoPkdS6
          */
+        // eslint-disable-next-line complexity
         addDimension(dimension, items) {
             let dimensionIndex = 0
 

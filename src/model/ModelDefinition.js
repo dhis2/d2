@@ -50,7 +50,7 @@ function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
     }
 
     if (propertyName) {
-        propertiesObject[propertyName] = propertyDetails // eslint-disable-line no-param-reassign
+        propertiesObject[propertyName] = propertyDetails
     }
 }
 
@@ -66,6 +66,7 @@ function createPropertiesObject(schemaProperties) {
     return propertiesObject
 }
 
+// eslint-disable-next-line complexity
 function createValidationSetting(validationObject, schemaProperty) {
     const propertyName = schemaProperty.collection
         ? schemaProperty.collectionName
@@ -101,7 +102,7 @@ function createValidationSetting(validationObject, schemaProperty) {
     }
 
     if (propertyName) {
-        validationObject[propertyName] = validationDetails // eslint-disable-line no-param-reassign
+        validationObject[propertyName] = validationDetails
     }
 }
 
@@ -118,6 +119,7 @@ function createValidations(schemaProperties) {
 }
 
 function shouldBeModelCollectionProperty(model, models) {
+    // eslint-disable-next-line complexity
     return function shouldBeModelCollectionPropertyIterator(modelProperty) {
         return (
             model &&
@@ -151,6 +153,7 @@ const translatableProperties = new WeakMap()
  * @memberof module:model
  */
 class ModelDefinition {
+    // eslint-disable-next-line complexity
     constructor(schema = {}, properties, validations, attributes, authorities) {
         checkType(schema.singular, 'string')
         checkType(schema.plural, 'string', 'Plural')
@@ -486,7 +489,7 @@ class ModelDefinition {
                 Object.freeze(createPropertiesObject(schema.properties)),
                 Object.freeze(createValidations(schema.properties)),
                 attributes.reduce((current, attributeDefinition) => {
-                    current[attributeDefinition.name] = attributeDefinition // eslint-disable-line no-param-reassign
+                    current[attributeDefinition.name] = attributeDefinition
                     return current
                 }, {}),
                 schema.authorities
@@ -512,7 +515,7 @@ class DataSetModelDefinition extends ModelDefinition {
         const dataClone = Object.keys(data)
             .filter(key => key !== 'compulsoryDataElementOperands')
             .reduce((obj, key) => {
-                obj[key] = data[key] // eslint-disable-line no-param-reassign
+                obj[key] = data[key]
                 return obj
             }, {})
 

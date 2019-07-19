@@ -1174,7 +1174,6 @@ describe('ModelDefinition', () => {
             )
 
             class Model {
-                // eslint-disable-line no-shadow
                 constructor() {
                     this.dataValues = {}
                     this[DIRTY_PROPERTY_LIST] = new Set([])
@@ -1364,7 +1363,6 @@ describe('ModelDefinition', () => {
             )
 
             class Model {
-                // eslint-disable-line no-shadow
                 constructor() {
                     this.dataValues = {}
                     this.modelDefinition = userModelDefinition

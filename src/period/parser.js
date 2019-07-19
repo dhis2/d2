@@ -66,12 +66,8 @@ const weeklyMatcherParser = (match, locale = 'en') => {
 
     const name =
         p.startMonthName === p.endMonthName
-            ? `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${
-                  p.endDayNum
-              }`
-            : `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${
-                  p.endMonthName
-              } ${p.endDayNum}`
+            ? `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${p.endDayNum}`
+            : `${p.year} W${p.week} ${p.startMonthName} ${p.startDayNum} - ${p.endMonthName} ${p.endDayNum}`
 
     return {
         id: `${p.year}${weekType}W${p.week}`,
@@ -127,12 +123,8 @@ const regexMatchToPeriod = {
 
         const name =
             p.startMonthName === p.endMonthName
-                ? `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${
-                      p.startDayNum
-                  } - ${p.endDayNum}`
-                : `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${
-                      p.startDayNum
-                  } - ${p.endMonthName} ${p.endDayNum}`
+                ? `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${p.startDayNum} - ${p.endDayNum}`
+                : `${p.year} BiWeek ${biWeek} ${p.startMonthName} ${p.startDayNum} - ${p.endMonthName} ${p.endDayNum}`
 
         return {
             id: `${p.year}BiW${biWeek}`,

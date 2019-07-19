@@ -16,7 +16,6 @@ function createPropertyDefinitionsForAttributes(
     return Object.keys(attributeProperties).reduce(
         (propertyDefinitions, attributeName) => {
             propertyDefinitions[attributeName] = {
-                // eslint-disable-line no-param-reassign
                 enumerable: true,
                 get() {
                     const attributeValues = getAttributeValues()

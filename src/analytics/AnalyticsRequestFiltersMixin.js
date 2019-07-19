@@ -87,6 +87,7 @@ const AnalyticsRequestFiltersMixin = base =>
          *
          * // filter=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&filter=qrur9Dvnyt5-Yf6UHoPkdS6
          */
+        // eslint-disable-next-line complexity
         addFilter(dimension, items) {
             let filterIndex = 0
 

@@ -16,6 +16,7 @@ export function checkDefined(value, name) {
 }
 
 // TODO: Decide if checkType([], 'object') is a 'false' positive
+// eslint-disable-next-line complexity
 export function checkType(value, type, name) {
     checkDefined(value, name)
     checkDefined(type, 'Type')
@@ -24,7 +25,6 @@ export function checkType(value, type, name) {
         (typeof type === 'function' && value instanceof type) ||
         (typeof type === 'string' && typeof value === type)
     ) {
-        // eslint-disable-line valid-typeof
         return true
     }
     throw new Error(['Expected', name || value, 'to have type', type].join(' '))
