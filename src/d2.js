@@ -12,6 +12,7 @@
  *
  * init({ baseUrl: 'https://play.dhis2.org/demo/api/27/' })
  *  .then(d2 => console.log(d2.currentUser.name));
+ *
  */
 import 'isomorphic-fetch'
 import {
