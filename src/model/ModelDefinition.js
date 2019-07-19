@@ -12,6 +12,7 @@ import ModelCollection from './ModelCollection'
 import ModelCollectionProperty from './ModelCollectionProperty'
 import schemaTypes from '../lib/SchemaTypes'
 import Filters from './Filters'
+
 import { DIRTY_PROPERTY_LIST } from './ModelBase'
 import { getDefaultValuesForModelType } from './config'
 import { getOwnedPropertyJSON } from './helpers/json'
