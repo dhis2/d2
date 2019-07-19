@@ -52,7 +52,7 @@ class AnalyticsBase {
 
         const dataReq = new AnalyticsRequest(req)
             .withSkipData(false)
-            .withSkipMeta(true);
+            .withSkipMeta(true)
 
         // parallelize requests
         return Promise.all([

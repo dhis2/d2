@@ -9,25 +9,25 @@ import {
 import { toLocaleDayFormat } from './formatters'
 
 const periodTypeRegex = {
-    Daily: /^([0-9]{4})([0-9]{2})([0-9]{2})$/,          // YYYYMMDD
-    Weekly: /^([0-9]{4})()W([0-9]{1,2})$/,              // YYYY"W"[1-53]
-    WeeklyWednesday: /^([0-9]{4})(Wed)W([0-9]{1,2})$/,  // YYYY"WedW"[1-53]
-    WeeklyThursday: /^([0-9]{4})(Thu)W([0-9]{1,2})$/,   // YYYY"ThuW"[1-53]
-    WeeklySaturday: /^([0-9]{4})(Sat)W([0-9]{1,2})$/,   // YYYY"SatW"[1-53]
-    WeeklySunday: /^([0-9]{4})(Sun)W([0-9]{1,2})$/,     // YYYY"SunW"[1-53]
-    BiWeekly: /^([0-9]{4})BiW([0-9]{1,2})$/,            // YYYY"BiW"[1-27]
-    Monthly: /^([0-9]{4})([0-9]{2})$/,                  // YYYYMM
-    BiMonthly: /^([0-9]{4})([0-9]{2})B$/,               // YYYY0[1-6]"B"
-    Quarterly: /^([0-9]{4})Q([1234])$/,                 // YYYY"Q"[1-4]
-    SixMonthly: /^([0-9]{4})S([12])$/,                  // YYYY"S"[1/2]
-    SixMonthlyApril: /^([0-9]{4})AprilS([12])$/,        // YYYY"AprilS"[1/2]
-    SixMonthlyNov: /^([0-9]{4})NovS([12])$/,            // YYYY"NovS"[1/2]
-    Yearly: /^([0-9]{4})$/,                             // YYYY
-    FinancialApril: /^([0-9]{4})April$/,                // YYYY"April"
-    FinancialJuly: /^([0-9]{4})July$/,                  // YYYY"July"
-    FinancialOct: /^([0-9]{4})Oct$/,                    // YYYY"Oct"
-    FinancialNov: /^([0-9]{4})Nov$/,                    // YYYY"Nov"
-};
+    Daily: /^([0-9]{4})([0-9]{2})([0-9]{2})$/, // YYYYMMDD
+    Weekly: /^([0-9]{4})()W([0-9]{1,2})$/, // YYYY"W"[1-53]
+    WeeklyWednesday: /^([0-9]{4})(Wed)W([0-9]{1,2})$/, // YYYY"WedW"[1-53]
+    WeeklyThursday: /^([0-9]{4})(Thu)W([0-9]{1,2})$/, // YYYY"ThuW"[1-53]
+    WeeklySaturday: /^([0-9]{4})(Sat)W([0-9]{1,2})$/, // YYYY"SatW"[1-53]
+    WeeklySunday: /^([0-9]{4})(Sun)W([0-9]{1,2})$/, // YYYY"SunW"[1-53]
+    BiWeekly: /^([0-9]{4})BiW([0-9]{1,2})$/, // YYYY"BiW"[1-27]
+    Monthly: /^([0-9]{4})([0-9]{2})$/, // YYYYMM
+    BiMonthly: /^([0-9]{4})([0-9]{2})B$/, // YYYY0[1-6]"B"
+    Quarterly: /^([0-9]{4})Q([1234])$/, // YYYY"Q"[1-4]
+    SixMonthly: /^([0-9]{4})S([12])$/, // YYYY"S"[1/2]
+    SixMonthlyApril: /^([0-9]{4})AprilS([12])$/, // YYYY"AprilS"[1/2]
+    SixMonthlyNov: /^([0-9]{4})NovS([12])$/, // YYYY"NovS"[1/2]
+    Yearly: /^([0-9]{4})$/, // YYYY
+    FinancialApril: /^([0-9]{4})April$/, // YYYY"April"
+    FinancialJuly: /^([0-9]{4})July$/, // YYYY"July"
+    FinancialOct: /^([0-9]{4})Oct$/, // YYYY"Oct"
+    FinancialNov: /^([0-9]{4})Nov$/, // YYYY"Nov"
+}
 
 /* eslint-disable complexity */
 const weeklyMatcherParser = (match, locale = 'en') => {
@@ -224,24 +224,29 @@ const regexMatchToPeriod = {
     },
     /* eslint-disable complexity */
     SixMonthlyNov: (match, locale = 'en') => {
-        const id = match[0];
-        const year = parseInt(match[1], 10);
-        const s = parseInt(match[2], 10) - 1;
-        const startMonth = s === 0 ? 11 : 5;
-        const startMonthNum = `0${startMonth}`.substr(-2);
-        const endMonth = s === 0 ? 4 : 10;
-        const endMonthNum = `0${endMonth}`.substr(-2);
-        const monthNames = getMonthNamesForLocale(locale);
-        const startYear = s === 0 ? year : year + 1;
-        const endYear = year + 1;
+        const id = match[0]
+        const year = parseInt(match[1], 10)
+        const s = parseInt(match[2], 10) - 1
+        const startMonth = s === 0 ? 11 : 5
+        const startMonthNum = `0${startMonth}`.substr(-2)
+        const endMonth = s === 0 ? 4 : 10
+        const endMonthNum = `0${endMonth}`.substr(-2)
+        const monthNames = getMonthNamesForLocale(locale)
+        const startYear = s === 0 ? year : year + 1
+        const endYear = year + 1
         return {
             id,
-            name: s === 0
-                ? `${monthNames[startMonth - 1]} ${year} - ${monthNames[endMonth - 1]} ${endYear}`
-                : `${monthNames[startMonth - 1]} - ${monthNames[endMonth - 1]} ${endYear}`,
-            startDate: `${startYear}-${(startMonthNum)}-01`,
-            endDate: `${endYear}-${(endMonthNum)}-${s === 0 ? '30' : '31'}`,
-        };
+            name:
+                s === 0
+                    ? `${monthNames[startMonth - 1]} ${year} - ${
+                          monthNames[endMonth - 1]
+                      } ${endYear}`
+                    : `${monthNames[startMonth - 1]} - ${
+                          monthNames[endMonth - 1]
+                      } ${endYear}`,
+            startDate: `${startYear}-${startMonthNum}-01`,
+            endDate: `${endYear}-${endMonthNum}-${s === 0 ? '30' : '31'}`,
+        }
     },
     /* eslint-enable */
     Yearly: match => ({
@@ -281,32 +286,32 @@ const regexMatchToPeriod = {
         }
     },
     FinancialNov: (match, locale = 'en') => {
-        const year = parseInt(match[1], 10);
-        const monthNames = getMonthNamesForLocale(locale);
+        const year = parseInt(match[1], 10)
+        const monthNames = getMonthNamesForLocale(locale)
         return {
             id: match[0],
             name: `${monthNames[10]} ${year} - ${monthNames[9]} ${year + 1}`,
             startDate: `${year}-11-01`,
             endDate: `${year + 1}-10-31`,
-        };
+        }
     },
-};
+}
 
 export function getPeriodFromPeriodId(periodId, locale = 'en') {
     const period = Object.keys(periodTypeRegex)
         .filter(
             periodType =>
                 periodTypeRegex[periodType].test(periodId) &&
-                regexMatchToPeriod.hasOwnProperty(periodType),
+                regexMatchToPeriod.hasOwnProperty(periodType)
         )
-        .map((periodType) => {
+        .map(periodType => {
             const matchedPeriod = regexMatchToPeriod[periodType](
                 periodId.match(periodTypeRegex[periodType]),
-                locale,
-            );
-            matchedPeriod.type = periodType;
-            return matchedPeriod;
-        })[0];
+                locale
+            )
+            matchedPeriod.type = periodType
+            return matchedPeriod
+        })[0]
 
     if (!period) {
         throw new Error('Invalid period format')

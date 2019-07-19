@@ -260,31 +260,18 @@ describe('settings.System', () => {
             })
         })
 
-        it('should clear the settings cache', () =>
+        it('should update the settings cache', () =>
             systemSettings
                 .all()
                 .then(() => systemSettings.set('test', 'value'))
                 .then(() => systemSettings.all())
-                .then(() => {
-                    expect(mockApi.get).toHaveBeenCalledTimes(0);
-                    expect(mockApi.post).toHaveBeenCalledTimes(1);
-                    expect(mockApi.delete).toHaveBeenCalledTimes(0);
-
-                    const requestOptions = { headers: { 'Content-Type': 'text/plain' } };
-                    expect(mockApi.post).toBeCalledWith('systemSettings/mySetting', value, requestOptions);
-                });
-        });
-
-        it('should update the settings cache', () => systemSettings.all()
-            .then(() => systemSettings.set('test', 'value'))
-            .then(() => systemSettings.all())
-            .then(() => systemSettings.get('test'))
-            .then((test) => {
-                expect(mockApi.get).toHaveBeenCalledTimes(1);
-                expect(mockApi.post).toHaveBeenCalledTimes(1);
-                expect(test).toEqual('value');
-            }));
-    });
+                .then(() => systemSettings.get('test'))
+                .then(test => {
+                    expect(mockApi.get).toHaveBeenCalledTimes(1)
+                    expect(mockApi.post).toHaveBeenCalledTimes(1)
+                    expect(test).toEqual('value')
+                }))
+    })
 
     describe('.set API request', () => {
         beforeEach(() => {

@@ -91,27 +91,27 @@ class SystemSettings {
     }
 
     set(systemSettingsKey, value) {
-        const settingUrl = ['systemSettings', systemSettingsKey].join('/');
+        const settingUrl = ['systemSettings', systemSettingsKey].join('/')
         if (value === null || `${value}`.length === 0) {
-            return this.api.delete(settingUrl).then((response) => {
+            return this.api.delete(settingUrl).then(response => {
                 // Update cache if present
                 if (this.settings && this.settings[systemSettingsKey]) {
-                    delete this.settings[systemSettingsKey];
+                    delete this.settings[systemSettingsKey]
                 }
-                return response;
-            });
+                return response
+            })
         }
         return this.api
             .post(settingUrl, value, {
                 headers: { 'Content-Type': 'text/plain' },
             })
-            .then((response) => {
+            .then(response => {
                 // update cache if present
                 if (this.settings) {
-                    this.settings[systemSettingsKey] = value;
+                    this.settings[systemSettingsKey] = value
                 }
-                return response;
-            });
+                return response
+            })
     }
 }
 
