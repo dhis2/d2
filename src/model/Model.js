@@ -1,5 +1,6 @@
 import { checkType, hasKeys } from '../lib/check'
 import { pickOr } from '../lib/utils'
+
 import ModelBase, { DIRTY_PROPERTY_LIST } from './ModelBase'
 import createPropertyDefinitionsForAttributes from './helpers/attibutes'
 
