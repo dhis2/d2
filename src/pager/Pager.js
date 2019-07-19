@@ -164,9 +164,7 @@ class Pager {
         }
         if (pageNr > this.pageCount) {
             throw new Error(
-                `PageNr can not be larger than the total page count of ${
-                    this.pageCount
-                }`
+                `PageNr can not be larger than the total page count of ${this.pageCount}`
             )
         }
 

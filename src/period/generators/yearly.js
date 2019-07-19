@@ -9,7 +9,6 @@ export function generateYearlyPeriodsUpToYear(
     year = getCurrentYear(),
     numberOfYears = 10
 ) {
-    // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year)
     if (!isInteger(numberOfYears) || numberOfYears < 1) {
         throw new Error(

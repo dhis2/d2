@@ -16,7 +16,6 @@ import {
  * @param {Integer} [year] The year to generate the weeks for.
  */
 export function generateWeeklyPeriodsForYear(year = getCurrentYear()) {
-    // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year)
 
     const periods = []

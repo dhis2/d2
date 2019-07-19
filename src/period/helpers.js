@@ -213,10 +213,8 @@ export const computeWeekBasedPeriod = ({
     const startDayNum = startDate.getDate()
 
     if (week === 53 && startYear !== year) {
-        /* eslint-disable no-param-reassign */
         week = 1
         year = startYear
-        /* eslint-enable */
     }
 
     const endDate = addDays(periodLength, startDate)

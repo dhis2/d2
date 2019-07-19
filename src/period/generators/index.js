@@ -20,7 +20,6 @@ import { generateFinancialAprilPeriodsUpToYear } from './financial-april'
  * @returns {{generateDailyPeriodsForYear: (function(*=): *), generateWeeklyPeriodsForYear: (function(*=): *), generateMonthlyPeriodsForYear: (function(*=): *), generateBiMonthlyPeriodsForYear: (function(*=): *), generateQuarterlyPeriodsForYear: (function(*=): *), generateSixMonthlyPeriodsForYear: (function(*=): *), generateSixMonthlyAprilPeriodsForYear: (function(*=): *), generateYearlyPeriodsUpToYear: (function(*=, *=): *), generateFinancialOctoberPeriodsUpToYear: (function(*=, *=): *), generateFinancialJulyPeriodsUpToYear: (function(*=, *=): *), generateFinancialAprilPeriodsUpToYear: (function(*=, *=): *)}}
  */
 export function createPeriodGeneratorsForLocale(locale = 'en') {
-    // eslint-disable-line import/prefer-default-export
     return {
         generateDailyPeriodsForYear: year =>
             generateDailyPeriodsForYear(year, locale),

@@ -44,7 +44,7 @@ const authTypes = {
  */
 const propertySymbols = Array.from(propertiesToIgnore).reduce(
     (result, property) => {
-        result[property] = Symbol(property) // eslint-disable-line no-param-reassign
+        result[property] = Symbol(property)
         return result
     },
     {}
@@ -78,11 +78,12 @@ function getPropertiesForCurrentUserObject(currentUserObject) {
     return Object.keys(properties).reduce((result, property) => {
         if (propertiesToIgnore.has(property)) {
             if (properties[property].map) {
-                result[propertySymbols[property]] = properties[property] // eslint-disable-line no-param-reassign
-                    .map(value => value.id)
+                result[propertySymbols[property]] = properties[property].map(
+                    value => value.id
+                )
             }
         } else {
-            result[property] = properties[property] // eslint-disable-line no-param-reassign
+            result[property] = properties[property]
         }
         return result
     }, {})

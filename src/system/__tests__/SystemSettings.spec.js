@@ -18,7 +18,7 @@ describe('settings.System', () => {
     })
 
     it('should not be allowed to be called without new', () => {
-        expect(() => SystemSettings()).toThrowErrorMatchingSnapshot() // eslint-disable-line
+        expect(() => SystemSettings()).toThrowErrorMatchingSnapshot()
     })
 
     it('should set an instance of Api onto the SystemSettings instance', () => {

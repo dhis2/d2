@@ -101,7 +101,6 @@ class System {
      * @returns {Promise}
      */
     uploadApp(zipFile, onProgress) {
-        // eslint-disable-line class-methods-use-this
         const api = Api.getApi()
         const data = new FormData()
         let xhr
@@ -165,7 +164,6 @@ class System {
      * @returns {Promise}
      */
     installAppVersion(uid) {
-        // eslint-disable-line class-methods-use-this
         const api = Api.getApi()
         return new Promise((resolve, reject) => {
             api.post(['appStore', uid].join('/'), '', { dataType: 'text' })
@@ -185,7 +183,6 @@ class System {
      * @returns {Promise}
      */
     uninstallApp(appKey) {
-        // eslint-disable-line class-methods-use-this
         const api = Api.getApi()
 
         return (

@@ -30,7 +30,6 @@ export function generateQuarterlyPeriodsForYear(
     year = getCurrentYear(),
     locale = 'en-gb'
 ) {
-    // eslint-disable-line import/prefer-default-export
     validateIfValueIsInteger(year)
 
     const periods = []

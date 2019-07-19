@@ -1,7 +1,6 @@
 /**
  * @module api
  */
-/* global window fetch Headers */
 import 'isomorphic-fetch'
 import { checkType } from '../lib/check'
 import { customEncodeURIComponent } from '../lib/utils'
@@ -156,7 +155,7 @@ class Api {
         let payload = data
 
         // Ensure that headers are defined and are treated without case sensitivity
-        options.headers = new Headers(options.headers || {}) // eslint-disable-line
+        options.headers = new Headers(options.headers || {})
 
         if (data !== undefined) {
             if (data.constructor.name === 'FormData') {
@@ -315,7 +314,7 @@ class Api {
             query = `${query}${
                 query.length ? '&' : ''
             }filter=${encodedFilters.join('&filter=')}`
-            delete data.filter // eslint-disable-line no-param-reassign
+            delete data.filter
         }
 
         // When using the GET method, transform the data object to query parameters
@@ -409,14 +408,10 @@ class Api {
                                 !process.env ||
                                 process.env.npm_lifecycle_event !== 'test'
                             ) {
+                                // eslint-disable-next-line
                                 console.warn(
-                                    // eslint-disable-line
-                                    `API request failed with status ${
-                                        response.status
-                                    } ${response.statusText}\n`,
-                                    `Request: ${
-                                        requestOptions.method
-                                    } ${requestUrl}`
+                                    `API request failed with status ${response.status} ${response.statusText}\n`,
+                                    `Request: ${requestOptions.method} ${requestUrl}`
                                 )
                             }
                             reject(parsedResponseData)
@@ -434,9 +429,7 @@ class Api {
                     }
 
                     reject(
-                        `Server connection failed for API request: ${
-                            requestOptions.method
-                        } ${requestUrl}`
+                        `Server connection failed for API request: ${requestOptions.method} ${requestUrl}`
                     )
                 })
         })

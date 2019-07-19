@@ -24,10 +24,11 @@ export default class Config {
         }
     }
 
+    // eslint-disable-next-line complexity
     static processConfigForD2(config, d2) {
         const api = d2.Api.getApi()
-        d2.model.ModelDefinition.prototype.api = api // eslint-disable-line no-param-reassign
-        d2.models = d2.model.ModelDefinitions.getModelDefinitions() // eslint-disable-line no-param-reassign
+        d2.model.ModelDefinition.prototype.api = api
+        d2.models = d2.model.ModelDefinitions.getModelDefinitions()
 
         if (isString(config.baseUrl)) {
             api.setBaseUrl(config.baseUrl)

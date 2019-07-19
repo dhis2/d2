@@ -316,7 +316,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
                     schema.apiEndpoint = updateAPIUrlWithBaseUrlVersionNumber(
                         schema.apiEndpoint,
                         config.baseUrl
-                    ) // eslint-disable-line no-param-reassign
+                    )
 
                     return schema
                 })
@@ -419,7 +419,6 @@ export function getInstance() {
 }
 
 export function setInstance(d2) {
-    console.warn('[d2] Overriding d2 instance; you better be sure about this.')
     deferredD2Init.resolve(d2)
 }
 

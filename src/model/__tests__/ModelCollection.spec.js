@@ -256,7 +256,6 @@ describe('ModelCollection', () => {
 
             it('should not accept an object that was created based on a local class', () => {
                 class Model {
-                    // eslint-disable-line no-shadow
                     constructor(id) {
                         this.id = id
                     }

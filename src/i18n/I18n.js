@@ -62,10 +62,10 @@ class I18n {
                     value !== undefined &&
                     !props.hasOwnProperty(key)
                 ) {
-                    props[key] = value // eslint-disable-line no-param-reassign
-                        .replace(/\\u([0-9a-f]{4})/gi, (match, grp) =>
-                            String.fromCharCode(parseInt(grp, 16))
-                        )
+                    props[key] = value.replace(
+                        /\\u([0-9a-f]{4})/gi,
+                        (match, grp) => String.fromCharCode(parseInt(grp, 16))
+                    )
                 }
                 return props
             }, {})

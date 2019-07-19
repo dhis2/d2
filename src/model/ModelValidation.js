@@ -41,7 +41,6 @@ class ModelValidation {
      * @note {warn} Currently only checks
      */
     validateAgainstSchema(model) {
-        // eslint-disable-line class-methods-use-this
         if (!(model && model.modelDefinition && model.modelDefinition.name)) {
             return Promise.reject('model.modelDefinition.name can not be found')
         }
