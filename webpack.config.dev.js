@@ -3,7 +3,7 @@ const path = require('path')
 module.exports = {
     entry: './src/d2.js',
     output: {
-        path: path.join(__dirname, 'lib'),
+        path: path.join(__dirname, 'build'),
         filename: 'd2-browser.js',
         library: 'd2',
         libraryTarget: 'umd',

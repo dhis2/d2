@@ -2,7 +2,9 @@
   "name": "d2",
   "version": "31.8.1",
   "description": "Javascript library for DHIS2",
-  "main": "d2.js",
+  "main": "build/cjs/d2.js",
+  "browser": "build/umd/d2.js",
+  "module": "build/esm/d2.js",
   "scripts": {
     "build:dev": "webpack --config webpack.config.dev.js --mode development",
     "build:docs": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
@@ -38,7 +40,8 @@
     ]
   },
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "rollup-plugin-commonjs": "^10.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -58,6 +61,13 @@
     "jsdoc": "^3.5.5",
     "lodash": "^4.17.11",
     "rimraf": "^2.6.3",
+    "rollup": "^1.17.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-globals": "^1.4.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.1",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
   },
@@ -77,5 +87,8 @@
     "testPathIgnorePatterns": [
       ".*\\.e2e\\.jsx?$"
     ]
-  }
+  },
+  "files": [
+    "build"
+  ]
 }
