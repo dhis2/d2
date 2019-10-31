@@ -155,12 +155,16 @@ describe('GeoFeatures', () => {
             });
         });
 
-        it('should reject the promise with an error if a wrong org. unit has been requested', (done) => {
+        it('should reject the promise with an error if a wrong org. unit has been requested', () => {
             mockApi.get.mockReturnValue(Promise.reject());
 
-            return geoFeatures.byOrgUnit('LEVEL-20').getAll().then(() => {
-                throw new Error('this should have failed');
-            }).catch(() => done());
+            expect.assertions(1);
+
+            return geoFeatures.byOrgUnit('LEVEL-20').getAll()
+                .catch(() => {
+                    // TODO: this seems to just be testing the mock
+                    expect(true).toBe(true);
+                });
         });
     });
 });

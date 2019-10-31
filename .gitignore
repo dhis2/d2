@@ -8,9 +8,7 @@ npm-debug.log
 
 jspm_packages/*
 
-node_modules/*
-!node_modules/d2
-!node_modules/fixtures
+node_modules
 
 build/*
 dist/*

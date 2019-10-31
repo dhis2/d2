@@ -109,7 +109,7 @@ describe('ModelCollection', () => {
             });
 
             it('should not be allowed to be called without new', () => {
-                expect(() => ModelCollection()).toThrowError('Cannot call a class as a function');
+                expect(() => ModelCollection()).toThrowErrorMatchingSnapshot();
             });
         });
 

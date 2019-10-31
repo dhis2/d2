@@ -1,5 +1,30 @@
 # D2 Changelog
 
+## 31.6.0
+###### _March 7th 2019_
+
+**Breaking changes:**
+
+- Webpack browser bundle has been removed. Current build is a UMD build, see https://github.com/umdjs/umd.
+
+## 31.5.0
+###### _February 28th 2019_
+
+**Breaking changes:**
+
+- Changed from babel `es2015` and `stage-2` presets to `babel-preset-env`, so for certain browsers support might have changed. Though currently the support is aligned with our supported browsers.
+
+**Bugfix:**
+
+- Fixed usage of isomorphic-fetch, to allow for usage of d2 in node and the browser.
+
+## 30.1.0
+###### _February 15th 2019_
+
+**Breaking changes:**
+
+- `d2.Api` Api methods will reject with an error when passing urls with an encoded query-string, or when passing urls with a malformed query string. The existing query string and anything that will be appended will be encoded for you by d2.Api's methods.
+
 ## 28.3.0
 ###### _October 26th 2017_
 
@@ -31,7 +56,6 @@
     - Before: `api.post(url, data, { contentType: 'text' })`
     - Now: `api.post(url, data, { headers: { 'Content-Type': 'text/plain' }})`
 
-
 ## 27.0.0
 ###### _February 20th 2016_
 
@@ -40,7 +64,6 @@
 - `d2.currentUser.uiLocale` has been removed, `d2.currentUser.userSettings.get` should be used instead.
 - `userSettings.get` will now now always return a Promise (This therefore also applies to `d2.currentUser.userSettings.get`)
 - `systemSettings.get` will now always return a Promise.
-
 
 ## 25.2.0
 ###### _November 18th 2016_

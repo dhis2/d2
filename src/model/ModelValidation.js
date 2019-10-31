@@ -3,6 +3,14 @@ import Logger from '../logger/Logger';
 import Api from '../api/Api';
 import { getOwnedPropertyJSON } from './helpers/json';
 
+function extractValidationViolations(webmessage) {
+    if (webmessage.response && webmessage.response.errorReports) {
+        return webmessage.response.errorReports;
+    }
+
+    throw new Error('Response was not a WebMessage with the expected format');
+}
+
 /**
  * Handles validation of Model objects based on their modelDefinition.
  *
@@ -37,18 +45,10 @@ class ModelValidation {
             return Promise.reject('model.modelDefinition.name can not be found');
         }
 
-        function extractValidationViolations(webmessage) {
-            if (webmessage.response && webmessage.response.errorReports) {
-                return webmessage.response.errorReports;
-            }
-            throw new Error('Response was not a WebMessage with the expected format');
-        }
-
         const url = `schemas/${model.modelDefinition.name}`;
 
         // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
         return Api.getApi().post(url, getOwnedPropertyJSON(model))
-            .catch(e => Promise.reject(e))
             .then((webMessage) => {
                 if (webMessage.status === 'OK') {
                     return [];

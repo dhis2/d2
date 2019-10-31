@@ -24,7 +24,7 @@ describe('Config', () => {
     });
 
     it('should not be allowed to call as function', () => {
-        expect(() => Config()).toThrowError();  // eslint-disable-line
+        expect(() => Config()).toThrowError();
     });
 
     describe('processConfigForD2', () => {

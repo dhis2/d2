@@ -82,13 +82,27 @@ class SystemSettings {
     }
 
     set(systemSettingsKey, value) {
-        delete this.settings;
-
         const settingUrl = ['systemSettings', systemSettingsKey].join('/');
-        if (value === null || (`${value}`).length === 0) {
-            return this.api.delete(settingUrl);
+        if (value === null || `${value}`.length === 0) {
+            return this.api.delete(settingUrl).then((response) => {
+                // Update cache if present
+                if (this.settings && this.settings[systemSettingsKey]) {
+                    delete this.settings[systemSettingsKey];
+                }
+                return response;
+            });
         }
-        return this.api.post(settingUrl, value, { headers: { 'Content-Type': 'text/plain' } });
+        return this.api
+            .post(settingUrl, value, {
+                headers: { 'Content-Type': 'text/plain' },
+            })
+            .then((response) => {
+                // update cache if present
+                if (this.settings) {
+                    this.settings[systemSettingsKey] = value;
+                }
+                return response;
+            });
     }
 }
 

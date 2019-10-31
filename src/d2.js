@@ -13,7 +13,7 @@
  * init({ baseUrl: 'https://play.dhis2.org/demo/api/27/' })
  *  .then(d2 => console.log(d2.currentUser.name));
  */
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
 import { pick, Deferred, updateAPIUrlWithBaseUrlVersionNumber } from './lib/utils';
 import Logger from './logger/Logger';
 import model from './model';
@@ -403,11 +403,3 @@ export function setInstance(d2) {
  *   @type Config
  */
 export const config = preInitConfig; // Alias preInitConfig to be able to `import {config} from 'd2';`
-
-export default {
-    init,
-    config,
-    getInstance,
-    getUserSettings,
-    getManifest,
-};

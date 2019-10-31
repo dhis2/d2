@@ -144,8 +144,82 @@ export function getFirstDateOfWeek(year, week) {
 
     let month = 11;
     while (ordDate < ordDiff[month]) {
-        month--; // eslint-disable-line
+        month--; // eslint-disable-line no-plusplus
     }
 
     return new Date(year, month, ordDate - ordDiff[month]);
 }
+
+/**
+ * This function takes some general instructions for a period and returns a precise period containing
+ * a start date and end date. It corrects for week 1 starting in a previous year and for week 53 in a
+ * 52 week year
+ * It is used by the BiWeekly periodType and all flavors of Weekly PeriodTypes,
+ * such as Weekly, weeklyWednessday, etc.
+ * @param {Object} obj - An object
+ * @param {Number} obj.year - Year
+ * @param {Number} obj.week - Week number between 1-53
+ * @param {String} [obj.locale=en] - The current locale
+ * @param {Number} [obj.weekTypeDiff=0] - The difference between the starting day of the week
+ * in a given periodType and the first day of the week. This option is being used for different
+ * flavors of weekly period types, such as WeeklyWednesday, WeeklyThursday, etc.
+ * @param {Number} [obj.periodLength=6] - The amount of days until the end date: 6 for weekly
+ * and 13 for Bikweekly
+ * @returns {Object} - An object containing various properties that can be used to contruct
+ * the final parsed period
+ * @example for default scenario
+ * computeWeekBasedPeriod({ year: 2019, week: 12})
+ * // returns:
+ * // {
+ * //     week: 12,
+ * //     year: 2019,
+ * //     startMonthName: 'June',
+ * //     startDayNumber: 3,
+ * //     endDayNumber: 9,
+ * //     startDate: '2019-06-03',
+ * //     endDate: '2019-06-09',
+ * // }
+ * @example for week 53 in 52 week year edge case
+ * computeWeekBasedPeriod({ year: 2016, week: 53})
+ * // returns:
+ * // {
+ * //     week: 1,
+ * //     year: 2017,
+ * //     startMonthName: 'January',
+ * //     startDayNumber: 2,
+ * //     endDayNumber: 8,
+ * //     startDate: '2017-01-02',
+ * //     endDate: '2017-01-08',
+ * // }
+ */
+export const computeWeekBasedPeriod = ({ year, week, locale = 'en', weekTypeDiff = 0, periodLength = 6 }) => {
+    const startDate = addDays(weekTypeDiff, getFirstDateOfWeek(year, week));
+    const monthNames = getMonthNamesForLocale(locale);
+    const startMonth = startDate.getMonth();
+    const startYear = startDate.getFullYear();
+    const startMonthName = monthNames[startMonth];
+    const startDayNum = startDate.getDate();
+
+    if (week === 53 && startYear !== year) {
+        /* eslint-disable no-param-reassign */
+        week = 1;
+        year = startYear;
+        /* eslint-enable */
+    }
+
+    const endDate = addDays(periodLength, startDate);
+    const endMonth = endDate.getMonth();
+    const endDayNum = endDate.getDate();
+    const endMonthName = monthNames[endMonth];
+
+    return {
+        week,
+        year,
+        startMonthName,
+        startDayNum,
+        endMonthName,
+        endDayNum,
+        startDate: formatAsISODate(startDate),
+        endDate: formatAsISODate(endDate),
+    };
+};

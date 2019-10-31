@@ -2,7 +2,7 @@
  * @module api
  */
 /* global window fetch Headers */
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
 import { checkType } from '../lib/check';
 import { customEncodeURIComponent } from '../lib/utils';
 import System from '../system/System';
@@ -40,7 +40,7 @@ function getUrl(baseUrl, url) {
  * Used for interaction with the dhis2 api.
  *
  * This class is used as the backbone for d2 and handles all the interaction with the server. There is a singleton
- * available to be reused across your applications. The singleton can be grabbed from the d2 instance.
+ * available to be reused across your applications. The singleton can be grabbed from the d2 instance. The api methods all handle URL-encoding for you, so you can just pass them unencoded strings
  *
  * ```js
  * import { getInstance } from 'd2/lib/d2';
@@ -119,8 +119,8 @@ class Api {
     /**
      * Performs a GET request.
      *
-     * @param {string} url The url for the request
-     * @param {*} data Any data that should be send with the request. For a GET request these are turned into
+     * @param {string} url The url for the request, should be unencoded. Will return a rejected promise for malformed urls and urls that contain encoded query strings.
+     * @param {*} data Any data that should be sent with the request. For a GET request these are encoded and turned into
      * query parameters. For POST and PUT requests it becomes the body.
      * @param {Object.<string, any>} options The request options are passed as options to the fetch request.
      * These options are passed as the {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters|init}
@@ -246,14 +246,35 @@ class Api {
             requestUrl = requestUrl.substr(0, requestUrl.indexOf('?'));
         }
 
+        // Encode existing query parameters, since tomcat does not accept unencoded brackets. Throw
+        // an error if they're already encoded to prevent double encoding.
+        if (query) {
+            let decodedURL;
+
+            try {
+                decodedURL = decodeURIComponent(query);
+            } catch (err) {
+                return Promise.reject(new Error('Query parameters in URL are invalid'));
+            }
+
+            const isEncoded = query !== decodedURL;
+
+            if (isEncoded) {
+                return Promise.reject(
+                    new Error('Cannot process URL-encoded URLs, pass an unencoded URL'),
+                );
+            }
+
+            query = customEncodeURIComponent(query);
+        }
+
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
             const encodedFilters = data.filter
                 .map(filter => filter.split(':').map(encodeURIComponent).join(':'));
 
             query = (
-                `${customEncodeURIComponent(query)}${query.length ? '&' : ''}` +
-                `filter=${encodedFilters.join('&filter=')}`
+                `${query}${query.length ? '&' : ''}filter=${encodedFilters.join('&filter=')}`
             );
             delete data.filter; // eslint-disable-line no-param-reassign
         }

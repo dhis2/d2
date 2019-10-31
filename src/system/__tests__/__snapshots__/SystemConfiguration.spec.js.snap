@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`System.configuration API call .get() should throw an error when asked for an unknown config option 1`] = `"Unknown config option: someRandomOptionThatDoesntExist"`;
+
+exports[`System.configuration API call .set() should not be able to change the systemId 1`] = `"The system ID can't be changed"`;
+
+exports[`System.configuration should not be allowed to be called without new 1`] = `"Class constructor SystemConfiguration cannot be invoked without 'new'"`;
