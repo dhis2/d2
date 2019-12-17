@@ -45,6 +45,9 @@ describe('Filter', () => {
                 expect(filter.equals).toBeInstanceOf(Function);
             });
 
+            it('should have an in method', () => {
+                expect(filter.in).toBeInstanceOf(Function);
+            });
             it('should have a token method', () => {
                 expect(filter.token).toBeInstanceOf(Function);
             });
@@ -111,6 +114,34 @@ describe('Filter', () => {
 
             it('should return the filter value in the expected query format', () => {
                 expect(filter.getQueryParamFormat()).toBe('code:eq:Partner_343');
+            });
+        });
+
+        describe('getQueryParamFormat for in multi value', () => {
+            beforeEach(() => {
+                filter.on('id').in(['1', '2', '3']);
+            });
+
+            it('should be a function', () => {
+                expect(filter.getQueryParamFormat).toBeInstanceOf(Function);
+            });
+
+            it('should return the filter value in the expected query format', () => {
+                expect(filter.getQueryParamFormat()).toBe('id:in:[1,2,3]');
+            });
+        });
+
+        describe('getQueryParamFormat for not in multi value', () => {
+            beforeEach(() => {
+                filter.on('id').notIn(['1', '2', '3']);
+            });
+
+            it('should be a function', () => {
+                expect(filter.getQueryParamFormat).toBeInstanceOf(Function);
+            });
+
+            it('should return the filter value in the expected query format', () => {
+                expect(filter.getQueryParamFormat()).toBe('id:!in:[1,2,3]');
             });
         });
     });
