@@ -57,6 +57,7 @@ Array [
     "filters": Filters {
       "filters": Array [],
       "modelDefinition": [Circular],
+      "rootJunction": null,
     },
     "getOwnedPropertyJSON": [Function],
     "identifiableObject": true,
@@ -985,6 +986,7 @@ Array [
     "filters": Filters {
       "filters": Array [],
       "modelDefinition": [Circular],
+      "rootJunction": null,
     },
     "getOwnedPropertyJSON": [Function],
     "identifiableObject": true,
@@ -2083,3 +2085,5 @@ Array [
   },
 ]
 `;
+
+exports[`ModelDefinition should not be allowed to be called without new 1`] = `"Class constructor ModelDefinition cannot be invoked without 'new'"`;

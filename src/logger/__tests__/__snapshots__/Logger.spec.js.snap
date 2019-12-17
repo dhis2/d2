@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logger should not be allowed to be called without new 1`] = `"Class constructor Logger cannot be invoked without 'new'"`;

@@ -30,7 +30,7 @@ describe('ModelDefinition', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => ModelDefinition()).toThrowError('Cannot call a class as a function');
+        expect(() => ModelDefinition()).toThrowErrorMatchingSnapshot();
     });
 
     it('should create a ModelDefinition object', () => {
@@ -370,11 +370,6 @@ describe('ModelDefinition', () => {
                 it('should not be owned by this schema', () => {
                     expect(modelValidations.externalAccess.owner).toBe(false);
                 });
-
-                // TODO: This currently has some sort of max value
-                // it('should not have a maxLength property', () => {
-                //    expect(modelValidations.externalAccess.maxLength).toBe(undefined);
-                // });
             });
 
             describe('id', () => {
@@ -805,11 +800,59 @@ describe('ModelDefinition', () => {
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:eq:admin'] });
         });
 
+        it('should work with operator-filter', () => {
+            dataElementModelDefinition
+                .filter()
+                .on('name')
+                .operator('like', 'John')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John'] });
+        });
+
+        it('should work with chained operator-filter', () => {
+            dataElementModelDefinition
+                .filter()
+                .on('name')
+                .operator('like', 'John')
+                .filter()
+                .on('username')
+                .operator('token', 'admin')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:token:admin'] });
+        });
+
+        it('should work with rootJunction', () => {
+            dataElementModelDefinition
+                .filter()
+                .logicMode('OR')
+                .on('name')
+                .like('John')
+                .filter()
+                .logicMode('OR')
+                .on('username')
+                .token('admin')
+                .list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:token:admin'], rootJunction: 'OR' });
+        });
+
         it('should not try to filter by "undefined"', () => {
             dataElementModelDefinition
                 .list({ filter: undefined });
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all' });
+        });
+
+        it('should work by constructing filters before calling list', () => {
+            const filters = dataElementModelDefinition.filter();
+            filters.logicMode('OR');
+            filters.on('name').like('John');
+            filters.on('username').token('admin');
+            filters.list();
+
+            expect(ModelDefinition.prototype.api.get).toBeCalledWith('https://play.dhis2.org/demo/api/dataElements', { fields: ':all', filter: ['name:like:John', 'username:token:admin'], rootJunction: 'OR' });
         });
     });
 
@@ -1271,17 +1314,19 @@ describe('ModelDefinition subsclasses', () => {
             );
         });
 
-        it('should use the special root orgunit id when fetching lists', (done) => {
-            organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
+        it('should use the special root orgunit id when fetching lists', () => {
+            expect.assertions(1);
+
+            return organisationUnitModelDefinition.list({ root: 'myRootId' }).catch(() => {
                 expect(getOnApiStub).toBeCalledWith('organisationUnits/myRootId', { fields: ':all' });
-                done();
             });
         });
 
-        it('should handle list queries without special `root` parameters', (done) => {
-            organisationUnitModelDefinition.list().catch(() => {
+        it('should handle list queries without special `root` parameters', () => {
+            expect.assertions(1);
+
+            return organisationUnitModelDefinition.list().catch(() => {
                 expect(getOnApiStub).toBeCalledWith('organisationUnits', { fields: ':all' });
-                done();
             });
         });
     });

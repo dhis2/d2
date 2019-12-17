@@ -225,29 +225,35 @@ describe('ModelCollectionProperty', () => {
             api.post.mockClear();
         });
 
-        it('Does nothing when the collection not dirty', (done) => {
-            mcp.save()
+        it('Does nothing when the collection not dirty', () => {
+            expect.assertions(1);
+
+            return mcp.save()
                 .then(() => {
                     expect(api.post).toHaveBeenCalledTimes(0);
-                    done();
-                }).catch(e => done(e));
+                });
         });
 
-        it('Sends additions and removals in a single request', (done) => {
+        it('Sends additions and removals in a single request', () => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
-            mcp.save()
+
+            expect.assertions(2);
+
+            return mcp.save()
                 .then(() => {
                     expect(api.get).not.toHaveBeenCalled();
                     expect(api.post).toHaveBeenCalledTimes(1);
-                    done();
-                }).catch(e => done(e));
+                });
         });
 
-        it('Sends an API requests with the correct additions and removals, using the correct URL', (done) => {
+        it('Sends an API requests with the correct additions and removals, using the correct URL', () => {
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
-            mcp.save()
+
+            expect.assertions(3);
+
+            return mcp.save()
                 .then(() => {
                     expect(api.get).not.toHaveBeenCalled();
                     expect(api.post).toHaveBeenCalledTimes(1);
@@ -255,37 +261,34 @@ describe('ModelCollectionProperty', () => {
                         additions: [{ id: 'dataEleme02' }],
                         deletions: [{ id: 'dataEleme01' }],
                     });
-                    done();
-                }).catch(e => done(e));
+                });
         });
 
-        it('Resets the dirty flag', (done) => {
+        it('Resets the dirty flag', () => {
+            expect.assertions(2);
+
             mcp.remove(testModels[0]);
             mcp.add(testModels[1]);
             expect(mcp.dirty).toBe(true);
-            mcp.save()
+
+            return mcp.save()
                 .then(() => {
                     expect(mcp.dirty).toBe(false);
-                    done();
-                }).catch(e => done(e));
+                });
         });
 
-        it('Does not throw when the API fails', (done) => {
+        it('Rejects the promise when the API fails', () => {
+            expect.assertions(2);
+
             api.post.mockReturnValue(Promise.reject());
             mcp.add(testModels[1]);
             expect(mcp.dirty).toBe(true);
-            expect(() => {
-                mcp.save().then(() => done()).catch(() => done());
-            }).not.toThrowError();
-        });
 
-        it('Rejects the promise when the API fails', (done) => {
-            api.post.mockReturnValue(Promise.reject());
-            mcp.add(testModels[1]);
-            expect(mcp.dirty).toBe(true);
-            expect(() => {
-                mcp.save().then(() => done('API failure was accepted silently')).catch(() => done());
-            }).not.toThrowError();
+            return mcp.save()
+                .catch(() => {
+                    // TODO: useless assertion
+                    expect(true).toBe(true);
+                });
         });
     });
 
@@ -368,19 +371,22 @@ describe('ModelCollectionProperty', () => {
             expect(excludedByFieldFilters.hasUnloadedData).toBe(true);
         });
 
-        it('does not query the API when there are no unloaded values', (done) => {
-            Promise.all([
+        it('does not query the API when there are no unloaded values', () => {
+            expect.assertions(1);
+
+            return Promise.all([
                 loadedWithValues.load(),
                 loadedWithoutValues.load(),
                 unloadedWithoutValues.load(),
             ]).then(() => {
                 expect(api.get).not.toHaveBeenCalled();
-                done();
-            }).catch(err => done(err));
+            });
         });
 
-        it('performs the correct API call for lazy loading', (done) => {
-            unloadedWithValues
+        it('performs the correct API call for lazy loading', () => {
+            expect.assertions(1);
+
+            return unloadedWithValues
                 .load()
                 .then(() => {
                     expect(api.get).toHaveBeenCalledWith(
@@ -389,12 +395,13 @@ describe('ModelCollectionProperty', () => {
                             paging: false,
                         },
                     );
-                    done();
-                }).catch(err => done(err));
+                });
         });
 
-        it('correctly merges request parameters when lazy loading', (done) => {
-            unloadedWithValues
+        it('correctly merges request parameters when lazy loading', () => {
+            expect.assertions(1);
+
+            return unloadedWithValues
                 .load({ paging: false, fields: 'id,displayName' })
                 .then(() => {
                     expect(api.get).toHaveBeenCalledWith(
@@ -403,40 +410,41 @@ describe('ModelCollectionProperty', () => {
                             paging: false,
                         },
                     );
-                    done();
-                })
-                .catch(err => done(err));
+                });
         });
 
-        it('updates hasUnloadedData when data has been lazy loaded', (done) => {
+        it('updates hasUnloadedData when data has been lazy loaded', () => {
+            expect.assertions(2);
+
             expect(unloadedWithValues.hasUnloadedData).toBe(true);
-            unloadedWithValues.load().then(() => {
+
+            return unloadedWithValues.load().then(() => {
                 expect(unloadedWithValues.hasUnloadedData).toBe(false);
-                done();
-            }).catch(err => done(err));
+            });
         });
 
-        it('creates models for lazy loaded objects', (done) => {
-            unloadedWithValues
+        it('creates models for lazy loaded objects', () => {
+            expect.assertions(4);
+
+            return unloadedWithValues
                 .load()
                 .then(() => {
                     expect(unloadedWithValues.valuesContainerMap.size).toBe(3);
                     unloadedWithValues.toArray().forEach(value => expect(value).toBeInstanceOf(Model));
-                    done();
-                })
-                .catch(err => done(err));
+                });
         });
 
-        it('supports lazy loading collection fields that were not included in the original API query', (done) => {
+        it('supports lazy loading collection fields that were not included in the original API query', () => {
+            expect.assertions(3);
+
             expect(excludedByFieldFilters.hasUnloadedData).toBe(true);
 
-            excludedByFieldFilters
+            return excludedByFieldFilters
                 .load()
                 .then(() => {
                     expect(api.get).toHaveBeenCalled();
                     expect(excludedByFieldFilters.hasUnloadedData).toBe(false);
-                    done();
-                }).catch(err => done(err));
+                });
         });
     });
 });

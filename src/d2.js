@@ -13,7 +13,7 @@
  * init({ baseUrl: 'https://play.dhis2.org/demo/api/27/' })
  *  .then(d2 => console.log(d2.currentUser.name));
  */
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
 import { pick, Deferred, updateAPIUrlWithBaseUrlVersionNumber } from './lib/utils';
 import Logger from './logger/Logger';
 import model from './model';
@@ -85,8 +85,8 @@ export function getManifest(url, ApiClass = Api) {
 export function getUserSettings(ApiClass = Api) {
     const api = ApiClass.getApi();
 
-    if (preInitConfig.baseUrl && firstRun) {
-        api.setBaseUrl(preInitConfig.baseUrl);
+    if (firstRun) {
+        Config.processPreInitConfig(preInitConfig, api);
     }
 
     return api.get('userSettings');
@@ -130,6 +130,9 @@ function getModelRequests(api, schemaNames) {
  * baseUrl: Set this when the url is something different then `/api`. If you are running your dhis instance in a subdirectory of the actual domain
  * for example http://localhost/dhis/ you should set the base url to `/dhis/api`
  *
+ * unauthorizedCb: A callback function that is called whenever a API-request encounters a 401 - Unauthorized response.
+ *  The function is called with (request, response) - the request object that failed, and the parsed response from the server.
+ *
  * @param {Object} initConfig Configuration object that will be used to configure to define D2 Setting.
  * See the description for more information on the available settings.
  * @returns {Promise.<D2>} A promise that resolves with the intialized {@link init~d2|d2} object.
@@ -146,10 +149,6 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
     const api = ApiClass.getApi();
 
     const config = Config.create(preInitConfig, initConfig);
-
-    if (config.headers) {
-        api.setDefaultHeaders(config.headers);
-    }
 
     /**
      * @namespace
@@ -404,11 +403,3 @@ export function setInstance(d2) {
  *   @type Config
  */
 export const config = preInitConfig; // Alias preInitConfig to be able to `import {config} from 'd2';`
-
-export default {
-    init,
-    config,
-    getInstance,
-    getUserSettings,
-    getManifest,
-};

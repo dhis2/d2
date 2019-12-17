@@ -17,6 +17,11 @@ const NON_MODEL_COLLECTIONS = {
     redirectUris: ['oAuth2Client'],
     organisationUnitLevels: ['validationRule'],
     favorites: [],
+    columns: [],
+    rows: [],
+    filters: [],
+    yearlySeries: [],
+    interpretations: ['chart'],
 };
 
 const isNonModelCollection = (propertyName, modelType) => {

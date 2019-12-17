@@ -20,7 +20,7 @@ const AnalyticsRequestDimensionsMixin = base =>
         /**
          * Adds/updates the dx dimension to use in the request.
          *
-         * @param {!(String|Array)} values The dimension items to add to the dx dimension
+         * @param {!(String|Array)} items The dimension items to add to the dx dimension
          *
          * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
          *
@@ -32,14 +32,14 @@ const AnalyticsRequestDimensionsMixin = base =>
          * // dimension=dx:fbfJHSPpUQD;cYeuwXTCPkU;BfMAe6Itzgt.REPORTING_RATE
          *
          */
-        addDataDimension(values) {
-            return this.addDimension('dx', values);
+        addDataDimension(items) {
+            return this.addDimension('dx', items);
         }
 
         /**
          * Adds/updates the pe dimension to use in the request.
          *
-         * @param {!(String|Array)} values The dimension items to add to the pe dimension
+         * @param {!(String|Array)} items The dimension items to add to the pe dimension
          *
          * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
          *
@@ -50,14 +50,14 @@ const AnalyticsRequestDimensionsMixin = base =>
          *
          * // dimension=pe:201701;201702;LAST_4_QUARTERS
          */
-        addPeriodDimension(values) {
-            return this.addDimension('pe', values);
+        addPeriodDimension(items) {
+            return this.addDimension('pe', items);
         }
 
         /**
          * Adds/updates the ou dimension to use in the request.
          *
-         * @param {!(String|Array)} values The dimension items to add to the ou dimension
+         * @param {!(String|Array)} items The dimension items to add to the ou dimension
          *
          * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
          *
@@ -68,15 +68,15 @@ const AnalyticsRequestDimensionsMixin = base =>
          *
          * // dimension=ou:O6uvpzGd5pu;lc3eMKXaEfw;OU_GROUP-w0gFTTmsUcF
          */
-        addOrgUnitDimension(values) {
-            return this.addDimension('ou', values);
+        addOrgUnitDimension(items) {
+            return this.addDimension('ou', items);
         }
 
         /**
          * Adds a new dimension or updates an existing one to use in the request.
          *
          * @param {!String} dimension The dimension to add to the request
-         * @param {(String|Array)} values The dimension items to add to the dimension
+         * @param {(String|Array)} items The dimension items to add to the dimension
          *
          * @returns {AnalyticsRequest} A new instance of the class for chaining purposes
          *
@@ -87,15 +87,36 @@ const AnalyticsRequestDimensionsMixin = base =>
          *
          * // dimension=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&dimension=qrur9Dvnyt5-Yf6UHoPkdS6
          */
-        addDimension(dimension, values) {
-            const existingValues = this.dimensions[dimension] || [];
+        addDimension(dimension, items) {
+            let dimensionIndex = 0;
 
-            if (typeof values === 'string') {
-                this.dimensions[dimension] = [...new Set([...existingValues, values])];
-            } else if (Array.isArray(values)) {
-                this.dimensions[dimension] = [...new Set([...existingValues, ...values])];
+            const existingDimension = this.dimensions.find((item, index) => {
+                if (item.dimension === dimension) {
+                    dimensionIndex = index;
+
+                    return item;
+                }
+
+                return false;
+            });
+
+            let updatedItems = [];
+            let existingItems = [];
+
+            if (existingDimension) {
+                existingItems = existingDimension.items || [];
+            }
+
+            if (typeof items === 'string') {
+                updatedItems = [...new Set([...existingItems, items])];
+            } else if (Array.isArray(items)) {
+                updatedItems = [...new Set([...existingItems, ...items])];
+            }
+
+            if (existingDimension) {
+                this.dimensions.splice(dimensionIndex, 1, { dimension, items: updatedItems });
             } else {
-                this.dimensions[dimension] = existingValues;
+                this.dimensions.push({ dimension, items: updatedItems });
             }
 
             return new AnalyticsRequest(this);

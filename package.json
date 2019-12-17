@@ -1,21 +1,22 @@
 {
   "name": "d2",
-  "version": "29.1.5",
+  "version": "31.8.1",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "documentation": "./node_modules/.bin/jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod",
+    "build:prod": "webpack --config webpack.config.prod.js --mode production",
+    "build:dev": "webpack --config webpack.config.dev.js --mode development",
+    "clean": "rimraf build",
     "coverage": "npm test -- --coverage",
-    "validate": "npm ls --depth 0 || yarn list",
+    "documentation": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "lint:fix": "eslint src --fix",
+    "lint": "eslint src",
+    "prebuild": "npm run lint && npm run test",
+    "test:watch": "npm run test -- --watch",
     "test": "TZ=UTC jest",
-    "test-watch": "npm run test -- --watch",
-    "test-e2e": "npm test -- --testPathIgnorePatterns=[] --testPathPattern='.*\\.e2e\\.jsx?$'",
-    "prebuild": "npm run lint && npm run validate && npm run test",
-    "build-only": "rm -rf lib/ && babel src --out-dir lib --source-maps --ignore __tests__,__fixtures__,__mocks__ && ./node_modules/webpack/bin/webpack.js && ./node_modules/webpack/bin/webpack.js --config webpack.config.min.js",
-    "build": "npm run build-only",
-    "lint": "./node_modules/eslint/bin/eslint.js src",
-    "lint-fix": "./node_modules/eslint/bin/eslint.js src --fix",
-    "travis": "npm run coverage && npm run build"
+    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
+    "validate": "npm ls"
   },
   "repository": {
     "type": "git",
@@ -32,32 +33,32 @@
     "url": "https://github.com/dhis2/d2/issues"
   },
   "homepage": "https://github.com/dhis2/d2",
+  "greenkeeper": {
+    "ignore": [
+      "eslint"
+    ]
+  },
   "dependencies": {
-    "docdash": "^0.4.0",
-    "jsdoc": "^3.5.5",
-    "whatwg-fetch": "^2.0.3"
+    "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-core": "^6.24.0",
-    "babel-eslint": "^7.2.3",
-    "babel-loader": "^7.0.0",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-stage-2": "^6.18.0",
-    "canonical-path": "0.0.2",
-    "codeclimate-test-reporter": "^0.4.1",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
+    "docdash": "^1.0.3",
+    "eslint": "^4.6.1",
     "eslint-config-dhis2": "^3.0.2",
-    "esprima": "^3.1.3",
-    "form-data": "^2.1.2",
-    "isomorphic-fetch": "^2.2.1",
-    "jest": "^21.0.2",
-    "karma-cli": "^1.0.1",
-    "lodash": "^4.17.4",
-    "node-fetch": "^1.5.3",
+    "form-data": "^2.3.3",
+    "jest": "^24.1.0",
+    "jsdoc": "^3.5.5",
+    "lodash": "^4.17.11",
     "precommit-hook": "3.0.0",
-    "webpack": "^2.5.1",
-    "wrapper-webpack-plugin": "^0.1.7"
+    "rimraf": "^2.6.3",
+    "webpack": "^4.29.5",
+    "webpack-cli": "^3.2.3"
   },
   "engines": {
     "npm": ">=3.5.1",
@@ -65,7 +66,6 @@
   },
   "pre-commit": [
     "lint",
-    "validate",
     "test"
   ],
   "nyc": {

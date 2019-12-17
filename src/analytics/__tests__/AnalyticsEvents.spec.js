@@ -18,7 +18,7 @@ describe('analytics.events', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => AnalyticsEvents()).toThrowError('Cannot call a class as a function'); // eslint-disable-line new-cap
+        expect(() => AnalyticsEvents()).toThrowErrorMatchingSnapshot();
     });
 
     it('should add the mockApi onto the Analyticsevents instance', () => {

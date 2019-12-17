@@ -48,6 +48,13 @@ describe('Filter', () => {
             it('should have an in method', () => {
                 expect(filter.in).toBeInstanceOf(Function);
             });
+            it('should have a token method', () => {
+                expect(filter.token).toBeInstanceOf(Function);
+            });
+
+            it('should have a nToken method', () => {
+                expect(filter.nToken).toBeInstanceOf(Function);
+            });
 
             it('should set the correct comparator', () => {
                 filter.equals('ANC');

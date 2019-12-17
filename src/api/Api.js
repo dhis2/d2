@@ -2,7 +2,7 @@
  * @module api
  */
 /* global window fetch Headers */
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
 import { checkType } from '../lib/check';
 import { customEncodeURIComponent } from '../lib/utils';
 import System from '../system/System';
@@ -40,7 +40,7 @@ function getUrl(baseUrl, url) {
  * Used for interaction with the dhis2 api.
  *
  * This class is used as the backbone for d2 and handles all the interaction with the server. There is a singleton
- * available to be reused across your applications. The singleton can be grabbed from the d2 instance.
+ * available to be reused across your applications. The singleton can be grabbed from the d2 instance. The api methods all handle URL-encoding for you, so you can just pass them unencoded strings
  *
  * ```js
  * import { getInstance } from 'd2/lib/d2';
@@ -80,7 +80,11 @@ class Api {
             credentials: 'include', // include cookies with same-origin requests
             cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode
         };
-        this.defaultHeaders = {};
+        this.defaultHeaders = {
+            'X-Requested-With': 'XMLHttpRequest',
+        };
+
+        this.unauthorizedCallback = null;
     }
 
     /**
@@ -100,10 +104,23 @@ class Api {
     }
 
     /**
+     * When any request encounters a 401 - Unauthorized. This callback is called.
+     * Useful for when you want an session expiration-handler API-wide.
+     *
+     * @param {*} cb - Function to call when any request recieves a 401. Called with the response from the server.
+     */
+    setUnauthorizedCallback(cb) {
+        if (typeof cb !== 'function') {
+            throw new Error('Callback must be a function.');
+        }
+        this.unauthorizedCallback = cb;
+    }
+
+    /**
      * Performs a GET request.
      *
-     * @param {string} url The url for the request
-     * @param {*} data Any data that should be send with the request. For a GET request these are turned into
+     * @param {string} url The url for the request, should be unencoded. Will return a rejected promise for malformed urls and urls that contain encoded query strings.
+     * @param {*} data Any data that should be sent with the request. For a GET request these are encoded and turned into
      * query parameters. For POST and PUT requests it becomes the body.
      * @param {Object.<string, any>} options The request options are passed as options to the fetch request.
      * These options are passed as the {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters|init}
@@ -181,6 +198,10 @@ class Api {
         // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
         // to clear out existing values
         const urlForUpdate = useMergeStrategy === true ? `${url}?${getMergeStrategyParam()}` : url;
+        if (typeof data === 'string') {
+            return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), String(data),
+                { headers: new Headers({ 'Content-Type': 'text/plain' }) });
+        }
 
         return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), JSON.stringify(data));
     }
@@ -225,14 +246,35 @@ class Api {
             requestUrl = requestUrl.substr(0, requestUrl.indexOf('?'));
         }
 
+        // Encode existing query parameters, since tomcat does not accept unencoded brackets. Throw
+        // an error if they're already encoded to prevent double encoding.
+        if (query) {
+            let decodedURL;
+
+            try {
+                decodedURL = decodeURIComponent(query);
+            } catch (err) {
+                return Promise.reject(new Error('Query parameters in URL are invalid'));
+            }
+
+            const isEncoded = query !== decodedURL;
+
+            if (isEncoded) {
+                return Promise.reject(
+                    new Error('Cannot process URL-encoded URLs, pass an unencoded URL'),
+                );
+            }
+
+            query = customEncodeURIComponent(query);
+        }
+
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
             const encodedFilters = data.filter
                 .map(filter => filter.split(':').map(encodeURIComponent).join(':'));
 
             query = (
-                `${customEncodeURIComponent(query)}${query.length ? '&' : ''}` +
-                `filter=${encodedFilters.join('&filter=')}`
+                `${query}${query.length ? '&' : ''}filter=${encodedFilters.join('&filter=')}`
             );
             delete data.filter; // eslint-disable-line no-param-reassign
         }
@@ -301,13 +343,25 @@ class Api {
                         response.text().then(text => resolve(parseResponseData(text)));
                     } else {
                         response.text().then((text) => {
+                            const parsedResponseData = parseResponseData(text);
+                            if (response.status === 401) {
+                                const request = {
+                                    method,
+                                    url,
+                                    data,
+                                    options,
+                                };
+                                if (this.unauthorizedCallback) {
+                                    this.unauthorizedCallback(request, parsedResponseData);
+                                }
+                            }
                             if (!process.env || process.env.npm_lifecycle_event !== 'test') {
                                 console.warn( // eslint-disable-line
                                     `API request failed with status ${response.status} ${response.statusText}\n`,
                                     `Request: ${requestOptions.method} ${requestUrl}`,
                                 );
                             }
-                            reject(parseResponseData(text));
+                            reject(parsedResponseData);
                         });
                     }
                 })
@@ -317,6 +371,7 @@ class Api {
                     if (!process.env || process.env.npm_lifecycle_event !== 'test') {
                         console.error('Server connection error:', err); // eslint-disable-line
                     }
+
                     reject(`Server connection failed for API request: ${requestOptions.method} ${requestUrl}`);
                 });
         });

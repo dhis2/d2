@@ -18,7 +18,7 @@ describe('settings.System', () => {
     });
 
     it('should not be allowed to be called without new', () => {
-        expect(() => SystemSettings()).toThrowError('Cannot call a class as a function'); // eslint-disable-line
+        expect(() => SystemSettings()).toThrowErrorMatchingSnapshot(); // eslint-disable-line
     });
 
     it('should set an instance of Api onto the SystemSettings instance', () => {
@@ -70,15 +70,16 @@ describe('settings.System', () => {
             expect(result).toBeInstanceOf(Promise);
         });
 
-        it('should reject the promise with an error if no key has been specified', (done) => {
-            systemSettings.get()
+        it('should reject the promise with an error if no key has been specified', () => {
+            expect.assertions(2);
+
+            return systemSettings.get()
                 .catch((error) => {
                     expect(error).toBeInstanceOf(TypeError);
                     expect(error.message).toBe(
                         'A "key" parameter should be specified when calling get() on systemSettings',
                     );
-                })
-                .then(done);
+                });
         });
 
         it('should call the api to get the value', () => {
@@ -208,12 +209,14 @@ describe('settings.System', () => {
                 });
         });
 
-        it('should clear the settings cache', () => systemSettings.all()
+        it('should update the settings cache', () => systemSettings.all()
             .then(() => systemSettings.set('test', 'value'))
             .then(() => systemSettings.all())
-            .then(() => {
-                expect(mockApi.get).toHaveBeenCalledTimes(2);
+            .then(() => systemSettings.get('test'))
+            .then((test) => {
+                expect(mockApi.get).toHaveBeenCalledTimes(1);
                 expect(mockApi.post).toHaveBeenCalledTimes(1);
+                expect(test).toEqual('value');
             }));
     });
 

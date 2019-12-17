@@ -29,7 +29,7 @@ class AnalyticsAggregate extends AnalyticsBase {
      * .then(console.log);
      */
     getDataValueSet(req) {
-        return this.get(req.withPath('dataValueSet'));
+        return this.fetch(req.withPath('dataValueSet'));
     }
 
     /**
@@ -51,7 +51,7 @@ class AnalyticsAggregate extends AnalyticsBase {
      *  .then(console.log);
      */
     getRawData(req) {
-        return this.get(req.withPath('rawData'));
+        return this.fetch(req.withPath('rawData'));
     }
 
     /**
@@ -72,7 +72,7 @@ class AnalyticsAggregate extends AnalyticsBase {
      *  .then(console.log);
      */
     getDebugSql(req) {
-        return this.get(req.withPath('debug/sql'));
+        return this.fetch(req.withPath('debug/sql'));
     }
 }
 

@@ -175,6 +175,7 @@ class ModelCollectionProperty extends ModelCollection {
             .then(data => data[this.propName])
             .then((values) => {
                 if (Array.isArray(values)) {
+                    this.valuesContainerMap.clear();
                     values.forEach(value => this.valuesContainerMap.set(value.id, this.modelDefinition.create(value)));
                 }
                 this.hasUnloadedData = false;

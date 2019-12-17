@@ -1,0 +1,291 @@
+{
+    "lastUpdated": "2018-08-29T14:03:09.989",
+    "id": "UlfTKWZWV4u",
+    "created": "2018-04-13T14:48:36.803",
+    "name": "ANC: 1 and 3 coverage Yearly",
+    "publicAccess": "rw------",
+    "type": "BAR",
+    "subscribed": false,
+    "displayDescription": "This chart allows us to compare the performance of districts and allows peers to measure their performance against each other. This implies we can spot poor performers as we all as top performers.",
+    "cumulativeValues": false,
+    "sortOrder": 0,
+    "favorite": false,
+    "topLimit": 0,
+    "displayName": "ANC: 1 and 3 coverage Yearly",
+    "percentStackedValues": false,
+    "noSpaceBetweenColumns": false,
+    "hideTitle": false,
+    "series": "dx",
+    "showData": false,
+    "parentGraphMap": {},
+    "regressionType": "NONE",
+    "completedOnly": false,
+    "hideEmptyRowItems": "NONE",
+    "aggregationType": "DEFAULT",
+    "hideSubtitle": false,
+    "description": "This chart allows us to compare the performance of districts and allows peers to measure their performance against each other. This implies we can spot poor performers as we all as top performers.",
+    "hideLegend": false,
+    "category": "ou",
+    "access": {
+        "read": true,
+        "update": true,
+        "externalize": true,
+        "delete": true,
+        "write": true,
+        "manage": true
+    },
+    "lastUpdatedBy": {
+        "id": "xE7jOejl9FI"
+    },
+    "user": {
+        "displayName": "John Traore",
+        "userCredentials": {
+            "username": "admin"
+        }
+    },
+    "dataElementGroupSetDimensions": [],
+    "attributeDimensions": [],
+    "translations": [
+        {
+            "property": "NAME",
+            "locale": "it",
+            "value": "ANC: 1 test traduzione it"
+        }
+    ],
+    "interpretations": [
+        {
+            "lastUpdated": "2018-06-01T14:25:01.232",
+            "id": "DU4EnxBgP3A",
+            "href": "http://localhost:8080/api/29/interpretations/DU4EnxBgP3A",
+            "created": "2018-06-01T14:25:01.086",
+            "name": "DU4EnxBgP3A",
+            "displayName": "DU4EnxBgP3A",
+            "publicAccess": "rw------",
+            "type": "CHART",
+            "externalAccess": false,
+            "text": "<p>bla bla&nbsp;<a href=\"http://example.org\">test</a>&nbsp;and some smiles&nbsp;<img title=\"smiley\" alt=\"smiley\" width=\"23\" height=\"23\" src=\"http://localhost:8080/dhis-web-core-resource/ckeditor/4.6.1/plugins/smiley/images/regular_smile.png\" /></p>",
+            "likes": 0,
+            "favorite": false,
+            "access": {
+                "read": true,
+                "update": true,
+                "externalize": false,
+                "delete": true,
+                "write": true,
+                "manage": true
+            },
+            "organisationUnit": {
+                "id": "ImspTQPwCqd"
+            },
+            "user": {
+                "id": "xE7jOejl9FI",
+                "displayName": "John Traore",
+                "userCredentials": {
+                    "username": "admin"
+                }
+            },
+            "chart": {
+                "id": "UlfTKWZWV4u"
+            },
+            "favorites": [],
+            "likedBy": [],
+            "translations": [],
+            "comments": [],
+            "userGroupAccesses": [],
+            "attributeValues": [],
+            "userAccesses": [],
+            "mentions": []
+        },
+        {
+            "lastUpdated": "2018-03-16T11:01:15.076",
+            "id": "HBeV5W36cOx",
+            "href": "http://localhost:8080/api/29/interpretations/HBeV5W36cOx",
+            "created": "2018-03-16T11:01:15.076",
+            "name": "HBeV5W36cOx",
+            "displayName": "HBeV5W36cOx",
+            "publicAccess": "rw------",
+            "type": "CHART",
+            "externalAccess": false,
+            "text": "test interpretation",
+            "likes": 0,
+            "favorite": false,
+            "access": {
+                "read": true,
+                "update": true,
+                "externalize": false,
+                "delete": true,
+                "write": true,
+                "manage": true
+            },
+            "organisationUnit": {
+                "id": "ImspTQPwCqd"
+            },
+            "user": {
+                "id": "xE7jOejl9FI",
+                "displayName": "John Traore",
+                "userCredentials": {
+                    "username": "admin"
+                }
+            },
+            "chart": {
+                "id": "UlfTKWZWV4u"
+            },
+            "favorites": [],
+            "likedBy": [],
+            "translations": [],
+            "comments": [],
+            "userGroupAccesses": [],
+            "attributeValues": [],
+            "userAccesses": []
+        },
+        {
+            "lastUpdated": "2018-10-10T18:20:04.272",
+            "id": "Db1s6CsNsca",
+            "href": "http://localhost:8080/api/29/interpretations/Db1s6CsNsca",
+            "created": "2018-10-10T18:20:04.272",
+            "name": "Db1s6CsNsca",
+            "displayName": "Db1s6CsNsca",
+            "publicAccess": "rw------",
+            "type": "CHART",
+            "externalAccess": false,
+            "text": "Bo, Tonkolili and Western Area are the best performers.",
+            "likes": 0,
+            "favorite": false,
+            "access": {
+                "read": true,
+                "update": true,
+                "externalize": false,
+                "delete": true,
+                "write": true,
+                "manage": true
+            },
+            "organisationUnit": {
+                "id": "ImspTQPwCqd"
+            },
+            "user": {
+                "id": "GOLswS44mh8",
+                "displayName": "Tom Wakiki",
+                "userCredentials": {
+                    "username": "system"
+                }
+            },
+            "chart": {
+                "id": "UlfTKWZWV4u"
+            },
+            "favorites": [],
+            "likedBy": [],
+            "translations": [],
+            "comments": [],
+            "userGroupAccesses": [],
+            "attributeValues": [],
+            "userAccesses": []
+        },
+        {
+            "lastUpdated": "2018-11-03T11:02:30.780",
+            "id": "c5sjWWhIPDE",
+            "href": "http://localhost:8080/api/29/interpretations/c5sjWWhIPDE",
+            "created": "2018-11-03T11:02:30.780",
+            "name": "c5sjWWhIPDE",
+            "displayName": "c5sjWWhIPDE",
+            "publicAccess": "--------",
+            "type": "CHART",
+            "externalAccess": false,
+            "text": "ANC 1 looks low in Kono! What could be the reason?",
+            "likes": 0,
+            "favorite": false,
+            "access": {
+                "read": false,
+                "update": false,
+                "externalize": false,
+                "delete": false,
+                "write": false,
+                "manage": false
+            },
+            "organisationUnit": {
+                "id": "ImspTQPwCqd"
+            },
+            "user": {
+                "id": "GOLswS44mh8",
+                "displayName": "Tom Wakiki",
+                "userCredentials": {
+                    "username": "system"
+                }
+            },
+            "chart": {
+                "id": "UlfTKWZWV4u"
+            },
+            "favorites": [],
+            "likedBy": [],
+            "translations": [],
+            "comments": [],
+            "userGroupAccesses": [],
+            "attributeValues": [],
+            "userAccesses": []
+        }
+    ],
+    "userGroupAccesses": [],
+    "columns": [
+        {
+            "dimension": "dx",
+            "items": [
+                {
+                    "id": "Uvn6LCg7dVU",
+                    "name": "ANC 1 Coverage",
+                    "dimensionItemType": "INDICATOR"
+                },
+                {
+                    "id": "sB79w2hiLp8",
+                    "name": "ANC 3 Coverage",
+                    "dimensionItemType": "INDICATOR"
+                }
+            ]
+        }
+    ],
+    "dataElementDimensions": [],
+    "categoryDimensions": [],
+    "programIndicatorDimensions": [],
+    "attributeValues": [],
+    "userAccesses": [],
+    "favorites": [],
+    "dataDimensionItems": [
+        {
+            "dataDimensionItemType": "INDICATOR",
+            "indicator": {
+                "id": "Uvn6LCg7dVU"
+            }
+        },
+        {
+            "dataDimensionItemType": "INDICATOR",
+            "indicator": {
+                "id": "sB79w2hiLp8"
+            }
+        }
+    ],
+    "categoryOptionGroupSetDimensions": [],
+    "organisationUnitGroupSetDimensions": [],
+    "filters": [
+        {
+            "dimension": "pe",
+            "items": [
+                {
+                    "id": "LAST_SIX_MONTH",
+                    "name": "LAST_SIX_MONTH",
+                    "dimensionItemType": "PERIOD"
+                }
+            ]
+        }
+    ],
+    "rows": [
+        {
+            "dimension": "ou",
+            "items": [
+                {
+                    "id": "USER_ORGUNIT"
+                },
+                {
+                    "id": "USER_ORGUNIT_CHILDREN"
+                }
+            ]
+        }
+    ]
+}

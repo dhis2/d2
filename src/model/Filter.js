@@ -52,9 +52,27 @@ const FILTER_COMPARATORS = {
      * @returns {Filter} Returns the modified filter for chaining
      *
      * @description
+     * This method can be used to add a tokens filter value
+     */
+    token: 'token',
+    /**
+     * @function
+     * @memberof module:model.Filter.prototype
+     * @returns {Filter} Returns the modified filter for chaining
+     *
+     * @description
      * This method can be used to add a !in filter value
      */
     notIn: '!in',
+    /**
+     * @function
+     * @memberof module:model.Filter.prototype
+     * @returns {Filter} Returns the modified filter for chaining
+     *
+     * @description
+     * This method can be used to add a !token filter value
+     */
+    nToken: '!token',
 };
 
 /**
@@ -112,6 +130,19 @@ class Filter {
      */
     static getFilter(addFilterCallback) {
         return new Filter(addFilterCallback);
+    }
+
+    /**
+     * Utility function to add an operator with filterValue
+     * @param {*} operator to use
+     * @param {*} filterValue to filter on
+     */
+    operator(operator, filterValue) {
+        checkDefined(operator, 'operator');
+        checkDefined(filterValue, 'filterValue');
+        this.comparator = operator;
+        this.filterValue = filterValue;
+        return this.addFilterCallback(this);
     }
 }
 
