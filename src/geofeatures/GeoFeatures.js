@@ -108,7 +108,11 @@ class GeoFeatures {
      * Checks if the org. unit level is valid.
      */
     static isValidOrgUnitLevel(level) {
-        return /^LEVEL-[0-9]+$/.test(level);
+        const match = level.match(/LEVEL-(.*)$/);
+        return (
+            Array.isArray(match) &&
+            (/^[0-9]+$/.test(match[1]) || isValidUid(match[1]))
+        );
     }
 
     /**

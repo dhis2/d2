@@ -21,6 +21,12 @@ describe('GeoFeatures', () => {
             expect(geoFeatures.byOrgUnit()).toBeInstanceOf(GeoFeatures);
         });
 
+        it('should add LEVEL-wjP19dkFeIk to the orgUnits array', () => {
+            geoFeatures = geoFeatures.byOrgUnit('LEVEL-wjP19dkFeIk');
+
+            expect(geoFeatures.orgUnits).toContain('LEVEL-wjP19dkFeIk');
+        });
+
         it('should add LEVEL-3 to the orgUnits array', () => {
             geoFeatures = geoFeatures.byOrgUnit('LEVEL-3');
 
