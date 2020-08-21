@@ -96,9 +96,7 @@ describe('GeoFeatures', () => {
         it('should request geoFeature for one org. unit', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
-            geoFeatures = geoFeatures
-                .byOrgUnit('YuQRtpLP10I')
-                .getAll();
+            geoFeatures = geoFeatures.byOrgUnit('YuQRtpLP10I').getAll();
 
             expect(mockApi.get).toBeCalledWith('geoFeatures', {
                 ou: 'ou:YuQRtpLP10I',
@@ -134,9 +132,11 @@ describe('GeoFeatures', () => {
         it('should request geoFeature using uid and extra URL parameter', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
-            geoFeatures = geoFeatures.byOrgUnit('YuQRtpLP10I').getAll({
-                includeGroupSets: true,
-            });
+            geoFeatures = geoFeatures
+                .byOrgUnit('YuQRtpLP10I')
+                .getAll({
+                    includeGroupSets: true,
+                });
 
             expect(mockApi.get).toBeCalledWith('geoFeatures', {
                 ou: 'ou:YuQRtpLP10I',
