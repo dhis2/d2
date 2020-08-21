@@ -46,27 +46,19 @@ describe('GeoFeatures', () => {
         });
 
         it('should throw when invalid uid', () => {
-            expect(() => geoFeatures.byOrgUnit('invalid')).toThrow(
-                'Invalid organisation unit: invalid'
-            );
+            expect(() => geoFeatures.byOrgUnit('invalid')).toThrow('Invalid organisation unit: invalid');
         });
 
         it('should throw when invalid org unit level format', () => {
-            expect(() => geoFeatures.byOrgUnit('LEVEL-1b')).toThrow(
-                'Invalid organisation unit: LEVEL-1b'
-            );
+            expect(() => geoFeatures.byOrgUnit('LEVEL-1b')).toThrow('Invalid organisation unit: LEVEL-1b');
         });
 
         it('should throw when invalid org unit group format', () => {
-            expect(() => geoFeatures.byOrgUnit('OU_GROUP-invalid')).toThrow(
-                'Invalid organisation unit: OU_GROUP-invalid'
-            );
+            expect(() => geoFeatures.byOrgUnit('OU_GROUP-invalid')).toThrow('Invalid organisation unit: OU_GROUP-invalid');
         });
 
         it('should throw when invalid user org unit', () => {
-            expect(() => geoFeatures.byOrgUnit('SHORTNAMES')).toThrow(
-                'Invalid organisation unit: SHORTNAMES'
-            );
+            expect(() => geoFeatures.byOrgUnit('SHORTNAMES')).toThrow('Invalid organisation unit: SHORTNAMES');
         });
     });
 
@@ -86,9 +78,7 @@ describe('GeoFeatures', () => {
         });
 
         it('should throw when invalid displayProperty', () => {
-            expect(() => geoFeatures.displayProperty('invalid')).toThrow(
-                'Invalid display property: invalid'
-            );
+            expect(() => geoFeatures.displayProperty('invalid')).toThrow('Invalid display property: invalid');
         });
     });
 
@@ -106,7 +96,9 @@ describe('GeoFeatures', () => {
         it('should request geoFeature for one org. unit', () => {
             mockApi.get.mockReturnValue(Promise.resolve([]));
 
-            geoFeatures = geoFeatures.byOrgUnit('YuQRtpLP10I').getAll();
+            geoFeatures = geoFeatures
+                .byOrgUnit('YuQRtpLP10I')
+                .getAll();
 
             expect(mockApi.get).toBeCalledWith('geoFeatures', {
                 ou: 'ou:YuQRtpLP10I',
@@ -153,25 +145,20 @@ describe('GeoFeatures', () => {
         });
 
         it('should return an array of geoFeatures', () => {
-            mockApi.get.mockReturnValue(
-                Promise.resolve([
+            mockApi.get.mockReturnValue(Promise.resolve([
+                {
+                    id: 'YuQRtpLP10I',
+                },
+            ]));
+
+            // Async test
+            return geoFeatures.byOrgUnit('YuQRtpLP10I').getAll().then((features) => {
+                expect(features).toEqual([
                     {
                         id: 'YuQRtpLP10I',
                     },
-                ])
-            );
-
-            // Async test
-            return geoFeatures
-                .byOrgUnit('YuQRtpLP10I')
-                .getAll()
-                .then((features) => {
-                    expect(features).toEqual([
-                        {
-                            id: 'YuQRtpLP10I',
-                        },
-                    ]);
-                });
+                ]);
+            });
         });
 
         it('should reject the promise with an error if a wrong org. unit has been requested', () => {
@@ -179,9 +166,7 @@ describe('GeoFeatures', () => {
 
             expect.assertions(1);
 
-            return geoFeatures
-                .byOrgUnit('LEVEL-20')
-                .getAll()
+            return geoFeatures.byOrgUnit('LEVEL-20').getAll()
                 .catch(() => {
                     // TODO: this seems to just be testing the mock
                     expect(true).toBe(true);
