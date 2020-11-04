@@ -1,5 +1,5 @@
-import Api from '../api/Api';
-import BaseStoreNamespace from './BaseStoreNamespace';
+import Api from '../api/Api'
+import BaseStoreNamespace from './BaseStoreNamespace'
 
 /**
  * @augments module:datastore.BaseStoreNamespace
@@ -13,7 +13,7 @@ import BaseStoreNamespace from './BaseStoreNamespace';
  */
 class DataStoreNamespace extends BaseStoreNamespace {
     constructor(namespace, keys, api = Api.getApi(), endPoint = 'dataStore') {
-        super(namespace, keys, api, endPoint);
+        super(namespace, keys, api, endPoint)
     }
 
     /**
@@ -23,9 +23,9 @@ class DataStoreNamespace extends BaseStoreNamespace {
      */
     getMetaData(key) {
         return this.api.get(
-            [this.endPoint, this.namespace, key, 'metaData'].join('/'),
-        );
+            [this.endPoint, this.namespace, key, 'metaData'].join('/')
+        )
     }
 }
 
-export default DataStoreNamespace;
+export default DataStoreNamespace

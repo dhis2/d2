@@ -2,17 +2,17 @@
  * @module i18n
  */
 
-import Api from '../api/Api';
+import Api from '../api/Api'
 
 /**
  * I18n class for dealing with translations
  */
 class I18n {
     constructor(sources = [], api = Api.getApi()) {
-        this.sources = sources;
-        this.api = api;
-        this.strings = new Set();
-        this.translations = undefined;
+        this.sources = sources
+        this.api = api
+        this.strings = new Set()
+        this.translations = undefined
     }
 
     /**
@@ -24,7 +24,7 @@ class I18n {
      * @param {String} path
      */
     addSource(path) {
-        this.sources.push(path);
+        this.sources.push(path)
     }
 
     /**
@@ -34,11 +34,11 @@ class I18n {
      */
     addStrings(strings) {
         if (typeof strings === 'string' && strings.trim().length > 0) {
-            this.strings.add(strings.trim());
+            this.strings.add(strings.trim())
         } else {
             Array.from(strings)
-                .filter(string => string && (`${string}`).trim().length > 0)
-                .forEach(string => this.strings.add(string));
+                .filter(string => string && `${string}`.trim().length > 0)
+                .forEach(string => this.strings.add(string))
         }
     }
 
@@ -51,59 +51,67 @@ class I18n {
      * @returns {Promise}
      */
     load() {
-        const i18n = this;
-        i18n.translations = {};
+        const i18n = this
+        i18n.translations = {}
 
         function parseProperties(text) {
             return text.split('\n').reduce((props, line) => {
-                const [key, value] = line.split('=').map(out => out.trim());
-                if (key !== undefined && value !== undefined && !props.hasOwnProperty(key)) {
-                    props[key] = value // eslint-disable-line no-param-reassign
-                        .replace(/\\u([0-9a-f]{4})/gi, (match, grp) => String.fromCharCode(parseInt(grp, 16)));
+                const [key, value] = line.split('=').map(out => out.trim())
+                if (
+                    key !== undefined &&
+                    value !== undefined &&
+                    !props.hasOwnProperty(key)
+                ) {
+                    props[key] = value.replace(
+                        /\\u([0-9a-f]{4})/gi,
+                        (match, grp) => String.fromCharCode(parseInt(grp, 16))
+                    )
                 }
-                return props;
-            }, {});
+                return props
+            }, {})
         }
 
-        const propFiles = [];
+        const propFiles = []
 
-        this.sources.forEach((source) => {
+        this.sources.forEach(source => {
             propFiles.push(
                 i18n.api.request('GET', source).then(
                     data => Promise.resolve(parseProperties(data)),
 
                     // Resolve errors to an empty object, so that one missing file doesn't prevent
                     // the rest from being loaded
-                    () => Promise.resolve({}),
-                ),
-            );
-        });
+                    () => Promise.resolve({})
+                )
+            )
+        })
 
-        return Promise.all(propFiles).then((propFile) => {
-            propFile.forEach((props) => {
-                Object.keys(props).forEach((str) => {
+        return Promise.all(propFiles).then(propFile => {
+            propFile.forEach(props => {
+                Object.keys(props).forEach(str => {
                     if (!i18n.translations.hasOwnProperty(str)) {
-                        i18n.translations[str] = props[str];
+                        i18n.translations[str] = props[str]
                     }
-                    this.strings.delete(str);
-                });
-            });
+                    this.strings.delete(str)
+                })
+            })
 
             if (this.strings.size > 0) {
-                return i18n.api.post('i18n', Array.from(i18n.strings)).then((res) => {
-                    Object.keys(res)
-                        .filter(str => str !== res[str])
-                        .forEach((str) => {
-                            i18n.translations[str] = res[str];
-                            i18n.strings.delete(str);
-                        });
+                return i18n.api
+                    .post('i18n', Array.from(i18n.strings))
+                    .then(res => {
+                        Object.keys(res)
+                            .filter(str => str !== res[str])
+                            .forEach(str => {
+                                i18n.translations[str] = res[str]
+                                i18n.strings.delete(str)
+                            })
 
-                    return Promise.resolve(i18n.translations);
-                });
+                        return Promise.resolve(i18n.translations)
+                    })
             }
 
-            return Promise.resolve(i18n.translations);
-        });
+            return Promise.resolve(i18n.translations)
+        })
     }
 
     /**
@@ -117,18 +125,20 @@ class I18n {
      */
     getTranslation(string, variables = {}) {
         if (this.translations === undefined) {
-            throw new Error('Tried to translate before loading translations!');
+            throw new Error('Tried to translate before loading translations!')
         }
         const translatedString = this.translations.hasOwnProperty(string)
             ? this.translations[string]
-            : `** ${string} **`;
+            : `** ${string} **`
 
         if (Object.keys(variables).length) {
-            return translatedString
-                .replace(/\$\$(.+?)\$\$/gi, (match, partial) => variables[partial] || '');
+            return translatedString.replace(
+                /\$\$(.+?)\$\$/gi,
+                (match, partial) => variables[partial] || ''
+            )
         }
 
-        return translatedString;
+        return translatedString
     }
 
     /**
@@ -139,11 +149,10 @@ class I18n {
      */
     isTranslated(string) {
         if (this.translations === undefined) {
-            throw new Error('Tried to translate before loading translations!');
+            throw new Error('Tried to translate before loading translations!')
         }
-        return this.translations.hasOwnProperty(string);
+        return this.translations.hasOwnProperty(string)
     }
-
 
     /**
      * Get the list of strings that don't have translations
@@ -153,7 +162,7 @@ class I18n {
      * @returns {Array|undefined} Array of untranslated strings, or undefined if translations haven't been loaded
      */
     getUntranslatedStrings() {
-        return this.translations ? Array.from(this.strings) : undefined;
+        return this.translations ? Array.from(this.strings) : undefined
     }
 
     /**
@@ -162,8 +171,8 @@ class I18n {
      * @returns {I18n}
      */
     static getI18n() {
-        return new I18n();
+        return new I18n()
     }
 }
 
-export default I18n;
+export default I18n

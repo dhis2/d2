@@ -1,4 +1,4 @@
-import AnalyticsRequest from './AnalyticsRequest';
+import AnalyticsRequest from './AnalyticsRequest'
 
 /**
  * @private
@@ -9,14 +9,14 @@ import AnalyticsRequest from './AnalyticsRequest';
  * @return {module:analytics.AnalyticsRequestFiltersMixin} The mixin class
  * @mixin
  */
+/**
+ * @private
+ * @description
+ * AnalyticsRequest filters mixin class
+ *
+ * @alias module:analytics.AnalyticsRequestFiltersMixin
+ */
 const AnalyticsRequestFiltersMixin = base =>
-    /**
-     * @private
-     * @description
-     * AnalyticsRequest filters mixin class
-     *
-     * @alias module:analytics.AnalyticsRequestFiltersMixin
-     */
     class extends base {
         /**
          * Adds/updates the dx dimension filter to use in the request.
@@ -33,7 +33,7 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=dx:fbfJHSPpUQD;cYeuwXTCPkU;BfMAe6Itzgt.REPORTING_RATE
          */
         addDataFilter(items) {
-            return this.addFilter('dx', items);
+            return this.addFilter('dx', items)
         }
 
         /**
@@ -51,7 +51,7 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=pe:201701;201702;LAST_4_QUARTERS
          */
         addPeriodFilter(items) {
-            return this.addFilter('pe', items);
+            return this.addFilter('pe', items)
         }
 
         /**
@@ -69,7 +69,7 @@ const AnalyticsRequestFiltersMixin = base =>
          * // filter=ou:O6uvpzGd5pu;lc3eMKXaEfw;OU_GROUP-w0gFTTmsUcF
          */
         addOrgUnitFilter(items) {
-            return this.addFilter('ou', items);
+            return this.addFilter('ou', items)
         }
 
         /**
@@ -87,40 +87,44 @@ const AnalyticsRequestFiltersMixin = base =>
          *
          * // filter=Bpx0589u8y0:oRVt7g429ZO;MAs88nJc9nL&filter=qrur9Dvnyt5-Yf6UHoPkdS6
          */
+        // eslint-disable-next-line complexity
         addFilter(dimension, items) {
-            let filterIndex = 0;
+            let filterIndex = 0
 
             const existingFilter = this.filters.find((item, index) => {
                 if (item.dimension === dimension) {
-                    filterIndex = index;
+                    filterIndex = index
 
-                    return item;
+                    return item
                 }
 
-                return false;
-            });
+                return false
+            })
 
-            let updatedItems = [];
-            let existingItems = [];
+            let updatedItems = []
+            let existingItems = []
 
             if (existingFilter) {
-                existingItems = existingFilter.items || [];
+                existingItems = existingFilter.items || []
             }
 
             if (typeof items === 'string') {
-                updatedItems = [...new Set([...existingItems, items])];
+                updatedItems = [...new Set([...existingItems, items])]
             } else if (Array.isArray(items)) {
-                updatedItems = [...new Set([...existingItems, ...items])];
+                updatedItems = [...new Set([...existingItems, ...items])]
             }
 
             if (existingFilter) {
-                this.filters.splice(filterIndex, 1, { dimension, items: updatedItems });
+                this.filters.splice(filterIndex, 1, {
+                    dimension,
+                    items: updatedItems,
+                })
             } else {
-                this.filters.push({ dimension, items: updatedItems });
+                this.filters.push({ dimension, items: updatedItems })
             }
 
-            return new AnalyticsRequest(this);
+            return new AnalyticsRequest(this)
         }
-    };
+    }
 
-export default AnalyticsRequestFiltersMixin;
+export default AnalyticsRequestFiltersMixin

@@ -1,49 +1,50 @@
-import fixtures from '../../__fixtures__/fixtures';
-import AnalyticsRequest from '../AnalyticsRequest';
-import ModelDefinition from '../../model/ModelDefinition';
+import fixtures from '../../__fixtures__/fixtures'
+import AnalyticsRequest from '../AnalyticsRequest'
+import ModelDefinition from '../../model/ModelDefinition'
 
-let request;
-let expectedParameters;
+let request
+let expectedParameters
 
-const getFuncName = parameter => `with${parameter.charAt(0).toUpperCase()}${parameter.slice(1)}`;
+const getFuncName = parameter =>
+    `with${parameter.charAt(0).toUpperCase()}${parameter.slice(1)}`
 
 describe('AnalyticsRequest', () => {
     beforeEach(() => {
-        request = new AnalyticsRequest();
-        expectedParameters = {};
-    });
+        request = new AnalyticsRequest()
+        expectedParameters = {}
+    })
 
     describe('constructor', () => {
         it('should not be allowed to be called without new', () => {
-            expect(() => AnalyticsRequest()).toThrowErrorMatchingSnapshot();
-        });
+            expect(() => AnalyticsRequest()).toThrowErrorMatchingSnapshot()
+        })
 
         it('should initialize properties', () => {
-            expect(request.parameters).toEqual({});
-            expect(request.dimensions).toEqual([]);
-            expect(request.filters).toEqual([]);
-        });
+            expect(request.parameters).toEqual({})
+            expect(request.dimensions).toEqual([])
+            expect(request.filters).toEqual([])
+        })
 
         it('should have a default endpoint value', () => {
-            expect(request.endPoint).toEqual('analytics');
-        });
+            expect(request.endPoint).toEqual('analytics')
+        })
 
         it('should set the endpoint when passed as argument', () => {
-            request = new AnalyticsRequest({ endPoint: 'analytics2' });
+            request = new AnalyticsRequest({ endPoint: 'analytics2' })
 
-            expect(request.endPoint).toEqual('analytics2');
-        });
-    });
+            expect(request.endPoint).toEqual('analytics2')
+        })
+    })
 
     describe('properties', () => {
         describe('.addDataDimension()', () => {
             it('should add the dx dimension', () => {
-                request.addDataDimension('Jtf34kNZhzP');
+                request.addDataDimension('Jtf34kNZhzP')
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'dx', items: ['Jtf34kNZhzP'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append unique values to the dx dimension on subsequent calls', () => {
                 request = request
@@ -55,7 +56,7 @@ describe('AnalyticsRequest', () => {
                         'bqK6eSIwo3h',
                         'cYeuwXTCPkU',
                         'fbfJHSPpUQD',
-                    ]);
+                    ])
 
                 expect(request.dimensions).toEqual([
                     {
@@ -69,236 +70,262 @@ describe('AnalyticsRequest', () => {
                             'fbfJHSPpUQD',
                         ],
                     },
-                ]);
-            });
-        });
+                ])
+            })
+        })
 
         describe('.fromModel()', () => {
             const chartModelDefinition = ModelDefinition.createFromSchema(
                 fixtures.get('/api/schemas/chart'),
-                fixtures.get('/api/attributes').attributes,
-            );
-            const model = chartModelDefinition.create(fixtures.get('/chartAllFields'));
+                fixtures.get('/api/attributes').attributes
+            )
+            const model = chartModelDefinition.create(
+                fixtures.get('/chartAllFields')
+            )
 
             it('should add dimensions from the model', () => {
-                request = request.fromModel(model);
+                request = request.fromModel(model)
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'dx', items: ['Uvn6LCg7dVU', 'sB79w2hiLp8'] },
-                    { dimension: 'ou', items: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'] },
-                ]);
-            });
+                    {
+                        dimension: 'ou',
+                        items: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'],
+                    },
+                ])
+            })
 
             it('should add filters from the model', () => {
-                request = request.fromModel(model);
+                request = request.fromModel(model)
 
                 expect(request.filters).toEqual([
                     { dimension: 'pe', items: ['LAST_SIX_MONTH'] },
-                ]);
-            });
+                ])
+            })
 
             it('should convert filters into dimensions when passing the optional flag', () => {
-                request = request.fromModel(model, true);
+                request = request.fromModel(model, true)
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'dx', items: ['Uvn6LCg7dVU', 'sB79w2hiLp8'] },
-                    { dimension: 'ou', items: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'] },
+                    {
+                        dimension: 'ou',
+                        items: ['USER_ORGUNIT', 'USER_ORGUNIT_CHILDREN'],
+                    },
                     { dimension: 'pe', items: ['LAST_SIX_MONTH'] },
-                ]);
-            });
-        });
+                ])
+            })
+        })
 
         describe('.addOrgUnitDimension()', () => {
             it('should add the ou dimension', () => {
-                request.addOrgUnitDimension(['ImspTQPwCqd']);
+                request.addOrgUnitDimension(['ImspTQPwCqd'])
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'ou', items: ['ImspTQPwCqd'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append unique values to the ou dimension on subsequent calls', () => {
                 request = request
                     .addOrgUnitDimension(['ImspTQPwCqd'])
-                    .addOrgUnitDimension(['ImspTQPwCqd', 'O6uvpzGd5pu']);
+                    .addOrgUnitDimension(['ImspTQPwCqd', 'O6uvpzGd5pu'])
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'ou', items: ['ImspTQPwCqd', 'O6uvpzGd5pu'] },
-                ]);
-            });
-        });
+                ])
+            })
+        })
 
         describe('.addPeriodDimension()', () => {
             it('should add the pe dimension', () => {
-                request.addPeriodDimension('2017-01');
+                request.addPeriodDimension('2017-01')
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'pe', items: ['2017-01'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append unique values to the pe dimension on subsequent calls', () => {
                 request = request
                     .addPeriodDimension('2017-01')
-                    .addPeriodDimension(['2017-01', '2017-02', '2017-03']);
+                    .addPeriodDimension(['2017-01', '2017-02', '2017-03'])
 
                 expect(request.dimensions).toEqual([
-                    { dimension: 'pe', items: ['2017-01', '2017-02', '2017-03'] },
-                ]);
-            });
-        });
+                    {
+                        dimension: 'pe',
+                        items: ['2017-01', '2017-02', '2017-03'],
+                    },
+                ])
+            })
+        })
 
         describe('.addDimension()', () => {
             it('should add the given dimension without any associated value', () => {
-                request.addDimension('Jtf34kNZhzP');
+                request.addDimension('Jtf34kNZhzP')
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'Jtf34kNZhzP', items: [] },
-                ]);
-            });
+                ])
+            })
 
             it('should add the given dimension with the associated value (passed as string)', () => {
-                request.addDimension('J5jldMd8OHv', 'CXw2yu5fodb');
+                request.addDimension('J5jldMd8OHv', 'CXw2yu5fodb')
 
                 expect(request.dimensions).toEqual([
                     { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append values (passed as array) to the given dimension', () => {
                 request = request
                     .addDimension('J5jldMd8OHv', 'CXw2yu5fodb')
-                    .addDimension('J5jldMd8OHv', ['EYbopBOJWsW', 'test']);
+                    .addDimension('J5jldMd8OHv', ['EYbopBOJWsW', 'test'])
 
                 expect(request.dimensions).toEqual([
-                    { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'] },
-                ]);
-            });
+                    {
+                        dimension: 'J5jldMd8OHv',
+                        items: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'],
+                    },
+                ])
+            })
 
             it('should not append a value already present in the dimension', () => {
                 request = request
                     .addDimension('J5jldMd8OHv', ['EYbopBOJWsW', 'test'])
-                    .addDimension('J5jldMd8OHv', 'test');
+                    .addDimension('J5jldMd8OHv', 'test')
 
                 expect(request.dimensions).toEqual([
-                    { dimension: 'J5jldMd8OHv', items: ['EYbopBOJWsW', 'test'] },
-                ]);
-            });
-        });
+                    {
+                        dimension: 'J5jldMd8OHv',
+                        items: ['EYbopBOJWsW', 'test'],
+                    },
+                ])
+            })
+        })
 
         describe('.addDataFilter()', () => {
             it('should add the dx dimension filter', () => {
-                request = request.addDataFilter('Jtf34kNZhzP');
+                request = request.addDataFilter('Jtf34kNZhzP')
 
                 expect(request.filters).toEqual([
                     { dimension: 'dx', items: ['Jtf34kNZhzP'] },
-                ]);
-            });
-        });
+                ])
+            })
+        })
 
         describe('.addOrgUnitFilter()', () => {
             it('should add the ou dimension filter', () => {
-                request.addOrgUnitFilter(['ImspTQPwCqd']);
+                request.addOrgUnitFilter(['ImspTQPwCqd'])
 
                 expect(request.filters).toEqual([
                     { dimension: 'ou', items: ['ImspTQPwCqd'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append unique values to the ou dimension filter on subsequent calls', () => {
                 request = request
                     .addOrgUnitFilter('ImspTQPwCqd')
-                    .addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu']);
+                    .addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu'])
 
                 expect(request.filters).toEqual([
                     { dimension: 'ou', items: ['ImspTQPwCqd', 'O6uvpzGd5pu'] },
-                ]);
-            });
-        });
+                ])
+            })
+        })
 
         describe('.addPeriodFilter()', () => {
             it('should add the pe dimension filter', () => {
-                request.addPeriodFilter('2017-01');
+                request.addPeriodFilter('2017-01')
 
                 expect(request.filters).toEqual([
                     { dimension: 'pe', items: ['2017-01'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append unique values to the pe dimension filter on subsequent calls', () => {
                 request = request
                     .addPeriodFilter('2017-01')
-                    .addPeriodFilter(['2017-01', '2017-02', '2017-03']);
+                    .addPeriodFilter(['2017-01', '2017-02', '2017-03'])
 
                 expect(request.filters).toEqual([
-                    { dimension: 'pe', items: ['2017-01', '2017-02', '2017-03'] },
-                ]);
-            });
-        });
+                    {
+                        dimension: 'pe',
+                        items: ['2017-01', '2017-02', '2017-03'],
+                    },
+                ])
+            })
+        })
 
         describe('.addFilter()', () => {
             it('should add the given dimensions as filter without any associated value', () => {
-                request.addFilter('Jtf34kNZhzP');
+                request.addFilter('Jtf34kNZhzP')
 
                 expect(request.filters).toEqual([
                     { dimension: 'Jtf34kNZhzP', items: [] },
-                ]);
-            });
+                ])
+            })
 
             it('should add the given dimensions as filter with the associated value (passed as string)', () => {
-                request.addFilter('J5jldMd8OHv', 'CXw2yu5fodb');
+                request.addFilter('J5jldMd8OHv', 'CXw2yu5fodb')
 
                 expect(request.filters).toEqual([
                     { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb'] },
-                ]);
-            });
+                ])
+            })
 
             it('should append values (passed as array) to the given dimension filter', () => {
                 request = request
                     .addFilter('J5jldMd8OHv', 'CXw2yu5fodb')
-                    .addFilter('J5jldMd8OHv', ['EYbopBOJWsW', 'test']);
+                    .addFilter('J5jldMd8OHv', ['EYbopBOJWsW', 'test'])
 
                 expect(request.filters).toEqual([
-                    { dimension: 'J5jldMd8OHv', items: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'] },
-                ]);
-            });
+                    {
+                        dimension: 'J5jldMd8OHv',
+                        items: ['CXw2yu5fodb', 'EYbopBOJWsW', 'test'],
+                    },
+                ])
+            })
 
             it('should not append a value already present in the dimension filter', () => {
                 request = request
                     .addFilter('J5jldMd8OHv', ['EYbopBOJWsW', 'test'])
-                    .addFilter('J5jldMd8OHv', 'test');
+                    .addFilter('J5jldMd8OHv', 'test')
 
                 expect(request.filters).toEqual([
-                    { dimension: 'J5jldMd8OHv', items: ['EYbopBOJWsW', 'test'] },
-                ]);
-            });
-        });
+                    {
+                        dimension: 'J5jldMd8OHv',
+                        items: ['EYbopBOJWsW', 'test'],
+                    },
+                ])
+            })
+        })
 
         describe('.withParameters()', () => {
             const params = {
                 completedOnly: true,
                 aggregationType: 'AVERAGE',
-            };
+            }
 
             it('should set the given parameters in the request', () => {
-                request.withParameters(params);
+                request.withParameters(params)
 
-                expect(request.parameters).toEqual(params);
-            });
+                expect(request.parameters).toEqual(params)
+            })
 
             it('should override a parameter if already present', () => {
-                request = request.withAggregationType('COUNT');
+                request = request.withAggregationType('COUNT')
 
-                expect(request.parameters).toEqual({ aggregationType: 'COUNT' });
+                expect(request.parameters).toEqual({ aggregationType: 'COUNT' })
 
-                request = request.withParameters(params);
+                request = request.withParameters(params)
 
-                expect(request.parameters).toEqual(params);
-            });
-        });
+                expect(request.parameters).toEqual(params)
+            })
+        })
 
         describe('with boolean parameter', () => {
-            [
+            ;[
                 'aggregateData',
                 'coordinatesOnly',
                 'collapseDataDimensions',
@@ -314,27 +341,27 @@ describe('AnalyticsRequest', () => {
                 'skipRounding',
                 'tableLayout',
                 'includeMetadataDetails',
-            ].forEach((parameter) => {
-                const funcName = getFuncName(parameter);
+            ].forEach(parameter => {
+                const funcName = getFuncName(parameter)
 
                 it(`should add the ${parameter} parameter with default value`, () => {
-                    request[funcName]();
-                    expectedParameters[parameter] = true;
+                    request[funcName]()
+                    expectedParameters[parameter] = true
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
 
                 it(`should replace the ${parameter} parameter on subsequent calls with the specified value`, () => {
-                    request[funcName](false);
-                    expectedParameters[parameter] = false;
+                    request[funcName](false)
+                    expectedParameters[parameter] = false
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
-            });
-        });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
+            })
+        })
 
         describe('with value parameter', () => {
-            [
+            ;[
                 'approvalLevel',
                 'asc', // XXX
                 'bbox',
@@ -352,297 +379,319 @@ describe('AnalyticsRequest', () => {
                 'startDate',
                 'userOrgUnit',
                 'value', // XXX
-            ].forEach((parameter) => {
-                const funcName = getFuncName(parameter);
+            ].forEach(parameter => {
+                const funcName = getFuncName(parameter)
 
                 it(`should add the ${parameter} parameter with the specified value`, () => {
-                    request[funcName]('test');
-                    expectedParameters[parameter] = 'test';
+                    request[funcName]('test')
+                    expectedParameters[parameter] = 'test'
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
 
                 it(`should replace the ${parameter} parameter on subsequent calls with the specified value`, () => {
-                    request = request[funcName]('test');
-                    request[funcName]('test2');
-                    expectedParameters[parameter] = 'test2';
+                    request = request[funcName]('test')
+                    request[funcName]('test2')
+                    expectedParameters[parameter] = 'test2'
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
 
                 it(`should not replace the ${parameter} parameter when called without passing a value`, () => {
-                    request = request[funcName]('test');
-                    request[funcName]();
-                    expectedParameters[parameter] = 'test';
+                    request = request[funcName]('test')
+                    request[funcName]()
+                    expectedParameters[parameter] = 'test'
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
-            });
-        });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
+            })
+        })
 
         describe('with numeric value parameter', () => {
             const params = {
                 page: 1,
                 pageSize: 50,
-            };
+            }
 
             Object.entries(params).forEach(([key, value]) => {
-                const parameter = key;
-                const funcName = getFuncName(parameter);
+                const parameter = key
+                const funcName = getFuncName(parameter)
 
                 it(`should add the ${parameter} parameter with the default value`, () => {
-                    request[funcName]();
-                    expectedParameters[parameter] = value;
+                    request[funcName]()
+                    expectedParameters[parameter] = value
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
 
                 it(`should add the ${parameter} parameter with the specified value`, () => {
-                    request[funcName](10);
-                    expectedParameters[parameter] = 10;
+                    request[funcName](10)
+                    expectedParameters[parameter] = 10
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
 
                 it(`should replace the ${parameter} parameter on subsequent calls with the specified value`, () => {
-                    request = request[funcName](10);
-                    request[funcName](20);
-                    expectedParameters[parameter] = 20;
+                    request = request[funcName](10)
+                    request[funcName](20)
+                    expectedParameters[parameter] = 20
 
-                    expect(request.parameters).toEqual(expectedParameters);
-                });
-            });
-        });
+                    expect(request.parameters).toEqual(expectedParameters)
+                })
+            })
+        })
 
         describe('.withCoordinateField()', () => {
             it('should set the coordinateField to the specified value', () => {
-                request.withCoordinateField('abc');
+                request.withCoordinateField('abc')
 
-                expect(request.parameters).toEqual({ coordinateField: 'abc' });
-            });
+                expect(request.parameters).toEqual({ coordinateField: 'abc' })
+            })
 
             it('should set the coordinateField to default value when called with no value', () => {
-                request.withCoordinateField();
+                request.withCoordinateField()
 
-                expect(request.parameters).toEqual({ coordinateField: 'EVENT' });
-            });
-        });
+                expect(request.parameters).toEqual({ coordinateField: 'EVENT' })
+            })
+        })
 
         describe('.withFormat()', () => {
             it('should set the format to the specified value', () => {
-                request.withFormat('xml');
+                request.withFormat('xml')
 
-                expect(request.format).toEqual('xml');
-            });
+                expect(request.format).toEqual('xml')
+            })
 
             it('should set the format to default value when called with no value', () => {
-                request.withFormat();
+                request.withFormat()
 
-                expect(request.format).toEqual('json');
-            });
-        });
+                expect(request.format).toEqual('json')
+            })
+        })
 
         describe('.withPath()', () => {
             it('should set the request path to the specified value', () => {
-                request.withPath('test');
+                request.withPath('test')
 
-                expect(request.path).toEqual('test');
-            });
+                expect(request.path).toEqual('test')
+            })
 
             it('should replace the path on subsequent requests', () => {
-                request = request.withPath('test').withPath('another/path');
+                request = request.withPath('test').withPath('another/path')
 
-                expect(request.path).toEqual('another/path');
-            });
+                expect(request.path).toEqual('another/path')
+            })
 
             it('should not replace the path when called with no value', () => {
-                request = request.withPath('some/path').withPath();
+                request = request.withPath('some/path').withPath()
 
-                expect(request.path).toEqual('some/path');
-            });
-        });
+                expect(request.path).toEqual('some/path')
+            })
+        })
 
         describe('.withProgram()', () => {
             it('should set the program to the specified value', () => {
-                request.withProgram('eBAyeGv0exc');
+                request.withProgram('eBAyeGv0exc')
 
-                expect(request.program).toEqual('eBAyeGv0exc');
-            });
+                expect(request.program).toEqual('eBAyeGv0exc')
+            })
 
             it('should not replace the program when called with no value', () => {
-                request = request.withProgram('eBAyeGv0exc').withProgram();
+                request = request.withProgram('eBAyeGv0exc').withProgram()
 
-                expect(request.program).toEqual('eBAyeGv0exc');
-            });
-        });
+                expect(request.program).toEqual('eBAyeGv0exc')
+            })
+        })
 
         describe('.withAggregationType()', () => {
             it('should add the aggregationType parameter with the specified value', () => {
-                request.withAggregationType('SUM');
+                request.withAggregationType('SUM')
 
-                expect(request.parameters).toEqual({ aggregationType: 'SUM' });
-            });
+                expect(request.parameters).toEqual({ aggregationType: 'SUM' })
+            })
 
             it('should add the aggregationType parameter and uppercase the value', () => {
-                request.withAggregationType('stddev');
+                request.withAggregationType('stddev')
 
-                expect(request.parameters).toEqual({ aggregationType: 'STDDEV' });
-            });
+                expect(request.parameters).toEqual({
+                    aggregationType: 'STDDEV',
+                })
+            })
 
             it('should allow a aggregationType that is not in present in the list', () => {
-                request.withAggregationType('new-constant');
+                request.withAggregationType('new-constant')
 
-                expect(request.parameters).toEqual({ aggregationType: 'new-constant' });
-            });
-        });
+                expect(request.parameters).toEqual({
+                    aggregationType: 'new-constant',
+                })
+            })
+        })
 
         describe('.withDisplayProperty()', () => {
             it('should add the displayProperty parameter with the specified value', () => {
-                request.withDisplayProperty('NAME');
+                request.withDisplayProperty('NAME')
 
-                expect(request.parameters).toEqual({ displayProperty: 'NAME' });
-            });
+                expect(request.parameters).toEqual({ displayProperty: 'NAME' })
+            })
 
             it('should add the displayProperty parameter and uppercase the value', () => {
-                request.withDisplayProperty('shortname');
+                request.withDisplayProperty('shortname')
 
-                expect(request.parameters).toEqual({ displayProperty: 'SHORTNAME' });
-            });
+                expect(request.parameters).toEqual({
+                    displayProperty: 'SHORTNAME',
+                })
+            })
 
             it('should allow a displayProperty that is not present in the list', () => {
-                request.withDisplayProperty('new-constant');
+                request.withDisplayProperty('new-constant')
 
-                expect(request.parameters).toEqual({ displayProperty: 'new-constant' });
-            });
-        });
+                expect(request.parameters).toEqual({
+                    displayProperty: 'new-constant',
+                })
+            })
+        })
 
         describe('.withOuMode()', () => {
             it('should add the ouMode parameter with the specified value', () => {
-                request.withOuMode('DESCENDANTS');
+                request.withOuMode('DESCENDANTS')
 
-                expect(request.parameters).toEqual({ ouMode: 'DESCENDANTS' });
-            });
+                expect(request.parameters).toEqual({ ouMode: 'DESCENDANTS' })
+            })
 
             it('should add the ouMode parameter and uppercase the value', () => {
-                request.withOuMode('children');
+                request.withOuMode('children')
 
-                expect(request.parameters).toEqual({ ouMode: 'CHILDREN' });
-            });
+                expect(request.parameters).toEqual({ ouMode: 'CHILDREN' })
+            })
 
             it('should allow a ouMode that is not present in the list', () => {
-                request.withOuMode('new-constant');
+                request.withOuMode('new-constant')
 
-                expect(request.parameters).toEqual({ ouMode: 'new-constant' });
-            });
-        });
+                expect(request.parameters).toEqual({ ouMode: 'new-constant' })
+            })
+        })
 
         describe('.withOutputType()', () => {
             it('should add the outputType parameter with the specified value', () => {
-                request.withOutputType('EVENT');
+                request.withOutputType('EVENT')
 
-                expect(request.parameters).toEqual({ outputType: 'EVENT' });
-            });
+                expect(request.parameters).toEqual({ outputType: 'EVENT' })
+            })
 
             it('should add the outputType parameter and uppercase the value', () => {
-                request.withOutputType('enrollment');
+                request.withOutputType('enrollment')
 
-                expect(request.parameters).toEqual({ outputType: 'ENROLLMENT' });
-            });
+                expect(request.parameters).toEqual({ outputType: 'ENROLLMENT' })
+            })
 
             it('should allow a outputType that is not present in the list', () => {
-                request.withOutputType('new-constant');
+                request.withOutputType('new-constant')
 
-                expect(request.parameters).toEqual({ outputType: 'new-constant' });
-            });
-        });
+                expect(request.parameters).toEqual({
+                    outputType: 'new-constant',
+                })
+            })
+        })
 
         describe('.withEventStatus()', () => {
             it('should add the eventStatus parameter with the specified value', () => {
-                request.withEventStatus('ACTIVE');
+                request.withEventStatus('ACTIVE')
 
-                expect(request.parameters).toEqual({ eventStatus: 'ACTIVE' });
-            });
+                expect(request.parameters).toEqual({ eventStatus: 'ACTIVE' })
+            })
 
             it('should add the eventStatus parameter and uppercase the value', () => {
-                request.withEventStatus('skipped');
+                request.withEventStatus('skipped')
 
-                expect(request.parameters).toEqual({ eventStatus: 'SKIPPED' });
-            });
+                expect(request.parameters).toEqual({ eventStatus: 'SKIPPED' })
+            })
 
             it('should allow a eventStatus that is not present in the list', () => {
-                request.withEventStatus('new-constant');
+                request.withEventStatus('new-constant')
 
-                expect(request.parameters).toEqual({ eventStatus: 'new-constant' });
-            });
-        });
+                expect(request.parameters).toEqual({
+                    eventStatus: 'new-constant',
+                })
+            })
+        })
 
         describe('.withLimit()', () => {
             it('should add the limit parameter with the specified value', () => {
-                request.withLimit(1000);
+                request.withLimit(1000)
 
-                expect(request.parameters).toEqual({ limit: 1000 });
-            });
+                expect(request.parameters).toEqual({ limit: 1000 })
+            })
 
             it('should not allow a limit greater than 10000', () => {
-                request.withLimit('20000');
+                request.withLimit('20000')
 
-                expect(request.parameters).toEqual({ limit: 10000 });
-            });
+                expect(request.parameters).toEqual({ limit: 10000 })
+            })
 
             it('should not replace the value when called with no value', () => {
-                request = request.withLimit('20000').withLimit();
+                request = request.withLimit('20000').withLimit()
 
-                expect(request.parameters).toEqual({ limit: 10000 });
-            });
-        });
+                expect(request.parameters).toEqual({ limit: 10000 })
+            })
+        })
 
         describe('.withProgramStatus()', () => {
             it('should add the programStatus parameter with the specified value', () => {
-                request.withProgramStatus('ACTIVE');
+                request.withProgramStatus('ACTIVE')
 
-                expect(request.parameters).toEqual({ programStatus: 'ACTIVE' });
-            });
+                expect(request.parameters).toEqual({ programStatus: 'ACTIVE' })
+            })
 
             it('should add the programStatus parameter and uppercase the value', () => {
-                request.withProgramStatus('completed');
+                request.withProgramStatus('completed')
 
-                expect(request.parameters).toEqual({ programStatus: 'COMPLETED' });
-            });
+                expect(request.parameters).toEqual({
+                    programStatus: 'COMPLETED',
+                })
+            })
 
             it('should allow a programStatus that is not present in the list', () => {
-                request.withProgramStatus('new-constant');
+                request.withProgramStatus('new-constant')
 
-                expect(request.parameters).toEqual({ programStatus: 'new-constant' });
-            });
-        });
+                expect(request.parameters).toEqual({
+                    programStatus: 'new-constant',
+                })
+            })
+        })
 
         describe('.withSortOrder()', () => {
             it('should add the sortOrder parameter with the specified value', () => {
-                request.withSortOrder('ASC');
+                request.withSortOrder('ASC')
 
-                expect(request.parameters).toEqual({ sortOrder: 'ASC' });
-            });
+                expect(request.parameters).toEqual({ sortOrder: 'ASC' })
+            })
 
             it('should add the sortOrder parameter and uppercase the value', () => {
-                request.withSortOrder('desc');
+                request.withSortOrder('desc')
 
-                expect(request.parameters).toEqual({ sortOrder: 'DESC' });
-            });
+                expect(request.parameters).toEqual({ sortOrder: 'DESC' })
+            })
 
             it('should allow a sortOrder that is not present in the list', () => {
-                request.withSortOrder('new-constant');
+                request.withSortOrder('new-constant')
 
-                expect(request.parameters).toEqual({ sortOrder: 'new-constant' });
-            });
-        });
-    });
+                expect(request.parameters).toEqual({
+                    sortOrder: 'new-constant',
+                })
+            })
+        })
+    })
 
     describe('.buildUrl()', () => {
         it('should append the path to the endpoint', () => {
-            request = request.addOrgUnitDimension(['ImspTQPwCqd']).withPath('test');
+            request = request
+                .addOrgUnitDimension(['ImspTQPwCqd'])
+                .withPath('test')
 
-            expect(request.buildUrl()).toEqual('analytics/test.json?dimension=ou:ImspTQPwCqd');
-        });
+            expect(request.buildUrl()).toEqual(
+                'analytics/test.json?dimension=ou:ImspTQPwCqd'
+            )
+        })
 
         it('shold build the URL with path, program and format', () => {
             request = request
@@ -651,70 +700,76 @@ describe('AnalyticsRequest', () => {
                 .withFormat('xml')
                 .addOrgUnitDimension(['ImspTQPwCqd'])
                 .addPeriodDimension('201711')
-                .addDataDimension('test-dx-dim');
+                .addDataDimension('test-dx-dim')
 
             const expectedSearchParams = {
                 'ou:ImspTQPwCqd': 'dimension',
                 'pe:201711': 'dimension',
                 'dx:test-dx-dim': 'dimension',
-            };
+            }
 
-            const url = new URL(`http://localhost/${request.buildUrl()}`);
-            const searchParams = {};
-            let key;
-            let value;
+            const url = new URL(`http://localhost/${request.buildUrl()}`)
+            const searchParams = {}
+            let key
+            let value
 
             url.search
                 .slice(1)
                 .split('&')
-                .forEach((p) => {
-                    [key, value] = p.split('=');
-                    searchParams[value] = key;
-                });
+                .forEach(p => {
+                    ;[key, value] = p.split('=')
+                    searchParams[value] = key
+                })
 
-            expect(url.pathname).toEqual('/analytics/events/aggregate/program-id.xml');
-            expect(searchParams).toEqual(expectedSearchParams);
-        });
+            expect(url.pathname).toEqual(
+                '/analytics/events/aggregate/program-id.xml'
+            )
+            expect(searchParams).toEqual(expectedSearchParams)
+        })
 
         it('should build the URL with a dimension without items', () => {
-            request = request.addDimension('test-dim');
+            request = request.addDimension('test-dim')
 
-            expect(request.buildUrl()).toEqual('analytics.json?dimension=test-dim');
-        });
-    });
+            expect(request.buildUrl()).toEqual(
+                'analytics.json?dimension=test-dim'
+            )
+        })
+    })
 
     describe('.buildQuery()', () => {
         it('should return an empty object when there are no filters nor parameters', () => {
-            expect(request.buildQuery()).toEqual({});
-        });
+            expect(request.buildQuery()).toEqual({})
+        })
 
         it('should return an object when a filter is added', () => {
-            request.addOrgUnitFilter(['ImspTQPwCqd']);
+            request.addOrgUnitFilter(['ImspTQPwCqd'])
 
-            expect(request.buildQuery()).toEqual({ filter: ['ou:ImspTQPwCqd'] });
-        });
+            expect(request.buildQuery()).toEqual({ filter: ['ou:ImspTQPwCqd'] })
+        })
 
         it('should return an object when a filter is added with multiple values', () => {
-            request.addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu']);
+            request.addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu'])
 
-            expect(request.buildQuery()).toEqual({ filter: ['ou:ImspTQPwCqd;O6uvpzGd5pu'] });
-        });
+            expect(request.buildQuery()).toEqual({
+                filter: ['ou:ImspTQPwCqd;O6uvpzGd5pu'],
+            })
+        })
 
         it('should return an object when a parameter is added', () => {
-            request.withHierarchyMeta();
+            request.withHierarchyMeta()
 
-            expect(request.buildQuery()).toEqual({ hierarchyMeta: true });
-        });
+            expect(request.buildQuery()).toEqual({ hierarchyMeta: true })
+        })
 
         it('should return an object when parameters and filters are added', () => {
             request = request
                 .addOrgUnitFilter(['ImspTQPwCqd', 'O6uvpzGd5pu'])
-                .withHierarchyMeta(false);
+                .withHierarchyMeta(false)
 
             expect(request.buildQuery()).toEqual({
                 hierarchyMeta: false,
                 filter: ['ou:ImspTQPwCqd;O6uvpzGd5pu'],
-            });
-        });
-    });
-});
+            })
+        })
+    })
+})

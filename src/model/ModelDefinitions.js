@@ -1,4 +1,4 @@
-import { checkType, isType } from '../lib/check';
+import { checkType, isType } from '../lib/check'
 
 /**
  * Contains all the `ModelDefinition`s that are available. The definitions are properties on the object.
@@ -27,18 +27,22 @@ class ModelDefinitions {
      */
     add(modelDefinition) {
         try {
-            checkType(modelDefinition.name, 'string');
+            checkType(modelDefinition.name, 'string')
         } catch (e) {
-            throw new Error('Name should be set on the passed ModelDefinition to add one');
+            throw new Error(
+                'Name should be set on the passed ModelDefinition to add one'
+            )
         }
 
         if (this[modelDefinition.name]) {
-            throw new Error(['Model', modelDefinition.name, 'already exists'].join(' '));
+            throw new Error(
+                ['Model', modelDefinition.name, 'already exists'].join(' ')
+            )
         }
-        this[modelDefinition.name] = modelDefinition;
+        this[modelDefinition.name] = modelDefinition
 
         if (isType(modelDefinition.plural, 'string')) {
-            this[modelDefinition.plural] = modelDefinition;
+            this[modelDefinition.plural] = modelDefinition
         }
     }
 
@@ -58,24 +62,26 @@ class ModelDefinitions {
      *
      */
     mapThroughDefinitions(transformer) {
-        checkType(transformer, 'function', 'transformer');
+        checkType(transformer, 'function', 'transformer')
 
         return Object.keys(this)
-            .filter(modelDefinition => this.hasOwnProperty(modelDefinition)
-                && !(this[modelDefinition].plural === modelDefinition),
+            .filter(
+                modelDefinition =>
+                    this.hasOwnProperty(modelDefinition) &&
+                    !(this[modelDefinition].plural === modelDefinition)
             )
-            .map(modelDefinition => transformer(this[modelDefinition]));
+            .map(modelDefinition => transformer(this[modelDefinition]))
     }
 }
 
 // Model definitions singleton!
 function getModelDefinitions() {
     if (getModelDefinitions.modelDefinitions) {
-        return getModelDefinitions.modelDefinitions;
+        return getModelDefinitions.modelDefinitions
     }
-    return (getModelDefinitions.modelDefinitions = new ModelDefinitions());
+    return (getModelDefinitions.modelDefinitions = new ModelDefinitions())
 }
 
-ModelDefinitions.getModelDefinitions = getModelDefinitions;
+ModelDefinitions.getModelDefinitions = getModelDefinitions
 
-export default ModelDefinitions;
+export default ModelDefinitions

@@ -1,38 +1,38 @@
 /**
  * @module api
  */
-/* global window fetch Headers */
-import 'isomorphic-fetch';
-import { checkType } from '../lib/check';
-import { customEncodeURIComponent } from '../lib/utils';
-import System from '../system/System';
+import 'isomorphic-fetch'
+import { checkType } from '../lib/check'
+import { customEncodeURIComponent } from '../lib/utils'
+import System from '../system/System'
 
 function getMergeStrategyParam(mergeType = 'REPLACE') {
-    const system = System.getSystem();
+    const system = System.getSystem()
 
-    if (system.version && (Number(system.version.minor) <= 22)) {
-        return `mergeStrategy=${mergeType}`;
+    if (system.version && Number(system.version.minor) <= 22) {
+        return `mergeStrategy=${mergeType}`
     }
 
-    return `mergeMode=${mergeType}`;
+    return `mergeMode=${mergeType}`
 }
 
 function getUrl(baseUrl, url) {
     // If we are dealing with an absolute url use that instead
     if (new RegExp('^(:?https?:)?//').test(url)) {
-        return url;
+        return url
     }
 
-    const urlParts = [];
+    const urlParts = []
 
     if (baseUrl) {
-        urlParts.push(baseUrl);
+        urlParts.push(baseUrl)
     }
-    urlParts.push(url);
+    urlParts.push(url)
 
-    return urlParts.join('/')
+    return urlParts
+        .join('/')
         .replace(new RegExp('(.(?:[^:]))//+', 'g'), '$1/')
-        .replace(new RegExp('/$'), '');
+        .replace(new RegExp('/$'), '')
 }
 
 /**
@@ -67,24 +67,30 @@ class Api {
     constructor(fetchImpl) {
         // Optionally provide fetch to the constructor so it can be mocked during testing
         if (typeof fetchImpl === 'function') {
-            this.fetch = fetchImpl.bind(typeof window !== 'undefined' ? window : global);
+            this.fetch = fetchImpl.bind(
+                typeof window !== 'undefined' ? window : global
+            )
         } else if (typeof fetch !== 'undefined') {
-            this.fetch = fetch.bind(typeof window !== 'undefined' ? window : global);
+            this.fetch = fetch.bind(
+                typeof window !== 'undefined' ? window : global
+            )
         } else {
-            throw new Error('Failed to initialise D2 Api: No fetch implementation is available');
+            throw new Error(
+                'Failed to initialise D2 Api: No fetch implementation is available'
+            )
         }
 
-        this.baseUrl = '/api';
+        this.baseUrl = '/api'
         this.defaultFetchOptions = {
             mode: 'cors', // requests to different origins fail
             credentials: 'include', // include cookies with same-origin requests
-            cache: 'default',  // See https://fetch.spec.whatwg.org/#concept-request-cache-mode
-        };
+            cache: 'default', // See https://fetch.spec.whatwg.org/#concept-request-cache-mode
+        }
         this.defaultHeaders = {
             'X-Requested-With': 'XMLHttpRequest',
-        };
+        }
 
-        this.unauthorizedCallback = null;
+        this.unauthorizedCallback = null
     }
 
     /**
@@ -100,7 +106,7 @@ class Api {
      * @param {Object.<string, string>} headers Default headers that should be set on every request.
      */
     setDefaultHeaders(headers) {
-        this.defaultHeaders = headers;
+        this.defaultHeaders = headers
     }
 
     /**
@@ -111,9 +117,9 @@ class Api {
      */
     setUnauthorizedCallback(cb) {
         if (typeof cb !== 'function') {
-            throw new Error('Callback must be a function.');
+            throw new Error('Callback must be a function.')
         }
-        this.unauthorizedCallback = cb;
+        this.unauthorizedCallback = cb
     }
 
     /**
@@ -129,7 +135,7 @@ class Api {
      * @returns {Promise.<*>} The response body.
      */
     get(url, data, options) {
-        return this.request('GET', getUrl(this.baseUrl, url), data, options);
+        return this.request('GET', getUrl(this.baseUrl, url), data, options)
     }
 
     /* eslint-disable complexity */
@@ -145,31 +151,35 @@ class Api {
      * @returns {Promise.<*>} The response body.
      */
     post(url, data, options = {}) {
-        const requestUrl = getUrl(this.baseUrl, url);
-        let payload = data;
+        const requestUrl = getUrl(this.baseUrl, url)
+        let payload = data
 
         // Ensure that headers are defined and are treated without case sensitivity
-        options.headers = new Headers(options.headers || {}); // eslint-disable-line
+        options.headers = new Headers(options.headers || {})
 
         if (data !== undefined) {
             if (data.constructor.name === 'FormData') {
                 // Ensure that the browser will set the correct Content-Type header for FormData, including boundary
-                options.headers.delete('Content-Type');
-                payload = data;
+                options.headers.delete('Content-Type')
+                payload = data
             } else if (
                 options.headers.has('Content-Type') &&
-                options.headers.get('Content-Type').toLocaleLowerCase().startsWith('text/')
+                options.headers
+                    .get('Content-Type')
+                    .toLocaleLowerCase()
+                    .startsWith('text/')
             ) {
-                payload = String(data);
+                payload = String(data)
             } else {
                 // Send JSON data by default
-                options.headers.set('Content-Type', 'application/json');
-                payload = JSON.stringify(data);
+                options.headers.set('Content-Type', 'application/json')
+                payload = JSON.stringify(data)
             }
         }
 
-        return this.request('POST', requestUrl, payload, options);
+        return this.request('POST', requestUrl, payload, options)
     }
+
     /**
      * Performs a DELETE request.
      *
@@ -182,7 +192,12 @@ class Api {
      */
     /* eslint-enable complexity */
     delete(url, options) {
-        return this.request('DELETE', getUrl(this.baseUrl, url), undefined, options);
+        return this.request(
+            'DELETE',
+            getUrl(this.baseUrl, url),
+            undefined,
+            options
+        )
     }
 
     /**
@@ -197,13 +212,24 @@ class Api {
     update(url, data, useMergeStrategy = false) {
         // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
         // to clear out existing values
-        const urlForUpdate = useMergeStrategy === true ? `${url}?${getMergeStrategyParam()}` : url;
+        const urlForUpdate =
+            useMergeStrategy === true
+                ? `${url}?${getMergeStrategyParam()}`
+                : url
         if (typeof data === 'string') {
-            return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), String(data),
-                { headers: new Headers({ 'Content-Type': 'text/plain' }) });
+            return this.request(
+                'PUT',
+                getUrl(this.baseUrl, urlForUpdate),
+                String(data),
+                { headers: new Headers({ 'Content-Type': 'text/plain' }) }
+            )
         }
 
-        return this.request('PUT', getUrl(this.baseUrl, urlForUpdate), JSON.stringify(data));
+        return this.request(
+            'PUT',
+            getUrl(this.baseUrl, urlForUpdate),
+            JSON.stringify(data)
+        )
     }
 
     /**
@@ -215,7 +241,11 @@ class Api {
      * @returns {Promise.<*>} The response body.
      */
     patch(url, data) {
-        return this.request('PATCH', getUrl(this.baseUrl, url), JSON.stringify(data));
+        return this.request(
+            'PATCH',
+            getUrl(this.baseUrl, url),
+            JSON.stringify(data)
+        )
     }
 
     /**
@@ -235,101 +265,112 @@ class Api {
      */
     /* eslint-disable complexity */
     request(method, url, data, options = {}) {
-        checkType(method, 'string', 'Request type');
-        checkType(url, 'string', 'Url');
-        const api = this;
-        let requestUrl = url;
-        let query = '';
+        checkType(method, 'string', 'Request type')
+        checkType(url, 'string', 'Url')
+        const api = this
+        let requestUrl = url
+        let query = ''
 
         if (requestUrl.indexOf('?') !== -1) {
-            query = requestUrl.substr(requestUrl.indexOf('?') + 1);
-            requestUrl = requestUrl.substr(0, requestUrl.indexOf('?'));
+            query = requestUrl.substr(requestUrl.indexOf('?') + 1)
+            requestUrl = requestUrl.substr(0, requestUrl.indexOf('?'))
         }
 
         // Encode existing query parameters, since tomcat does not accept unencoded brackets. Throw
         // an error if they're already encoded to prevent double encoding.
         if (query) {
-            let decodedURL;
+            let decodedURL
 
             try {
-                decodedURL = decodeURIComponent(query);
+                decodedURL = decodeURIComponent(query)
             } catch (err) {
-                return Promise.reject(new Error('Query parameters in URL are invalid'));
+                return Promise.reject(
+                    new Error('Query parameters in URL are invalid')
+                )
             }
 
-            const isEncoded = query !== decodedURL;
+            const isEncoded = query !== decodedURL
 
             if (isEncoded) {
                 return Promise.reject(
-                    new Error('Cannot process URL-encoded URLs, pass an unencoded URL'),
-                );
+                    new Error(
+                        'Cannot process URL-encoded URLs, pass an unencoded URL'
+                    )
+                )
             }
 
-            query = customEncodeURIComponent(query);
+            query = customEncodeURIComponent(query)
         }
 
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
-            const encodedFilters = data.filter
-                .map(filter => filter.split(':').map(encodeURIComponent).join(':'));
+            const encodedFilters = data.filter.map(filter =>
+                filter.split(':').map(encodeURIComponent).join(':')
+            )
 
-            query = (
-                `${query}${query.length ? '&' : ''}filter=${encodedFilters.join('&filter=')}`
-            );
-            delete data.filter; // eslint-disable-line no-param-reassign
+            query = `${query}${
+                query.length ? '&' : ''
+            }filter=${encodedFilters.join('&filter=')}`
+            delete data.filter
         }
 
         // When using the GET method, transform the data object to query parameters
         if (data && method === 'GET') {
-            Object.keys(data)
-                .forEach((key) => {
-                    query = (
-                        `${query}${(query.length > 0 ? '&' : '')}` +
-                        `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`
-                    );
-                });
+            Object.keys(data).forEach(key => {
+                query =
+                    `${query}${query.length > 0 ? '&' : ''}` +
+                    `${encodeURIComponent(key)}=${encodeURIComponent(
+                        data[key]
+                    )}`
+            })
         }
 
         function getOptions(defaultHeaders, mergeOptions, requestData) {
-            const resultOptions = Object.assign({}, api.defaultFetchOptions, mergeOptions);
-            const headers = new Headers(mergeOptions.headers || {});
+            const resultOptions = Object.assign(
+                {},
+                api.defaultFetchOptions,
+                mergeOptions
+            )
+            const headers = new Headers(mergeOptions.headers || {})
 
-            Object
-                .keys(defaultHeaders)
+            Object.keys(defaultHeaders)
                 .filter(header => !headers.get(header))
-                .forEach(header => headers.set(header, defaultHeaders[header]));
+                .forEach(header => headers.set(header, defaultHeaders[header]))
 
-            resultOptions.method = method;
+            resultOptions.method = method
 
             // Only set content type when there is data to send
             // GET requests and requests without data do not need a Content-Type header
             // 0 and false are valid requestData values and therefore should have a content type
-            if (resultOptions.method === 'GET' || (!requestData && requestData !== 0 && requestData !== false)) {
-                headers.delete('Content-Type');
+            if (
+                resultOptions.method === 'GET' ||
+                (!requestData && requestData !== 0 && requestData !== false)
+            ) {
+                headers.delete('Content-Type')
             } else if (requestData) {
                 if (data.constructor.name === 'FormData') {
-                    headers.delete('Content-Type');
+                    headers.delete('Content-Type')
                 } else if (!headers.get('Content-Type')) {
-                    headers.set('Content-Type', 'application/json');
+                    headers.set('Content-Type', 'application/json')
                 }
-                resultOptions.body = requestData;
+                resultOptions.body = requestData
             }
 
-            resultOptions.headers = headers;
-            return resultOptions;
+            resultOptions.headers = headers
+            return resultOptions
         }
 
         if (query.length) {
-            requestUrl = `${requestUrl}?${query}`;
+            requestUrl = `${requestUrl}?${query}`
         }
-        const requestOptions = getOptions(this.defaultHeaders, options, data);
+        const requestOptions = getOptions(this.defaultHeaders, options, data)
 
         // If the provided value is valid JSON, return the parsed JSON object. If not, return the raw value as is.
         function parseResponseData(value) {
             try {
-                return JSON.parse(value);
+                return JSON.parse(value)
             } catch (e) {
-                return value;
+                return value
             }
         }
 
@@ -337,44 +378,58 @@ class Api {
             // fetch returns a promise that will resolve with any response received from the server
             // It will be rejected ONLY if no response is received from the server, i.e. because there's no internet
             this.fetch(requestUrl, requestOptions)
-                .then((response) => {
+                .then(response => {
                     // If the request failed, response.ok will be false and response.status will be the status code
                     if (response.ok) {
-                        response.text().then(text => resolve(parseResponseData(text)));
+                        response
+                            .text()
+                            .then(text => resolve(parseResponseData(text)))
                     } else {
-                        response.text().then((text) => {
-                            const parsedResponseData = parseResponseData(text);
+                        response.text().then(text => {
+                            const parsedResponseData = parseResponseData(text)
                             if (response.status === 401) {
                                 const request = {
                                     method,
                                     url,
                                     data,
                                     options,
-                                };
+                                }
                                 if (this.unauthorizedCallback) {
-                                    this.unauthorizedCallback(request, parsedResponseData);
+                                    this.unauthorizedCallback(
+                                        request,
+                                        parsedResponseData
+                                    )
                                 }
                             }
-                            if (!process.env || process.env.npm_lifecycle_event !== 'test') {
-                                console.warn( // eslint-disable-line
+                            if (
+                                !process.env ||
+                                process.env.npm_lifecycle_event !== 'test'
+                            ) {
+                                // eslint-disable-next-line
+                                console.warn(
                                     `API request failed with status ${response.status} ${response.statusText}\n`,
-                                    `Request: ${requestOptions.method} ${requestUrl}`,
-                                );
+                                    `Request: ${requestOptions.method} ${requestUrl}`
+                                )
                             }
-                            reject(parsedResponseData);
-                        });
+                            reject(parsedResponseData)
+                        })
                     }
                 })
-                .catch((err) => {
+                .catch(err => {
                     // It's not usually possible to get much info about the cause of the error programmatically, but
                     // the user can check the browser console for more info
-                    if (!process.env || process.env.npm_lifecycle_event !== 'test') {
-                        console.error('Server connection error:', err); // eslint-disable-line
+                    if (
+                        !process.env ||
+                        process.env.npm_lifecycle_event !== 'test'
+                    ) {
+                        console.error('Server connection error:', err) // eslint-disable-line
                     }
 
-                    reject(`Server connection failed for API request: ${requestOptions.method} ${requestUrl}`);
-                });
-        });
+                    reject(
+                        `Server connection failed for API request: ${requestOptions.method} ${requestUrl}`
+                    )
+                })
+        })
     }
     /* eslint-enable complexity */
 
@@ -392,11 +447,11 @@ class Api {
      * @returns {this} Itself for chaining purposes
      */
     setBaseUrl(baseUrl) {
-        checkType(baseUrl, 'string', 'Base url');
+        checkType(baseUrl, 'string', 'Base url')
 
-        this.baseUrl = baseUrl;
+        this.baseUrl = baseUrl
 
-        return this;
+        return this
     }
 }
 
@@ -411,11 +466,11 @@ class Api {
  */
 function getApi() {
     if (getApi.api) {
-        return getApi.api;
+        return getApi.api
     }
-    return (getApi.api = new Api());
+    return (getApi.api = new Api())
 }
 
-Api.getApi = getApi;
+Api.getApi = getApi
 
-export default Api;
+export default Api

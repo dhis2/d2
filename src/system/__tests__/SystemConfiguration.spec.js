@@ -1,11 +1,11 @@
-import MockApi from '../../api/Api';
-import SystemConfiguration from '../SystemConfiguration';
+import MockApi from '../../api/Api'
+import SystemConfiguration from '../SystemConfiguration'
 
-jest.mock('../../api/Api');
+jest.mock('../../api/Api')
 
 describe('System.configuration', () => {
-    let configuration;
-    let mockApi;
+    let configuration
+    let mockApi
 
     const mockConfiguration = {
         systemId: 'eed3d451-4ff5-4193-b951-ffcc68954299',
@@ -75,232 +75,271 @@ describe('System.configuration', () => {
         ],
         remoteServerUrl: 'https://apps.dhis2.org/demo',
         remoteServerUsername: 'admin',
-    };
+    }
 
-    const mockCorsWhitelistText = 'http://cors1.example.com\nhttps://cors2.example.com';
+    const mockCorsWhitelistText =
+        'http://cors1.example.com\nhttps://cors2.example.com'
 
     beforeEach(() => {
-        mockApi = MockApi.getApi();
-        MockApi.mockClear();
-        configuration = new SystemConfiguration();
-    });
+        mockApi = MockApi.getApi()
+        MockApi.mockClear()
+        configuration = new SystemConfiguration()
+    })
 
     it('should not be allowed to be called without new', () => {
-        expect(() => SystemConfiguration()).toThrowErrorMatchingSnapshot();
-    });
+        expect(() => SystemConfiguration()).toThrowErrorMatchingSnapshot()
+    })
 
     it('should add the mockApi onto the SystemConfiguration instance', () => {
-        expect(configuration.api).toBe(mockApi);
-    });
+        expect(configuration.api).toBe(mockApi)
+    })
 
     it('all() should be a function', () => {
-        expect(configuration.all).toBeInstanceOf(Function);
-    });
+        expect(configuration.all).toBeInstanceOf(Function)
+    })
 
     it('get() should be a function', () => {
-        expect(configuration.get).toBeInstanceOf(Function);
-    });
+        expect(configuration.get).toBeInstanceOf(Function)
+    })
 
     it('should use the api object when it is passed', () => {
-        const apiMockObject = {};
+        const apiMockObject = {}
 
-        configuration = new SystemConfiguration(apiMockObject);
+        configuration = new SystemConfiguration(apiMockObject)
 
-        expect(configuration.api).toBe(apiMockObject);
-    });
+        expect(configuration.api).toBe(apiMockObject)
+    })
 
     describe('API call', () => {
         beforeEach(() => {
-            mockApi.get.mockImplementation((url) => {
+            mockApi.get.mockImplementation(url => {
                 if (url === 'configuration') {
-                    return Promise.resolve(mockConfiguration);
+                    return Promise.resolve(mockConfiguration)
                 }
-                return Promise.reject();
-            });
-            mockApi.post.mockReturnValue(Promise.resolve());
-            mockApi.delete.mockReturnValue(Promise.resolve());
-        });
+                return Promise.reject()
+            })
+            mockApi.post.mockReturnValue(Promise.resolve())
+            mockApi.delete.mockReturnValue(Promise.resolve())
+        })
 
         afterEach(() => {
-            configuration = new SystemConfiguration();
-        });
+            configuration = new SystemConfiguration()
+        })
 
         describe('.all()', () => {
             it('should return the entire config', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return configuration.all().then((res) => {
-                    expect(res).toEqual(mockConfiguration);
-                });
-            });
+                return configuration.all().then(res => {
+                    expect(res).toEqual(mockConfiguration)
+                })
+            })
 
             it('should query the API for all configuration endpoints', () => {
-                configuration.all();
+                configuration.all()
 
-                expect(mockApi.get).toHaveBeenCalledTimes(1);
-                expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
-            });
+                expect(mockApi.get).toHaveBeenCalledTimes(1)
+                expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
+            })
 
             it('should only call the API once', () => {
-                expect.assertions(4);
+                expect.assertions(4)
 
                 return configuration.all().then(() => {
                     configuration.all().then(() => {
-                        expect(mockApi.get).toHaveBeenCalledTimes(1);
-                        expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
-                    });
-                    expect(mockApi.get).toHaveBeenCalledTimes(1);
-                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
-                });
-            });
+                        expect(mockApi.get).toHaveBeenCalledTimes(1)
+                        expect(mockApi.get.mock.calls[0][0]).toBe(
+                            'configuration'
+                        )
+                    })
+                    expect(mockApi.get).toHaveBeenCalledTimes(1)
+                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
+                })
+            })
 
             it('should call the API again if ignoreCache is true', () => {
-                expect.assertions(5);
+                expect.assertions(5)
 
                 return configuration.all(true).then(() => {
-                    expect(mockApi.get).toHaveBeenCalledTimes(1);
-                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
+                    expect(mockApi.get).toHaveBeenCalledTimes(1)
+                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
 
                     return configuration.all(true).then(() => {
-                        expect(mockApi.get).toHaveBeenCalledTimes(2);
-                        expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
-                        expect(mockApi.get.mock.calls[1][0]).toBe('configuration');
-                    });
-                });
-            });
-        });
+                        expect(mockApi.get).toHaveBeenCalledTimes(2)
+                        expect(mockApi.get.mock.calls[0][0]).toBe(
+                            'configuration'
+                        )
+                        expect(mockApi.get.mock.calls[1][0]).toBe(
+                            'configuration'
+                        )
+                    })
+                })
+            })
+        })
 
         describe('.get()', () => {
             it('should return the correct systemId', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return configuration.get('systemId').then((res) => {
-                    expect(res).toBe(mockConfiguration.systemId);
-                });
-            });
+                return configuration.get('systemId').then(res => {
+                    expect(res).toBe(mockConfiguration.systemId)
+                })
+            })
 
             it('should return the correct feedback recipient user group', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return configuration.get('feedbackRecipients').then((res) => {
-                    expect(res).toBe(mockConfiguration.feedbackRecipients);
-                });
-            });
+                return configuration.get('feedbackRecipients').then(res => {
+                    expect(res).toBe(mockConfiguration.feedbackRecipients)
+                })
+            })
 
             it('should only query the API once', () => {
-                expect.assertions(4);
+                expect.assertions(4)
 
-                return configuration.get('systemId').then((res1) => {
-                    expect(res1).toBe(mockConfiguration.systemId);
-                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
+                return configuration.get('systemId').then(res1 => {
+                    expect(res1).toBe(mockConfiguration.systemId)
+                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
 
-                    configuration.get('systemId').then((res2) => {
-                        expect(res2).toBe(mockConfiguration.systemId);
-                        expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
-                    });
-                });
-            });
+                    configuration.get('systemId').then(res2 => {
+                        expect(res2).toBe(mockConfiguration.systemId)
+                        expect(mockApi.get.mock.calls[0][0]).toBe(
+                            'configuration'
+                        )
+                    })
+                })
+            })
 
             it('should query the API twice if ignoreCache is true', () => {
-                expect.assertions(4);
+                expect.assertions(4)
 
-                return configuration.get('systemId', true).then((res1) => {
-                    expect(res1).toBe(mockConfiguration.systemId);
-                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration');
+                return configuration.get('systemId', true).then(res1 => {
+                    expect(res1).toBe(mockConfiguration.systemId)
+                    expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
 
-                    configuration.get('systemId', true).then((res2) => {
-                        expect(res2).toBe(mockConfiguration.systemId);
-                        expect(mockApi.get.mock.calls[1][0]).toBe('configuration');
-                    });
-                });
-            });
+                    configuration.get('systemId', true).then(res2 => {
+                        expect(res2).toBe(mockConfiguration.systemId)
+                        expect(mockApi.get.mock.calls[1][0]).toBe(
+                            'configuration'
+                        )
+                    })
+                })
+            })
 
             it('should throw an error when asked for an unknown config option', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return configuration.get('someRandomOptionThatDoesntExist').catch((err) => {
-                    expect(err).toMatchSnapshot();
-                });
-            });
-        });
+                return configuration
+                    .get('someRandomOptionThatDoesntExist')
+                    .catch(err => {
+                        expect(err).toMatchSnapshot()
+                    })
+            })
+        })
 
         describe('.set()', () => {
             it('should not be able to change the systemId', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return configuration.set('systemId', 'my-random-system-id')
-                    .catch((err) => {
-                        expect(err).toMatchSnapshot();
-                    });
-            });
+                return configuration
+                    .set('systemId', 'my-random-system-id')
+                    .catch(err => {
+                        expect(err).toMatchSnapshot()
+                    })
+            })
 
             it('should not attempt to change unknown settings', () => {
-                expect.assertions(1);
+                expect.assertions(1)
 
-                return configuration.set('completelyCrazyConfigurationOption', 'totally rediculous value')
+                return configuration
+                    .set(
+                        'completelyCrazyConfigurationOption',
+                        'totally rediculous value'
+                    )
                     .then(() => {
                         // TODO: useless assertion
-                        expect(true).toBe(true);
-                    });
-            });
+                        expect(true).toBe(true)
+                    })
+            })
 
             it('should call DELETE to remove feedback recipients', () => {
-                expect.assertions(3);
+                expect.assertions(3)
 
-                return configuration.set('feedbackRecipients', 'null')
+                return configuration
+                    .set('feedbackRecipients', 'null')
                     .then(() => {
-                        expect(mockApi.post).toHaveBeenCalledTimes(0);
-                        expect(mockApi.delete).toHaveBeenCalledTimes(1);
-                        expect(mockApi.delete.mock.calls[0][0]).toBe('configuration/feedbackRecipients');
-                    });
-            });
+                        expect(mockApi.post).toHaveBeenCalledTimes(0)
+                        expect(mockApi.delete).toHaveBeenCalledTimes(1)
+                        expect(mockApi.delete.mock.calls[0][0]).toBe(
+                            'configuration/feedbackRecipients'
+                        )
+                    })
+            })
 
             it('should call DELETE to remove self registration role', () => {
-                expect.assertions(2);
+                expect.assertions(2)
 
-                return configuration.set('selfRegistrationRole', null)
+                return configuration
+                    .set('selfRegistrationRole', null)
                     .then(() => {
-                        expect(mockApi.post).toHaveBeenCalledTimes(0);
-                        expect(mockApi.delete.mock.calls[0][0]).toBe('configuration/selfRegistrationRole');
-                    });
-            });
+                        expect(mockApi.post).toHaveBeenCalledTimes(0)
+                        expect(mockApi.delete.mock.calls[0][0]).toBe(
+                            'configuration/selfRegistrationRole'
+                        )
+                    })
+            })
 
             it('should call DELETE to remove self registration organisation unit', () => {
-                expect.assertions(2);
+                expect.assertions(2)
 
-                return configuration.set('selfRegistrationOrgUnit', 'null')
+                return configuration
+                    .set('selfRegistrationOrgUnit', 'null')
                     .then(() => {
-                        expect(mockApi.post).toHaveBeenCalledTimes(0);
-                        expect(mockApi.delete.mock.calls[0][0]).toBe('configuration/selfRegistrationOrgUnit');
-                    });
-            });
+                        expect(mockApi.post).toHaveBeenCalledTimes(0)
+                        expect(mockApi.delete.mock.calls[0][0]).toBe(
+                            'configuration/selfRegistrationOrgUnit'
+                        )
+                    })
+            })
 
-            it('should convert CORS string to an array', () => configuration.set('corsWhitelist', mockCorsWhitelistText)
-                .then(() => {
-                    expect(mockApi.post.mock.calls[0][0]).toBe('configuration/corsWhitelist');
-                    expect(mockApi.post.mock.calls[0][1]).toEqual(mockConfiguration.corsWhitelist);
-                }));
+            it('should convert CORS string to an array', () =>
+                configuration
+                    .set('corsWhitelist', mockCorsWhitelistText)
+                    .then(() => {
+                        expect(mockApi.post.mock.calls[0][0]).toBe(
+                            'configuration/corsWhitelist'
+                        )
+                        expect(mockApi.post.mock.calls[0][1]).toEqual(
+                            mockConfiguration.corsWhitelist
+                        )
+                    }))
 
             it('should post new settings to the API', () => {
-                mockApi.post.mockClear();
+                mockApi.post.mockClear()
 
-                return configuration.set('infrastructuralPeriodType', 'Monthly')
+                return configuration
+                    .set('infrastructuralPeriodType', 'Monthly')
                     .then(() => {
-                        expect(mockApi.post.mock.calls[0][0]).toBe('configuration/infrastructuralPeriodType');
-                        expect(mockApi.post.mock.calls[0][1]).toBe('Monthly');
-                    });
-            });
+                        expect(mockApi.post.mock.calls[0][0]).toBe(
+                            'configuration/infrastructuralPeriodType'
+                        )
+                        expect(mockApi.post.mock.calls[0][1]).toBe('Monthly')
+                    })
+            })
 
             it('should reject a promise when no configuration can be found for the key', () => {
-                mockApi.post.mockReset();
-                mockApi.post.mockReturnValue(Promise.reject('StackTrace!'));
+                mockApi.post.mockReset()
+                mockApi.post.mockReturnValue(Promise.reject('StackTrace!'))
 
-                return configuration.set('thisKeyDoesNotExist', 'Some value')
+                return configuration
+                    .set('thisKeyDoesNotExist', 'Some value')
                     .catch(message => message)
-                    .then((message) => {
-                        expect(message).toBe('No configuration found for thisKeyDoesNotExist');
-                    });
-            });
-        });
-    });
-});
+                    .then(message => {
+                        expect(message).toBe(
+                            'No configuration found for thisKeyDoesNotExist'
+                        )
+                    })
+            })
+        })
+    })
+})

@@ -1,59 +1,77 @@
-import { checkType, isObject, checkDefined, isDefined } from '../lib/check';
-import { addLockedProperty, curry, copyOwnProperties, updateAPIUrlWithBaseUrlVersionNumber, pick } from '../lib/utils';
-import ModelDefinitions from './ModelDefinitions';
-import Model from './Model';
-import ModelCollection from './ModelCollection';
-import ModelCollectionProperty from './ModelCollectionProperty';
-import schemaTypes from '../lib/SchemaTypes';
-import Filters from './Filters';
-import { DIRTY_PROPERTY_LIST } from './ModelBase';
-import { getDefaultValuesForModelType } from './config';
-import { getOwnedPropertyJSON } from './helpers/json';
+import { checkType, isObject, checkDefined, isDefined } from '../lib/check'
+import {
+    addLockedProperty,
+    curry,
+    copyOwnProperties,
+    updateAPIUrlWithBaseUrlVersionNumber,
+    pick,
+} from '../lib/utils'
+import ModelDefinitions from './ModelDefinitions'
+import Model from './Model'
+import ModelCollection from './ModelCollection'
+import ModelCollectionProperty from './ModelCollectionProperty'
+import schemaTypes from '../lib/SchemaTypes'
+import Filters from './Filters'
+
+import { DIRTY_PROPERTY_LIST } from './ModelBase'
+import { getDefaultValuesForModelType } from './config'
+import { getOwnedPropertyJSON } from './helpers/json'
 
 function createModelPropertyDescriptor(propertiesObject, schemaProperty) {
-    const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
+    const propertyName = schemaProperty.collection
+        ? schemaProperty.collectionName
+        : schemaProperty.name
     const propertyDetails = {
         // Actual property descriptor properties
         configurable: false,
         enumerable: true,
         get() {
-            return this.dataValues[propertyName];
+            return this.dataValues[propertyName]
         },
-    };
+    }
 
     // Store available constants for ENUM type properties
     if (schemaProperty.constants) {
-        propertyDetails.constants = schemaProperty.constants;
+        propertyDetails.constants = schemaProperty.constants
     }
 
     // Only add a setter for writable properties
     if (schemaProperty.writable) {
         propertyDetails.set = function dynamicPropertySetter(value) {
             // TODO: Objects and Arrays are considered unequal when their data is the same and therefore trigger a dirty
-            if ((!isObject(value) && (value !== this.dataValues[propertyName])) || isObject(value)) {
-                this.dirty = true;
-                this[DIRTY_PROPERTY_LIST].add(propertyName);
-                this.dataValues[propertyName] = value;
+            if (
+                (!isObject(value) && value !== this.dataValues[propertyName]) ||
+                isObject(value)
+            ) {
+                this.dirty = true
+                this[DIRTY_PROPERTY_LIST].add(propertyName)
+                this.dataValues[propertyName] = value
             }
-        };
+        }
     }
 
     if (propertyName) {
-        propertiesObject[propertyName] = propertyDetails; // eslint-disable-line no-param-reassign
+        propertiesObject[propertyName] = propertyDetails
     }
 }
 
 function createPropertiesObject(schemaProperties) {
-    const propertiesObject = {};
-    const createModelPropertyDescriptorOn = curry(createModelPropertyDescriptor, propertiesObject);
+    const propertiesObject = {}
+    const createModelPropertyDescriptorOn = curry(
+        createModelPropertyDescriptor,
+        propertiesObject
+    )
 
-    (schemaProperties || []).forEach(createModelPropertyDescriptorOn);
+    ;(schemaProperties || []).forEach(createModelPropertyDescriptorOn)
 
-    return propertiesObject;
+    return propertiesObject
 }
 
+// eslint-disable-next-line complexity
 function createValidationSetting(validationObject, schemaProperty) {
-    const propertyName = schemaProperty.collection ? schemaProperty.collectionName : schemaProperty.name;
+    const propertyName = schemaProperty.collection
+        ? schemaProperty.collectionName
+        : schemaProperty.name
     const validationDetails = {
         persisted: schemaProperty.persisted,
         type: schemaTypes.typeLookup(schemaProperty.propertyType),
@@ -65,57 +83,66 @@ function createValidationSetting(validationObject, schemaProperty) {
         writable: schemaProperty.writable,
         ordered: Boolean(schemaProperty.ordered),
         embeddedObject: Boolean(schemaProperty.embeddedObject),
-    };
+    }
 
     function getReferenceTypeFrom(property) {
         if (property.href) {
-            return property.href.split('/').pop();
+            return property.href.split('/').pop()
         }
 
-        return undefined;
+        return undefined
     }
 
     // Add a referenceType to be able to get a hold of the reference objects model.
     if (
         validationDetails.type === 'REFERENCE' ||
         (validationDetails.type === 'COLLECTION' &&
-        schemaProperty.itemPropertyType === 'REFERENCE')
+            schemaProperty.itemPropertyType === 'REFERENCE')
     ) {
-        validationDetails.referenceType = getReferenceTypeFrom(schemaProperty);
+        validationDetails.referenceType = getReferenceTypeFrom(schemaProperty)
     }
 
     if (propertyName) {
-        validationObject[propertyName] = validationDetails; // eslint-disable-line no-param-reassign
+        validationObject[propertyName] = validationDetails
     }
 }
 
 function createValidations(schemaProperties) {
-    const validationsObject = {};
-    const createModelPropertyOn = curry(createValidationSetting, validationsObject);
+    const validationsObject = {}
+    const createModelPropertyOn = curry(
+        createValidationSetting,
+        validationsObject
+    )
 
-    (schemaProperties || []).forEach(createModelPropertyOn);
+    ;(schemaProperties || []).forEach(createModelPropertyOn)
 
-    return validationsObject;
+    return validationsObject
 }
 
-
 function shouldBeModelCollectionProperty(model, models) {
+    // eslint-disable-next-line complexity
     return function shouldBeModelCollectionPropertyIterator(modelProperty) {
-        return model &&
+        return (
+            model &&
             models &&
             model.modelDefinition &&
             model.modelDefinition.modelValidations &&
             model.modelDefinition.modelValidations[modelProperty] &&
-            model.modelDefinition.modelValidations[modelProperty].type === 'COLLECTION' &&
-            models.hasOwnProperty(model.modelDefinition.modelValidations[modelProperty].referenceType);
-    };
+            model.modelDefinition.modelValidations[modelProperty].type ===
+                'COLLECTION' &&
+            models.hasOwnProperty(
+                model.modelDefinition.modelValidations[modelProperty]
+                    .referenceType
+            )
+        )
+    }
 }
 
 function isAnUpdate(modelToCheck) {
-    return Boolean(modelToCheck.id);
+    return Boolean(modelToCheck.id)
 }
 
-const translatableProperties = new WeakMap();
+const translatableProperties = new WeakMap()
 
 /**
  * Definition of a Model. Basically this object contains the meta data related to the Model. Like `name`, `apiEndPoint`, `modelValidation`, etc.
@@ -127,37 +154,44 @@ const translatableProperties = new WeakMap();
  * @memberof module:model
  */
 class ModelDefinition {
+    // eslint-disable-next-line complexity
     constructor(schema = {}, properties, validations, attributes, authorities) {
-        checkType(schema.singular, 'string');
-        checkType(schema.plural, 'string', 'Plural');
+        checkType(schema.singular, 'string')
+        checkType(schema.plural, 'string', 'Plural')
 
-        addLockedProperty(this, 'name', schema.singular);
-        addLockedProperty(this, 'displayName', schema.displayName);
-        addLockedProperty(this, 'plural', schema.plural);
-        addLockedProperty(this, 'isShareable', schema.shareable || false);
-        addLockedProperty(this, 'isMetaData', schema.metadata || false);
-        addLockedProperty(this, 'apiEndpoint', schema.apiEndpoint);
-        addLockedProperty(this, 'javaClass', schema.klass);
-        addLockedProperty(this, 'identifiableObject', schema && schema.identifiableObject);
-        addLockedProperty(this, 'modelProperties', properties);
-        addLockedProperty(this, 'modelValidations', validations);
-        addLockedProperty(this, 'attributeProperties', attributes);
-        addLockedProperty(this, 'authorities', authorities);
-        addLockedProperty(this, 'translatable', schema.translatable || false);
+        addLockedProperty(this, 'name', schema.singular)
+        addLockedProperty(this, 'displayName', schema.displayName)
+        addLockedProperty(this, 'plural', schema.plural)
+        addLockedProperty(this, 'isShareable', schema.shareable || false)
+        addLockedProperty(this, 'isMetaData', schema.metadata || false)
+        addLockedProperty(this, 'apiEndpoint', schema.apiEndpoint)
+        addLockedProperty(this, 'javaClass', schema.klass)
+        addLockedProperty(
+            this,
+            'identifiableObject',
+            schema && schema.identifiableObject
+        )
+        addLockedProperty(this, 'modelProperties', properties)
+        addLockedProperty(this, 'modelValidations', validations)
+        addLockedProperty(this, 'attributeProperties', attributes)
+        addLockedProperty(this, 'authorities', authorities)
+        addLockedProperty(this, 'translatable', schema.translatable || false)
 
-        this.filters = Filters.getFilters(this);
+        this.filters = Filters.getFilters(this)
 
-        translatableProperties.set(this, (schema.properties || [])
-            .filter(prop => prop.translationKey)
-            .map(({ name, translationKey }) => ({ name, translationKey })),
-        );
+        translatableProperties.set(
+            this,
+            (schema.properties || [])
+                .filter(prop => prop.translationKey)
+                .map(({ name, translationKey }) => ({ name, translationKey }))
+        )
 
         // TODO: The function getOwnedPropertyJSON should probably not be exposed, perhaps we could have a getJSONForModel(ownedPropertiesOnly=true) method.
-        this.getOwnedPropertyJSON = getOwnedPropertyJSON.bind(this);
+        this.getOwnedPropertyJSON = getOwnedPropertyJSON.bind(this)
     }
 
     filter() {
-        return this.clone().filters;
+        return this.clone().filters
     }
 
     /**
@@ -172,54 +206,69 @@ class ModelDefinition {
      * dataElement.create({name: 'ANC', id: 'd2sf33s3ssf'});
      */
     create(data) {
-        const model = Model.create(this);
-        const models = ModelDefinitions.getModelDefinitions();
-        const dataValues = data ? Object.assign({}, data) : getDefaultValuesForModelType(model.modelDefinition.name);
+        const model = Model.create(this)
+        const models = ModelDefinitions.getModelDefinitions()
+        const dataValues = data
+            ? Object.assign({}, data)
+            : getDefaultValuesForModelType(model.modelDefinition.name)
 
-        Object
-            .keys(model)
+        Object.keys(model)
             .filter(shouldBeModelCollectionProperty(model, models))
-            .forEach((modelProperty) => {
-                const referenceType = model.modelDefinition.modelValidations[modelProperty].referenceType;
-                let values = [];
+            .forEach(modelProperty => {
+                const {
+                    referenceType,
+                } = model.modelDefinition.modelValidations[modelProperty]
+                let values = []
 
                 if (Array.isArray(dataValues[modelProperty])) {
-                    values = dataValues[modelProperty].map(value => models[referenceType].create(value));
-                } else if (dataValues[modelProperty] === true || dataValues[modelProperty] === undefined) {
-                    values = dataValues[modelProperty];
+                    values = dataValues[modelProperty].map(value =>
+                        models[referenceType].create(value)
+                    )
+                } else if (
+                    dataValues[modelProperty] === true ||
+                    dataValues[modelProperty] === undefined
+                ) {
+                    values = dataValues[modelProperty]
                 }
 
                 dataValues[modelProperty] = ModelCollectionProperty.create(
                     model,
                     models[referenceType],
                     modelProperty,
-                    values,
-                );
-                model.dataValues[modelProperty] = dataValues[modelProperty];
-            });
+                    values
+                )
+                model.dataValues[modelProperty] = dataValues[modelProperty]
+            })
 
-        Object
-            .keys(model)
-            .filter(modelProperty => !shouldBeModelCollectionProperty(model, models)(modelProperty))
-            .forEach((modelProperty) => {
-                model.dataValues[modelProperty] = dataValues[modelProperty];
-            });
+        Object.keys(model)
+            .filter(
+                modelProperty =>
+                    !shouldBeModelCollectionProperty(
+                        model,
+                        models
+                    )(modelProperty)
+            )
+            .forEach(modelProperty => {
+                model.dataValues[modelProperty] = dataValues[modelProperty]
+            })
 
-
-        return model;
+        return model
     }
 
     clone() {
-        const ModelDefinitionPrototype = Object.getPrototypeOf(this);
-        const priorFilters = this.filters.getFilterList();
+        const ModelDefinitionPrototype = Object.getPrototypeOf(this)
+        const priorFilters = this.filters.getFilterList()
         const clonedDefinition = copyOwnProperties(
             Object.create(ModelDefinitionPrototype),
-            this,
-        );
+            this
+        )
 
-        clonedDefinition.filters = Filters.getFilters(clonedDefinition, priorFilters);
+        clonedDefinition.filters = Filters.getFilters(
+            clonedDefinition,
+            priorFilters
+        )
 
-        return clonedDefinition;
+        return clonedDefinition
     }
 
     /**
@@ -236,23 +285,29 @@ class ModelDefinition {
      * dataElement.get('d2sf33s3ssf')
      *   .then(model => console.log(model.name));
      */
-    get(identifier, queryParams = { fields: ':all,attributeValues[:all,attribute[id,name,displayName]]' }) {
-        checkDefined(identifier, 'Identifier');
+    get(
+        identifier,
+        queryParams = {
+            fields: ':all,attributeValues[:all,attribute[id,name,displayName]]',
+        }
+    ) {
+        checkDefined(identifier, 'Identifier')
 
         if (Array.isArray(identifier)) {
-            return this.list({ filter: [`id:in:[${identifier.join(',')}]`] });
+            return this.list({ filter: [`id:in:[${identifier.join(',')}]`] })
         }
 
         // TODO: should throw error if API has not been defined
-        return this.api.get([this.apiEndpoint, identifier].join('/'), queryParams)
+        return this.api
+            .get([this.apiEndpoint, identifier].join('/'), queryParams)
             .then(data => this.create(data))
-            .catch((response) => {
+            .catch(response => {
                 if (response.message) {
-                    return Promise.reject(response.message);
+                    return Promise.reject(response.message)
                 }
 
-                return Promise.reject(response);
-            });
+                return Promise.reject(response)
+            })
     }
 
     /**
@@ -269,25 +324,34 @@ class ModelDefinition {
      *   });
      */
     list(listParams = {}) {
-        const { apiEndpoint, ...extraParams } = listParams;
-        const definedRootJunction = this.filters.rootJunction ? { rootJunction: this.filters.rootJunction } : {};
-        const params = Object.assign({ fields: ':all' }, definedRootJunction, extraParams);
-        const definedFilters = this.filters.getQueryFilterValues();
+        const { apiEndpoint, ...extraParams } = listParams
+        const definedRootJunction = this.filters.rootJunction
+            ? { rootJunction: this.filters.rootJunction }
+            : {}
+        const params = Object.assign(
+            { fields: ':all' },
+            definedRootJunction,
+            extraParams
+        )
+        const definedFilters = this.filters.getQueryFilterValues()
 
         if (!isDefined(params.filter)) {
-            delete params.filter;
+            delete params.filter
             if (definedFilters.length) {
-                params.filter = definedFilters;
+                params.filter = definedFilters
             }
         }
 
         // If listParams.apiEndpoint exists, send the request there in stead of this.apiEndpoint
-        return this.api.get(apiEndpoint || this.apiEndpoint, params)
-            .then(responseData => ModelCollection.create(
-                this,
-                responseData[this.plural].map(data => this.create(data)),
-                Object.assign(responseData.pager || {}, { query: params }),
-            ));
+        return this.api
+            .get(apiEndpoint || this.apiEndpoint, params)
+            .then(responseData =>
+                ModelCollection.create(
+                    this,
+                    responseData[this.plural].map(data => this.create(data)),
+                    Object.assign(responseData.pager || {}, { query: params })
+                )
+            )
     }
 
     /**
@@ -303,24 +367,29 @@ class ModelDefinition {
     // TODO: check the return status of the save to see if it was actually successful and not ignored
     save(model) {
         if (isAnUpdate(model)) {
-            const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
+            const jsonPayload = getOwnedPropertyJSON.bind(this)(model)
             // Fallback to modelDefinition if href is unavailable
             const updateUrl = model.dataValues.href
-                ? updateAPIUrlWithBaseUrlVersionNumber(model.dataValues.href, this.api.baseUrl)
-                : [model.modelDefinition.apiEndpoint, model.dataValues.id].join('/');
+                ? updateAPIUrlWithBaseUrlVersionNumber(
+                      model.dataValues.href,
+                      this.api.baseUrl
+                  )
+                : [model.modelDefinition.apiEndpoint, model.dataValues.id].join(
+                      '/'
+                  )
 
             // Save the existing model
-            return this.api.update(updateUrl, jsonPayload, true);
+            return this.api.update(updateUrl, jsonPayload, true)
         }
 
-        return this.saveNew(model);
+        return this.saveNew(model)
     }
 
     saveNew(model) {
-        const jsonPayload = getOwnedPropertyJSON.bind(this)(model);
+        const jsonPayload = getOwnedPropertyJSON.bind(this)(model)
 
         // Its a new object
-        return this.api.post(this.apiEndpoint, jsonPayload);
+        return this.api.post(this.apiEndpoint, jsonPayload)
     }
 
     /**
@@ -334,8 +403,9 @@ class ModelDefinition {
      * dataElement.getOwnedPropertyNames()
      */
     getOwnedPropertyNames() {
-        return Object.keys(this.modelValidations)
-            .filter(propertyName => this.modelValidations[propertyName].owner);
+        return Object.keys(this.modelValidations).filter(
+            propertyName => this.modelValidations[propertyName].owner
+        )
     }
 
     /**
@@ -347,9 +417,11 @@ class ModelDefinition {
      */
     delete(model) {
         if (model.dataValues.href) {
-            return this.api.delete(model.dataValues.href);
+            return this.api.delete(model.dataValues.href)
         }
-        return this.api.delete([model.modelDefinition.apiEndpoint, model.dataValues.id].join('/'));
+        return this.api.delete(
+            [model.modelDefinition.apiEndpoint, model.dataValues.id].join('/')
+        )
     }
 
     /**
@@ -358,7 +430,7 @@ class ModelDefinition {
      * @returns {Boolean} True when the schema can be translated, false otherwise
      */
     isTranslatable() {
-        return this.translatable;
+        return this.translatable
     }
 
     /**
@@ -367,9 +439,7 @@ class ModelDefinition {
      * @returns {String[]} Returns a list of property names on the object that are translatable.
      */
     getTranslatableProperties() {
-        return translatableProperties
-            .get(this)
-            .map(pick('name'));
+        return translatableProperties.get(this).map(pick('name'))
     }
 
     /**
@@ -379,8 +449,7 @@ class ModelDefinition {
      * @returns {Object[]} Returns an array with objects that have `name` and `translationKey` properties.
      */
     getTranslatablePropertiesWithKeys() {
-        return translatableProperties
-            .get(this);
+        return translatableProperties.get(this)
     }
 
     /**
@@ -403,60 +472,65 @@ class ModelDefinition {
      * https://apps.dhis2.org/demo/api/schemas/dataElement
      */
     static createFromSchema(schema, attributes = []) {
-        let ModelDefinitionClass;
-        checkType(schema, Object, 'Schema');
+        let ModelDefinitionClass
+        checkType(schema, Object, 'Schema')
 
-        if (typeof ModelDefinition.specialClasses[schema.singular] === 'function') {
-            ModelDefinitionClass = ModelDefinition.specialClasses[schema.singular];
+        if (
+            typeof ModelDefinition.specialClasses[schema.singular] ===
+            'function'
+        ) {
+            ModelDefinitionClass =
+                ModelDefinition.specialClasses[schema.singular]
         } else {
-            ModelDefinitionClass = ModelDefinition;
+            ModelDefinitionClass = ModelDefinition
         }
 
-        return Object.freeze(new ModelDefinitionClass(
-            schema,
-            Object.freeze(createPropertiesObject(schema.properties)),
-            Object.freeze(createValidations(schema.properties)),
-            attributes
-                .reduce((current, attributeDefinition) => {
-                    current[attributeDefinition.name] = attributeDefinition; // eslint-disable-line no-param-reassign
-                    return current;
+        return Object.freeze(
+            new ModelDefinitionClass(
+                schema,
+                Object.freeze(createPropertiesObject(schema.properties)),
+                Object.freeze(createValidations(schema.properties)),
+                attributes.reduce((current, attributeDefinition) => {
+                    current[attributeDefinition.name] = attributeDefinition
+                    return current
                 }, {}),
-            schema.authorities,
-        ));
+                schema.authorities
+            )
+        )
     }
 }
 
 class UserModelDefinition extends ModelDefinition {
     // TODO: userCredentials should always be included, no matter what the query params, that is currently not the case
     get(identifier, queryParams = { fields: ':all,userCredentials[:owner]' }) {
-        return super.get(identifier, queryParams);
+        return super.get(identifier, queryParams)
     }
 }
 
 class DataSetModelDefinition extends ModelDefinition {
     create(data = {}) {
-        const hasData = Boolean(Object.keys(data).length);
+        const hasData = Boolean(Object.keys(data).length)
 
         // Filter out the compulsoryDataElementOperands structure from the retrieved data
         // This structure does not follow the convention of a typical reference. We can not create a proper
         // ModelCollection for this collection.
-        const dataClone = Object
-            .keys(data)
+        const dataClone = Object.keys(data)
             .filter(key => key !== 'compulsoryDataElementOperands')
             .reduce((obj, key) => {
-                obj[key] = data[key]; // eslint-disable-line no-param-reassign
-                return obj;
-            }, {});
+                obj[key] = data[key]
+                return obj
+            }, {})
 
         // Create the model using the usual way of creating a model
         // Only pass data when there is data in the object passed to the constructor. This will guarantee
         // that the empty ModelCollections are created properly.
-        const model = super.create(hasData ? dataClone : undefined);
+        const model = super.create(hasData ? dataClone : undefined)
 
         // Set the compulsoryDataElementOperands onto the dataValues so it will be included during the save operations
-        model.dataValues.compulsoryDataElementOperands = data.compulsoryDataElementOperands;
+        model.dataValues.compulsoryDataElementOperands =
+            data.compulsoryDataElementOperands
 
-        return model;
+        return model
     }
 }
 
@@ -465,13 +539,13 @@ class OrganisationUnitModelDefinition extends ModelDefinition {
     // descendants. This is special behavior for the organisation unit API endpoint, which is documented here:
     // https://dhis2.github.io/dhis2-docs/master/en/developer/html/webapi_organisation_units.html
     list(extraParams = {}) {
-        const { root, ...params } = extraParams;
+        const { root, ...params } = extraParams
 
         if (extraParams.hasOwnProperty('root') && root) {
-            params.apiEndpoint = `${this.apiEndpoint}/${root}`;
+            params.apiEndpoint = `${this.apiEndpoint}/${root}`
         }
 
-        return super.list(params);
+        return super.list(params)
     }
 }
 
@@ -479,6 +553,6 @@ ModelDefinition.specialClasses = {
     user: UserModelDefinition,
     dataSet: DataSetModelDefinition,
     organisationUnit: OrganisationUnitModelDefinition,
-};
+}
 
-export default ModelDefinition;
+export default ModelDefinition

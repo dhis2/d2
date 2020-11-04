@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
     entry: './src/d2.js',
@@ -20,4 +20,4 @@ module.exports = {
         ],
     },
     devtool: 'source-map',
-};
+}

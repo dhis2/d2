@@ -1,5 +1,5 @@
-import Api from '../api/Api';
-import { isValidUid } from '../uid';
+import Api from '../api/Api'
+import { isValidUid } from '../uid'
 
 /**
  * @class GeoFeatures
@@ -14,8 +14,8 @@ class GeoFeatures {
      * @param {String} displayName The name property to display (NAME|SHORTNAME).
      */
     constructor(orgUnits = [], displayName) {
-        this.orgUnits = orgUnits;
-        this.displayName = displayName;
+        this.orgUnits = orgUnits
+        this.displayName = displayName
     }
 
     /**
@@ -27,16 +27,16 @@ class GeoFeatures {
      */
     byOrgUnit(orgUnits) {
         if (!orgUnits) {
-            return this;
+            return this
         }
 
-        const orgUnitsArray = [].concat(orgUnits);
+        const orgUnitsArray = [].concat(orgUnits)
 
         if (!orgUnitsArray.every(GeoFeatures.isValidOrgUnit)) {
-            throw new Error(`Invalid organisation unit: ${orgUnits}`);
+            throw new Error(`Invalid organisation unit: ${orgUnits}`)
         }
 
-        return new GeoFeatures(orgUnitsArray, this.displayName);
+        return new GeoFeatures(orgUnitsArray, this.displayName)
     }
 
     /**
@@ -48,14 +48,14 @@ class GeoFeatures {
      */
     displayProperty(displayName) {
         if (!displayName) {
-            return this;
+            return this
         }
 
         if (!GeoFeatures.isValidDisplayName(displayName)) {
-            throw new Error(`Invalid display property: ${displayName}`);
+            throw new Error(`Invalid display property: ${displayName}`)
         }
 
-        return new GeoFeatures(this.orgUnits, displayName);
+        return new GeoFeatures(this.orgUnits, displayName)
     }
 
     /**
@@ -66,18 +66,18 @@ class GeoFeatures {
      * @returns {Promise} with an array of geofeatures.
      */
     getAll(params = {}) {
-        const api = Api.getApi();
-        const urlParams = params;
+        const api = Api.getApi()
+        const urlParams = params
 
         if (this.orgUnits.length) {
-            urlParams.ou = `ou:${this.orgUnits.join(';')}`;
+            urlParams.ou = `ou:${this.orgUnits.join(';')}`
         }
 
         if (this.displayName) {
-            urlParams.displayProperty = this.displayName;
+            urlParams.displayProperty = this.displayName
         }
 
-        return api.get('geoFeatures', urlParams);
+        return api.get('geoFeatures', urlParams)
     }
 
     /**
@@ -95,7 +95,7 @@ class GeoFeatures {
             GeoFeatures.isValidOrgUnitLevel(orgUnit) ||
             GeoFeatures.isValidOrgUnitGroup(orgUnit) ||
             GeoFeatures.isValidUserOrgUnit(orgUnit)
-        );
+        )
     }
 
     /**
@@ -108,11 +108,11 @@ class GeoFeatures {
      * Checks if the org. unit level is valid.
      */
     static isValidOrgUnitLevel(level) {
-        const match = level.match(/LEVEL-(.*)$/);
+        const match = level.match(/LEVEL-(.*)$/)
         return (
             Array.isArray(match) &&
             (/^[0-9]+$/.test(match[1]) || isValidUid(match[1]))
-        );
+        )
     }
 
     /**
@@ -125,8 +125,8 @@ class GeoFeatures {
      * Checks if the org. unit group is valid.
      */
     static isValidOrgUnitGroup(group) {
-        const match = group.match(/OU_GROUP-(.*)$/);
-        return Array.isArray(match) && isValidUid(match[1]);
+        const match = group.match(/OU_GROUP-(.*)$/)
+        return Array.isArray(match) && isValidUid(match[1])
     }
 
     /**
@@ -143,7 +143,7 @@ class GeoFeatures {
             orgUnit === GeoFeatures.USER_ORGUNIT ||
             orgUnit === GeoFeatures.USER_ORGUNIT_CHILDREN ||
             orgUnit === GeoFeatures.USER_ORGUNIT_GRANDCHILDREN
-        );
+        )
     }
 
     /**
@@ -159,7 +159,7 @@ class GeoFeatures {
         return (
             displayName === GeoFeatures.DISPLAY_PROPERTY_NAME ||
             displayName === GeoFeatures.DISPLAY_PROPERTY_SHORTNAME
-        );
+        )
     }
 
     /**
@@ -172,14 +172,18 @@ class GeoFeatures {
      * Get a new instance of the GeoFeatures object.
      */
     static getGeoFeatures(...args) {
-        return new GeoFeatures(...args);
+        return new GeoFeatures(...args)
     }
 
-    static DISPLAY_PROPERTY_NAME = 'NAME';
-    static DISPLAY_PROPERTY_SHORTNAME = 'SHORTNAME';
-    static USER_ORGUNIT = 'USER_ORGUNIT';
-    static USER_ORGUNIT_CHILDREN = 'USER_ORGUNIT_CHILDREN';
-    static USER_ORGUNIT_GRANDCHILDREN = 'USER_ORGUNIT_GRANDCHILDREN';
+    static DISPLAY_PROPERTY_NAME = 'NAME'
+
+    static DISPLAY_PROPERTY_SHORTNAME = 'SHORTNAME'
+
+    static USER_ORGUNIT = 'USER_ORGUNIT'
+
+    static USER_ORGUNIT_CHILDREN = 'USER_ORGUNIT_CHILDREN'
+
+    static USER_ORGUNIT_GRANDCHILDREN = 'USER_ORGUNIT_GRANDCHILDREN'
 }
 
-export default GeoFeatures;
+export default GeoFeatures

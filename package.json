@@ -4,19 +4,15 @@
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
-    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod",
-    "build:prod": "webpack --config webpack.config.prod.js --mode production",
     "build:dev": "webpack --config webpack.config.dev.js --mode development",
+    "build:docs": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
+    "build:prod": "webpack --config webpack.config.prod.js --mode production",
+    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod && npm run build:docs",
     "clean": "rimraf build",
-    "coverage": "npm test -- --coverage",
-    "documentation": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
-    "lint:fix": "eslint src --fix",
-    "lint": "eslint src",
-    "prebuild": "npm run lint && npm run test",
-    "test:watch": "npm run test -- --watch",
+    "lint": "d2-style js check",
+    "test:coverage": "npm test -- --coverage",
     "test": "TZ=UTC jest",
-    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'",
-    "validate": "npm ls"
+    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
   },
   "repository": {
     "type": "git",
@@ -33,11 +29,6 @@
     "url": "https://github.com/dhis2/d2/issues"
   },
   "homepage": "https://github.com/dhis2/d2",
-  "greenkeeper": {
-    "ignore": [
-      "eslint"
-    ]
-  },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1"
   },
@@ -46,16 +37,13 @@
     "@babel/core": "^7.3.3",
     "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
-    "babel-eslint": "^10.0.1",
+    "@dhis2/cli-style": "^7.2.1",
     "babel-loader": "^8.0.5",
     "docdash": "^1.0.3",
-    "eslint": "^4.6.1",
-    "eslint-config-dhis2": "^3.0.2",
     "form-data": "^2.3.3",
     "jest": "^24.1.0",
     "jsdoc": "^3.5.5",
     "lodash": "^4.17.11",
-    "precommit-hook": "3.0.0",
     "rimraf": "^2.6.3",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3"
@@ -64,10 +52,6 @@
     "npm": ">=3.5.1",
     "node": ">=5.1.1"
   },
-  "pre-commit": [
-    "lint",
-    "test"
-  ],
   "nyc": {
     "sourceMap": false,
     "instrument": false
