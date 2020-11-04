@@ -243,9 +243,10 @@ class ModelDefinition {
         Object.keys(model)
             .filter(
                 modelProperty =>
-                    !shouldBeModelCollectionProperty(model, models)(
-                        modelProperty
-                    )
+                    !shouldBeModelCollectionProperty(
+                        model,
+                        models
+                    )(modelProperty)
             )
             .forEach(modelProperty => {
                 model.dataValues[modelProperty] = dataValues[modelProperty]

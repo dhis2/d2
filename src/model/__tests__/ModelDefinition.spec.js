@@ -920,7 +920,9 @@ describe('ModelDefinition', () => {
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all' }
+                {
+                    fields: ':all',
+                }
             )
         })
 
@@ -937,15 +939,14 @@ describe('ModelDefinition', () => {
             }))
 
         it('should call the api get method with the correct parameters after filters are set', () => {
-            dataElementModelDefinition
-                .filter()
-                .on('name')
-                .like('John')
-                .list()
+            dataElementModelDefinition.filter().on('name').like('John').list()
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all', filter: ['name:like:John'] }
+                {
+                    fields: ':all',
+                    filter: ['name:like:John'],
+                }
             )
         })
 
@@ -956,21 +957,22 @@ describe('ModelDefinition', () => {
         })
 
         it('should not influence the list method of the default modelDefinition', () => {
-            dataElementModelDefinition
-                .filter()
-                .on('name')
-                .like('John')
-                .list()
+            dataElementModelDefinition.filter().on('name').like('John').list()
 
             dataElementModelDefinition.list()
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all' }
+                {
+                    fields: ':all',
+                }
             )
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all', filter: ['name:like:John'] }
+                {
+                    fields: ':all',
+                    filter: ['name:like:John'],
+                }
             )
         })
 
@@ -1002,7 +1004,10 @@ describe('ModelDefinition', () => {
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all', filter: ['name:like:John'] }
+                {
+                    fields: ':all',
+                    filter: ['name:like:John'],
+                }
             )
         })
 
@@ -1052,7 +1057,9 @@ describe('ModelDefinition', () => {
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all' }
+                {
+                    fields: ':all',
+                }
             )
         })
 
@@ -1135,7 +1142,9 @@ describe('ModelDefinition', () => {
 
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements',
-                { fields: ':all' }
+                {
+                    fields: ':all',
+                }
             )
         })
     })
@@ -1654,7 +1663,9 @@ describe('ModelDefinition subsclasses', () => {
                 .catch(() => {
                     expect(getOnApiStub).toBeCalledWith(
                         'organisationUnits/myRootId',
-                        { fields: ':all' }
+                        {
+                            fields: ':all',
+                        }
                     )
                 })
         })

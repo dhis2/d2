@@ -152,8 +152,13 @@ Object.keys(FILTER_COMPARATORS).forEach(filter => {
         value: function filterGetter(filterValue) {
             checkDefined(filterValue, 'filterValue')
 
-            this.comparator = FILTER_COMPARATORS[filter];
-            this.filterValue = [FILTER_COMPARATORS.in, FILTER_COMPARATORS.notIn].includes(this.comparator) ? `[${filterValue.join(',')}]` : filterValue;
+            this.comparator = FILTER_COMPARATORS[filter]
+            this.filterValue = [
+                FILTER_COMPARATORS.in,
+                FILTER_COMPARATORS.notIn,
+            ].includes(this.comparator)
+                ? `[${filterValue.join(',')}]`
+                : filterValue
 
             return this.addFilterCallback(this)
         },

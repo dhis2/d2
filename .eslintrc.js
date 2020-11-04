@@ -30,6 +30,8 @@ module.exports = {
                 peerDependencies: false,
             },
         ],
+        'no-useless-concat': 0,
+        'import/no-cycle': 0,
         'import/prefer-default-export': 0,
         'no-prototype-builtins': 0,
         'no-plusplus': [

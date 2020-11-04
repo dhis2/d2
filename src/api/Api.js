@@ -305,10 +305,7 @@ class Api {
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
             const encodedFilters = data.filter.map(filter =>
-                filter
-                    .split(':')
-                    .map(encodeURIComponent)
-                    .join(':')
+                filter.split(':').map(encodeURIComponent).join(':')
             )
 
             query = `${query}${

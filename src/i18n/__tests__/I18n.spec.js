@@ -20,11 +20,12 @@ describe('Internationalisation (I18n)', () => {
     const mockEscape =
         'Characters\\ may \\b\\e \\e\\s\\c\\a\\p\\e\\d\\!\\\\ Even\\\nnewline\\s\\?\\!\\?'
     const mockPropsFile =
-        `${'general_settings=General settings\n' +
+        `${
+            'general_settings=General settings\n' +
             'yes=Yup\n' +
             'no=Nope\n\n# Blank lines and commends - ignored?\n#\n\n' +
-            'system_settings_in_french='}${mockUnicode}\n` +
-        `escapes=${mockEscape}\n`
+            'system_settings_in_french='
+        }${mockUnicode}\n` + `escapes=${mockEscape}\n`
 
     beforeEach(() => {
         mockApi = MockApi.getApi()

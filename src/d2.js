@@ -106,9 +106,9 @@ function getModelRequests(api, schemaNames) {
             .map(loadSchemaForName)
             .concat([])
 
-        const schemasPromise = Promise.all(individualSchemaRequests).then(
-            schemas => ({ schemas })
-        )
+        const schemasPromise = Promise.all(
+            individualSchemaRequests
+        ).then(schemas => ({ schemas }))
 
         modelRequests.push(schemasPromise)
 

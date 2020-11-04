@@ -69,7 +69,10 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
                       f.dimension,
                       f.items.map(item => item.id)
                   )
-                : request.addFilter(f.dimension, f.items.map(item => item.id))
+                : request.addFilter(
+                      f.dimension,
+                      f.items.map(item => item.id)
+                  )
         })
 
         return request

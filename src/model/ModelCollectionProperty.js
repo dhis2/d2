@@ -183,8 +183,9 @@ class ModelCollectionProperty extends ModelCollection {
             },
             options,
             {
-                fields: `${this.propName}[${(options && options.fields) ||
-                    ':all'}]`,
+                fields: `${this.propName}[${
+                    (options && options.fields) || ':all'
+                }]`,
             }
         )
 
