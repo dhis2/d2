@@ -52,6 +52,8 @@ module.exports = {
         'no-shadow': 0,
         'valid-typeof': 0,
         'no-restricted-globals': 0,
+        'prefer-object-spread': 0,
+        'max-classes-per-file': 0,
     },
 
     overrides: [
