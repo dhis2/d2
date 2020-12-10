@@ -54,6 +54,8 @@ module.exports = {
         'no-restricted-globals': 0,
         'prefer-object-spread': 0,
         'max-classes-per-file': 0,
+        'global-require': 0,
+        'import/no-dynamic-require': 0,
     },
 
     overrides: [
