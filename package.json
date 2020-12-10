@@ -2,7 +2,7 @@
   "name": "d2",
   "version": "31.8.3",
   "description": "Javascript library for DHIS2",
-  "main": "build/d2.js",
+  "main": "d2.js",
   "scripts": {
     "build:dev": "webpack --config webpack.config.dev.js --mode development",
     "build:docs": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
@@ -12,7 +12,7 @@
     "lint": "d2-style js check",
     "test:coverage": "npm test -- --coverage",
     "test": "TZ=UTC jest",
-    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
+    "transpile": "babel src --out-dir . --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
   },
   "repository": {
     "type": "git",

@@ -7,7 +7,7 @@
   "opts": {
     "template": "node_modules/docdash",
     "encoding": "utf8",
-    "destination": "./build/docs/",
+    "destination": "./docs/",
     "recurse": true,
     "verbose": true
   },
