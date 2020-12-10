@@ -1,26 +1,24 @@
-.idea
-*.iml
-.project
-.settings
-.vscode
+# ignore everything to avoid committing build artifacts
+**/*
 
-npm-debug.log
-
-jspm_packages/*
-
-node_modules
-
-build/*
-dist/*
-lib/*
-docs/*
-
-bower_components
-coverage
-.nyc_output
-
-design_doc.md
-
-# TODO: Jshint is a dependency of the git hook which installs these files on install...
-.jshintignore
-.jshintrc
+# unignore files that should be committed
+!CHANGELOG.md
+!LICENSE
+!README.md
+!jsdoc.json
+!package.json
+!src/
+!tutorials/
+!webpack.config.dev.js
+!webpack.config.prod.js
+!yarn.lock
+!.babelrc
+!.browserslistrc
+!.dependabot/
+!.editorconfig
+!.eslintrc.js
+!.github/
+!.gitignore
+!.huskyrc.js
+!.npmignore
+!.prettierrc.js
