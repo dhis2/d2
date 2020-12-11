@@ -39,7 +39,7 @@
     "@dhis2/cli-style": "^7.2.1",
     "eslint-config-airbnb": "^18.2.1",
     "babel-loader": "^8.0.5",
-    "docdash": "^1.0.3",
+    "docdash": "^1.2.0",
     "form-data": "^2.3.3",
     "jest": "^24.1.0",
     "jsdoc": "^3.6.6",

@@ -2524,10 +2524,10 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
-docdash@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/docdash/-/docdash-1.0.3.tgz#1ca4d37940275f05f926c1326cde36d88b9f3fbc"
-  integrity sha512-gPepWBPJSWK70PRqOtxLvZ2FLJlw49DZASs73yqmM7uM45WEygQJmHPBrrQ9eLeEkgPKUzDv+sr2SHgQS1OQ0g==
+docdash@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/docdash/-/docdash-1.2.0.tgz#f99dde5b8a89aa4ed083a3150383e042d06c7f49"
+  integrity sha512-IYZbgYthPTspgqYeciRJNPhSwL51yer7HAwDXhF5p+H7mTDbPvY3PCk/QDjNxdPCpWkaJVFC4t7iCNB/t9E5Kw==
 
 doctrine@1.5.0:
   version "1.5.0"
