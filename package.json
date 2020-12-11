@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/dhis2/d2",
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
