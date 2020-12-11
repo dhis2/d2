@@ -1,3 +1,15 @@
+# [31.9.0](https://github.com/dhis2/d2/compare/v31.8.1...v31.9.0) (2020-12-11)
+
+
+### Bug Fixes
+
+* allow uid for org unit levels ([18a86f8](https://github.com/dhis2/d2/commit/18a86f8bf71cd66e8b881e9df74c2baafd0c3f8e))
+
+
+### Features
+
+* in-notin-filter-operators ([#148](https://github.com/dhis2/d2/issues/148)) ([026aa1e](https://github.com/dhis2/d2/commit/026aa1e5273baa64267f9a9b3980c517438e66ce))
+
 # D2 Changelog
 
 ## 31.6.0
@@ -79,4 +91,4 @@ empty object, in stead of a promise that's rejected with an error message
 
 ##### Added
 
-- [feat] `clone()` can now be used on a model instance to clone an object 
+- [feat] `clone()` can now be used on a model instance to clone an object
