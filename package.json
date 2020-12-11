@@ -68,7 +68,6 @@
   "files": [
       "**/*.js",
       "**/*.js.map",
-      "docs",
-      "CHANGELOG.md"
+      "docs"
   ]
 }
