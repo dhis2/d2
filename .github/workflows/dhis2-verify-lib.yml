@@ -59,6 +59,7 @@ jobs:
                   path: |
                       **/*
                       !**/node_modules
+                      !.*
                   retention-days: 1
 
     lint:
