@@ -65,5 +65,11 @@
     "testPathIgnorePatterns": [
       ".*\\.e2e\\.jsx?$"
     ]
-  }
+  },
+  "files": [
+      "**/*.js",
+      "**/*.js.map",
+      "docs",
+      "CHANGELOG.md"
+  ]
 }

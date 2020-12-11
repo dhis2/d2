@@ -1,24 +1,17 @@
-# ignore everything to avoid committing build artifacts
-**/*
+**/*.js
+**/*.js.map
 
-# unignore files that should be committed
-!CHANGELOG.md
-!LICENSE
-!README.md
-!jsdoc.json
-!package.json
-!src/
-!tutorials/
-!webpack.config.dev.js
-!webpack.config.prod.js
-!yarn.lock
-!.babelrc
-!.browserslistrc
-!.dependabot/
-!.editorconfig
-!.eslintrc.js
-!.github/
-!.gitignore
-!.huskyrc.js
-!.npmignore
-!.prettierrc.js
+.idea
+*.iml
+.project
+.settings
+.vscode
+
+jspm_packages/*
+
+node_modules
+
+docs/*
+
+coverage
+.nyc_output
