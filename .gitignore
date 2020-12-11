@@ -1,17 +1,15 @@
 **/*.js
 **/*.js.map
 
+docs
+node_modules
+coverage
+
+!src/**/*
+!webpack.config.*.js
+
 .idea
 *.iml
 .project
 .settings
 .vscode
-
-jspm_packages/*
-
-node_modules
-
-docs/*
-
-coverage
-.nyc_output
