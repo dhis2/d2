@@ -7,12 +7,11 @@
     "build:dev": "webpack --config webpack.config.dev.js --mode development",
     "build:docs": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
     "build:prod": "webpack --config webpack.config.prod.js --mode production",
-    "build": "npm run clean && npm run transpile && npm run build:dev && npm run build:prod && npm run build:docs",
-    "clean": "rimraf build",
+    "build": "npm run transpile && npm run build:dev && npm run build:prod && npm run build:docs",
     "lint": "d2-style js check",
     "test:coverage": "npm test -- --coverage",
     "test": "TZ=UTC jest",
-    "transpile": "babel src --out-dir build --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
+    "transpile": "babel src --out-dir . --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
   },
   "repository": {
     "type": "git",
@@ -38,11 +37,12 @@
     "@babel/plugin-proposal-class-properties": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
     "@dhis2/cli-style": "^7.2.1",
+    "eslint-config-airbnb": "^18.2.1",
     "babel-loader": "^8.0.5",
     "docdash": "^1.0.3",
     "form-data": "^2.3.3",
     "jest": "^24.1.0",
-    "jsdoc": "^3.5.5",
+    "jsdoc": "^3.6.6",
     "lodash": "^4.17.11",
     "rimraf": "^2.6.3",
     "webpack": "^4.29.5",
@@ -64,5 +64,10 @@
     "testPathIgnorePatterns": [
       ".*\\.e2e\\.jsx?$"
     ]
-  }
+  },
+  "files": [
+      "**/*.js",
+      "**/*.js.map",
+      "docs"
+  ]
 }
