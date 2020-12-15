@@ -6,6 +6,7 @@ node_modules
 coverage
 
 !src/**/*
+!codemods/**/*
 !webpack.config.*.js
 
 .idea
