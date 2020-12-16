@@ -35,7 +35,7 @@
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.3",
     "@babel/plugin-proposal-class-properties": "^7.3.3",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-env": "^7.12.11",
     "@dhis2/cli-style": "^7.2.1",
     "eslint-config-airbnb": "^18.2.1",
     "babel-loader": "^8.0.5",
