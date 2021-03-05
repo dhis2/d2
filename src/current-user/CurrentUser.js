@@ -157,15 +157,19 @@ class CurrentUser {
      *
      * The request done is equivalent do doing https://play.dhis2.org/demo/api/27/me.json?fields=userGroups[:all]
      *
+     * @param {Object} [listOptions={}] Additional query parameters that should be send with the request.
      * @returns {Promise<ModelCollection>} The model collection that contains the user's groups.
      */
-    getUserGroups() {
-        const userGroupIds = this[propertySymbols.userGroups]
+    getUserGroups(listOptions = {}) {
+        const userGroupIds = this[propertySymbols.userGroups];
 
-        return this[models].userGroup.list({
-            filter: [`id:in:[${userGroupIds.join(',')}]`],
-            paging: false,
-        })
+        return this[models].userGroup.list(
+            Object.assign(
+                { paging: false },
+                listOptions,
+                { filter: [`id:in:[${userGroupIds.join(',')}]`] },
+            ),
+        );
     }
 
     /**
