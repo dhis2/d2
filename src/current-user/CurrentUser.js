@@ -150,6 +150,15 @@ class CurrentUser {
     }
 
     /**
+     * Get a list of group ids the current user belongs to.
+     *
+     * @returns {Array} The list of ids of all the user's groups.
+     */
+    getUserGroupIds() {
+        return this[propertySymbols.userGroups]
+    }
+
+    /**
      * Get a ModelCollection of userGroup models that are assigned to the currentUser
      *
      * The user groups are lazy loaded on init of the library. This method can be used to load the full representation
