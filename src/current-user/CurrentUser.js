@@ -161,15 +161,13 @@ class CurrentUser {
      * @returns {Promise<ModelCollection>} The model collection that contains the user's groups.
      */
     getUserGroups(listOptions = {}) {
-        const userGroupIds = this[propertySymbols.userGroups];
+        const userGroupIds = this[propertySymbols.userGroups]
 
         return this[models].userGroup.list(
-            Object.assign(
-                { paging: false },
-                listOptions,
-                { filter: [`id:in:[${userGroupIds.join(',')}]`] },
-            ),
-        );
+            Object.assign({ paging: false }, listOptions, {
+                filter: [`id:in:[${userGroupIds.join(',')}]`],
+            })
+        )
     }
 
     /**
