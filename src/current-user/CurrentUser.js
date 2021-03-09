@@ -150,6 +150,15 @@ class CurrentUser {
     }
 
     /**
+     * Get a list of group ids the current user belongs to.
+     *
+     * @returns {Array} The list of ids of all the user's groups.
+     */
+    getUserGroupIds() {
+        return this[propertySymbols.userGroups]
+    }
+
+    /**
      * Get a ModelCollection of userGroup models that are assigned to the currentUser
      *
      * The user groups are lazy loaded on init of the library. This method can be used to load the full representation
@@ -157,15 +166,17 @@ class CurrentUser {
      *
      * The request done is equivalent do doing https://play.dhis2.org/demo/api/27/me.json?fields=userGroups[:all]
      *
+     * @param {Object} [listOptions={}] Additional query parameters that should be send with the request.
      * @returns {Promise<ModelCollection>} The model collection that contains the user's groups.
      */
-    getUserGroups() {
+    getUserGroups(listOptions = {}) {
         const userGroupIds = this[propertySymbols.userGroups]
 
-        return this[models].userGroup.list({
-            filter: [`id:in:[${userGroupIds.join(',')}]`],
-            paging: false,
-        })
+        return this[models].userGroup.list(
+            Object.assign({ paging: false }, listOptions, {
+                filter: [`id:in:[${userGroupIds.join(',')}]`],
+            })
+        )
     }
 
     /**
