@@ -1,3 +1,10 @@
+## [31.9.1](https://github.com/dhis2/d2/compare/v31.9.0...v31.9.1) (2021-03-09)
+
+
+### Bug Fixes
+
+* **current-user:** add getUserGroupIds, allow custom fields in getUserGroups (DHIS2-10625) ([#280](https://github.com/dhis2/d2/issues/280)) ([d3e84a6](https://github.com/dhis2/d2/commit/d3e84a6812b9b1071030568092d568cd51dbe816))
+
 # [31.9.0](https://github.com/dhis2/d2/compare/v31.8.1...v31.9.0) (2020-12-11)
 
 

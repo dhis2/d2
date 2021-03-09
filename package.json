@@ -1,6 +1,6 @@
 {
   "name": "d2",
-  "version": "31.9.0",
+  "version": "31.9.1",
   "description": "Javascript library for DHIS2",
   "main": "d2.js",
   "scripts": {
