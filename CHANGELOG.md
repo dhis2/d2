@@ -1,3 +1,11 @@
+## [31.9.2](https://github.com/dhis2/d2/compare/v31.9.1...v31.9.2) (2021-03-22)
+
+
+### Bug Fixes
+
+* remove encoding of query string for analytics requests DHIS2-10722 ([#284](https://github.com/dhis2/d2/issues/284)) ([c810235](https://github.com/dhis2/d2/commit/c81023554f9a0a0b564f08b8afea35fcce5ca043))
+* remove unused import ([#285](https://github.com/dhis2/d2/issues/285)) ([6e1a408](https://github.com/dhis2/d2/commit/6e1a408da69cb251142af29895dee312d633b386))
+
 ## [31.9.1](https://github.com/dhis2/d2/compare/v31.9.0...v31.9.1) (2021-03-09)
 
 
