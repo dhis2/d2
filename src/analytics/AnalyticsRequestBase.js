@@ -1,5 +1,4 @@
 import sortBy from 'lodash/sortBy'
-import { customEncodeURIComponent } from '../lib/utils'
 
 /**
  * @private
