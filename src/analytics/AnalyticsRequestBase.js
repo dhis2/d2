@@ -51,15 +51,13 @@ class AnalyticsRequestBase {
         if (options && options.sorted) {
             dimensions = sortBy(dimensions, 'dimension')
         }
-
-        const encodedDimensions = dimensions.map(({ dimension, items }) => {
+        const formattedDimensions = dimensions.map(({ dimension, items }) => {
             if (Array.isArray(items) && items.length) {
-                const encodedItems = items.map(customEncodeURIComponent)
                 if (options && options.sorted) {
-                    encodedItems.sort()
+                    items = sortBy(items)
                 }
 
-                return `${dimension}:${encodedItems.join(';')}`
+                return `${dimension}:${items.join(';')}`
             }
 
             return dimension
@@ -69,7 +67,7 @@ class AnalyticsRequestBase {
             .filter(e => !!e)
             .join('/')
 
-        return `${endPoint}.${this.format}?dimension=${encodedDimensions.join(
+        return `${endPoint}.${this.format}?dimension=${formattedDimensions.join(
             '&dimension='
         )}`
     }
@@ -94,21 +92,20 @@ class AnalyticsRequestBase {
             filters = sortBy(filters, 'dimension')
         }
 
-        const encodedFilters = filters.map(({ dimension, items }) => {
+        const formattedFilters = filters.map(({ dimension, items }) => {
             if (Array.isArray(items) && items.length) {
-                const encodedItems = items.map(customEncodeURIComponent)
                 if (options && options.sorted) {
-                    encodedItems.sort()
+                    items = sortBy(items)
                 }
 
-                return `${dimension}:${encodedItems.join(';')}`
+                return `${dimension}:${items.join(';')}`
             }
 
             return dimension
         })
 
         if (filters.length) {
-            this.parameters.filter = encodedFilters
+            this.parameters.filter = formattedFilters
         }
 
         return this.parameters
