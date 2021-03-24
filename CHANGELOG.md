@@ -1,3 +1,10 @@
+## [31.9.3](https://github.com/dhis2/d2/compare/v31.9.2...v31.9.3) (2021-03-24)
+
+
+### Bug Fixes
+
+* only pass fixed dimensions as dimension for data value sets (DHIS2-9789) ([f99e1e9](https://github.com/dhis2/d2/commit/f99e1e9c3be8c4c43e8e61a8f91591e53eeefb58)), closes [#776](https://github.com/dhis2/d2/issues/776)
+
 ## [31.9.2](https://github.com/dhis2/d2/compare/v31.9.1...v31.9.2) (2021-03-22)
 
 
