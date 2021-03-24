@@ -11,7 +11,7 @@ import AnalyticsRequestBase from './AnalyticsRequestBase'
  *
  * @memberof module:analytics
  *
- * @extends module:analytics.AnalyticsRequestDimensionsMixin
+ * @extends module:analytics.AnalyticsRequestDisensionsMixin
  * @extends module:analytics.AnalyticsRequestFiltersMixin
  * @extends module:analytics.AnalyticsRequestPropertiesMixin
  * @extends module:analytics.AnalyticsRequestBase
@@ -63,16 +63,20 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
         // extract filters from model
         const filters = model.filters || []
 
+        // only pass dx/pe/ou as dimension
+        const fixedIds = ['dx', 'ou', 'pe']
+
         filters.forEach(f => {
-            request = passFilterAsDimension
-                ? request.addDimension(
-                      f.dimension,
-                      f.items.map(item => item.id)
-                  )
-                : request.addFilter(
-                      f.dimension,
-                      f.items.map(item => item.id)
-                  )
+            request =
+                passFilterAsDimension && fixedIds.includes(f.dimension)
+                    ? request.addDimension(
+                          f.dimension,
+                          f.items.map(item => item.id)
+                      )
+                    : request.addFilter(
+                          f.dimension,
+                          f.items.map(item => item.id)
+                      )
         })
 
         return request
