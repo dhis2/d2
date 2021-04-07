@@ -1,3 +1,10 @@
+# [31.10.0](https://github.com/dhis2/d2/compare/v31.9.3...v31.10.0) (2021-04-07)
+
+
+### Features
+
+* **json:** treat access collection as non-model collections ([67bc88d](https://github.com/dhis2/d2/commit/67bc88d40ff8e69b24e4b66baa44e78c21c4a2ed))
+
 ## [31.9.3](https://github.com/dhis2/d2/compare/v31.9.2...v31.9.3) (2021-03-24)
 
 
