@@ -17,6 +17,8 @@ const NON_MODEL_COLLECTIONS = {
     redirectUris: ['oAuth2Client'],
     organisationUnitLevels: ['validationRule'],
     favorites: [],
+    userGroupAccesses: [],
+    userAccesses: [],
 };
 
 const isNonModelCollection = (propertyName, modelType) => {
