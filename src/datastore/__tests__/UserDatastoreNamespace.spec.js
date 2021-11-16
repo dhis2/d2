@@ -168,7 +168,11 @@ describe('DataStoreNamespace', () => {
                 expect(namespace.update).toBeCalledWith(setKey, valueData)
                 expect(apiMock.update).toBeCalledWith(
                     `dataStore/DHIS/${setKey}`,
-                    valueData
+                    valueData,
+                    false,
+                    {
+                        headers: { 'Content-Type': 'application/json' }
+                    }
                 )
             })
         })
@@ -268,7 +272,11 @@ describe('DataStoreNamespace', () => {
             return namespace.update(setKey, valueData).then(() => {
                 expect(apiMock.update).toBeCalledWith(
                     `dataStore/DHIS/${setKey}`,
-                    valueData
+                    valueData,
+                    false,
+                    {
+                        headers: { 'Content-Type': 'application/json' }
+                    }
                 )
             })
         })
