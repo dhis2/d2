@@ -138,7 +138,11 @@ class BaseStoreNamespace {
     update(key, value) {
         return this.api.update(
             [this.endPoint, this.namespace, key].join('/'),
-            value
+            value,
+            false,
+            {
+                headers: { 'Content-Type': 'application/json' },
+            }
         )
     }
 }
