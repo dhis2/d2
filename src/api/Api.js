@@ -209,26 +209,32 @@ class Api {
      *
      * @returns {Promise.<*>} The response body.
      */
-    update(url, data, useMergeStrategy = false) {
-        // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
-        // to clear out existing values
+    update(url, data, useMergeStrategy = false, options = {}) {
+        let payload = data
+        // Ensure that headers are defined and are treated without case sensitivity
+        options.headers = new Headers(options.headers || {})
+
+        if (data !== undefined) {
+            if (
+                !options.headers.has('Content-Type') &&
+                typeof payload === 'string'
+            ) {
+                options.headers.set('Content-Type', 'text/plain')
+            } else {
+                payload = JSON.stringify(data)
+            }
+        }
+
         const urlForUpdate =
             useMergeStrategy === true
                 ? `${url}?${getMergeStrategyParam()}`
                 : url
-        if (typeof data === 'string') {
-            return this.request(
-                'PUT',
-                getUrl(this.baseUrl, urlForUpdate),
-                String(data),
-                { headers: new Headers({ 'Content-Type': 'text/plain' }) }
-            )
-        }
 
         return this.request(
             'PUT',
             getUrl(this.baseUrl, urlForUpdate),
-            JSON.stringify(data)
+            payload,
+            options
         )
     }
 
