@@ -206,29 +206,40 @@ class Api {
      * @param {string} url The url for the request
      * @param {*} data Any data that should be send with the request. This becomes the body of the PUT request.
      * @param {boolean} [useMergeStrategy=false]
+     * @param {Object.<string, any>} options The request options are passed as options to the fetch request.
      *
      * @returns {Promise.<*>} The response body.
      */
-    update(url, data, useMergeStrategy = false) {
-        // Since we are currently using PUT to save the full state back, we have to use mergeMode=REPLACE
-        // to clear out existing values
+    update(url, data, useMergeStrategy = false, options = {}) {
+        let payload = data
+
+        // Ensure that headers are defined and are treated without case sensitivity
+        const requestOptions = {
+            ...options,
+            headers: new Headers(options.headers || {}),
+        }
+
+        if (data !== undefined) {
+            if (
+                !requestOptions.headers.has('Content-Type') &&
+                typeof payload === 'string'
+            ) {
+                requestOptions.headers.set('Content-Type', 'text/plain')
+            } else {
+                payload = JSON.stringify(data)
+            }
+        }
+
         const urlForUpdate =
             useMergeStrategy === true
                 ? `${url}?${getMergeStrategyParam()}`
                 : url
-        if (typeof data === 'string') {
-            return this.request(
-                'PUT',
-                getUrl(this.baseUrl, urlForUpdate),
-                String(data),
-                { headers: new Headers({ 'Content-Type': 'text/plain' }) }
-            )
-        }
 
         return this.request(
             'PUT',
             getUrl(this.baseUrl, urlForUpdate),
-            JSON.stringify(data)
+            payload,
+            requestOptions
         )
     }
 
