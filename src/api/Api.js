@@ -207,7 +207,7 @@ class Api {
      * @param {*} data Any data that should be send with the request. This becomes the body of the PUT request.
      * @param {boolean} [useMergeStrategy=false]
      * @param {Object.<string, any>} options The request options are passed as options to the fetch request.
-     * 
+     *
      * @returns {Promise.<*>} The response body.
      */
     update(url, data, useMergeStrategy = false, options = {}) {
@@ -216,7 +216,7 @@ class Api {
         // Ensure that headers are defined and are treated without case sensitivity
         const requestOptions = {
             ...options,
-            headers: new Headers(options.headers || {})
+            headers: new Headers(options.headers || {}),
         }
 
         if (data !== undefined) {
