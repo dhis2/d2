@@ -211,15 +211,18 @@ class Api {
      */
     update(url, data, useMergeStrategy = false, options = {}) {
         let payload = data
+
         // Ensure that headers are defined and are treated without case sensitivity
-        options.headers = new Headers(options.headers || {})
+        const requestOptions = {
+            headers: new Headers(options.headers || {})
+        }
 
         if (data !== undefined) {
             if (
-                !options.headers.has('Content-Type') &&
+                !requestOptions.headers.has('Content-Type') &&
                 typeof payload === 'string'
             ) {
-                options.headers.set('Content-Type', 'text/plain')
+                requestOptions.headers.set('Content-Type', 'text/plain')
             } else {
                 payload = JSON.stringify(data)
             }
@@ -234,7 +237,7 @@ class Api {
             'PUT',
             getUrl(this.baseUrl, urlForUpdate),
             payload,
-            options
+            requestOptions
         )
     }
 
