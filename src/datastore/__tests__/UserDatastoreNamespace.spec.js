@@ -171,7 +171,7 @@ describe('DataStoreNamespace', () => {
                     valueData,
                     false,
                     {
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: { 'Content-Type': 'application/json' },
                     }
                 )
             })
@@ -275,7 +275,7 @@ describe('DataStoreNamespace', () => {
                     valueData,
                     false,
                     {
-                        headers: { 'Content-Type': 'application/json' }
+                        headers: { 'Content-Type': 'application/json' },
                     }
                 )
             })
