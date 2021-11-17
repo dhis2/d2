@@ -206,7 +206,8 @@ class Api {
      * @param {string} url The url for the request
      * @param {*} data Any data that should be send with the request. This becomes the body of the PUT request.
      * @param {boolean} [useMergeStrategy=false]
-     *
+     * @param {Object.<string, any>} options The request options are passed as options to the fetch request.
+     * 
      * @returns {Promise.<*>} The response body.
      */
     update(url, data, useMergeStrategy = false, options = {}) {
