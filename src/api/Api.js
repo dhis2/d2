@@ -215,6 +215,7 @@ class Api {
 
         // Ensure that headers are defined and are treated without case sensitivity
         const requestOptions = {
+            ...options,
             headers: new Headers(options.headers || {})
         }
 
