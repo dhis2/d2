@@ -1,3 +1,12 @@
+## [31.10.1](https://github.com/dhis2/d2/compare/v31.10.0...v31.10.1) (2021-11-17)
+
+
+### Bug Fixes
+
+* spread options to requestOptions ([8151af1](https://github.com/dhis2/d2/commit/8151af18c0e22b7f33dca66b17f29990b906691d))
+* **api:** allow override of content-type in update() when value is string ([af2eccb](https://github.com/dhis2/d2/commit/af2eccb69fd21adc374223eea4495a8cb271d558))
+* **datastore:** explicitly set content-type when updating' ([1a4892b](https://github.com/dhis2/d2/commit/1a4892b7f3064fb4a0e9a0aec104daa63a188289))
+
 # [31.10.0](https://github.com/dhis2/d2/compare/v31.9.3...v31.10.0) (2021-04-07)
 
 
