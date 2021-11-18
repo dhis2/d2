@@ -1,3 +1,10 @@
+## [31.10.2](https://github.com/dhis2/d2/compare/v31.10.1...v31.10.2) (2021-11-18)
+
+
+### Bug Fixes
+
+* **noop:** trigger release due to failed auth ([a0626b9](https://github.com/dhis2/d2/commit/a0626b9911da98c059f4a594ced06ccb61e0228c))
+
 ## [31.10.1](https://github.com/dhis2/d2/compare/v31.10.0...v31.10.1) (2021-11-17)
 
 
