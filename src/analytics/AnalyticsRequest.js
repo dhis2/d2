@@ -47,7 +47,7 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
         const columns = model.columns || []
         const rows = model.rows || []
 
-        columns.concat(rows).forEach(d => {
+        columns.concat(rows).forEach((d) => {
             let { dimension } = d
 
             if (d.filter) {
@@ -56,7 +56,7 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
 
             request = request.addDimension(
                 dimension,
-                d.items.map(item => item.id)
+                d.items.map((item) => item.id)
             )
         })
 
@@ -66,16 +66,16 @@ class AnalyticsRequest extends AnalyticsRequestDimensionsMixin(
         // only pass dx/pe/ou as dimension
         const fixedIds = ['dx', 'ou', 'pe']
 
-        filters.forEach(f => {
+        filters.forEach((f) => {
             request =
                 passFilterAsDimension && fixedIds.includes(f.dimension)
                     ? request.addDimension(
                           f.dimension,
-                          f.items.map(item => item.id)
+                          f.items.map((item) => item.id)
                       )
                     : request.addFilter(
                           f.dimension,
-                          f.items.map(item => item.id)
+                          f.items.map((item) => item.id)
                       )
         })
 

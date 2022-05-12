@@ -57,7 +57,7 @@ export function getCurrentYear() {
 }
 
 export function is53WeekISOYear(year) {
-    const p = y =>
+    const p = (y) =>
         y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400)
 
     return p(year) % 7 === 4 || p(year - 1) % 7 === 3

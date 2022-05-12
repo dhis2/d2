@@ -49,7 +49,7 @@ describe('analytics.events', () => {
         })
 
         it('should resolve a promise with data', () =>
-            events.getAggregate(request).then(data => {
+            events.getAggregate(request).then((data) => {
                 expect(data).toEqual(fixture)
             }))
     })
@@ -74,7 +74,7 @@ describe('analytics.events', () => {
         })
 
         it('should resolve a promise with data', () =>
-            events.getCount(request).then(data => {
+            events.getCount(request).then((data) => {
                 expect(data.count).toEqual(fixture.count)
                 expect(data.extent).toEqual(fixture.extent)
             }))
@@ -107,7 +107,7 @@ describe('analytics.events', () => {
         })
 
         it('should resolve a promise with data', () =>
-            events.getCluster(request).then(data => {
+            events.getCluster(request).then((data) => {
                 expect(data.width).toEqual(fixture.width)
                 expect(data.height).toEqual(fixture.height)
             }))
@@ -135,7 +135,7 @@ describe('analytics.events', () => {
         })
 
         it('should resolve a promise with data', () =>
-            events.getQuery(request).then(data => {
+            events.getQuery(request).then((data) => {
                 expect(data.width).toEqual(fixture.width)
                 expect(data.height).toEqual(fixture.height)
             }))

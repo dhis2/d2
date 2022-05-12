@@ -58,7 +58,7 @@ class BaseStoreNamespace {
     getKeys() {
         return this.api
             .get([this.endPoint, this.namespace].join('/'))
-            .then(response => {
+            .then((response) => {
                 if (response && isArray(response)) {
                     this.keys = response
                     return response
@@ -104,7 +104,7 @@ class BaseStoreNamespace {
                 [this.endPoint, this.namespace, key + queryParams].join('/'),
                 value
             )
-            .then(resp => {
+            .then((resp) => {
                 this.keys = [...this.keys, key]
                 return resp
             })
@@ -123,8 +123,8 @@ class BaseStoreNamespace {
         }
         return this.api
             .delete([this.endPoint, this.namespace, key].join('/'))
-            .then(resp => {
-                this.keys = this.keys.filter(elem => elem !== key)
+            .then((resp) => {
+                this.keys = this.keys.filter((elem) => elem !== key)
                 return resp
             })
     }

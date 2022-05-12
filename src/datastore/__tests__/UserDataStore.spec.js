@@ -23,7 +23,7 @@ describe('UserDataStore', () => {
         it('should return an instance of UserDatastoreNamespace', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(namespaces))
 
-            return userDataStore.get('DHIS').then(namespace => {
+            return userDataStore.get('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(UserDataStoreNamespace)
             })
         })
@@ -33,8 +33,8 @@ describe('UserDataStore', () => {
                 .mockReturnValueOnce(Promise.resolve(namespaces))
                 .mockReturnValueOnce(Promise.resolve(keys))
 
-            return userDataStore.get('DHIS').then(namespace =>
-                namespace.getKeys().then(res => {
+            return userDataStore.get('DHIS').then((namespace) =>
+                namespace.getKeys().then((res) => {
                     expect(res).toEqual(keys)
                     expect(apiMock.get).toHaveBeenCalledTimes(2)
                 })
@@ -42,7 +42,7 @@ describe('UserDataStore', () => {
         })
 
         it('should not request API if autoload is false', () =>
-            userDataStore.get('DHIS', false).then(res => {
+            userDataStore.get('DHIS', false).then((res) => {
                 expect(res).toBeInstanceOf(UserDataStoreNamespace)
                 expect(apiMock.get).not.toHaveBeenCalled()
             }))
@@ -50,7 +50,7 @@ describe('UserDataStore', () => {
         it('should throw an error when no response', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(null))
 
-            return userDataStore.get('DHIS').catch(e => {
+            return userDataStore.get('DHIS').catch((e) => {
                 expect(e.message).toBe(
                     'The requested namespace has no keys or does not exist.'
                 )
@@ -62,7 +62,7 @@ describe('UserDataStore', () => {
             apiMock.get.mockReturnValueOnce(Promise.reject(err))
 
             return expect(
-                userDataStore.get('DHIS').catch(e => {
+                userDataStore.get('DHIS').catch((e) => {
                     expect(e).toThrow()
                 })
             ).rejects.toBeDefined()
@@ -72,7 +72,7 @@ describe('UserDataStore', () => {
             const error = { httpStatusCode: 500 }
             apiMock.get.mockReturnValueOnce(Promise.reject(error))
 
-            return userDataStore.get('DHIS').catch(e => {
+            return userDataStore.get('DHIS').catch((e) => {
                 expect(e).toEqual(error)
             })
         })
@@ -85,7 +85,7 @@ describe('UserDataStore', () => {
                 .then(() => {
                     throw new Error('this hould have failed')
                 })
-                .catch(e => {
+                .catch((e) => {
                     expect(e.message).toMatch(/does not exist/)
                 })
         })
@@ -123,7 +123,7 @@ describe('UserDataStore', () => {
 
             expect.assertions(1)
 
-            return userDataStore.getAll().then(namespaceRes => {
+            return userDataStore.getAll().then((namespaceRes) => {
                 expect(namespaces).toEqual(namespaceRes)
             })
         })
@@ -133,7 +133,7 @@ describe('UserDataStore', () => {
 
             expect.assertions(1)
 
-            return userDataStore.getAll().catch(namespaceRes => {
+            return userDataStore.getAll().catch((namespaceRes) => {
                 expect(namespaceRes.message).toBe('No namespaces exist.')
             })
         })
@@ -174,7 +174,7 @@ describe('UserDataStore', () => {
             const error = { httpStatusCode: 404 }
             apiMock.get.mockReturnValueOnce(Promise.reject(error))
 
-            return userDataStore.create('DHIS').then(namespace => {
+            return userDataStore.create('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(UserDataStoreNamespace)
                 expect(namespace.keys).toHaveLength(0)
             })
@@ -183,7 +183,7 @@ describe('UserDataStore', () => {
         it('should return an error if namespace exists', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(keys))
 
-            return userDataStore.get('DHIS').then(namespace => {
+            return userDataStore.get('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(UserDataStoreNamespace)
             })
         })

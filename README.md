@@ -8,7 +8,6 @@ The full api documentation is available [here](https://d2-ci.github.io/d2/). To 
 
 For more information on how the models work the [model module documentation](https://d2-ci.github.io/d2/module-model.html) is helpful reference material. For other questions see the [FAQ](https://d2-ci.github.io/d2/tutorial-FAQ.html).
 
-
 ## Quickstart guide
 
 ### Install
@@ -21,24 +20,24 @@ After installing you will be able to import the library into your project by usi
 
 ```js
 // Using ES2015 imports
-import d2 from 'd2';
+import d2 from 'd2'
 
 // Using CommonJS imports
-var d2 = require('d2');
+var d2 = require('d2')
 ```
 
 ### Initialise the library
+
 To be able to use d2 you will first need to initialise the library. This is required to let the library know where it should load its data from (e.g. the schemas, currentUser, authorities). The schemas are the definitions of the data model as used in DHIS2.
 
 To do this you can provide d2 with a `baseUrl` (if you don't provide any the default of `../api` will be used):
 
 ```js
-import { init } from 'd2';
+import { init } from 'd2'
 
-init({ baseUrl: 'http://apps.dhis2.org/dev/api' })
-  .then(d2 => {
+init({ baseUrl: 'http://apps.dhis2.org/dev/api' }).then((d2) => {
     //Your d2 is initialised and ready to use.
-  });
+})
 ```
 
 ### Get first page of users and print their names
@@ -51,7 +50,6 @@ d2.models.user.list()
 ```
 
 That's it! See the documentation referenced above for further information.
-
 
 ## Report an issue
 

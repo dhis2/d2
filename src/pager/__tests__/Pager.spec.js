@@ -152,7 +152,7 @@ describe('Pager', () => {
             it('should return a rejected promise if there are no more new pages', () => {
                 delete pager.nextPage
 
-                return pager.getNextPage().catch(message => {
+                return pager.getNextPage().catch((message) => {
                     expect(message).toBe(
                         'There is no next page for this collection'
                     )
@@ -189,7 +189,7 @@ describe('Pager', () => {
             it('should return a rejected promise if there are no more previous pages', () => {
                 expect.assertions(1)
 
-                return pager.getPreviousPage().catch(message => {
+                return pager.getPreviousPage().catch((message) => {
                     expect(message).toBe(
                         'There is no previous page for this collection'
                     )

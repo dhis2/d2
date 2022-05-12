@@ -315,7 +315,7 @@ class Api {
 
         // Transfer filter properties from the data object to the query string
         if (data && Array.isArray(data.filter)) {
-            const encodedFilters = data.filter.map(filter =>
+            const encodedFilters = data.filter.map((filter) =>
                 filter.split(':').map(encodeURIComponent).join(':')
             )
 
@@ -327,7 +327,7 @@ class Api {
 
         // When using the GET method, transform the data object to query parameters
         if (data && method === 'GET') {
-            Object.keys(data).forEach(key => {
+            Object.keys(data).forEach((key) => {
                 query =
                     `${query}${query.length > 0 ? '&' : ''}` +
                     `${encodeURIComponent(key)}=${encodeURIComponent(
@@ -345,8 +345,10 @@ class Api {
             const headers = new Headers(mergeOptions.headers || {})
 
             Object.keys(defaultHeaders)
-                .filter(header => !headers.get(header))
-                .forEach(header => headers.set(header, defaultHeaders[header]))
+                .filter((header) => !headers.get(header))
+                .forEach((header) =>
+                    headers.set(header, defaultHeaders[header])
+                )
 
             resultOptions.method = method
 
@@ -389,14 +391,14 @@ class Api {
             // fetch returns a promise that will resolve with any response received from the server
             // It will be rejected ONLY if no response is received from the server, i.e. because there's no internet
             this.fetch(requestUrl, requestOptions)
-                .then(response => {
+                .then((response) => {
                     // If the request failed, response.ok will be false and response.status will be the status code
                     if (response.ok) {
                         response
                             .text()
-                            .then(text => resolve(parseResponseData(text)))
+                            .then((text) => resolve(parseResponseData(text)))
                     } else {
-                        response.text().then(text => {
+                        response.text().then((text) => {
                             const parsedResponseData = parseResponseData(text)
                             if (response.status === 401) {
                                 const request = {
@@ -426,7 +428,7 @@ class Api {
                         })
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     // It's not usually possible to get much info about the cause of the error programmatically, but
                     // the user can check the browser console for more info
                     if (

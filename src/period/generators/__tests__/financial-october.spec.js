@@ -21,9 +21,8 @@ describe('Financial October period', () => {
         })
 
         it('should generate periods for 10 years with the last one being the current year', () => {
-            const tenYearlyPeriods = generateFinancialOctoberPeriodsUpToYear(
-                2017
-            )
+            const tenYearlyPeriods =
+                generateFinancialOctoberPeriodsUpToYear(2017)
 
             expect(tenYearlyPeriods).toEqual([
                 {

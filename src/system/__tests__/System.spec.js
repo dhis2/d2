@@ -107,14 +107,14 @@ describe('System', () => {
 
             return system
                 .loadInstalledApps()
-                .catch(error => error)
-                .then(message => {
+                .catch((error) => error)
+                .then((message) => {
                     expect(message).toBe('Apps can not be loaded')
                 })
         })
 
         it('should resolve with the returned list of apps', () =>
-            system.loadInstalledApps().then(apps => {
+            system.loadInstalledApps().then((apps) => {
                 expect(apps).toEqual(appsFromApi)
             }))
     })
@@ -254,7 +254,7 @@ describe('System', () => {
                 .get('/appStore')
                 .filter((app, i) => [3, 6].includes(i))
 
-            return system.loadAppStore().then(apps => {
+            return system.loadAppStore().then((apps) => {
                 expect(apps).toEqual(expectedApps)
             })
         })
@@ -272,7 +272,7 @@ describe('System', () => {
                     .get('/appStore')
                     .filter((app, i) => [2, 4, 6].includes(i))
 
-                return system.loadAppStore().then(apps => {
+                return system.loadAppStore().then((apps) => {
                     expect(apps).toEqual(expectedApps)
                 })
             })
@@ -291,7 +291,7 @@ describe('System', () => {
                     .get('/appStore')
                     .filter((app, i) => [1, 2, 4, 5, 6].includes(i))
 
-                return system.loadAppStore().then(apps => {
+                return system.loadAppStore().then((apps) => {
                     expect(apps).toEqual(expectedApps)
                 })
             })
@@ -369,13 +369,13 @@ describe('System', () => {
 
             apiMock.get.mockReturnValue(Promise.resolve(returnedApps))
 
-            return system.loadAppStore().then(apps => {
+            return system.loadAppStore().then((apps) => {
                 expect(apps.length).toBe(4)
             })
         })
 
         it('should return all the apps when compatibility flag is set to false', () =>
-            system.loadAppStore(false).then(apps => {
+            system.loadAppStore(false).then((apps) => {
                 expect(apps.length).toBe(fixtures.get('/appStore').length)
             }))
 
@@ -386,8 +386,8 @@ describe('System', () => {
 
             return system
                 .loadAppStore()
-                .catch(error => error)
-                .then(error => {
+                .catch((error) => error)
+                .then((error) => {
                     expect(error).toBe('Request for appStore failed')
                 })
         })
@@ -397,8 +397,8 @@ describe('System', () => {
 
             return system
                 .loadAppStore()
-                .catch(error => error)
-                .then(error => {
+                .catch((error) => error)
+                .then((error) => {
                     expect(error.message).toBe(
                         "Cannot read property 'major' of undefined"
                     )
@@ -422,8 +422,8 @@ describe('System', () => {
 
             return system
                 .installAppVersion('PyYnjVl5iGt')
-                .catch(error => error)
-                .then(errorMessage => {
+                .catch((error) => error)
+                .then((errorMessage) => {
                     expect(errorMessage).toBe('Request for installation failed')
                 })
         })
@@ -438,7 +438,7 @@ describe('System', () => {
             }))
 
         it('should resolve the promise without a value', () =>
-            system.installAppVersion('PyYnjVl5iGt').then(response => {
+            system.installAppVersion('PyYnjVl5iGt').then((response) => {
                 expect(response).toBeUndefined()
             }))
     })
@@ -495,7 +495,7 @@ describe('System', () => {
 
             return system
                 .reloadApps()
-                .then(message => expect(message).toBe('Apps loaded'))
+                .then((message) => expect(message).toBe('Apps loaded'))
         })
 
         it('should not call loadInstalledApps when the update request fails', () => {
@@ -504,7 +504,7 @@ describe('System', () => {
 
             return system
                 .reloadApps()
-                .catch(message => message)
+                .catch((message) => message)
                 .then(() => {
                     expect(system.loadInstalledApps).not.toBeCalled()
                 })

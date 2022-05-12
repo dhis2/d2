@@ -112,7 +112,7 @@ describe('System.configuration', () => {
 
     describe('API call', () => {
         beforeEach(() => {
-            mockApi.get.mockImplementation(url => {
+            mockApi.get.mockImplementation((url) => {
                 if (url === 'configuration') {
                     return Promise.resolve(mockConfiguration)
                 }
@@ -130,7 +130,7 @@ describe('System.configuration', () => {
             it('should return the entire config', () => {
                 expect.assertions(1)
 
-                return configuration.all().then(res => {
+                return configuration.all().then((res) => {
                     expect(res).toEqual(mockConfiguration)
                 })
             })
@@ -181,7 +181,7 @@ describe('System.configuration', () => {
             it('should return the correct systemId', () => {
                 expect.assertions(1)
 
-                return configuration.get('systemId').then(res => {
+                return configuration.get('systemId').then((res) => {
                     expect(res).toBe(mockConfiguration.systemId)
                 })
             })
@@ -189,7 +189,7 @@ describe('System.configuration', () => {
             it('should return the correct feedback recipient user group', () => {
                 expect.assertions(1)
 
-                return configuration.get('feedbackRecipients').then(res => {
+                return configuration.get('feedbackRecipients').then((res) => {
                     expect(res).toBe(mockConfiguration.feedbackRecipients)
                 })
             })
@@ -197,11 +197,11 @@ describe('System.configuration', () => {
             it('should only query the API once', () => {
                 expect.assertions(4)
 
-                return configuration.get('systemId').then(res1 => {
+                return configuration.get('systemId').then((res1) => {
                     expect(res1).toBe(mockConfiguration.systemId)
                     expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
 
-                    configuration.get('systemId').then(res2 => {
+                    configuration.get('systemId').then((res2) => {
                         expect(res2).toBe(mockConfiguration.systemId)
                         expect(mockApi.get.mock.calls[0][0]).toBe(
                             'configuration'
@@ -213,11 +213,11 @@ describe('System.configuration', () => {
             it('should query the API twice if ignoreCache is true', () => {
                 expect.assertions(4)
 
-                return configuration.get('systemId', true).then(res1 => {
+                return configuration.get('systemId', true).then((res1) => {
                     expect(res1).toBe(mockConfiguration.systemId)
                     expect(mockApi.get.mock.calls[0][0]).toBe('configuration')
 
-                    configuration.get('systemId', true).then(res2 => {
+                    configuration.get('systemId', true).then((res2) => {
                         expect(res2).toBe(mockConfiguration.systemId)
                         expect(mockApi.get.mock.calls[1][0]).toBe(
                             'configuration'
@@ -231,7 +231,7 @@ describe('System.configuration', () => {
 
                 return configuration
                     .get('someRandomOptionThatDoesntExist')
-                    .catch(err => {
+                    .catch((err) => {
                         expect(err).toMatchSnapshot()
                     })
             })
@@ -243,7 +243,7 @@ describe('System.configuration', () => {
 
                 return configuration
                     .set('systemId', 'my-random-system-id')
-                    .catch(err => {
+                    .catch((err) => {
                         expect(err).toMatchSnapshot()
                     })
             })
@@ -333,8 +333,8 @@ describe('System.configuration', () => {
 
                 return configuration
                     .set('thisKeyDoesNotExist', 'Some value')
-                    .catch(message => message)
-                    .then(message => {
+                    .catch((message) => message)
+                    .then((message) => {
                         expect(message).toBe(
                             'No configuration found for thisKeyDoesNotExist'
                         )

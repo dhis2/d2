@@ -19,9 +19,8 @@ describe('getJSONForProperties', () => {
         beforeEach(() => {
             validationRuleSchema = fixtures.get('/api/schemas/validationRule')
 
-            validationRuleModelDefinition = ModelDefinition.createFromSchema(
-                validationRuleSchema
-            )
+            validationRuleModelDefinition =
+                ModelDefinition.createFromSchema(validationRuleSchema)
             mockModelDefinitions.validationRule = validationRuleModelDefinition
         })
 
@@ -48,9 +47,8 @@ describe('getJSONForProperties', () => {
 
             legendSetSchema = fixtures.get('/api/schemas/legendSet')
 
-            legendSetSchemaDefinition = ModelDefinition.createFromSchema(
-                legendSetSchema
-            )
+            legendSetSchemaDefinition =
+                ModelDefinition.createFromSchema(legendSetSchema)
             mockModelDefinitions.legendSet = legendSetSchemaDefinition
 
             legendSet = fixtures.get('/api/legendSets/k1JHPfXsJND')
@@ -97,9 +95,8 @@ describe('getJSONForProperties', () => {
         })
 
         it('should maintain the full structure of the userAccesses', () => {
-            legendSetSchemaDefinition = ModelDefinition.createFromSchema(
-                legendSetSchema
-            )
+            legendSetSchemaDefinition =
+                ModelDefinition.createFromSchema(legendSetSchema)
             const model = legendSetSchemaDefinition.create(legendSet)
 
             expect(
@@ -115,9 +112,8 @@ describe('getJSONForProperties', () => {
         })
 
         it('should only use the ID of the user object', () => {
-            legendSetSchemaDefinition = ModelDefinition.createFromSchema(
-                legendSetSchema
-            )
+            legendSetSchemaDefinition =
+                ModelDefinition.createFromSchema(legendSetSchema)
             const model = legendSetSchemaDefinition.create(legendSet)
 
             model.user = {

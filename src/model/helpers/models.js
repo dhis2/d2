@@ -14,7 +14,7 @@ export function hasModelValidationForProperty(model, property) {
 
 const pickHttpStatus = pick('httpStatus')
 const pickResponseUid = pick('response.uid')
-const getModelValidationForProperty = propertyName =>
+const getModelValidationForProperty = (propertyName) =>
     pick(`modelDefinition.modelValidations.${propertyName}`)
 const pickType = pick('type')
 const pickEmbeddedObject = pick('embeddedObject')

@@ -17,7 +17,7 @@ import AnalyticsRequest from './AnalyticsRequest'
  *
  * @alias module:analytics.AnalyticsRequestPropertiesMixin
  */
-const AnalyticsRequestPropertiesMixin = base =>
+const AnalyticsRequestPropertiesMixin = (base) =>
     class extends base {
         /**
          * Sets the query parameters of the request

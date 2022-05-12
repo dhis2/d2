@@ -69,7 +69,7 @@ describe('Analytics.aggregate', () => {
         })
 
         it('should resolve a promise with data', () =>
-            aggregate.getDataValueSet(request).then(data => {
+            aggregate.getDataValueSet(request).then((data) => {
                 expect(data.dataValues.length).toEqual(
                     fixture.dataValues.length
                 )
@@ -95,7 +95,7 @@ describe('Analytics.aggregate', () => {
         })
 
         it('should resolve a promise with data', () =>
-            aggregate.getDebugSql(request).then(data => {
+            aggregate.getDebugSql(request).then((data) => {
                 expect(data).toEqual(debugSqlFixture)
             }))
     })
@@ -124,7 +124,7 @@ describe('Analytics.aggregate', () => {
         })
 
         it('should resolve a promise with data', () =>
-            aggregate.getRawData(request).then(data => {
+            aggregate.getRawData(request).then((data) => {
                 expect(data.metaData.items).toEqual(fixture.metaData.items)
                 expect(data.metaData.dimensions).toEqual(
                     fixture.metaData.dimensions

@@ -88,7 +88,7 @@ describe('ModelValidations', () => {
         })
 
         it('should return a rejected promise if the model.modelDefinition.name is not present', () => {
-            modelValidation.validateAgainstSchema().catch(message => {
+            modelValidation.validateAgainstSchema().catch((message) => {
                 expect(message).toBe(
                     'model.modelDefinition.name can not be found'
                 )
@@ -176,7 +176,7 @@ describe('ModelValidations', () => {
 
             return modelValidation
                 .validateAgainstSchema(modelMock)
-                .then(validationMessages => {
+                .then((validationMessages) => {
                     expect(validationMessages).toBe(
                         schemaValidationResult.response.errorReports
                     )
@@ -203,7 +203,7 @@ describe('ModelValidations', () => {
 
             return modelValidation
                 .validateAgainstSchema(modelMock)
-                .then(validationMessages => {
+                .then((validationMessages) => {
                     expect(validationMessages).toEqual([
                         {
                             message: 'Required property missing.',
@@ -229,7 +229,7 @@ describe('ModelValidations', () => {
 
             return modelValidation
                 .validateAgainstSchema(modelMock)
-                .then(validationMessages => {
+                .then((validationMessages) => {
                     expect(validationMessages).toEqual([])
                 })
         })
@@ -247,7 +247,7 @@ describe('ModelValidations', () => {
 
             return modelValidation
                 .validateAgainstSchema(modelMock)
-                .catch(errorMessage => {
+                .catch((errorMessage) => {
                     expect(errorMessage.message).toBe(
                         'Response was not a WebMessage with the expected format'
                     )
@@ -264,7 +264,7 @@ describe('ModelValidations', () => {
 
                 return modelValidation
                     .validateAgainstSchema(modelMock)
-                    .catch(errorMessage => {
+                    .catch((errorMessage) => {
                         expect(errorMessage.message).toBe(
                             'Response was not a WebMessage with the expected format'
                         )

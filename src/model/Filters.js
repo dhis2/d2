@@ -78,7 +78,7 @@ class Filters {
      * @returns {Array<string>} A list of query param values to be used with the filter key.
      */
     getQueryFilterValues() {
-        return this.filters.map(filter => filter.getQueryParamFormat())
+        return this.filters.map((filter) => filter.getQueryParamFormat())
     }
 
     /**

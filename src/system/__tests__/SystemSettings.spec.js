@@ -43,7 +43,7 @@ describe('settings.System', () => {
             }))
 
         it('should resolve the promise with the settings', () =>
-            systemSettings.all().then(settings => {
+            systemSettings.all().then((settings) => {
                 expect(settings.keyLastSuccessfulResourceTablesUpdate).toBe(
                     'Tue Mar 10 12:24:00 CET 2015'
                 )
@@ -85,7 +85,7 @@ describe('settings.System', () => {
         it('should reject the promise with an error if no key has been specified', () => {
             expect.assertions(2)
 
-            return systemSettings.get().catch(error => {
+            return systemSettings.get().catch((error) => {
                 expect(error).toBeInstanceOf(TypeError)
                 expect(error.message).toBe(
                     'A "key" parameter should be specified when calling get() on systemSettings'
@@ -116,7 +116,7 @@ describe('settings.System', () => {
 
             return systemSettings
                 .get('keyLastSuccessfulResourceTablesUpdate')
-                .then(value => {
+                .then((value) => {
                     expect(value).toBe('Tue Mar 10 12:24:00 CET 2015')
                 })
         })
@@ -128,7 +128,7 @@ describe('settings.System', () => {
 
             return systemSettings
                 .get('keyLastSuccessfulResourceTablesUpdate')
-                .then(value => {
+                .then((value) => {
                     expect(value).toEqual({ mydataKey: 'myDataValue' })
                 })
         })
@@ -138,7 +138,7 @@ describe('settings.System', () => {
 
             return systemSettings.get('keyThatDefinitelyDoesNotExist').then(
                 () => Promise.reject('Promise resolved'),
-                error => {
+                (error) => {
                     expect(error.message).toBe(
                         'The requested systemSetting has no value or does not exist.'
                     )
@@ -182,7 +182,7 @@ describe('settings.System', () => {
                 .then(() =>
                     systemSettings.get('keyLastSuccessfulResourceTablesUpdate')
                 )
-                .then(value => {
+                .then((value) => {
                     expect(value).toBe(
                         settingsFixture.keyLastSuccessfulResourceTablesUpdate
                     )
@@ -266,7 +266,7 @@ describe('settings.System', () => {
                 .then(() => systemSettings.set('test', 'value'))
                 .then(() => systemSettings.all())
                 .then(() => systemSettings.get('test'))
-                .then(test => {
+                .then((test) => {
                     expect(mockApi.get).toHaveBeenCalledTimes(1)
                     expect(mockApi.post).toHaveBeenCalledTimes(1)
                     expect(test).toEqual('value')

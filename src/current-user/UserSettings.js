@@ -32,7 +32,7 @@ class UserSettings {
     all() {
         return this.settings
             ? Promise.resolve(this.settings)
-            : this.api.get('userSettings').then(userSettings => {
+            : this.api.get('userSettings').then((userSettings) => {
                   this.settings = userSettings
                   return Promise.resolve(this.settings)
               })
@@ -71,7 +71,7 @@ class UserSettings {
                 )
             }
 
-            this.api.get(['userSettings', key].join('/')).then(response => {
+            this.api.get(['userSettings', key].join('/')).then((response) => {
                 const value = processValue(response)
                 // Store the value on the user settings object
                 this[key] = value

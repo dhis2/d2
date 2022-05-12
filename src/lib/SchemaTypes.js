@@ -21,7 +21,7 @@ const getTypes = () => [
     'CONSTANT',
 ]
 
-const typeLookup = propertyType => {
+const typeLookup = (propertyType) => {
     if (getTypes().indexOf(propertyType) >= 0 && isString(propertyType)) {
         return propertyType
     }

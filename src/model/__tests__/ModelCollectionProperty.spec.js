@@ -73,13 +73,13 @@ describe('ModelCollectionProperty', () => {
 
     describe('add()', () => {
         it('Registers added elements', () => {
-            testModels.forEach(model => mcp.add(model))
+            testModels.forEach((model) => mcp.add(model))
             expect(mcp.added.size).toBe(testModels.length)
         })
 
         it('Only registers each added element once', () => {
-            testModels.forEach(model => mcp.add(model))
-            testModels.forEach(model => mcp.add(model))
+            testModels.forEach((model) => mcp.add(model))
+            testModels.forEach((model) => mcp.add(model))
             expect(mcp.added.size).toBe(testModels.length)
         })
 
@@ -451,7 +451,7 @@ describe('ModelCollectionProperty', () => {
                 expect(unloadedWithValues.valuesContainerMap.size).toBe(3)
                 unloadedWithValues
                     .toArray()
-                    .forEach(value => expect(value).toBeInstanceOf(Model))
+                    .forEach((value) => expect(value).toBeInstanceOf(Model))
             })
         })
 

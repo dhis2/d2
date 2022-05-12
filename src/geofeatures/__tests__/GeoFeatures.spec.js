@@ -165,7 +165,7 @@ describe('GeoFeatures', () => {
             return geoFeatures
                 .byOrgUnit('YuQRtpLP10I')
                 .getAll()
-                .then(features => {
+                .then((features) => {
                     expect(features).toEqual([
                         {
                             id: 'YuQRtpLP10I',

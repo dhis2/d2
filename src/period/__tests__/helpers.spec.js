@@ -60,7 +60,7 @@ describe('Period helpers', () => {
 
             jest.spyOn(global, 'Date')
                 // Return our own fake `now` when no dateString was passed
-                .mockImplementation(dateString =>
+                .mockImplementation((dateString) =>
                     dateString ? new DateGlobal(dateString) : now
                 )
         })

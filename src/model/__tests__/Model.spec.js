@@ -137,9 +137,8 @@ describe('Model', () => {
 
         beforeEach(() => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement')
-            const dataElementModelDefinition = ModelDefinition.createFromSchema(
-                dataElementSchema
-            )
+            const dataElementModelDefinition =
+                ModelDefinition.createFromSchema(dataElementSchema)
 
             dataElementModel = new Model(dataElementModelDefinition)
         })
@@ -175,9 +174,8 @@ describe('Model', () => {
 
         it('should not create the property when there are no attributes', () => {
             const dataElementSchema = fixtures.get('/api/schemas/dataElement')
-            const dataElementModelDefinition = ModelDefinition.createFromSchema(
-                dataElementSchema
-            )
+            const dataElementModelDefinition =
+                ModelDefinition.createFromSchema(dataElementSchema)
 
             dataElementModel = Model.create(dataElementModelDefinition)
 

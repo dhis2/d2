@@ -1,6 +1,6 @@
 export default class Model {}
 
-Model.create = jest.fn(modelDefinition => {
+Model.create = jest.fn((modelDefinition) => {
     const model = new Model()
 
     Object.defineProperty(model, 'modelDefinition', {

@@ -25,8 +25,8 @@ export function addLockedProperty(object, name, value) {
 
 export function copyOwnProperties(to, from) {
     Object.keys(from)
-        .filter(key => from.hasOwnProperty(key))
-        .forEach(key => {
+        .filter((key) => from.hasOwnProperty(key))
+        .forEach((key) => {
             to[key] = from[key]
         })
 
@@ -46,7 +46,7 @@ export function copyOwnProperties(to, from) {
 export function pick(propertyPath) {
     const propertiesToGet = propertyPath.split('.')
 
-    return item =>
+    return (item) =>
         propertiesToGet.reduce((result, property) => {
             if (result) {
                 return result[property]
@@ -55,7 +55,7 @@ export function pick(propertyPath) {
         }, item)
 }
 
-export const pickOr = (pathProperty, defaultValue) => item => {
+export const pickOr = (pathProperty, defaultValue) => (item) => {
     const pathResult = pick(pathProperty)(item)
 
     return pathResult !== undefined ? pathResult : defaultValue
@@ -98,7 +98,9 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
 
 // Define our very own special list of characters that we don't want to encode in the URI
 const whitelistURI = ',&$=/;:'
-const whitelistURICodes = whitelistURI.split('').map(c => encodeURIComponent(c))
+const whitelistURICodes = whitelistURI
+    .split('')
+    .map((c) => encodeURIComponent(c))
 const whitelistRegExp = new RegExp(`(?:${whitelistURICodes.join('|')})`, 'g')
 
 /**

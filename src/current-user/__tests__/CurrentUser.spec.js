@@ -193,8 +193,7 @@ describe('CurrentUser', () => {
             currentUser.getOrganisationUnits()
 
             expect(modelDefinitions.organisationUnit.list).toBeCalledWith({
-                fields:
-                    ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
+                fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
                 filter: ['id:in:[ImspTQPwCqd]'],
                 paging: false,
             })
@@ -212,8 +211,7 @@ describe('CurrentUser', () => {
             currentUser.getDataViewOrganisationUnits()
 
             expect(modelDefinitions.organisationUnit.list).toBeCalledWith({
-                fields:
-                    ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
+                fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
                 filter: ['id:in:[]'],
                 paging: false,
             })

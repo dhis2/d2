@@ -66,11 +66,11 @@ class ModelDefinitions {
 
         return Object.keys(this)
             .filter(
-                modelDefinition =>
+                (modelDefinition) =>
                     this.hasOwnProperty(modelDefinition) &&
                     !(this[modelDefinition].plural === modelDefinition)
             )
-            .map(modelDefinition => transformer(this[modelDefinition]))
+            .map((modelDefinition) => transformer(this[modelDefinition]))
     }
 }
 

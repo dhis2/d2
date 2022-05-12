@@ -22,7 +22,7 @@ function createPropertyDefinitionsForAttributes(
 
                     return attributeValues
                         .filter(
-                            attributeValue =>
+                            (attributeValue) =>
                                 getAttributeValueAttributeName(
                                     attributeValue
                                 ) === attributeName
@@ -34,7 +34,7 @@ function createPropertyDefinitionsForAttributes(
                 },
                 set(value) {
                     const attributeValue = getAttributeValues()
-                        .filter(av => av.attribute.name === attributeName)
+                        .filter((av) => av.attribute.name === attributeName)
                         .reduce((current, av) => av, undefined)
 
                     if (areDefinedAndEqual(getValue(attributeValue), value)) {
@@ -47,9 +47,10 @@ function createPropertyDefinitionsForAttributes(
                         // as values are sent. It will properly remove the attributeValue
                         // on the server side when they are not being send to the server at all.
                         if (isNullUndefinedOrEmptyString(value)) {
-                            const remainingAttributeValues = getAttributeValues().filter(
-                                av => av !== attributeValue
-                            )
+                            const remainingAttributeValues =
+                                getAttributeValues().filter(
+                                    (av) => av !== attributeValue
+                                )
                             setAttributeValues(remainingAttributeValues)
                         }
 
@@ -61,8 +62,8 @@ function createPropertyDefinitionsForAttributes(
                                 value,
                                 attribute: {
                                     id: attributeProperties[attributeName].id,
-                                    name:
-                                        attributeProperties[attributeName].name,
+                                    name: attributeProperties[attributeName]
+                                        .name,
                                 },
                             })
                         )

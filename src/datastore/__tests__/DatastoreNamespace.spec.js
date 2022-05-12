@@ -48,13 +48,13 @@ describe('DataStoreNamespace', () => {
         it('should return an array of keys', () => {
             expect.assertions(1)
 
-            return namespace.getKeys().then(res => {
+            return namespace.getKeys().then((res) => {
                 expect(res).toEqual(keys)
             })
         })
 
         it('should be backwards compatible with getKeys(false), but send request either way', () => {
-            namespace.getKeys().then(res => {
+            namespace.getKeys().then((res) => {
                 expect(res).toEqual(keys)
                 expect(apiMock.get).toHaveBeenCalled()
             })
@@ -65,7 +65,7 @@ describe('DataStoreNamespace', () => {
 
             expect.assertions(3)
 
-            return namespace.getKeys(true).then(res => {
+            return namespace.getKeys(true).then((res) => {
                 expect(res).toEqual(refreshedKeys)
                 expect(namespace.keys).toEqual(refreshedKeys)
                 expect(apiMock.get).toBeCalledWith('dataStore/DHIS')
@@ -77,7 +77,7 @@ describe('DataStoreNamespace', () => {
 
             expect.assertions(1)
 
-            return namespace.getKeys(true).catch(namespaceRes => {
+            return namespace.getKeys(true).catch((namespaceRes) => {
                 expect(namespaceRes.message).toBe(
                     'The requested namespace has no keys or does not exist.'
                 )
@@ -101,7 +101,7 @@ describe('DataStoreNamespace', () => {
         it('should return a value', () => {
             expect.assertions(1)
 
-            return namespace.get('key1').then(val => {
+            return namespace.get('key1').then((val) => {
                 expect(val).toBe('value')
             })
         })
@@ -125,7 +125,7 @@ describe('DataStoreNamespace', () => {
         it('should retrieve an object with metaData', () => {
             expect.assertions(1)
 
-            return namespace.getMetaData(key).then(res => {
+            return namespace.getMetaData(key).then((res) => {
                 expect(res).toBe(metaObj)
             })
         })

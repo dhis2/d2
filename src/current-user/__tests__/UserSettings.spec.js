@@ -48,7 +48,7 @@ describe('CurrentUser.userSettings', () => {
         it('should resolve the promise with the settings', () => {
             expect.assertions(1)
 
-            return userSettings.all().then(settings => {
+            return userSettings.all().then((settings) => {
                 expect(settings.keyUiLocale).toBe('en')
             })
         })
@@ -86,7 +86,7 @@ describe('CurrentUser.userSettings', () => {
         it('should reject the promise with an error if no key has been specified', () => {
             expect.assertions(2)
 
-            return userSettings.get().catch(error => {
+            return userSettings.get().catch((error) => {
                 expect(error).toBeInstanceOf(TypeError)
                 expect(error.message).toBe(
                     'A "key" parameter should be specified when calling get() on userSettings'
@@ -105,7 +105,7 @@ describe('CurrentUser.userSettings', () => {
         it('should return the value from the promise', () => {
             expect.assertions(1)
 
-            return userSettings.get('keyUiLocale').then(value => {
+            return userSettings.get('keyUiLocale').then((value) => {
                 expect(value).toBe('en')
             })
         })
@@ -117,7 +117,7 @@ describe('CurrentUser.userSettings', () => {
 
             expect.assertions(1)
 
-            return userSettings.get('keyUiLocale').then(value => {
+            return userSettings.get('keyUiLocale').then((value) => {
                 expect(value).toEqual({ mydataKey: 'myDataValue' })
             })
         })
@@ -129,7 +129,7 @@ describe('CurrentUser.userSettings', () => {
 
             return userSettings
                 .get('keyThatDefinitelyDoesNotExist')
-                .catch(error => {
+                .catch((error) => {
                     expect(error.message).toBe(
                         'The requested userSetting has no value or does not exist.'
                     )
@@ -146,7 +146,7 @@ describe('CurrentUser.userSettings', () => {
             return userSettings
                 .all()
                 .then(() => userSettings.get('keyUiLocale'))
-                .then(value => {
+                .then((value) => {
                     expect(userSettings.api.get).toHaveBeenCalledTimes(1)
                     expect(value).toBe(userSettingsFixture.keyUiLocale)
                 })

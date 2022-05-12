@@ -249,7 +249,7 @@ const regexMatchToPeriod = {
         }
     },
     /* eslint-enable */
-    Yearly: match => ({
+    Yearly: (match) => ({
         id: match[0],
         name: match[1],
         startDate: `${match[1]}-01-01`,
@@ -300,11 +300,11 @@ const regexMatchToPeriod = {
 export function getPeriodFromPeriodId(periodId, locale = 'en') {
     const period = Object.keys(periodTypeRegex)
         .filter(
-            periodType =>
+            (periodType) =>
                 periodTypeRegex[periodType].test(periodId) &&
                 regexMatchToPeriod.hasOwnProperty(periodType)
         )
-        .map(periodType => {
+        .map((periodType) => {
             const matchedPeriod = regexMatchToPeriod[periodType](
                 periodId.match(periodTypeRegex[periodType]),
                 locale

@@ -1,6 +1,6 @@
 class ModelCollection {
     constructor(modelDefinition, items = []) {
-        items.map(item => [item.id, item])
+        items.map((item) => [item.id, item])
         this.modelDefinition = modelDefinition
     }
 }

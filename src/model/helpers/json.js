@@ -45,11 +45,11 @@ function isPlainValue(collection) {
 }
 
 function isCollectionProperty(collection) {
-    return property => !isPlainValue(collection)(property)
+    return (property) => !isPlainValue(collection)(property)
 }
 
 function isReferenceProperty(collection) {
-    return property => collection.indexOf(property) >= 0
+    return (property) => collection.indexOf(property) >= 0
 }
 
 // TODO: Misnamed as it does not actually return JSON
@@ -63,12 +63,12 @@ export function getJSONForProperties(
         .getCollectionChildrenPropertyNames()
         // Even though attributeValues are considered collections, they are handled separately due to their
         // difference in structure.
-        .filter(propertyName => propertyName !== 'attributeValues')
+        .filter((propertyName) => propertyName !== 'attributeValues')
 
     const propertyNames = Object.keys(model.modelDefinition.modelValidations)
-        .filter(propertyName => properties.indexOf(propertyName) >= 0)
+        .filter((propertyName) => properties.indexOf(propertyName) >= 0)
         .filter(
-            propertyName =>
+            (propertyName) =>
                 model.dataValues[propertyName] !== undefined &&
                 model.dataValues[propertyName] !== null
         )
@@ -76,8 +76,8 @@ export function getJSONForProperties(
     // Handle plain values
     propertyNames
         .filter(isPlainValue(collectionPropertiesNames))
-        .filter(v => !isReferenceProperty(model.getReferenceProperties())(v))
-        .forEach(propertyName => {
+        .filter((v) => !isReferenceProperty(model.getReferenceProperties())(v))
+        .forEach((propertyName) => {
             objectToSave[propertyName] = model.dataValues[propertyName]
         })
 
@@ -85,7 +85,7 @@ export function getJSONForProperties(
     propertyNames
         .filter(isPlainValue(collectionPropertiesNames))
         .filter(isReferenceProperty(model.getReferenceProperties()))
-        .forEach(propertyName => {
+        .forEach((propertyName) => {
             objectToSave[propertyName] = {
                 id: model.dataValues[propertyName].id,
             }
@@ -94,7 +94,7 @@ export function getJSONForProperties(
     // Handle non-embedded collection properties
     propertyNames
         .filter(isCollectionProperty(collectionPropertiesNames))
-        .forEach(propertyName => {
+        .forEach((propertyName) => {
             // TODO: This is not the proper way to do this. We should check if the array contains Models
             // These objects are not marked as embedded objects but they behave like they are
             if (
@@ -124,7 +124,7 @@ export function getJSONForProperties(
             objectToSave[propertyName] = values
                 .filter(pick('id'))
                 // For any other types we return an object with just an id
-                .map(childModel => {
+                .map((childModel) => {
                     if (keepFullModels && isFunction(childModel.clone)) {
                         return childModel.clone()
                     }

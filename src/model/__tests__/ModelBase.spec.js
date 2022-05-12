@@ -8,8 +8,8 @@ describe('ModelBase', () => {
     let validateAgainstSchemaSpy
 
     beforeEach(() => {
-        validateAgainstSchemaSpy = ModelValidation.getModelValidation()
-            .validateAgainstSchema
+        validateAgainstSchemaSpy =
+            ModelValidation.getModelValidation().validateAgainstSchema
         validateAgainstSchemaSpy.mockReset()
     })
 
@@ -91,7 +91,7 @@ describe('ModelBase', () => {
 
                 return model
                     .create()
-                    .catch(e => e)
+                    .catch((e) => e)
                     .then(() => {
                         expect(modelDefinition.save).not.toBeCalled()
                     })
@@ -123,7 +123,7 @@ describe('ModelBase', () => {
 
                 return model
                     .save()
-                    .catch(e => e)
+                    .catch((e) => e)
                     .then(() => {
                         expect(modelDefinition.save).not.toBeCalled()
                     })
@@ -158,7 +158,7 @@ describe('ModelBase', () => {
 
                 expect.assertions(1)
 
-                return model.save().then(result => {
+                return model.save().then((result) => {
                     expect(result).toEqual({})
                 })
             })
@@ -170,7 +170,7 @@ describe('ModelBase', () => {
 
                 expect.assertions(1)
 
-                return model.save().catch(message => {
+                return model.save().catch((message) => {
                     expect(message).toEqual({ status: false })
                 })
             })
@@ -264,7 +264,7 @@ describe('ModelBase', () => {
 
             expect.assertions(1)
 
-            return model.validate().catch(errMessage => {
+            return model.validate().catch((errMessage) => {
                 expect(errMessage).toBe(message)
             })
         })
@@ -294,7 +294,7 @@ describe('ModelBase', () => {
 
             expect.assertions(1)
 
-            return model.validate().then(validationState => {
+            return model.validate().then((validationState) => {
                 expect(validationState.status).toBe(false)
             })
         })
@@ -304,7 +304,7 @@ describe('ModelBase', () => {
 
             expect.assertions(1)
 
-            return model.validate().then(validationState => {
+            return model.validate().then((validationState) => {
                 expect(validationState.status).toBe(true)
             })
         })
@@ -473,7 +473,7 @@ describe('ModelBase', () => {
         beforeEach(() => {
             modelDefinition = {
                 delete: jest.fn().mockReturnValue(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolve()
                     })
                 ),

@@ -63,7 +63,7 @@ class AnalyticsRequestBase {
         })
 
         const endPoint = [this.endPoint, this.path, this.program]
-            .filter(e => !!e)
+            .filter((e) => !!e)
             .join('/')
 
         return `${endPoint}.${this.format}?dimension=${formattedDimensions.join(
