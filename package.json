@@ -8,7 +8,7 @@
         "build:docs": "jsdoc -c jsdoc.json --readme ./README.md -u ./tutorials",
         "build:prod": "webpack --config webpack.config.prod.js --mode production",
         "build": "npm run transpile && npm run build:dev && npm run build:prod && npm run build:docs",
-        "lint": "d2-style js check",
+        "lint": "d2-style check js",
         "test:coverage": "npm test -- --coverage",
         "test": "TZ=UTC jest",
         "transpile": "babel src --out-dir . --source-maps --ignore '/**/__tests__/*','/**/__mocks__/*','/**/__fixtures__/*'"
