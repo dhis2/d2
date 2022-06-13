@@ -7,7 +7,7 @@ import Pager from '../pager/Pager'
 function throwIfContainsOtherThanModelObjects(values) {
     if (values && values[Symbol.iterator]) {
         const toCheck = [...values]
-        toCheck.forEach(value => {
+        toCheck.forEach((value) => {
             if (!(value instanceof Model)) {
                 throwError(
                     'Values of a ModelCollection must be instances of Model'
@@ -20,7 +20,7 @@ function throwIfContainsOtherThanModelObjects(values) {
 function throwIfContainsModelWithoutUid(values) {
     if (values && values[Symbol.iterator]) {
         const toCheck = [...values]
-        toCheck.forEach(value => {
+        toCheck.forEach((value) => {
             if (!isValidUid(value.id)) {
                 throwError(
                     'Can not add a Model without id to a ModelCollection'
@@ -76,7 +76,7 @@ class ModelCollection {
 
         // Add the values separately as not all Iterators return the same values
         if (isArray(values)) {
-            values.forEach(value =>
+            values.forEach((value) =>
                 this.valuesContainerMap.set(value.id, value)
             )
         }
@@ -121,7 +121,7 @@ class ModelCollection {
     toArray() {
         const resultArray = []
 
-        this.forEach(model => {
+        this.forEach((model) => {
             resultArray.push(model)
         })
 

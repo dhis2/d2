@@ -217,7 +217,7 @@ describe('Internationalisation (I18n)', () => {
             apiReq.mockReset()
             apiReq
                 .mockReturnValueOnce(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         setTimeout(() => {
                             resolve('result=first priority file\n')
                         })
@@ -272,7 +272,7 @@ describe('Internationalisation (I18n)', () => {
                 expect.assertions(5)
 
                 return i18n.load().then(() => {
-                    Object.keys(mockTranslations).forEach(key => {
+                    Object.keys(mockTranslations).forEach((key) => {
                         expect(i18n.getTranslation(key)).toEqual(
                             mockTranslations[key]
                         )
@@ -327,7 +327,7 @@ describe('Internationalisation (I18n)', () => {
                 expect.assertions(5)
 
                 return i18n.load().then(() => {
-                    Object.keys(mockTranslations).forEach(key => {
+                    Object.keys(mockTranslations).forEach((key) => {
                         expect(i18n.isTranslated(key)).toEqual(true)
                     })
                 })

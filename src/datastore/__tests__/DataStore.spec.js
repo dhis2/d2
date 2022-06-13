@@ -23,7 +23,7 @@ describe('DataStore', () => {
         it('should return an instance of datastorenamespace', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(namespaces))
 
-            return dataStore.get('DHIS').then(namespace => {
+            return dataStore.get('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(DataStoreNamespace)
             })
         })
@@ -33,8 +33,8 @@ describe('DataStore', () => {
                 .mockReturnValueOnce(Promise.resolve(namespaces))
                 .mockReturnValueOnce(Promise.resolve(keys))
 
-            return dataStore.get('DHIS').then(namespace =>
-                namespace.getKeys().then(res => {
+            return dataStore.get('DHIS').then((namespace) =>
+                namespace.getKeys().then((res) => {
                     expect(res).toEqual(keys)
                     expect(apiMock.get).toHaveBeenCalledTimes(2)
                 })
@@ -42,7 +42,7 @@ describe('DataStore', () => {
         })
 
         it('should not request API if autoload is false', () =>
-            dataStore.get('DHIS', false).then(res => {
+            dataStore.get('DHIS', false).then((res) => {
                 expect(res).toBeInstanceOf(DataStoreNamespace)
                 expect(apiMock.get).not.toHaveBeenCalled()
             }))
@@ -50,7 +50,7 @@ describe('DataStore', () => {
         it('should throw an error when no response', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(null))
 
-            return dataStore.get('DHIS').catch(e => {
+            return dataStore.get('DHIS').catch((e) => {
                 expect(e.message).toBe(
                     'The requested namespace has no keys or does not exist.'
                 )
@@ -62,7 +62,7 @@ describe('DataStore', () => {
             apiMock.get.mockReturnValueOnce(Promise.reject(err))
 
             return expect(
-                dataStore.get('DHIS').catch(e => {
+                dataStore.get('DHIS').catch((e) => {
                     expect(e).toThrow()
                 })
             ).rejects.toBeDefined()
@@ -72,7 +72,7 @@ describe('DataStore', () => {
             const error = { httpStatusCode: 500 }
             apiMock.get.mockReturnValueOnce(Promise.reject(error))
 
-            return dataStore.get('DHIS').catch(e => {
+            return dataStore.get('DHIS').catch((e) => {
                 expect(e).toEqual(error)
             })
         })
@@ -110,7 +110,7 @@ describe('DataStore', () => {
 
             expect.assertions(1)
 
-            return dataStore.getAll().then(namespaceRes => {
+            return dataStore.getAll().then((namespaceRes) => {
                 expect(namespaces).toEqual(namespaceRes)
             })
         })
@@ -120,7 +120,7 @@ describe('DataStore', () => {
 
             expect.assertions(1)
 
-            return dataStore.getAll().catch(namespaceRes => {
+            return dataStore.getAll().catch((namespaceRes) => {
                 expect(namespaceRes.message).toBe('No namespaces exist.')
             })
         })
@@ -157,7 +157,7 @@ describe('DataStore', () => {
             const error = { httpStatusCode: 404 }
             apiMock.get.mockReturnValueOnce(Promise.reject(error))
 
-            return dataStore.create('DHIS').then(namespace => {
+            return dataStore.create('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(DataStoreNamespace)
                 expect(namespace.keys).toHaveLength(0)
             })
@@ -166,7 +166,7 @@ describe('DataStore', () => {
         it('should return an error if namespace exists', () => {
             apiMock.get.mockReturnValueOnce(Promise.resolve(keys))
 
-            return dataStore.get('DHIS').then(namespace => {
+            return dataStore.get('DHIS').then((namespace) => {
                 expect(namespace).toBeInstanceOf(DataStoreNamespace)
             })
         })

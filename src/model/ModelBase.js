@@ -37,14 +37,14 @@ class ModelBase {
      * you're creating models with pre-specified IDs. Note that this does not check if the model is marked as dirty.
      */
     create() {
-        return this.validate().then(validationState => {
+        return this.validate().then((validationState) => {
             if (!validationState.status) {
                 return Promise.reject(validationState)
             }
 
             return this.modelDefinition
                 .saveNew(this)
-                .then(apiResponse =>
+                .then((apiResponse) =>
                     updateModelFromResponseStatus.call(this, apiResponse)
                 )
         })
@@ -69,14 +69,14 @@ class ModelBase {
             return Promise.resolve({})
         }
 
-        return this.validate().then(validationState => {
+        return this.validate().then((validationState) => {
             if (!validationState.status) {
                 return Promise.reject(validationState)
             }
 
             return this.modelDefinition
                 .save(this)
-                .then(apiResponse =>
+                .then((apiResponse) =>
                     updateModelFromResponseStatus.call(this, apiResponse)
                 )
         })
@@ -120,30 +120,30 @@ class ModelBase {
 
             // Run async validation against the api
             asyncRemoteValidation(this)
-                .catch(remoteMessages => {
+                .catch((remoteMessages) => {
                     // Errors are ok in this case
                     if (Array.isArray(remoteMessages)) {
                         return remoteMessages
                     }
                     return Promise.reject(remoteMessages)
                 })
-                .then(remoteMessages => {
-                    validationMessages = validationMessages.concat(
-                        remoteMessages
-                    )
+                .then((remoteMessages) => {
+                    validationMessages =
+                        validationMessages.concat(remoteMessages)
 
                     const validationState = {
                         status: remoteMessages.length === 0,
                         fields: validationMessages
                             .map(
-                                validationMessage => validationMessage.property
+                                (validationMessage) =>
+                                    validationMessage.property
                             )
                             .reduce(unique, []),
                         messages: validationMessages,
                     }
                     resolve(validationState)
                 })
-                .catch(message => reject(message))
+                .catch((message) => reject(message))
         })
     }
 
@@ -200,7 +200,7 @@ class ModelBase {
         this.dirty = false
 
         // Also set it's children to be clean
-        this.getDirtyChildren().forEach(value => {
+        this.getDirtyChildren().forEach((value) => {
             if (value.resetDirtyState) {
                 value.resetDirtyState()
             } else {
@@ -231,12 +231,12 @@ class ModelBase {
     getCollectionChildren() {
         return Object.keys(this)
             .filter(
-                propertyName =>
+                (propertyName) =>
                     this[propertyName] &&
                     hasModelValidationForProperty(this, propertyName) &&
                     pickOwnerFromModelValidation(propertyName, this)
             )
-            .map(propertyName => this[propertyName])
+            .map((propertyName) => this[propertyName])
     }
 
     /**
@@ -248,7 +248,7 @@ class ModelBase {
      */
     getCollectionChildrenPropertyNames() {
         return Object.keys(this).filter(
-            propertyName =>
+            (propertyName) =>
                 pickTypeFromModelValidation(propertyName, this) === 'COLLECTION'
         )
     }
@@ -262,7 +262,7 @@ class ModelBase {
      */
     getReferenceProperties() {
         return Object.keys(this).filter(
-            propertyName =>
+            (propertyName) =>
                 pickTypeFromModelValidation(propertyName, this) ===
                     'REFERENCE' &&
                 pickEmbeddedObjectFromModelValidation(propertyName, this) ===
@@ -279,8 +279,9 @@ class ModelBase {
      * @returns {Array<string>} A list of property names of embedded objects.
      */
     getEmbeddedObjectCollectionPropertyNames() {
-        return this.getCollectionChildrenPropertyNames().filter(propertyName =>
-            pickEmbeddedObjectFromModelValidation(propertyName, this)
+        return this.getCollectionChildrenPropertyNames().filter(
+            (propertyName) =>
+                pickEmbeddedObjectFromModelValidation(propertyName, this)
         )
     }
 
@@ -294,7 +295,7 @@ class ModelBase {
      */
     getDirtyChildren() {
         return this.getCollectionChildren().filter(
-            property => property && property.dirty === true
+            (property) => property && property.dirty === true
         )
     }
 

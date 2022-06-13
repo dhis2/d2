@@ -40,14 +40,14 @@ describe('D2', () => {
                 // First init round
                 .mockReturnValueOnce(Promise.resolve(schemasResponse))
                 .mockReturnValueOnce(
-                    new Promise(resolve =>
+                    new Promise((resolve) =>
                         resolve(fixtures.get('/api/attributes'))
                     )
                 )
                 .mockReturnValueOnce(Promise.resolve({}))
                 .mockReturnValueOnce(Promise.resolve([]))
                 .mockReturnValueOnce(
-                    new Promise(resolve =>
+                    new Promise((resolve) =>
                         resolve(fixtures.get('/api/userSettings'))
                     )
                 )
@@ -56,17 +56,17 @@ describe('D2', () => {
 
                 // Second init round
                 .mockReturnValueOnce(
-                    new Promise(resolve => resolve(schemasResponse))
+                    new Promise((resolve) => resolve(schemasResponse))
                 )
                 .mockReturnValueOnce(
-                    new Promise(resolve =>
+                    new Promise((resolve) =>
                         resolve(fixtures.get('/api/attributes'))
                     )
                 )
                 .mockReturnValueOnce(Promise.resolve({}))
                 .mockReturnValueOnce(Promise.resolve([]))
                 .mockReturnValueOnce(
-                    new Promise(resolve =>
+                    new Promise((resolve) =>
                         resolve(fixtures.get('/api/userSettings'))
                     )
                 )
@@ -243,7 +243,7 @@ describe('D2', () => {
             expect.assertions(1)
 
             return instanceAfterFirstInit
-                .then(first => {
+                .then((first) => {
                     d2.init({ baseUrl: '/dhis/api' }, apiMock)
                     const instanceAfterSecondInit = d2.getInstance()
 
@@ -328,7 +328,7 @@ describe('D2', () => {
     it('should return an object with the api object', () => {
         expect.assertions(1)
 
-        return d2.init({ baseUrl: '/dhis/api' }, apiMock).then(newD2 => {
+        return d2.init({ baseUrl: '/dhis/api' }, apiMock).then((newD2) => {
             expect(newD2.Api.getApi()).toBe(apiMock)
         })
     })
@@ -359,7 +359,7 @@ describe('D2', () => {
         it('should add the model definitions object to the d2 object', () => {
             expect.assertions(1)
 
-            return d2.init(undefined, apiMock).then(newD2 => {
+            return d2.init(undefined, apiMock).then((newD2) => {
                 expect(newD2.models).toBeDefined()
             })
         })
@@ -367,7 +367,7 @@ describe('D2', () => {
         it('should add the ModelDefinitions to the models list', () => {
             expect.assertions(1)
 
-            return d2.init(undefined, apiMock).then(newD2 => {
+            return d2.init(undefined, apiMock).then((newD2) => {
                 expect(newD2.models.dataElement).toBeDefined()
             })
         })
@@ -378,7 +378,7 @@ describe('D2', () => {
             d2.init(undefined, apiMock)
             expect.assertions(1)
 
-            return d2.getInstance().then(newD2 => {
+            return d2.getInstance().then((newD2) => {
                 expect(newD2.currentUser).toBeDefined()
             })
         })
@@ -416,7 +416,7 @@ describe('D2', () => {
         it('should have a dataStore object on the instance', () => {
             expect.assertions(1)
 
-            return d2.init(undefined, apiMock).then(d2Instance => {
+            return d2.init(undefined, apiMock).then((d2Instance) => {
                 expect(d2Instance.dataStore).toBeInstanceOf(DataStore)
             })
         })
@@ -436,7 +436,7 @@ describe('D2', () => {
 
             expect.assertions(1)
 
-            return d2.getUserSettings(apiMock).then(settings => {
+            return d2.getUserSettings(apiMock).then((settings) => {
                 expect(settings.keyUiLocale).toBe('fr')
             })
         })
@@ -491,9 +491,11 @@ describe('D2', () => {
 
             expect.assertions(1)
 
-            return d2.getManifest('manifest.webapp', apiMock).then(manifest => {
-                expect(manifest.name).toBe(expectedManifest.name)
-            })
+            return d2
+                .getManifest('manifest.webapp', apiMock)
+                .then((manifest) => {
+                    expect(manifest.name).toBe(expectedManifest.name)
+                })
         })
 
         it('should add the getBaseUrl convenience method', () => {
@@ -512,9 +514,11 @@ describe('D2', () => {
 
             expect.assertions(1)
 
-            return d2.getManifest('manifest.webapp', apiMock).then(manifest => {
-                expect(manifest.getBaseUrl()).toBe('http://localhost:8080')
-            })
+            return d2
+                .getManifest('manifest.webapp', apiMock)
+                .then((manifest) => {
+                    expect(manifest.getBaseUrl()).toBe('http://localhost:8080')
+                })
         })
     })
 })

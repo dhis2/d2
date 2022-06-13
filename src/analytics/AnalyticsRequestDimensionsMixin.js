@@ -15,7 +15,7 @@ import AnalyticsRequest from './AnalyticsRequest'
  *
  * @alias module:analytics.AnalyticsRequestDimensionsMixin
  */
-const AnalyticsRequestDimensionsMixin = base =>
+const AnalyticsRequestDimensionsMixin = (base) =>
     class extends base {
         /**
          * Adds/updates the dx dimension to use in the request.

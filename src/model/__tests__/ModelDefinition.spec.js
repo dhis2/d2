@@ -185,9 +185,8 @@ describe('ModelDefinition', () => {
                 )
                 nonMetaDataModel.metadata = false
 
-                dataElementModelDefinition = ModelDefinition.createFromSchema(
-                    nonMetaDataModel
-                )
+                dataElementModelDefinition =
+                    ModelDefinition.createFromSchema(nonMetaDataModel)
 
                 expect(dataElementModelDefinition.isMetaData).toBe(false)
             })
@@ -488,10 +487,11 @@ describe('ModelDefinition', () => {
                     )
                     dataElementSchemaFixture.properties[0].ordered = false
 
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(
-                        dataElementSchemaFixture,
-                        fixtures.get('/api/attributes').attributes
-                    )
+                    dataElementModelDefinition =
+                        ModelDefinition.createFromSchema(
+                            dataElementSchemaFixture,
+                            fixtures.get('/api/attributes').attributes
+                        )
 
                     modelValidations =
                         dataElementModelDefinition.modelValidations
@@ -505,10 +505,11 @@ describe('ModelDefinition', () => {
                     )
                     dataElementSchemaFixture.properties[0].ordered = true
 
-                    dataElementModelDefinition = ModelDefinition.createFromSchema(
-                        dataElementSchemaFixture,
-                        fixtures.get('/api/attributes').attributes
-                    )
+                    dataElementModelDefinition =
+                        ModelDefinition.createFromSchema(
+                            dataElementSchemaFixture,
+                            fixtures.get('/api/attributes').attributes
+                        )
 
                     modelValidations =
                         dataElementModelDefinition.modelValidations
@@ -526,9 +527,8 @@ describe('ModelDefinition', () => {
                     const indicatorGroupSchema = fixtures.get(
                         '/api/schemas/indicatorGroup'
                     )
-                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(
-                        indicatorGroupSchema
-                    )
+                    indicatorGroupModelDefinition =
+                        ModelDefinition.createFromSchema(indicatorGroupSchema)
                     modelValidations =
                         indicatorGroupModelDefinition.modelValidations
                 })
@@ -553,9 +553,8 @@ describe('ModelDefinition', () => {
                     const legendSetSchema = fixtures.get(
                         '/api/schemas/legendSet'
                     )
-                    indicatorGroupModelDefinition = ModelDefinition.createFromSchema(
-                        legendSetSchema
-                    )
+                    indicatorGroupModelDefinition =
+                        ModelDefinition.createFromSchema(legendSetSchema)
                     modelValidations =
                         indicatorGroupModelDefinition.modelValidations
                 })
@@ -644,9 +643,8 @@ describe('ModelDefinition', () => {
             const orgUnitGroupSchema = fixtures.get(
                 '/api/schemas/organisationUnitGroupSet'
             )
-            const organisationUnitGroupSetModelDefinition = ModelDefinition.createFromSchema(
-                orgUnitGroupSchema
-            )
+            const organisationUnitGroupSetModelDefinition =
+                ModelDefinition.createFromSchema(orgUnitGroupSchema)
             let model
 
             beforeEach(() => {
@@ -669,9 +667,8 @@ describe('ModelDefinition', () => {
                 userModelDefinition = ModelDefinition.createFromSchema(
                     fixtures.get('/api/schemas/user')
                 )
-                orgunitModelDefinition = ModelDefinition.createFromSchema(
-                    orgUnitSchema
-                )
+                orgunitModelDefinition =
+                    ModelDefinition.createFromSchema(orgUnitSchema)
 
                 // TODO: Mock the ModelDefinitions singleton, so we can get rid of this logic
                 if (!ModelDefinitions.getModelDefinitions().user) {
@@ -764,10 +761,9 @@ describe('ModelDefinition', () => {
         beforeEach(() => {
             ModelDefinition.prototype.api = {
                 get: jest.fn().mockReturnValue(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolve({
-                            name:
-                                'BS_COLL (N, DSD) TARGET: Blood Units Donated',
+                            name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated',
                         })
                     })
                 ),
@@ -798,8 +794,7 @@ describe('ModelDefinition', () => {
             expect(ModelDefinition.prototype.api.get).toBeCalledWith(
                 'https://play.dhis2.org/demo/api/dataElements/d4343fsss',
                 {
-                    fields:
-                        ':all,attributeValues[:all,attribute[id,name,displayName]]',
+                    fields: ':all,attributeValues[:all,attribute[id,name,displayName]]',
                 }
             )
         })
@@ -807,7 +802,7 @@ describe('ModelDefinition', () => {
         it('should set the data onto the model when it is available', () =>
             dataElementModelDefinition
                 .get('d4343fsss')
-                .then(dataElementModel => {
+                .then((dataElementModel) => {
                     expect(dataElementModel.name).toBe(
                         'BS_COLL (N, DSD) TARGET: Blood Units Donated'
                     )
@@ -826,7 +821,7 @@ describe('ModelDefinition', () => {
 
             return dataElementModelDefinition
                 .get('d4343fsss')
-                .catch(dataElementError => {
+                .catch((dataElementError) => {
                     expect(dataElementError).toBe(
                         'DataElementCategory with id sdfsf could not be found.'
                     )
@@ -842,7 +837,7 @@ describe('ModelDefinition', () => {
 
             return dataElementModelDefinition
                 .get('d4343fsss')
-                .catch(dataElementError => {
+                .catch((dataElementError) => {
                     expect(dataElementError).toBe(responsePayload)
                 })
         })
@@ -856,7 +851,7 @@ describe('ModelDefinition', () => {
 
                 return dataElementModelDefinition
                     .get(['id1', 'id2'])
-                    .then(dataElementCollection => {
+                    .then((dataElementCollection) => {
                         expect(dataElementCollection).toBeInstanceOf(
                             ModelCollection
                         )
@@ -890,7 +885,7 @@ describe('ModelDefinition', () => {
         beforeEach(() => {
             ModelDefinition.prototype.api = {
                 get: jest.fn().mockReturnValue(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolve(dataElementsResult)
                     })
                 ),
@@ -927,7 +922,7 @@ describe('ModelDefinition', () => {
         })
 
         it('should return a model collection object', () =>
-            dataElementModelDefinition.list().then(dataElementCollection => {
+            dataElementModelDefinition.list().then((dataElementCollection) => {
                 expect(dataElementCollection).toBeInstanceOf(ModelCollection)
             }))
 
@@ -1088,7 +1083,7 @@ describe('ModelDefinition', () => {
         beforeEach(() => {
             ModelDefinition.prototype.api = {
                 get: jest.fn().mockReturnValue(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolve(dataElementsResult)
                     })
                 ),
@@ -1159,14 +1154,14 @@ describe('ModelDefinition', () => {
             const singleUserAllFields = fixtures.get('/singleUserAllFields')
 
             apiUpdateStub = jest.fn().mockReturnValue(
-                new Promise(resolve => {
+                new Promise((resolve) => {
                     resolve({
                         name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated',
                     })
                 })
             )
             apiPostStub = jest.fn().mockReturnValue(
-                new Promise(resolve => {
+                new Promise((resolve) => {
                     resolve({
                         name: 'BS_COLL (N, DSD) TARGET: Blood Units Donated',
                     })
@@ -1197,7 +1192,7 @@ describe('ModelDefinition', () => {
             }
             model = new Model()
 
-            Object.keys(singleUserAllFields).forEach(key => {
+            Object.keys(singleUserAllFields).forEach((key) => {
                 model.dataValues[key] = singleUserAllFields[key]
                 model[key] = singleUserAllFields[key]
             })
@@ -1358,7 +1353,7 @@ describe('ModelDefinition', () => {
             const singleUserAllFields = fixtures.get('/singleUserAllFields')
 
             apiDeleteStub = jest.fn().mockReturnValue(
-                new Promise(resolve => {
+                new Promise((resolve) => {
                     resolve()
                 })
             )
@@ -1380,7 +1375,7 @@ describe('ModelDefinition', () => {
             }
             model = new Model()
 
-            Object.keys(singleUserAllFields).forEach(key => {
+            Object.keys(singleUserAllFields).forEach((key) => {
                 model.dataValues[key] = singleUserAllFields[key]
                 model[key] = singleUserAllFields[key]
             })
@@ -1449,7 +1444,8 @@ describe('ModelDefinition', () => {
                 'userGroupAccesses',
                 'translations',
             ].sort()
-            const ownProperties = dataElementModelDefinition.getOwnedPropertyNames()
+            const ownProperties =
+                dataElementModelDefinition.getOwnedPropertyNames()
 
             expect(ownProperties.sort()).toEqual(expectedDataElementProperties)
         })
@@ -1510,9 +1506,8 @@ describe('ModelDefinition', () => {
                 ({ translationKey, ...props }) => ({ ...props })
             )
 
-            dataElementModelDefinition = ModelDefinition.createFromSchema(
-                dataElementSchema
-            )
+            dataElementModelDefinition =
+                ModelDefinition.createFromSchema(dataElementSchema)
 
             expect(
                 dataElementModelDefinition.getTranslatableProperties()
@@ -1552,9 +1547,8 @@ describe('ModelDefinition', () => {
                 ({ translationKey, ...props }) => ({ ...props })
             )
 
-            dataElementModelDefinition = ModelDefinition.createFromSchema(
-                dataElementSchema
-            )
+            dataElementModelDefinition =
+                ModelDefinition.createFromSchema(dataElementSchema)
 
             expect(
                 dataElementModelDefinition.getTranslatablePropertiesWithKeys()
@@ -1642,17 +1636,18 @@ describe('ModelDefinition subsclasses', () => {
             OrganisationUnitModelDefinitionClass =
                 ModelDefinition.specialClasses.organisationUnit
 
-            organisationUnitModelDefinition = new OrganisationUnitModelDefinitionClass(
-                {
-                    singular: 'organisationUnit',
-                    plural: 'organisationUnits',
-                    apiEndpoint: 'organisationUnits',
-                },
-                {},
-                {},
-                {},
-                {}
-            )
+            organisationUnitModelDefinition =
+                new OrganisationUnitModelDefinitionClass(
+                    {
+                        singular: 'organisationUnit',
+                        plural: 'organisationUnits',
+                        apiEndpoint: 'organisationUnits',
+                    },
+                    {},
+                    {},
+                    {},
+                    {}
+                )
         })
 
         it('should use the special root orgunit id when fetching lists', () => {

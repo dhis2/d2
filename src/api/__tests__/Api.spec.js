@@ -143,7 +143,7 @@ describe('Api', () => {
 
             expect.assertions(1)
 
-            return api.get('text').then(result => {
+            return api.get('text').then((result) => {
                 expect(result).toBe('this is not valid json')
             })
         })
@@ -158,7 +158,7 @@ describe('Api', () => {
 
             expect.assertions(1)
 
-            return api.get('json').then(result => {
+            return api.get('json').then((result) => {
                 expect(result).toBe('this is a JSON string')
             })
         })
@@ -182,7 +182,7 @@ describe('Api', () => {
 
             expect.assertions(1)
 
-            return api.get('json').then(result => {
+            return api.get('json').then((result) => {
                 expect(result).toEqual(data)
             })
         })
@@ -194,7 +194,7 @@ describe('Api', () => {
 
             expect.assertions(2)
 
-            return api.get('http://not.a.real.server/hi').catch(err => {
+            return api.get('http://not.a.real.server/hi').catch((err) => {
                 expect(typeof err).toBe('string')
                 expect(err).toContain('failed')
             })
@@ -219,7 +219,7 @@ describe('Api', () => {
 
             expect.assertions(2)
 
-            return api.get('dataElements/404').catch(err => {
+            return api.get('dataElements/404').catch((err) => {
                 expect(typeof err).toBe('object')
                 expect(err).toEqual(JSON.parse(errorText))
             })
@@ -242,7 +242,7 @@ describe('Api', () => {
 
             expect.assertions(2)
 
-            return api.get('dataElements/401').catch(err => {
+            return api.get('dataElements/401').catch((err) => {
                 expect(typeof err).toBe('object')
                 expect(err).toEqual(response)
             })
@@ -308,7 +308,7 @@ describe('Api', () => {
 
             expect.assertions(2)
 
-            return api.post('dataApprovalLevels', data).catch(err => {
+            return api.post('dataApprovalLevels', data).catch((err) => {
                 expect(typeof err).toBe('object')
                 expect(err).toEqual(JSON.parse(errorText))
             })
@@ -342,7 +342,7 @@ describe('Api', () => {
 
             expect.assertions(2)
 
-            return api.get('test?one=%5Bwith%20a%20filter%5D').catch(err => {
+            return api.get('test?one=%5Bwith%20a%20filter%5D').catch((err) => {
                 expect(err).toBeInstanceOf(Error)
                 expect(err.message).toBe(message)
             })
@@ -353,7 +353,7 @@ describe('Api', () => {
 
             expect.assertions(2)
 
-            return api.get('test?%5').catch(err => {
+            return api.get('test?%5').catch((err) => {
                 expect(err).toBeInstanceOf(Error)
                 expect(err.message).toBe(message)
             })
@@ -478,7 +478,7 @@ describe('Api', () => {
 
             return api
                 .get('/api/dataElements', { fields: 'id,name' })
-                .catch(errMessage => {
+                .catch((errMessage) => {
                     expect(errMessage).toMatchSnapshot()
                 })
         })
@@ -502,7 +502,7 @@ describe('Api', () => {
 
             return api
                 .get('/api/dataElements/sdfsf', { fields: 'id,name' })
-                .catch(err => {
+                .catch((err) => {
                     expect(err).toEqual(errorJson)
                 })
         })
@@ -519,7 +519,7 @@ describe('Api', () => {
 
             return api
                 .get('/api/dataElements', { fields: 'id,name' })
-                .then(res => {
+                .then((res) => {
                     expect(res).toBe('Success!')
                 })
         })

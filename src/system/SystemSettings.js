@@ -29,7 +29,7 @@ class SystemSettings {
     all() {
         return this.settings
             ? Promise.resolve(this.settings)
-            : this.api.get('systemSettings').then(settings => {
+            : this.api.get('systemSettings').then((settings) => {
                   this.settings = settings
                   return Promise.resolve(this.settings)
               })
@@ -77,7 +77,7 @@ class SystemSettings {
                     undefined,
                     options
                 )
-                .then(response => {
+                .then((response) => {
                     if (response) {
                         resolve(processValue(response))
                     }
@@ -93,7 +93,7 @@ class SystemSettings {
     set(systemSettingsKey, value) {
         const settingUrl = ['systemSettings', systemSettingsKey].join('/')
         if (value === null || `${value}`.length === 0) {
-            return this.api.delete(settingUrl).then(response => {
+            return this.api.delete(settingUrl).then((response) => {
                 // Update cache if present
                 if (this.settings && this.settings[systemSettingsKey]) {
                     delete this.settings[systemSettingsKey]
@@ -105,7 +105,7 @@ class SystemSettings {
             .post(settingUrl, value, {
                 headers: { 'Content-Type': 'text/plain' },
             })
-            .then(response => {
+            .then((response) => {
                 // update cache if present
                 if (this.settings) {
                     this.settings[systemSettingsKey] = value

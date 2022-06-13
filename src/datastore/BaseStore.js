@@ -42,13 +42,13 @@ class BaseStore {
      */
     get(namespace, autoLoad = true) {
         if (!autoLoad) {
-            return new Promise(resolve => {
+            return new Promise((resolve) => {
                 resolve(new this.NamespaceClass(namespace))
             })
         }
         return this.api
             .get([this.endPoint, namespace].join('/'))
-            .then(response => {
+            .then((response) => {
                 if (response && isArray(response)) {
                     if (response.length < 1) {
                         // fix for api bug returning empty array instead of 404
@@ -73,7 +73,7 @@ class BaseStore {
      * @returns {Promise} An array of namespaces.
      */
     getAll() {
-        return this.api.get(this.endPoint).then(response => {
+        return this.api.get(this.endPoint).then((response) => {
             if (response && isArray(response)) {
                 return response
             }
@@ -89,7 +89,7 @@ class BaseStore {
     has(namespace) {
         return this.api
             .get([this.endPoint, namespace].join('/'))
-            .then(response => {
+            .then((response) => {
                 if (response && isArray(response)) {
                     if (response.length < 1) {
                         // fix for api bug returning empty array instead of 404
@@ -99,7 +99,7 @@ class BaseStore {
                 }
                 return Promise.reject(new Error('Response is not an array!'))
             })
-            .catch(e => {
+            .catch((e) => {
                 if (e.httpStatusCode === 404 || (isArray(e) && e.length < 1)) {
                     return Promise.resolve(false)
                 }
@@ -126,7 +126,7 @@ class BaseStore {
      * an error if namespace exists.
      */
     create(namespace) {
-        return this.has(namespace).then(exists =>
+        return this.has(namespace).then((exists) =>
             exists
                 ? Promise.reject(new Error('Namespace already exists.'))
                 : new this.NamespaceClass(namespace)

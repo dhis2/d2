@@ -79,7 +79,7 @@ function getPropertiesForCurrentUserObject(currentUserObject) {
         if (propertiesToIgnore.has(property)) {
             if (properties[property].map) {
                 result[propertySymbols[property]] = properties[property].map(
-                    value => value.id
+                    (value) => value.id
                 )
             }
         } else {
@@ -213,8 +213,7 @@ class CurrentUser {
         return this[models].organisationUnit.list(
             Object.assign(
                 {
-                    fields:
-                        ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
+                    fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
                     paging: false,
                 },
                 listOptions,
@@ -233,15 +232,13 @@ class CurrentUser {
      * @returns {Promise<ModelCollection>} A ModelCollection that contains the user's dataViewOrganisationUnits.
      */
     getDataViewOrganisationUnits(listOptions) {
-        const organisationUnitsIds = this[
-            propertySymbols.dataViewOrganisationUnits
-        ]
+        const organisationUnitsIds =
+            this[propertySymbols.dataViewOrganisationUnits]
 
         return this[models].organisationUnit.list(
             Object.assign(
                 {
-                    fields:
-                        ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
+                    fields: ':all,displayName,path,children[id,displayName,path,children::isNotEmpty]',
                     paging: false,
                 },
                 listOptions,
@@ -295,16 +292,17 @@ class CurrentUser {
         return (
             modelDefinition.authorities
                 // Filter the correct authority to check for from the model
-                .filter(authority =>
+                .filter((authority) =>
                     authorityType.some(
-                        authToHave => authToHave === authority.type
+                        (authToHave) => authToHave === authority.type
                     )
                 )
                 // Check the left over schema authority types
                 .some(
-                    schemaAuthority =>
-                        schemaAuthority.authorities.some(authorityToCheckFor =>
-                            this.authorities.has(authorityToCheckFor)
+                    (schemaAuthority) =>
+                        schemaAuthority.authorities.some(
+                            (authorityToCheckFor) =>
+                                this.authorities.has(authorityToCheckFor)
                         ) // Check if one of the schema authorities are available in the users authorities
                 )
         )

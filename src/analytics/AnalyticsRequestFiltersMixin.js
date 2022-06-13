@@ -16,7 +16,7 @@ import AnalyticsRequest from './AnalyticsRequest'
  *
  * @alias module:analytics.AnalyticsRequestFiltersMixin
  */
-const AnalyticsRequestFiltersMixin = base =>
+const AnalyticsRequestFiltersMixin = (base) =>
     class extends base {
         /**
          * Adds/updates the dx dimension filter to use in the request.

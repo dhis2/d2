@@ -43,7 +43,7 @@ describe('AnalyticsResponseHeader', () => {
 
             expectedResponseHeader = { ...header, ...flags }
 
-            Object.keys(expectedResponseHeader).forEach(key => {
+            Object.keys(expectedResponseHeader).forEach((key) => {
                 expect(responseHeader[key]).toEqual(expectedResponseHeader[key])
             })
         })

@@ -86,7 +86,7 @@ class System {
     loadInstalledApps() {
         const api = Api.getApi()
 
-        return api.get('apps').then(apps => {
+        return api.get('apps').then((apps) => {
             this.setInstalledApps(apps)
 
             return apps
@@ -108,7 +108,7 @@ class System {
 
         if (onProgress !== undefined) {
             xhr = new XMLHttpRequest()
-            xhr.upload.onprogress = progress => {
+            xhr.upload.onprogress = (progress) => {
                 if (progress.lengthComputable) {
                     onProgress(progress.loaded / progress.total)
                 }
@@ -132,15 +132,15 @@ class System {
         return new Promise((resolve, reject) => {
             const api = Api.getApi()
             api.get('appStore')
-                .then(appStoreData =>
+                .then((appStoreData) =>
                     resolve(
                         appStoreData
-                            .map(appData => {
+                            .map((appData) => {
                                 const app = Object.assign({}, appData)
 
                                 if (compatibleOnly) {
                                     app.versions = app.versions.filter(
-                                        versionData =>
+                                        (versionData) =>
                                             System.isVersionCompatible(
                                                 this.version,
                                                 versionData
@@ -150,10 +150,10 @@ class System {
 
                                 return app
                             })
-                            .filter(appData => appData.versions.length > 0)
+                            .filter((appData) => appData.versions.length > 0)
                     )
                 )
-                .catch(err => reject(err))
+                .catch((err) => reject(err))
         })
     }
 
@@ -170,7 +170,7 @@ class System {
                 .then(() => {
                     resolve()
                 })
-                .catch(err => {
+                .catch((err) => {
                     reject(err)
                 })
         })

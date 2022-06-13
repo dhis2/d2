@@ -13,7 +13,7 @@ const dimensions = [
     { dimension: 'answer', items: ['42'] },
     { dimension: 'space', items: ['in between'] },
 ]
-const buildRequest = overrides => {
+const buildRequest = (overrides) => {
     return new AnalyticsRequestBase({
         endPoint,
         path,

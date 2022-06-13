@@ -182,7 +182,7 @@ class ModelDefinition {
         translatableProperties.set(
             this,
             (schema.properties || [])
-                .filter(prop => prop.translationKey)
+                .filter((prop) => prop.translationKey)
                 .map(({ name, translationKey }) => ({ name, translationKey }))
         )
 
@@ -214,14 +214,13 @@ class ModelDefinition {
 
         Object.keys(model)
             .filter(shouldBeModelCollectionProperty(model, models))
-            .forEach(modelProperty => {
-                const {
-                    referenceType,
-                } = model.modelDefinition.modelValidations[modelProperty]
+            .forEach((modelProperty) => {
+                const { referenceType } =
+                    model.modelDefinition.modelValidations[modelProperty]
                 let values = []
 
                 if (Array.isArray(dataValues[modelProperty])) {
-                    values = dataValues[modelProperty].map(value =>
+                    values = dataValues[modelProperty].map((value) =>
                         models[referenceType].create(value)
                     )
                 } else if (
@@ -242,13 +241,13 @@ class ModelDefinition {
 
         Object.keys(model)
             .filter(
-                modelProperty =>
+                (modelProperty) =>
                     !shouldBeModelCollectionProperty(
                         model,
                         models
                     )(modelProperty)
             )
-            .forEach(modelProperty => {
+            .forEach((modelProperty) => {
                 model.dataValues[modelProperty] = dataValues[modelProperty]
             })
 
@@ -300,8 +299,8 @@ class ModelDefinition {
         // TODO: should throw error if API has not been defined
         return this.api
             .get([this.apiEndpoint, identifier].join('/'), queryParams)
-            .then(data => this.create(data))
-            .catch(response => {
+            .then((data) => this.create(data))
+            .catch((response) => {
                 if (response.message) {
                     return Promise.reject(response.message)
                 }
@@ -345,10 +344,10 @@ class ModelDefinition {
         // If listParams.apiEndpoint exists, send the request there in stead of this.apiEndpoint
         return this.api
             .get(apiEndpoint || this.apiEndpoint, params)
-            .then(responseData =>
+            .then((responseData) =>
                 ModelCollection.create(
                     this,
-                    responseData[this.plural].map(data => this.create(data)),
+                    responseData[this.plural].map((data) => this.create(data)),
                     Object.assign(responseData.pager || {}, { query: params })
                 )
             )
@@ -404,7 +403,7 @@ class ModelDefinition {
      */
     getOwnedPropertyNames() {
         return Object.keys(this.modelValidations).filter(
-            propertyName => this.modelValidations[propertyName].owner
+            (propertyName) => this.modelValidations[propertyName].owner
         )
     }
 
@@ -515,7 +514,7 @@ class DataSetModelDefinition extends ModelDefinition {
         // This structure does not follow the convention of a typical reference. We can not create a proper
         // ModelCollection for this collection.
         const dataClone = Object.keys(data)
-            .filter(key => key !== 'compulsoryDataElementOperands')
+            .filter((key) => key !== 'compulsoryDataElementOperands')
             .reduce((obj, key) => {
                 obj[key] = data[key]
                 return obj

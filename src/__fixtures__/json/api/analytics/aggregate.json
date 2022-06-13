@@ -50,24 +50,12 @@
             }
         },
         "dimensions": {
-            "pe": [
-                2016
-            ],
-            "ou": [
-                "O6uvpzGd5pu"
-            ],
-            "oZg33kd9taw": [
-                "Female"
-            ]
+            "pe": [2016],
+            "ou": ["O6uvpzGd5pu"],
+            "oZg33kd9taw": ["Female"]
         }
     },
     "width": 3,
     "height": 1,
-    "rows": [
-        [
-            2016,
-            "O6uvpzGd5pu",
-            2875
-        ]
-    ]
+    "rows": [[2016, "O6uvpzGd5pu", 2875]]
 }

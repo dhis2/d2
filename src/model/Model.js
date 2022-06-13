@@ -90,7 +90,7 @@ class Model extends ModelBase {
             Object.defineProperty(this, 'attributes', { value: attributes })
 
             const getAttributeValues = () => pickAttributeValues(this)
-            const setAttributeValues = attributeValues =>
+            const setAttributeValues = (attributeValues) =>
                 (this.attributeValues = attributeValues)
             const setDirty = () => (this.dirty = true)
             const attributeDefinitions = createPropertyDefinitionsForAttributes(

@@ -67,7 +67,7 @@ export function getManifest(url, ApiClass = Api) {
 
     return api
         .get(`${url}`)
-        .then(manifest => Object.assign({}, manifest, manifestUtilities))
+        .then((manifest) => Object.assign({}, manifest, manifestUtilities))
 }
 
 /**
@@ -98,7 +98,7 @@ export function getUserSettings(ApiClass = Api) {
 
 function getModelRequests(api, schemaNames) {
     const modelRequests = []
-    const loadSchemaForName = schemaName =>
+    const loadSchemaForName = (schemaName) =>
         api.get(`schemas/${schemaName}`, { fields: fieldsForSchemas })
 
     if (Array.isArray(schemaNames)) {
@@ -106,9 +106,9 @@ function getModelRequests(api, schemaNames) {
             .map(loadSchemaForName)
             .concat([])
 
-        const schemasPromise = Promise.all(
-            individualSchemaRequests
-        ).then(schemas => ({ schemas }))
+        const schemasPromise = Promise.all(individualSchemaRequests).then(
+            (schemas) => ({ schemas })
+        )
 
         modelRequests.push(schemasPromise)
 
@@ -280,8 +280,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
 
     const userRequests = [
         api.get('me', {
-            fields:
-                ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]',
+            fields: ':all,organisationUnits[id],userGroups[id],userCredentials[:all,!user,userRoles[id]',
         }),
         api.get('me/authorization'),
         getUserSettings(ApiClass),
@@ -295,7 +294,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
         ...systemRequests,
         d2.i18n.load(),
     ])
-        .then(res => {
+        .then((res) => {
             const responses = {
                 schemas: pick('schemas')(res[0]),
                 attributes: pick('attributes')(res[1]),
@@ -308,11 +307,11 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
 
             responses.schemas
                 // We only deal with metadata schemas
-                .filter(schema => schema.metadata)
+                .filter((schema) => schema.metadata)
                 // TODO: Remove this when the schemas endpoint is versioned or shows the correct urls for the requested version
                 // The schemas endpoint is not versioned which will result into the modelDefinitions always using the
                 // "default" endpoint, we therefore modify the endpoint url based on the given baseUrl.
-                .map(schema => {
+                .map((schema) => {
                     schema.apiEndpoint = updateAPIUrlWithBaseUrlVersionNumber(
                         schema.apiEndpoint,
                         config.baseUrl
@@ -320,11 +319,11 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
 
                     return schema
                 })
-                .forEach(schema => {
+                .forEach((schema) => {
                     // Attributes that do not have values do not by default get returned with the data,
                     // therefore we need to grab the attributes that are attached to this particular schema to be able to know about them
                     const schemaAttributes = responses.attributes.filter(
-                        attributeDescriptor => {
+                        (attributeDescriptor) => {
                             const attributeNameFilter = [
                                 schema.singular,
                                 'Attribute',
@@ -386,7 +385,7 @@ export function init(initConfig, ApiClass = Api, logger = Logger.getLogger()) {
             deferredD2Init.resolve(d2)
             return deferredD2Init.promise
         })
-        .catch(error => {
+        .catch((error) => {
             logger.error(
                 'Unable to get schemas from the api',
                 JSON.stringify(error),

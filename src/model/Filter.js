@@ -147,7 +147,7 @@ class Filter {
 }
 
 // Add the filters to the Filter prototype
-Object.keys(FILTER_COMPARATORS).forEach(filter => {
+Object.keys(FILTER_COMPARATORS).forEach((filter) => {
     Object.defineProperty(Filter.prototype, filter, {
         value: function filterGetter(filterValue) {
             checkDefined(filterValue, 'filterValue')

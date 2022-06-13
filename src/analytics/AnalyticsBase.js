@@ -58,7 +58,7 @@ class AnalyticsBase {
         return Promise.all([
             this.fetch(dataReq, { sorted: true }),
             this.fetch(metaDataReq),
-        ]).then(responses =>
+        ]).then((responses) =>
             Promise.resolve({
                 ...responses[0],
                 metaData: responses[1].metaData,
@@ -91,7 +91,7 @@ class AnalyticsBase {
     fetch(req, options) {
         return this.api
             .get(req.buildUrl(options), req.buildQuery(options))
-            .then(data => Promise.resolve(data))
+            .then((data) => Promise.resolve(data))
     }
 }
 

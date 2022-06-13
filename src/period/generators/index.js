@@ -21,19 +21,19 @@ import { generateFinancialAprilPeriodsUpToYear } from './financial-april'
  */
 export function createPeriodGeneratorsForLocale(locale = 'en') {
     return {
-        generateDailyPeriodsForYear: year =>
+        generateDailyPeriodsForYear: (year) =>
             generateDailyPeriodsForYear(year, locale),
-        generateWeeklyPeriodsForYear: year =>
+        generateWeeklyPeriodsForYear: (year) =>
             generateWeeklyPeriodsForYear(year, locale),
-        generateMonthlyPeriodsForYear: year =>
+        generateMonthlyPeriodsForYear: (year) =>
             generateMonthlyPeriodsForYear(year, locale),
-        generateBiMonthlyPeriodsForYear: year =>
+        generateBiMonthlyPeriodsForYear: (year) =>
             generateBiMonthlyPeriodsForYear(year, locale),
-        generateQuarterlyPeriodsForYear: year =>
+        generateQuarterlyPeriodsForYear: (year) =>
             generateQuarterlyPeriodsForYear(year, locale),
-        generateSixMonthlyPeriodsForYear: year =>
+        generateSixMonthlyPeriodsForYear: (year) =>
             generateSixMonthlyPeriodsForYear(year, locale),
-        generateSixMonthlyAprilPeriodsForYear: year =>
+        generateSixMonthlyAprilPeriodsForYear: (year) =>
             generateSixMonthlyAprilPeriodsForYear(year, locale),
         generateYearlyPeriodsUpToYear: (year, numberOfYears) =>
             generateYearlyPeriodsUpToYear(year, numberOfYears, locale),

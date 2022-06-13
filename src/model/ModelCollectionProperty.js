@@ -131,7 +131,7 @@ class ModelCollectionProperty extends ModelCollection {
             return (
                 this.dirty ||
                 this.toArray().filter(
-                    model => model && model.isDirty() === true
+                    (model) => model && model.isDirty() === true
                 ).length > 0
             )
         }
@@ -155,8 +155,8 @@ class ModelCollectionProperty extends ModelCollection {
             '/'
         )
         const data = {
-            additions: Array.from(this.added).map(id => ({ id })),
-            deletions: Array.from(this.removed).map(id => ({ id })),
+            additions: Array.from(this.added).map((id) => ({ id })),
+            deletions: Array.from(this.removed).map((id) => ({ id })),
         }
 
         return this.api
@@ -165,7 +165,7 @@ class ModelCollectionProperty extends ModelCollection {
                 this.resetDirtyState()
                 return Promise.resolve({})
             })
-            .catch(err => Promise.reject('Failed to alter collection:', err))
+            .catch((err) => Promise.reject('Failed to alter collection:', err))
     }
 
     load(options, forceReload = false) {
@@ -191,11 +191,11 @@ class ModelCollectionProperty extends ModelCollection {
 
         return this.api
             .get(url, requestOptions)
-            .then(data => data[this.propName])
-            .then(values => {
+            .then((data) => data[this.propName])
+            .then((values) => {
                 if (Array.isArray(values)) {
                     this.valuesContainerMap.clear()
-                    values.forEach(value =>
+                    values.forEach((value) =>
                         this.valuesContainerMap.set(
                             value.id,
                             this.modelDefinition.create(value)
