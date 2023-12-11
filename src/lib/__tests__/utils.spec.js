@@ -67,41 +67,61 @@ describe('Utils', () => {
         });
 
         it('works when domain contains api', () => {
-            const baseUrl = 'https://dhis2-api.org/api'
-            for (let i = 10; i < 99; i++) {
+            const url = 'https://dhis2-api.org/api/29';
                 expect(
                     utils.updateAPIUrlWithBaseUrlVersionNumber(
                         'https://dhis2-api.org/api/api/dataSetElements/abcDEFghi3',
-                        `${baseUrl}/${i}`
+                        `${url}`,
+                    ),
+                ).toBe(
+                    `https://dhis2-api.org/api/api/29/dataSetElements/abcDEFghi3`);
+        });
+
+        it('works when domain contains api and version', () => {
+            const url = 'https://dhis2-api.org/api/25';
+                expect(
+                    utils.updateAPIUrlWithBaseUrlVersionNumber(
+                        'https://dhis2-api.org/api/25/api/29/dataSetElements/abcDEFghi3',
+                        `${url}`,
                     )
                 ).toBe(
-                    `https://dhis2-api.org/api/api/${i}/dataSetElements/abcDEFghi3`
-                );
-            }
-        });
+                    `https://dhis2-api.org/api/25/api/29/dataSetElements/abcDEFghi3`);
+        })
 
         it('does not replace version when apiUrl contains version', () => {
             expect(
                 utils.updateAPIUrlWithBaseUrlVersionNumber(
                     'https://localhost:8080/dhis/api/25/dataSetElements/abcDEFghi3',
-                    `${baseUrl}/26`
-                )
+                    `${baseUrl}/26`,
+                ),
             ).toBe(
-                'https://localhost:8080/dhis/api/25/dataSetElements/abcDEFghi3'
-            );
+                'https://localhost:8080/dhis/api/25/dataSetElements/abcDEFghi3');
+
+            expect(
+                utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3',
+                    `${baseUrl}/26`,
+                ),
+            ).toBe(
+                'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3');
+            expect(
+                utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3',
+                    `${baseUrl}/26`,
+                ),
+            ).toBe(
+                'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3');
         });
 
         it('works when server context contains api', () => {
             expect(
                 utils.updateAPIUrlWithBaseUrlVersionNumber(
                     'https://dhis2.org/api/api/dataSetElements/abcDEFghi3',
-                    'https://dhis2.org/api/api/26'
-                )
-            ).toBe(
-                'https://dhis2.org/api/api/26/dataSetElements/abcDEFghi3'
-            );
+                    'https://dhis2.org/api/api/26',
+                ),
+            ).toBe('https://dhis2.org/api/api/26/dataSetElements/abcDEFghi3');
         });
-    })
+    });
 
     describe('pickOr', () => {
         it('should return the defaultValue if it was defined', () => {

@@ -80,8 +80,9 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
-    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])/;
+    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])(?!.*api\/)/;
     const baseUrlVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
+
     const apiUrlHasVersion = apiUrl && apiUrlWithVersionRexExp.test(apiUrl);
 
     // use apiUrl directly if it contains version or no match for baseUrl
@@ -89,9 +90,9 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
-    const lastApiPartIndex = apiUrl.lastIndexOf("/api/");
-    
-    if(lastApiPartIndex === -1) {
+    const lastApiPartIndex = apiUrl.lastIndexOf('/api/');
+
+    if (lastApiPartIndex === -1) {
         return apiUrl;
     }
 
