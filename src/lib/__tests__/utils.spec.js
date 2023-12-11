@@ -14,9 +14,7 @@ describe('Utils', () => {
     describe('pick', () => {
         const object = {
             name: 'Mark',
-            users: [
-                'mark', 'this', 'color',
-            ],
+            users: ['mark', 'this', 'color'],
         };
 
         it('should return the value of the property', () => {
@@ -50,7 +48,9 @@ describe('Utils', () => {
             const value = {};
 
             expect(() => utils.pick('user.name')(value)).not.toThrow();
-            expect(() => utils.pick('user.settings.disabled')(value)).not.toThrow();
+            expect(() =>
+                utils.pick('user.settings.disabled')(value),
+            ).not.toThrow();
         });
     });
 
@@ -59,34 +59,40 @@ describe('Utils', () => {
 
         it('works with unreasonable api versions', () => {
             for (let i = 10; i < 99; i++) {
-                expect(utils.updateAPIUrlWithBaseUrlVersionNumber(
-                    'https://localhost:8080/dhis/api/dataSetElements/abcDEFghi3',
-                    `${baseUrl}/${i}`,
-                )).toBe(`https://localhost:8080/dhis/api/${i}/dataSetElements/abcDEFghi3`);
+                expect(
+                    utils.updateAPIUrlWithBaseUrlVersionNumber(
+                        'https://localhost:8080/dhis/api/dataSetElements/abcDEFghi3',
+                        `${baseUrl}/${i}`,
+                    ),
+                ).toBe(
+                    `https://localhost:8080/dhis/api/${i}/dataSetElements/abcDEFghi3`,
+                );
             }
         });
 
         it('works when domain contains api', () => {
             const url = 'https://dhis2-api.org/api/29';
-                expect(
-                    utils.updateAPIUrlWithBaseUrlVersionNumber(
-                        'https://dhis2-api.org/api/api/dataSetElements/abcDEFghi3',
-                        `${url}`,
-                    ),
-                ).toBe(
-                    `https://dhis2-api.org/api/api/29/dataSetElements/abcDEFghi3`);
+            expect(
+                utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://dhis2-api.org/api/api/dataSetElements/abcDEFghi3',
+                    `${url}`,
+                ),
+            ).toBe(
+                'https://dhis2-api.org/api/api/29/dataSetElements/abcDEFghi3',
+            );
         });
 
         it('works when domain contains api and version', () => {
             const url = 'https://dhis2-api.org/api/25/api/29';
-                expect(
-                    utils.updateAPIUrlWithBaseUrlVersionNumber(
-                        'https://dhis2-api.org/api/25/api/dataSetElements/abcDEFghi3',
-                        `${url}`,
-                    )
-                ).toBe(
-                    `https://dhis2-api.org/api/25/api/29/dataSetElements/abcDEFghi3`);
-        })
+            expect(
+                utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://dhis2-api.org/api/25/api/dataSetElements/abcDEFghi3',
+                    `${url}`,
+                ),
+            ).toBe(
+                'https://dhis2-api.org/api/25/api/29/dataSetElements/abcDEFghi3',
+            );
+        });
 
         it('does not replace version when apiUrl contains version', () => {
             expect(
@@ -95,7 +101,8 @@ describe('Utils', () => {
                     `${baseUrl}/26`,
                 ),
             ).toBe(
-                'https://localhost:8080/dhis/api/25/dataSetElements/abcDEFghi3');
+                'https://localhost:8080/dhis/api/25/dataSetElements/abcDEFghi3',
+            );
         });
 
         it('works when server context contains api', () => {
@@ -114,8 +121,9 @@ describe('Utils', () => {
                     `${baseUrl}/26`,
                 ),
             ).toBe(
-                'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3');
-        })
+                'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3',
+            );
+        });
 
         it('does not replace version when APIUrl contains version and server context contains api and version', () => {
             expect(
@@ -124,8 +132,9 @@ describe('Utils', () => {
                     `${baseUrl}/26`,
                 ),
             ).toBe(
-                'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3');
-        })
+                'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3',
+            );
+        });
     });
 
     describe('pickOr', () => {
@@ -133,7 +142,9 @@ describe('Utils', () => {
             const value = {};
 
             expect(utils.pickOr('user.name', 'John')(value)).toBe('John');
-            expect(utils.pickOr('user.settings.disabled', true)(value)).toBe(true);
+            expect(utils.pickOr('user.settings.disabled', true)(value)).toBe(
+                true,
+            );
         });
 
         it('should return a null value over a default if it exists', () => {
@@ -147,7 +158,9 @@ describe('Utils', () => {
             };
 
             expect(utils.pickOr('user.name', 'John')(value)).toBe(null);
-            expect(utils.pickOr('user.settings.disabled', true)(value)).toBe(false);
+            expect(utils.pickOr('user.settings.disabled', true)(value)).toBe(
+                false,
+            );
         });
     });
 });
