@@ -80,20 +80,27 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
-    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])/;
-    const apiVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
+    // match the last version number
+    // negative lookahead to ensure that match is the last occurence
+    const apiUrlWithVersionRexExp = /api\/([1-9][0-9])(?!.*api\/)/;
+    const baseUrlVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
 
-    const baseUrlHasVersion = apiVersionMatch && apiVersionMatch[1];
-    const apiUrlHasVersion = apiUrl && !apiUrlWithVersionRexExp.test(apiUrl);
+    const apiUrlHasVersion = apiUrl && apiUrlWithVersionRexExp.test(apiUrl);
 
-    if (baseUrlHasVersion && apiUrlHasVersion) {
-        const version = apiVersionMatch[1];
-
-        // Inject the current api version number into the endPoint urls
-        return apiUrl.replace(/api/, `api/${version}`);
+    // use apiUrl directly if it contains version or no match for baseUrl
+    if (apiUrlHasVersion || !baseUrlVersionMatch) {
+        return apiUrl;
     }
 
-    return apiUrl;
+    const lastApiPartIndex = apiUrl.lastIndexOf('/api/');
+
+    if (lastApiPartIndex === -1) {
+        return apiUrl;
+    }
+
+    return `${apiUrl.substring(0, lastApiPartIndex)}/${
+        baseUrlVersionMatch[0]
+    }/${apiUrl.substring(lastApiPartIndex + 5)}`;
 }
 
 // Define our very own special list of characters that we don't want to encode in the URI
