@@ -78,10 +78,10 @@ describe('Utils', () => {
         });
 
         it('works when domain contains api and version', () => {
-            const url = 'https://dhis2-api.org/api/25';
+            const url = 'https://dhis2-api.org/api/25/api/29';
                 expect(
                     utils.updateAPIUrlWithBaseUrlVersionNumber(
-                        'https://dhis2-api.org/api/25/api/29/dataSetElements/abcDEFghi3',
+                        'https://dhis2-api.org/api/25/api/dataSetElements/abcDEFghi3',
                         `${url}`,
                     )
                 ).toBe(
@@ -96,21 +96,6 @@ describe('Utils', () => {
                 ),
             ).toBe(
                 'https://localhost:8080/dhis/api/25/dataSetElements/abcDEFghi3');
-
-            expect(
-                utils.updateAPIUrlWithBaseUrlVersionNumber(
-                    'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3',
-                    `${baseUrl}/26`,
-                ),
-            ).toBe(
-                'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3');
-            expect(
-                utils.updateAPIUrlWithBaseUrlVersionNumber(
-                    'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3',
-                    `${baseUrl}/26`,
-                ),
-            ).toBe(
-                'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3');
         });
 
         it('works when server context contains api', () => {
@@ -121,6 +106,26 @@ describe('Utils', () => {
                 ),
             ).toBe('https://dhis2.org/api/api/26/dataSetElements/abcDEFghi3');
         });
+
+        it('does not replace version when APIUrl contains version and server context contains api', () => {
+            expect(
+                utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3',
+                    `${baseUrl}/26`,
+                ),
+            ).toBe(
+                'https://localhost:8080/dhis/api/api/25/dataSetElements/abcDEFghi3');
+        })
+
+        it('does not replace version when APIUrl contains version and server context contains api and version', () => {
+            expect(
+                utils.updateAPIUrlWithBaseUrlVersionNumber(
+                    'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3',
+                    `${baseUrl}/26`,
+                ),
+            ).toBe(
+                'https://localhost:8080/dhis/api/99/api/25/dataSetElements/abcDEFghi3');
+        })
     });
 
     describe('pickOr', () => {

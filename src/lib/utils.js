@@ -80,6 +80,8 @@ export function updateAPIUrlWithBaseUrlVersionNumber(apiUrl, baseUrl) {
         return apiUrl;
     }
 
+    // match the last version number
+    // negative lookahead to ensure that match is the last occurence
     const apiUrlWithVersionRexExp = /api\/([1-9][0-9])(?!.*api\/)/;
     const baseUrlVersionMatch = baseUrl.match(apiUrlWithVersionRexExp);
 
