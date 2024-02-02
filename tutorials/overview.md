@@ -1,5 +1,8 @@
 ## D2
 
+## !! DEPRECATED !!
+The d2 library is deprecated. Please use the [application platform instead](https://developers.dhis2.org/docs/app-platform/).
+
 The d2 library is a javascript library that abstracts away the dhis2 api and lets you use javascript models to communicate with your dhis2 server.
 
 At the moment it allows you to work with:
